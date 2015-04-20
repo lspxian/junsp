@@ -34,17 +34,12 @@ package vnreal.network.substrate;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 import org.apache.commons.collections15.Factory;
-
-import vnreal.network.Link;
 import vnreal.network.Network;
-import vnreal.network.Node;
 import vnreal.resources.AbstractResource;
 import edu.uci.ics.jung.graph.util.Pair;
 
@@ -224,7 +219,6 @@ public class SubstrateNetwork extends
 				
 			}
 			if((edge==true)&&(!line.contains("EDGES"))&&(!line.isEmpty())){
-				System.out.println(line);
 				Object[] arr = this.getVertices().toArray();
 				SubstrateLink lk = new SubstrateLink();
 				SubstrateNode start =  (SubstrateNode)arr[Integer.parseInt(line.substring(0, line.indexOf(" ")))];
@@ -236,7 +230,6 @@ public class SubstrateNetwork extends
 			}
 		}
 		br.close();
-		System.out.println(this.toString());
 		
 	}
 	

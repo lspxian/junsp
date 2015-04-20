@@ -31,12 +31,8 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.network;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-
 import mulavito.graph.ILayer;
 import vnreal.constraints.AbstractConstraint;
 import edu.uci.ics.jung.graph.DirectedOrderedSparseMultigraph;

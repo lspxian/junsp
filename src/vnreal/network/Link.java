@@ -53,7 +53,7 @@ public abstract class Link<T extends AbstractConstraint> extends
 	}
 
 	@Override
-	protected boolean preAddCheck(T t) {
+	public boolean preAddCheck(T t) {
 		// Only allow to add this type.
 		if (t instanceof ILinkConstraint)
 			if (!this.containsConstraintType(t))

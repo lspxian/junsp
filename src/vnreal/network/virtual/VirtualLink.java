@@ -70,7 +70,7 @@ public class VirtualLink extends Link<AbstractDemand> {
 	}
 
 	@Override
-	protected boolean preAddCheck(AbstractDemand t) {
+	public boolean preAddCheck(AbstractDemand t) {
 		// Only allow to add this type.
 		// To implement multipath algorithms it is important that more than one
 		// virtual link demand could be added to each virtual link (each demand
