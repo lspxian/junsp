@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import mulavito.algorithms.shortestpath.ksp.Yen;
+
+import org.apache.commons.collections15.Transformer;
+
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -48,11 +52,25 @@ public class Gra {
 				sblk.add(bw);
 		}
 		
-		//shortest path example
-		DijkstraShortestPath<SubstrateNode, SubstrateLink> dsp = new DijkstraShortestPath(sn);
-		List<SubstrateLink> l = dsp.getPath((SubstrateNode)sn.getVertices().toArray()[11], (SubstrateNode)sn.getVertices().toArray()[24]);
+		//jung Dijkstra shortest path unweighted
+//		DijkstraShortestPath<SubstrateNode, SubstrateLink> dsp = new DijkstraShortestPath(sn);
+//		List<SubstrateLink> l = dsp.getPath((SubstrateNode)sn.getVertices().toArray()[11], (SubstrateNode)sn.getVertices().toArray()[24]);
+//		System.out.println(l);
+		
+		//transformer : weighted Dijkstra shortest path
+		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
+			public Double transform(SubstrateLink link){
+				return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
+			}
+		};
+		DijkstraShortestPath<SubstrateNode, SubstrateLink> dspw = new DijkstraShortestPath(sn,weightTrans);
+		List<SubstrateLink> l = dspw.getPath((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[24]);
 		System.out.println(l);
 		
+		//yen k shortest path algo
+		Yen<SubstrateNode, SubstrateLink> yen = new Yen(sn,weightTrans);
+		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[24], 2);
+		System.out.println(ksp);
 		
 		System.out.println("ok");
 		
