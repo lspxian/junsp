@@ -51,7 +51,14 @@ import edu.uci.ics.jung.graph.util.Pair;
 @SuppressWarnings("serial")
 public class SubstrateNetwork extends
 		Network<AbstractResource, SubstrateNode, SubstrateLink> {
-
+	/**
+	 * constructor used by filter.transform(graph)
+	 */
+	public SubstrateNetwork(){
+		super(false);
+	}
+	//
+	
 	public SubstrateNetwork(boolean autoUnregisterConstraints) {
 		super(autoUnregisterConstraints);
 	}

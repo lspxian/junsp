@@ -18,7 +18,7 @@ import vnreal.resources.CpuResource;
 public class Gra {
 
 	public static void main(String[] args) throws IOException {
-		SubstrateNetwork sn=new SubstrateNetwork(true);
+		SubstrateNetwork sn=new SubstrateNetwork(false);
 		sn.alt2network("data/sub");
 		System.out.println(sn);
 		
@@ -69,7 +69,7 @@ public class Gra {
 		
 		//yen k shortest path algo
 		Yen<SubstrateNode, SubstrateLink> yen = new Yen(sn,weightTrans);
-		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[24], 2);
+		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[24], 15);
 		System.out.println(ksp);
 		
 		System.out.println("ok");
