@@ -69,7 +69,7 @@ public class Gra {
 		
 		//yen k shortest path algo
 		Yen<SubstrateNode, SubstrateLink> yen = new Yen(sn,weightTrans);
-		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[24], 15);
+		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[24], 20);
 		System.out.println(ksp);
 		
 		System.out.println("ok");

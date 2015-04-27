@@ -52,7 +52,7 @@ import edu.uci.ics.jung.graph.util.Pair;
 public class SubstrateNetwork extends
 		Network<AbstractResource, SubstrateNode, SubstrateLink> {
 	/**
-	 * constructor used by filter.transform(graph)
+	 * constructor used by filter.transform(graph)  
 	 */
 	public SubstrateNetwork(){
 		super(false);
