@@ -76,6 +76,9 @@ public abstract class DemandVisitorAdapter {
 		return false;
 	}
 
+	public boolean visit(IdDemand dem) {
+		return false;
+	}
 	
 	public boolean visit(SelectionDemand dem) {
 		return false;

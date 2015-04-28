@@ -76,6 +76,10 @@ public abstract class ResourceVisitorAdapter {
 		return false;
 	}
 
+	public boolean visit(IdResource res) {
+		return false;
+	}
+	
 	public boolean visit(SelectionResource res) {
 		return false;
 	}

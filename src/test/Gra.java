@@ -74,10 +74,10 @@ public class Gra {
 		System.out.println("yen k shortest path : "+ksp);
 		
 		//SuurballeTarjan 2 disjoint shortest path, minimize total cost of the k paths
-		SuurballeTarjan<SubstrateNode, SubstrateLink> st = new SuurballeTarjan(sn, weightTrans);
+		/*SuurballeTarjan<SubstrateNode, SubstrateLink> st = new SuurballeTarjan(sn, weightTrans);
 		List<List<SubstrateLink>> sdsp = st.getDisjointPaths((SubstrateNode)sn.getVertices().toArray()[0], (SubstrateNode)sn.getVertices().toArray()[8]);
 		System.out.println("Suurballe k disjoint shortest path : "+sdsp);
-		
+		*/
 		System.out.println("ok");
 		
 	}
