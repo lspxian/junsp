@@ -163,17 +163,17 @@ public abstract class AbstractNodeMapping {
 	 * @return true if the node mapping was successfully performed and false
 	 *         otherwise.
 	 */
-	protected abstract boolean nodeMapping(VirtualNetwork vNet);
+	public abstract boolean nodeMapping(VirtualNetwork vNet);
 
-	protected Map<VirtualNode, SubstrateNode> getNodeMapping() {
+	public Map<VirtualNode, SubstrateNode> getNodeMapping() {
 		return nodeMapping;
 	}
 
-	protected List<VirtualNode> getUnmappedvNodes() {
+	public List<VirtualNode> getUnmappedvNodes() {
 		return unmappedvNodes;
 	}
 
-	protected List<SubstrateNode> getUnmappedsNodes() {
+	public List<SubstrateNode> getUnmappedsNodes() {
 		return unmappedsNodes;
 	}
 

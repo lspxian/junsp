@@ -203,7 +203,7 @@ public final class VirtualNetwork extends
 				edge=true;
 			}
 			if((node==true)&&(!line.contains("VERTICES"))&&(!line.isEmpty())){
-				VirtualNode nd=new VirtualNode(1); //layer, don't know what it means, 1 for all
+				VirtualNode nd=new VirtualNode(layer); //layer, don't know what it means, 1 for all
 				line = line.substring(line.indexOf(" ")+1);
 				line = line.substring(line.indexOf(" ")+1);
 
@@ -214,7 +214,7 @@ public final class VirtualNetwork extends
 				
 			}
 			if((edge==true)&&(!line.contains("EDGES"))&&(!line.isEmpty())){
-				System.out.println(line);
+				//System.out.println(line);
 				Object[] arr = this.getVertices().toArray();
 				VirtualLink lk = new VirtualLink(1);
 				VirtualNode start =  (VirtualNode)arr[Integer.parseInt(line.substring(0, line.indexOf(" ")))];
