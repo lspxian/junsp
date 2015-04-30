@@ -1,5 +1,6 @@
 package vnreal.test;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import mulavito.algorithms.shortestpath.ksp.Yen;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
+import vnreal.algorithms.linkmapping.KShortestPathLinkMapping;
+import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.demands.CpuDemand;
 import vnreal.network.substrate.SubstrateLink;
@@ -98,12 +101,20 @@ public class Gra {
 				vtnd.add(cpu);
 		}
 		
-		
+		//node mapping
 		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,5,false,true);
 		arnm.nodeMapping(vn1);
 		Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 		System.out.println(nodeMapping);
 		
+		//k shortest path link mapping
+		//KShortestPathLinkMapping ksplm = new KShortestPathLinkMapping(sn,5);
+		//ksplm.linkMapping(vn1, nodeMapping);
+		
+		PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
+		psvlm.linkMapping(vn1, nodeMapping);
+		
+
 		System.out.println("ok");
 	}
 

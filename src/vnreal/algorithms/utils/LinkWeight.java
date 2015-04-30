@@ -31,21 +31,18 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.algorithms.utils;
 
-import mulavito.graph.transformers.IEdgeWeightTransformer;
+import org.apache.commons.collections15.Transformer;
+
 import vnreal.network.substrate.SubstrateLink;
+import vnreal.resources.BandwidthResource;
 
-public class LinkWeight implements IEdgeWeightTransformer<SubstrateLink> {
-
-	@Override
-	public void set(SubstrateLink e, Number w) {
-		// TODO Auto-generated method stub
-
-	}
+public class LinkWeight implements Transformer<SubstrateLink,Double> {
 
 	@Override
-	public Number transform(SubstrateLink input) {
-		// TODO Auto-generated method stub
-		return 1.0;
+	public Double transform(SubstrateLink link) {
+		 return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
 	}
+
+
 
 }

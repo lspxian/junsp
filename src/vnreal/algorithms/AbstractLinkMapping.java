@@ -80,7 +80,7 @@ public abstract class AbstractLinkMapping {
 	 *            Output of node mapping algorithm
 	 * @return boolean indicating whether the link mapping was successful
 	 */
-	protected abstract boolean linkMapping(VirtualNetwork vNet,
+	public abstract boolean linkMapping(VirtualNetwork vNet,
 			Map<VirtualNode, SubstrateNode> nodeMapping);
 
 	public int getProcessedLinks() {

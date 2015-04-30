@@ -48,7 +48,7 @@ import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 
-public class kShortestPathLinkMapping extends AbstractLinkMapping {
+public class KShortestPathLinkMapping extends AbstractLinkMapping {
 
 	// Number of shortest paths
 	private int k;
@@ -60,7 +60,7 @@ public class kShortestPathLinkMapping extends AbstractLinkMapping {
 	 * @param k
 	 *            Number of shortest paths
 	 */
-	public kShortestPathLinkMapping(SubstrateNetwork sNet, int k) {
+	public KShortestPathLinkMapping(SubstrateNetwork sNet, int k) {
 		super(sNet);
 		this.k = k;
 	}
@@ -70,7 +70,7 @@ public class kShortestPathLinkMapping extends AbstractLinkMapping {
 	 * (hops is taken as the metric)
 	 */
 	@Override
-	protected boolean linkMapping(VirtualNetwork vNet,
+	public boolean linkMapping(VirtualNetwork vNet,
 			Map<VirtualNode, SubstrateNode> nodeMapping) {
 		this.processedLinks = 0;
 		this.mappedLinks = 0;

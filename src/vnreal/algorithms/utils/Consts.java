@@ -39,7 +39,7 @@ public final class Consts  {
  
  // LP solver files folder
  
- public static String LP_SOLVER_FOLDER = "/tmp/ILP-LP-Models" + FILE_SEPARATOR;
+ public static String LP_SOLVER_FOLDER = "ILP-LP-Models" + FILE_SEPARATOR;
  public static String LP_SOLVER_DATAFILE = "datafile";
  public static String LP_LINKMAPPING_MODEL = "VNE-Model.mod";
  public static String LP_LINKMAPPING_MODEL_HIDDENHOPS = "HHVNE-Model.mod";
