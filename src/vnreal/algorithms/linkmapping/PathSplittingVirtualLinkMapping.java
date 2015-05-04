@@ -116,9 +116,10 @@ public class PathSplittingVirtualLinkMapping extends AbstractLinkMapping {
 		// this link mapping that must accede to different data files
 		LpSolver problemSolver = new LpSolver();
 
-		String dataFileName = Consts.LP_SOLVER_DATAFILE
-				+ Integer.toString(intGenerator.nextInt(2001)) + ".dat";
-
+		//TODO
+		//String dataFileName = Consts.LP_SOLVER_DATAFILE + Integer.toString(intGenerator.nextInt(2001)) + ".dat";
+		String dataFileName = "datafile.dat";
+		
 		dataSolverFile lpLinkMappingData = new dataSolverFile(Consts.LP_SOLVER_FOLDER + dataFileName);
 		
 
@@ -156,6 +157,7 @@ public class PathSplittingVirtualLinkMapping extends AbstractLinkMapping {
 				 * demand will not be mapped because the link is created between
 				 * the same node.
 				 */
+		
 				if (!srcSnode.equals(dstSnode)) {
 					// Get current VirtualLink demand
 					for (AbstractDemand dem : tmpl) {

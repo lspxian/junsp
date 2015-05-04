@@ -15,10 +15,12 @@ import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPathLinkMapping;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
+import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
+import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
@@ -92,13 +94,21 @@ public class Gra {
 		vn1.alt2network("data/vir0");
 		System.out.println("virtual network\n"+vn1);
 		
-		//add resource
+		//add resource cpu and bw
 		for(VirtualNode vtnd:vn1.getVertices()){
 			double random = new Random().nextDouble();
 			CpuDemand cpu = new CpuDemand(vtnd);
 			cpu.setDemandedCycles(random*(30));
 			if(vtnd.preAddCheck(cpu))
 				vtnd.add(cpu);
+		}
+		
+		for(VirtualLink vtlk : vn1.getEdges()){
+			double random = new Random().nextDouble();
+			BandwidthDemand bw = new BandwidthDemand(vtlk);
+			bw.setDemandedBandwidth(+random*(30));
+			if(vtlk.preAddCheck(bw))
+				vtlk.add(bw);
 		}
 		
 		//node mapping
