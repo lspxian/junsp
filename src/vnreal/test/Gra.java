@@ -30,7 +30,7 @@ public class Gra {
 
 	public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false);
-		sn.alt2network("data/sub");
+		sn.alt2network("data/sub2");
 		System.out.println(sn);
 		
 		//add resource example
@@ -75,12 +75,12 @@ public class Gra {
 			}
 		};
 		DijkstraShortestPath<SubstrateNode, SubstrateLink> dspw = new DijkstraShortestPath(sn,weightTrans);
-		List<SubstrateLink> l = dspw.getPath((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[24]);
+		List<SubstrateLink> l = dspw.getPath((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[4]);
 		System.out.println(l);
 		
 		//yen k shortest path algo
 		Yen<SubstrateNode, SubstrateLink> yen = new Yen(sn,weightTrans);
-		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[24], 10);
+		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[4], 10);
 		System.out.println("yen k shortest path : "+ksp);
 		
 		//SuurballeTarjan 2 disjoint shortest path, minimize total cost of the k paths

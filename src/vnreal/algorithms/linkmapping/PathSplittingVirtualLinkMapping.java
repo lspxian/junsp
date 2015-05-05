@@ -118,7 +118,7 @@ public class PathSplittingVirtualLinkMapping extends AbstractLinkMapping {
 
 		//TODO
 		//String dataFileName = Consts.LP_SOLVER_DATAFILE + Integer.toString(intGenerator.nextInt(2001)) + ".dat";
-		String dataFileName = "datafile.dat";
+		String dataFileName = "datafile2.dat";
 		
 		dataSolverFile lpLinkMappingData = new dataSolverFile(Consts.LP_SOLVER_FOLDER + dataFileName);
 		
@@ -126,8 +126,8 @@ public class PathSplittingVirtualLinkMapping extends AbstractLinkMapping {
 		lpLinkMappingData.createDataSolverFile(sNet, null, vNet, nodeMapping,
 				wBw, wCpu, false, 0); // Process all current VirtualNetworks
 
-		problemSolver.solve(Consts.LP_SOLVER_FOLDER,
-				Consts.LP_LINKMAPPING_MODEL_HIDDENHOPS, dataFileName);
+		//problemSolver.solve(Consts.LP_SOLVER_FOLDER,Consts.LP_LINKMAPPING_MODEL_HIDDENHOPS, dataFileName);
+		problemSolver.solve(Consts.LP_SOLVER_FOLDER,Consts.LP_LINKMAPPING_MODEL, dataFileName);
 
 		if (problemSolver.problemFeasible()) {
 			// In model HHVNE-Model.mod in /ILP-LP-Models is easy to see
