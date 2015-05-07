@@ -15,6 +15,8 @@ import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPathLinkMapping;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
+import vnreal.algorithms.utils.Consts;
+import vnreal.algorithms.utils.dataSolverFile;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
 import vnreal.network.substrate.SubstrateLink;
@@ -29,7 +31,7 @@ import vnreal.resources.CpuResource;
 public class Gra {
 
 	public static void main(String[] args) throws IOException {
-		SubstrateNetwork sn=new SubstrateNetwork(false);
+		SubstrateNetwork sn=new SubstrateNetwork(false,false); //control the directed or undirected
 		sn.alt2network("data/sub2");
 		System.out.println(sn);
 		
@@ -74,14 +76,23 @@ public class Gra {
 				return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
 			}
 		};
+		
+		Transformer<SubstrateLink, Double> basicTrans = new Transformer<SubstrateLink,Double>(){
+			public Double transform(SubstrateLink link){
+				return 1.0;
+			}
+		};
+		
 		DijkstraShortestPath<SubstrateNode, SubstrateLink> dspw = new DijkstraShortestPath(sn,weightTrans);
-		List<SubstrateLink> l = dspw.getPath((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[4]);
-		System.out.println(l);
+		List<SubstrateLink> l = dspw.getPath((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[8]);
+		System.out.println("dijkstra : "+l);
 		
 		//yen k shortest path algo
-		Yen<SubstrateNode, SubstrateLink> yen = new Yen(sn,weightTrans);
-		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[4], 10);
+		/*
+		Yen<SubstrateNode, SubstrateLink> yen = new Yen(sn,basicTrans);
+		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[8], 5);
 		System.out.println("yen k shortest path : "+ksp);
+		*/
 		
 		//SuurballeTarjan 2 disjoint shortest path, minimize total cost of the k paths
 		/*SuurballeTarjan<SubstrateNode, SubstrateLink> st = new SuurballeTarjan(sn, weightTrans);
@@ -90,8 +101,8 @@ public class Gra {
 		*/
 		
 		//create virtual network
-		VirtualNetwork vn1 = new VirtualNetwork(1,false);
-		vn1.alt2network("data/vir0");
+		VirtualNetwork vn1 = new VirtualNetwork(1,false,false);
+		vn1.alt2network("data/vir3");
 		System.out.println("virtual network\n"+vn1);
 		
 		//add resource cpu and bw
@@ -112,7 +123,7 @@ public class Gra {
 		}
 		
 		//node mapping
-		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,5,false,true);
+		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,10,true,true);
 		arnm.nodeMapping(vn1);
 		Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 		System.out.println(nodeMapping);
@@ -120,10 +131,15 @@ public class Gra {
 		//k shortest path link mapping
 		//KShortestPathLinkMapping ksplm = new KShortestPathLinkMapping(sn,5);
 		//ksplm.linkMapping(vn1, nodeMapping);
-		
+	
+		/*
 		PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
 		psvlm.linkMapping(vn1, nodeMapping);
-		
+		*/
+		String dataFileName = "datafile2.dat";
+		dataSolverFile lpLinkMappingData = new dataSolverFile(Consts.LP_SOLVER_FOLDER + dataFileName);
+		lpLinkMappingData.createDataSolverFile(sn, null, vn1, nodeMapping,
+				0.7, 0.3, false, 0); // Process all current VirtualNetworks
 
 		System.out.println("ok");
 	}

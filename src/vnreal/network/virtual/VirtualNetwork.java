@@ -56,6 +56,11 @@ public final class VirtualNetwork extends
 	private final int layer;
 	private String name = null;
 
+	public VirtualNetwork(int layer, boolean autoUnregisterConstraints, boolean directed){
+		super(autoUnregisterConstraints, directed);
+		this.layer = layer;
+	}
+	
 	public VirtualNetwork(int layer, boolean autoUnregisterConstraints) {
 		super(autoUnregisterConstraints);
 		this.layer = layer;
