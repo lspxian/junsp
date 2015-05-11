@@ -31,7 +31,7 @@ import vnreal.resources.CpuResource;
 public class Gra {
 
 	public static void main(String[] args) throws IOException {
-		SubstrateNetwork sn=new SubstrateNetwork(false,false); //control the directed or undirected
+		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
 		sn.alt2network("data/sub2");
 		System.out.println(sn);
 		
@@ -101,8 +101,8 @@ public class Gra {
 		*/
 		
 		//create virtual network
-		VirtualNetwork vn1 = new VirtualNetwork(1,false,false);
-		vn1.alt2network("data/vir3");
+		VirtualNetwork vn1 = new VirtualNetwork(1,false);
+		vn1.alt2network("data/vir0");
 		System.out.println("virtual network\n"+vn1);
 		
 		//add resource cpu and bw
@@ -123,7 +123,7 @@ public class Gra {
 		}
 		
 		//node mapping
-		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,10,true,true);
+		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,3,true,true);
 		arnm.nodeMapping(vn1);
 		Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 		System.out.println(nodeMapping);
@@ -132,15 +132,16 @@ public class Gra {
 		//KShortestPathLinkMapping ksplm = new KShortestPathLinkMapping(sn,5);
 		//ksplm.linkMapping(vn1, nodeMapping);
 	
-		/*
+		
 		PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
 		psvlm.linkMapping(vn1, nodeMapping);
-		*/
+		
+		/*
 		String dataFileName = "datafile2.dat";
 		dataSolverFile lpLinkMappingData = new dataSolverFile(Consts.LP_SOLVER_FOLDER + dataFileName);
 		lpLinkMappingData.createDataSolverFile(sn, null, vn1, nodeMapping,
 				0.7, 0.3, false, 0); // Process all current VirtualNetworks
-
+*/
 		System.out.println("ok");
 	}
 

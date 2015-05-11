@@ -118,7 +118,7 @@ public class PathSplittingVirtualLinkMapping extends AbstractLinkMapping {
 
 		//TODO
 		//String dataFileName = Consts.LP_SOLVER_DATAFILE + Integer.toString(intGenerator.nextInt(2001)) + ".dat";
-		String dataFileName = "datafile2.dat";
+		String dataFileName = "datafile.dat";
 		
 		dataSolverFile lpLinkMappingData = new dataSolverFile(Consts.LP_SOLVER_FOLDER + dataFileName);
 		
@@ -128,7 +128,7 @@ public class PathSplittingVirtualLinkMapping extends AbstractLinkMapping {
 
 		//problemSolver.solve(Consts.LP_SOLVER_FOLDER,Consts.LP_LINKMAPPING_MODEL_HIDDENHOPS, dataFileName);
 		problemSolver.solve(Consts.LP_SOLVER_FOLDER,Consts.LP_LINKMAPPING_MODEL, dataFileName);
-
+				
 		if (problemSolver.problemFeasible()) {
 			// In model HHVNE-Model.mod in /ILP-LP-Models is easy to see
 			// that lambda is the variable of the multi-commodity flow problem
@@ -136,7 +136,13 @@ public class PathSplittingVirtualLinkMapping extends AbstractLinkMapping {
 			// map a virtual node demand.
 			solverResult = MiscelFunctions.processSolverResult(
 					problemSolver.getSolverResult(), "lambda[]");
-
+			
+			//TODO output 1.0
+			for(Map.Entry<List<String>, Double> entry : solverResult.entrySet()){
+				if(entry.getValue()==1.0)
+					System.out.println(entry);
+			}
+			
 			// Iterate all VirtualLinks on the current VirtualNetwork
 			for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links
 					.hasNext();) {

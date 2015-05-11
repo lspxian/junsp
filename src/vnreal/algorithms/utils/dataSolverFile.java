@@ -187,6 +187,16 @@ public class dataSolverFile {
 				currVLink = links.next();
 				tempSrc = nodeMapping.get(vNet.getSource(currVLink));
 				tempDst = nodeMapping.get(vNet.getDest(currVLink));
+				
+				//shuopeng , change (3,0) to (0,3) //TODO
+				if(tempSrc.getId()>tempDst.getId()){
+					SubstrateNode temp=tempSrc;
+					tempSrc=tempDst;
+					tempDst=temp;
+				}
+				//
+				
+				
 				if (!tempSrc.equals(tempDst)) {
 					for (AbstractDemand dem : currVLink) {
 						if (dem instanceof BandwidthDemand) {
