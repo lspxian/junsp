@@ -32,7 +32,7 @@ public class Gra {
 
 	public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
-		sn.alt2network("data/sub2");
+		sn.alt2network("data/sub");
 		System.out.println(sn);
 		
 		//add resource example
@@ -102,7 +102,7 @@ public class Gra {
 		
 		//create virtual network
 		VirtualNetwork vn1 = new VirtualNetwork(1,false);
-		vn1.alt2network("data/vir0");
+		vn1.alt2network("data/vir1");
 		System.out.println("virtual network\n"+vn1);
 		
 		//add resource cpu and bw
@@ -123,7 +123,7 @@ public class Gra {
 		}
 		
 		//node mapping
-		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,3,true,true);
+		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,8,true,true);
 		arnm.nodeMapping(vn1);
 		Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 		System.out.println(nodeMapping);

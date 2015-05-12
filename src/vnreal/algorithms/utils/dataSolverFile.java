@@ -147,6 +147,12 @@ public class dataSolverFile {
 						+ ","
 						+ Long.toString(substrate.getDest(temp).getId())
 						+ ")");
+				/*double directions
+				out.write(" ("
+						+ Long.toString(substrate.getDest(temp).getId())
+						+ ","
+						+ Long.toString(substrate.getSource(temp).getId())
+						+ ")");*/
 			}
 
 			if (isNodeMapping) {
@@ -188,13 +194,13 @@ public class dataSolverFile {
 				tempSrc = nodeMapping.get(vNet.getSource(currVLink));
 				tempDst = nodeMapping.get(vNet.getDest(currVLink));
 				
-				//shuopeng , change (3,0) to (0,3) //TODO
+				/*shuopeng , change (3,0) to (0,3) 
 				if(tempSrc.getId()>tempDst.getId()){
 					SubstrateNode temp=tempSrc;
 					tempSrc=tempDst;
 					tempDst=temp;
 				}
-				//
+				*/
 				
 				
 				if (!tempSrc.equals(tempDst)) {

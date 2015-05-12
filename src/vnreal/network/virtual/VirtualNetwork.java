@@ -213,7 +213,7 @@ public final class VirtualNetwork extends
 				line = line.substring(line.indexOf(" ")+1);
 
 				nd.setCoordinateX(Double.parseDouble(line.substring(0, line.indexOf(" "))));
-				nd.setCoordinateY(Double.parseDouble(line.substring(0, line.indexOf(" ")+1)));
+				nd.setCoordinateY(Double.parseDouble(line.substring(line.indexOf(" ")+1)));
 				this.addVertex(nd);
 			
 				
@@ -221,11 +221,13 @@ public final class VirtualNetwork extends
 			if((edge==true)&&(!line.contains("EDGES"))&&(!line.isEmpty())){
 				//System.out.println(line);
 				Object[] arr = this.getVertices().toArray();
-				VirtualLink lk = new VirtualLink(1);
 				VirtualNode start =  (VirtualNode)arr[Integer.parseInt(line.substring(0, line.indexOf(" ")))];
 				line = line.substring(line.indexOf(" ")+1);
 				VirtualNode end = (VirtualNode)arr[Integer.parseInt(line.substring(0, line.indexOf(" ")))];
-				this.addEdge(lk, start, end);
+				this.addEdge(new VirtualLink(layer), start, end);
+				
+				//double direction
+				this.addEdge(new VirtualLink(layer), end, start);
 				
 				
 			}

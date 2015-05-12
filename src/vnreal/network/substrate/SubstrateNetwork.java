@@ -220,18 +220,20 @@ public class SubstrateNetwork extends
 				line = line.substring(line.indexOf(" ")+1);
 
 				nd.setCoordinateX(Double.parseDouble(line.substring(0, line.indexOf(" "))));
-				nd.setCoordinateY(Double.parseDouble(line.substring(0, line.indexOf(" ")+1)));
+				nd.setCoordinateY(Double.parseDouble(line.substring(line.indexOf(" ")+1)));
 				this.addVertex(nd);
 			
 				
 			}
 			if((edge==true)&&(!line.contains("EDGES"))&&(!line.isEmpty())){
 				Object[] arr = this.getVertices().toArray();
-				SubstrateLink lk = new SubstrateLink();
 				SubstrateNode start =  (SubstrateNode)arr[Integer.parseInt(line.substring(0, line.indexOf(" ")))];
 				line = line.substring(line.indexOf(" ")+1);
 				SubstrateNode end = (SubstrateNode)arr[Integer.parseInt(line.substring(0, line.indexOf(" ")))];
-				this.addEdge(lk, start, end);
+				this.addEdge(new SubstrateLink(), start, end);
+				//double direction
+				this.addEdge(new SubstrateLink(), end, start);
+				
 				
 				
 			}

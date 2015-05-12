@@ -137,9 +137,9 @@ public class PathSplittingVirtualLinkMapping extends AbstractLinkMapping {
 			solverResult = MiscelFunctions.processSolverResult(
 					problemSolver.getSolverResult(), "lambda[]");
 			
-			//TODO output 1.0
+			//TODO output result
 			for(Map.Entry<List<String>, Double> entry : solverResult.entrySet()){
-				if(entry.getValue()==1.0)
+				if(entry.getValue()>0.00001)
 					System.out.println(entry);
 			}
 			
