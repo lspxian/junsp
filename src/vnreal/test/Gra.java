@@ -2,6 +2,7 @@ package vnreal.test;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -19,6 +20,8 @@ import vnreal.algorithms.utils.Consts;
 import vnreal.algorithms.utils.dataSolverFile;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
+import vnreal.evaluations.metrics.TotalRevenue;
+import vnreal.network.NetworkStack;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
@@ -100,7 +103,7 @@ public class Gra {
 		System.out.println("Suurballe k disjoint shortest path : "+sdsp);
 		*/
 		
-		//create virtual network
+		//create virtual network		
 		VirtualNetwork vn1 = new VirtualNetwork(1,false);
 		vn1.alt2network("data/vir1");
 		System.out.println("virtual network\n"+vn1);
@@ -132,9 +135,9 @@ public class Gra {
 		//KShortestPathLinkMapping ksplm = new KShortestPathLinkMapping(sn,5);
 		//ksplm.linkMapping(vn1, nodeMapping);
 	
-		
+		/*
 		PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
-		psvlm.linkMapping(vn1, nodeMapping);
+		psvlm.linkMapping(vn1, nodeMapping);*/
 		
 		/*
 		String dataFileName = "datafile2.dat";
@@ -142,6 +145,19 @@ public class Gra {
 		lpLinkMappingData.createDataSolverFile(sn, null, vn1, nodeMapping,
 				0.7, 0.3, false, 0); // Process all current VirtualNetworks
 */
+		
+		//virtual network list
+		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
+		vns.add(vn1);
+		
+		//Network stack
+		NetworkStack netst = new NetworkStack(sn,vns);
+		
+		//total revenue
+		TotalRevenue totalRevenue = new TotalRevenue(true);
+		totalRevenue.setStack(netst);
+		System.out.println(totalRevenue.calculate());
+		
 		System.out.println("ok");
 	}
 
