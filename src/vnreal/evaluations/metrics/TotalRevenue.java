@@ -50,6 +50,7 @@ import vnreal.network.virtual.VirtualNode;
  *
  * the sum of bw and cpu of vn without other factors
  * Vn in the stack list, no operation to the sub
+ * mapped and not mapped
  * 
  * @author Juan Felipe Botero
  * @since 2011-03-08
