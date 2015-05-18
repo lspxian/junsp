@@ -70,7 +70,7 @@ public class Gra {
 			if(sblk.preAddCheck(bw))
 				sblk.add(bw);
 		}
-		System.out.println(sn);
+		//System.out.println(sn);
 		
 		//jung Dijkstra shortest path unweighted
 //		DijkstraShortestPath<SubstrateNode, SubstrateLink> dsp = new DijkstraShortestPath(sn);
@@ -114,7 +114,7 @@ public class Gra {
 			//create virtual network		
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
-			System.out.println("virtual network\n"+vn);
+			//System.out.println("virtual network\n"+vn);
 			
 			//add resource cpu and bw
 			for(VirtualNode vtnd:vn.getVertices()){
@@ -142,17 +142,23 @@ public class Gra {
 		for(int i=0;i<15;i++){
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,8,true,true);
-			if(!arnm.nodeMapping(vns.get(i))) break;
+			if(!arnm.nodeMapping(vns.get(i))){
+				System.out.println("node resource error, virtual network "+i);
+				continue;
+			}
 			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 			System.out.println(nodeMapping);
 			
 			//link mapping
 			PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
-			if(!psvlm.linkMapping(vns.get(i), nodeMapping)) break;
+			if(!psvlm.linkMapping(vns.get(i), nodeMapping)){
+				System.out.println("link resource error, virtual network "+i);
+				continue;
+			}
 
 		}
 		
-		System.out.println(sn);
+		//System.out.println(sn);
 
 		//k shortest path link mapping
 		//KShortestPathLinkMapping ksplm = new KShortestPathLinkMapping(sn,5);

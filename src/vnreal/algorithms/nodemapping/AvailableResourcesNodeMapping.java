@@ -128,6 +128,12 @@ public class AvailableResourcesNodeMapping extends AbstractNodeMapping {
 					}
 
 				}
+				
+				if(candidates.isEmpty()){
+					System.out.println("not available resource : "+currVnode.getId());
+					return false;
+				}
+				
 				// Find the feasible node with greatest available resources
 				// The available resources are the H value defined in the
 				// "Rethinking virtual network embedding" paper
