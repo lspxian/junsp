@@ -3,6 +3,7 @@ package vnreal.test;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -20,6 +21,7 @@ import vnreal.algorithms.utils.Consts;
 import vnreal.algorithms.utils.dataSolverFile;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
+import vnreal.evaluations.metrics.AcceptedVnrRatio;
 import vnreal.evaluations.metrics.MappedRevenue;
 import vnreal.evaluations.metrics.TotalRevenue;
 import vnreal.network.NetworkStack;
@@ -37,7 +39,7 @@ public class Gra {
 	public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
 		sn.alt2network("data/sub");
-		System.out.println(sn);
+		
 		
 		//add resource example
 		/*
@@ -68,6 +70,7 @@ public class Gra {
 			if(sblk.preAddCheck(bw))
 				sblk.add(bw);
 		}
+		System.out.println(sn);
 		
 		//jung Dijkstra shortest path unweighted
 //		DijkstraShortestPath<SubstrateNode, SubstrateLink> dsp = new DijkstraShortestPath(sn);
@@ -86,10 +89,10 @@ public class Gra {
 				return 1.0;
 			}
 		};
-		
+		/*
 		DijkstraShortestPath<SubstrateNode, SubstrateLink> dspw = new DijkstraShortestPath(sn,weightTrans);
 		List<SubstrateLink> l = dspw.getPath((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[8]);
-		System.out.println("dijkstra : "+l);
+		System.out.println("dijkstra : "+l);*/
 		
 		//yen k shortest path algo
 		/*
@@ -107,7 +110,7 @@ public class Gra {
 		//virtual network list
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();		
 		
-		for(int i=0;i<5;i++){
+		for(int i=0;i<15;i++){
 			//create virtual network		
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
@@ -117,7 +120,7 @@ public class Gra {
 			for(VirtualNode vtnd:vn.getVertices()){
 				double random = new Random().nextDouble();
 				CpuDemand cpu = new CpuDemand(vtnd);
-				cpu.setDemandedCycles(random*(30));
+				cpu.setDemandedCycles(random*(50));
 				if(vtnd.preAddCheck(cpu))
 					vtnd.add(cpu);
 			}
@@ -125,7 +128,7 @@ public class Gra {
 			for(VirtualLink vtlk : vn.getEdges()){
 				double random = new Random().nextDouble();
 				BandwidthDemand bw = new BandwidthDemand(vtlk);
-				bw.setDemandedBandwidth(+random*(30));
+				bw.setDemandedBandwidth(+random*(50));
 				if(vtlk.preAddCheck(bw))
 					vtlk.add(bw);
 			}
@@ -134,22 +137,23 @@ public class Gra {
 		}
 		
 		//Network stack
-		NetworkStack netst = new NetworkStack(sn,vns);
+		NetworkStack netst = new NetworkStack(sn,vns);	
 		
-		for(int i=0;i<5;i++){
+		for(int i=0;i<15;i++){
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,8,true,true);
-			arnm.nodeMapping(vns.get(i));
+			if(!arnm.nodeMapping(vns.get(i))) break;
 			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 			System.out.println(nodeMapping);
 			
 			//link mapping
 			PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
-			psvlm.linkMapping(vns.get(i), nodeMapping);
+			if(!psvlm.linkMapping(vns.get(i), nodeMapping)) break;
 
 		}
-
 		
+		System.out.println(sn);
+
 		//k shortest path link mapping
 		//KShortestPathLinkMapping ksplm = new KShortestPathLinkMapping(sn,5);
 		//ksplm.linkMapping(vn1, nodeMapping);
@@ -170,6 +174,11 @@ public class Gra {
 		MappedRevenue mappedRevenue = new MappedRevenue(true);
 		mappedRevenue.setStack(netst);
 		System.out.println("mapped revenue : "+mappedRevenue.calculate());
+		
+		//accepted ratio
+		AcceptedVnrRatio acceptedRatio = new AcceptedVnrRatio();
+		acceptedRatio.setStack(netst);
+		System.out.println("accepted ratio : "+acceptedRatio.calculate()+"%");
 		
 		System.out.println("ok");
 	}

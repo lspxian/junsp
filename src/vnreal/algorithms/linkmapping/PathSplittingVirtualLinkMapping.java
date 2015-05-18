@@ -210,8 +210,12 @@ public class PathSplittingVirtualLinkMapping extends AbstractLinkMapping {
 											* originalBwDem
 													.getDemandedBandwidth()));
 
-							tmpl.add(newBwDem);
-/*
+							if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tSLink)){
+								throw new AssertionError("But we checked before!");
+							}
+							
+							/*							tmpl.add(newBwDem);
+
 							// Getting the factor for the bandwidth to CPU
 							// hidden hop mapping
 							if (hhFactor == 0) {

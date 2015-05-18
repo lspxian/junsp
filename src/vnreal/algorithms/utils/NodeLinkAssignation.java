@@ -203,6 +203,14 @@ public class NodeLinkAssignation {
 		}
 		return true;
 	}
+	
+	public final static boolean vlmSimple(VirtualLink vl, List<SubstrateLink> spath){
+		for(SubstrateLink sl : spath){
+			if(!occupy(vl.get(),sl))
+				return false;
+		}
+		return true;
+	}
 
 	/**
 	 * Method in charge of realizing the mapping of one substrate link to one
@@ -266,6 +274,15 @@ public class NodeLinkAssignation {
 		}
 		return true;
 	}
+	
+	public final static boolean vlmSingleLinkSimple(BandwidthDemand bwDem, SubstrateLink subsLink) {
+		for (AbstractResource res : subsLink) {
+				if (!occupy(bwDem, res)) {
+					return false;
+				} 				
+			}
+			return true;
+		}
 
 	/**
 	 * This method verifies if all the substrate links of a path accomplish the
