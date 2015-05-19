@@ -109,7 +109,7 @@ public class AvailableResourcesNodeMapping extends AbstractNodeMapping {
 			// demands
 			for (AbstractDemand dem : currVnode) { //TODO
 				if (dem instanceof CpuDemand) {
-					System.out.println(((CpuDemand)dem).getDemandedCycles());
+					//System.out.println(((CpuDemand)dem).getDemandedCycles());
 					if (!nodeOverload) {
 						if (!withDist) {
 							candidates = findFulfillingNodes(dem,

@@ -14,6 +14,7 @@ import mulavito.algorithms.shortestpath.ksp.Yen;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
+import vnreal.algorithms.linkmapping.KShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPathLinkMapping;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
@@ -63,13 +64,27 @@ public class Gra {
 				sbnd.add(cpu);
 		}
 		
+		Iterator<SubstrateLink> it=sn.getEdges().iterator();
+		while(it.hasNext()){
+			double random = new Random().nextDouble();
+			SubstrateLink sblk1 = (SubstrateLink)it.next();
+			SubstrateLink sblk2 = (SubstrateLink)it.next();
+			BandwidthResource bw1=new BandwidthResource(sblk1);
+			BandwidthResource bw2=new BandwidthResource(sblk2);
+			bw1.setBandwidth(50+random*(100-50));
+			bw2.setBandwidth(50+random*(100-50));
+			sblk1.add(bw1);
+			sblk2.add(bw2);
+			
+		}
+		/*
 		for(SubstrateLink sblk : sn.getEdges()){
 			double random = new Random().nextDouble();
 			BandwidthResource bw = new BandwidthResource(sblk);
 			bw.setBandwidth(50+random*(100-50));
 			if(sblk.preAddCheck(bw))
 				sblk.add(bw);
-		}
+		}*/
 		//System.out.println(sn);
 		
 		//jung Dijkstra shortest path unweighted
@@ -125,13 +140,27 @@ public class Gra {
 					vtnd.add(cpu);
 			}
 			
+			Iterator<VirtualLink> itv=vn.getEdges().iterator();
+			while(itv.hasNext()){
+				double random = new Random().nextDouble();
+				VirtualLink vtlk1 = (VirtualLink)itv.next();
+				VirtualLink vtlk2 = (VirtualLink)itv.next();
+				BandwidthDemand bw1=new BandwidthDemand(vtlk1);
+				BandwidthDemand bw2=new BandwidthDemand(vtlk2);
+				bw1.setDemandedBandwidth(random*50);
+				bw2.setDemandedBandwidth(random*50);
+				vtlk1.add(bw1);
+				vtlk2.add(bw2);
+				
+			}
+			/*
 			for(VirtualLink vtlk : vn.getEdges()){
 				double random = new Random().nextDouble();
 				BandwidthDemand bw = new BandwidthDemand(vtlk);
 				bw.setDemandedBandwidth(+random*(50));
 				if(vtlk.preAddCheck(bw))
 					vtlk.add(bw);
-			}
+			}*/
 			
 			vns.add(vn);
 		}
@@ -140,6 +169,7 @@ public class Gra {
 		NetworkStack netst = new NetworkStack(sn,vns);	
 		
 		for(int i=0;i<15;i++){
+			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,8,true,true);
 			if(!arnm.nodeMapping(vns.get(i))){
@@ -150,26 +180,22 @@ public class Gra {
 			System.out.println(nodeMapping);
 			
 			//link mapping
+			/*
 			PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
 			if(!psvlm.linkMapping(vns.get(i), nodeMapping)){
 				System.out.println("link resource error, virtual network "+i);
 				continue;
+			}*/
+			
+			KShortestPath kspath = new KShortestPath(sn);
+			if(!kspath.linkMapping(vns.get(i), nodeMapping)){
+				System.out.println("link resource error, virtual network "+i);
+				continue;
 			}
-
+			
 		}
 		
-		//System.out.println(sn);
-
-		//k shortest path link mapping
-		//KShortestPathLinkMapping ksplm = new KShortestPathLinkMapping(sn,5);
-		//ksplm.linkMapping(vn1, nodeMapping);
-		
-		/*
-		String dataFileName = "datafile2.dat";
-		dataSolverFile lpLinkMappingData = new dataSolverFile(Consts.LP_SOLVER_FOLDER + dataFileName);
-		lpLinkMappingData.createDataSolverFile(sn, null, vn1, nodeMapping,
-				0.7, 0.3, false, 0); // Process all current VirtualNetworks
-*/
+		System.out.println(sn);
 		
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);

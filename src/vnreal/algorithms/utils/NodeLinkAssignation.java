@@ -310,4 +310,14 @@ public class NodeLinkAssignation {
 		}
 		return true;
 	}
+	
+	public final static boolean verifyPathSimple(VirtualLink vl,
+			List<SubstrateLink> path) {
+		for (SubstrateLink tSLink : path) {
+			if (!fulfills(vl.get(), tSLink)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
