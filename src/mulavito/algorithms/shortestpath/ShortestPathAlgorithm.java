@@ -49,7 +49,7 @@ import edu.uci.ics.jung.graph.Graph;
  *            The parameter for edges
  */
 public abstract class ShortestPathAlgorithm<V, E> implements ShortestPath<V, E> {
-	protected final Graph<V, E> graph;
+	protected Graph<V, E> graph;
 	protected final DijkstraShortestPath<V, E> dijkstra;
 	protected final Transformer<E, Number> nev;
 
