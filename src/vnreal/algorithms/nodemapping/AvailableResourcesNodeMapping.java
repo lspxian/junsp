@@ -50,9 +50,11 @@ package vnreal.algorithms.nodemapping;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import vnreal.algorithms.AbstractNodeMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
+import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.CpuDemand;
 import vnreal.network.substrate.SubstrateLink;
@@ -131,6 +133,10 @@ public class AvailableResourcesNodeMapping extends AbstractNodeMapping {
 				
 				if(candidates.isEmpty()){
 					System.out.println("not available resource : "+currVnode.getId());
+					//TODO
+					for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+						NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+					}
 					return false;
 				}
 				

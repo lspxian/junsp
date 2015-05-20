@@ -8,6 +8,7 @@ import mulavito.algorithms.shortestpath.ksp.Yen;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.LinkWeight;
 import vnreal.algorithms.utils.NodeLinkAssignation;
+import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
@@ -36,20 +37,20 @@ public class KShortestPath extends AbstractLinkMapping{
 				for (List<SubstrateLink> path : ksp) {
 					if (NodeLinkAssignation.verifyPathSimple(vLink, path)){
 						result.put(vLink, path);
+						if (!NodeLinkAssignation.vlmSimple(vLink, path)) //attribute the bw 
+							throw new AssertionError("But we checked before!");
 						break;
 					}
-					//if arrive the end , not feasible resource, return false
-					if(path.equals(ksp.get(ksp.size()-1)))
+					//if arrive the end , not feasible resource, free all resource and return false
+					if(path.equals(ksp.get(ksp.size()-1))){
+						for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: result.entrySet()){
+							NodeLinkDeletion.linkFree(entry.getKey(), entry.getValue());
+						}
 						return false;
+					}
 				}	
 				
 			}
-		}
-		
-		//attribute the bw after all the demands are verified
-		for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: result.entrySet()){
-			if (!NodeLinkAssignation.vlmSimple(entry.getKey(), entry.getValue()))
-				throw new AssertionError("But we checked before!");
 		}
 		
 		return true;

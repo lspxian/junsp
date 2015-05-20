@@ -39,8 +39,7 @@ public class Gra {
 
 	public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
-		sn.alt2network("data/sub");
-		
+		sn.alt2network("data/sub");	
 		
 		//add resource example
 		/*
@@ -172,7 +171,10 @@ public class Gra {
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,8,true,true);
-			if(!arnm.nodeMapping(vns.get(i))){
+			
+			if(arnm.nodeMapping(vns.get(i))){
+				System.out.println("node mapping succes, virtual netwotk "+i);
+			}else{
 				System.out.println("node resource error, virtual network "+i);
 				continue;
 			}
@@ -188,14 +190,18 @@ public class Gra {
 			}*/
 			
 			KShortestPath kspath = new KShortestPath(sn);
-			if(!kspath.linkMapping(vns.get(i), nodeMapping)){
+			if(kspath.linkMapping(vns.get(i), nodeMapping)){
+				System.out.println("link mapping succes, virtual network "+i);
+			}
+			else{
 				System.out.println("link resource error, virtual network "+i);
 				continue;
 			}
+			System.out.println("vitual network "+i+", mapping succes!\n");
 			
 		}
 		
-		System.out.println(sn);
+		//System.out.println(sn);
 		
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);
