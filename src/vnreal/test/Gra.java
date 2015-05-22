@@ -182,13 +182,13 @@ public class Gra {
 			System.out.println(nodeMapping);
 			
 			//link mapping
-			/*
+			
 			PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
 			if(!psvlm.linkMapping(vns.get(i), nodeMapping)){
 				System.out.println("link resource error, virtual network "+i);
 				continue;
-			}*/
-			
+			}
+			/*
 			KShortestPath kspath = new KShortestPath(sn);
 			if(kspath.linkMapping(vns.get(i), nodeMapping)){
 				System.out.println("link mapping succes, virtual network "+i);
@@ -197,11 +197,11 @@ public class Gra {
 				System.out.println("link resource error, virtual network "+i);
 				continue;
 			}
-			System.out.println("vitual network "+i+", mapping succes!\n");
+			System.out.println("vitual network "+i+", mapping succes!\n");*/
 			
 		}
 		
-		//System.out.println(sn);
+		System.out.println(sn);
 		
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);

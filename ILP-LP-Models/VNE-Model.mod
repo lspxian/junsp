@@ -16,7 +16,8 @@
       param w1;
       param w2;
       /* decision variables: "binary relaxed lambda Variables"*/
-      var lambda {VNlinks cross SNlinks} >= 0, <=1;
+      /*var lambda {VNlinks cross SNlinks} >= 0, <=1;*/
+	  var lambda{VNlinks cross SNlinks} binary;
 
       /* objective function */
       minimize z: w1*(sum{(i,j) in SNlinks}sum{(k,l) in VNlinks} lambda[k,l,i,j]*VLinkDemand[k,l]);
@@ -28,4 +29,4 @@
       s.t. DestII{(k,l) in VNlinks}: sum{(i,j) in SNlinks} (if l=i then lambda[k,l,i,j] else 0) =0;
       s.t. Flowcon{h in SNnodes, (k,l) in VNlinks}: sum{(i,j) in SNlinks} (if (h=i and h<>k and h<>l) then lambda[k,l,i,j] else 0) - sum{(i,j) in SNlinks} (if (h=j and h<>k and h<>l) then lambda[k,l,i,j] else 0) = 0;
       s.t. CapacityLinkDem{(i,j) in SNlinks} : sum{(k,l) in VNlinks} lambda[k,l,i,j]*VLinkDemand[k,l] <= LinkCapacity[i,j];
-      s.t. DomainConstr{(k,l,i,j) in VNlinks cross SNlinks} : 0 <= lambda[k,l,i,j] <= 1;
+      /*s.t. DomainConstr{(k,l,i,j) in VNlinks cross SNlinks} : 0 <= lambda[k,l,i,j] <= 1;*/
