@@ -39,7 +39,7 @@ public class Gra {
 
 	public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
-		sn.alt2network("data/sub");	
+		sn.alt2network("data/sub2");	
 		
 		//add resource example
 		/*
@@ -103,17 +103,17 @@ public class Gra {
 				return 1.0;
 			}
 		};
-		/*
+		
 		DijkstraShortestPath<SubstrateNode, SubstrateLink> dspw = new DijkstraShortestPath(sn,weightTrans);
 		List<SubstrateLink> l = dspw.getPath((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[8]);
-		System.out.println("dijkstra : "+l);*/
+		System.out.println("dijkstra : "+l);
 		
 		//yen k shortest path algo
-		/*
+		
 		Yen<SubstrateNode, SubstrateLink> yen = new Yen(sn,basicTrans);
-		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[8], 5);
+		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[2], 3);
 		System.out.println("yen k shortest path : "+ksp);
-		*/
+		
 		
 		//SuurballeTarjan 2 disjoint shortest path, minimize total cost of the k paths
 		/*SuurballeTarjan<SubstrateNode, SubstrateLink> st = new SuurballeTarjan(sn, weightTrans);
@@ -122,6 +122,7 @@ public class Gra {
 		*/
 		
 		//virtual network list
+		/*
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();		
 		
 		for(int i=0;i<15;i++){
@@ -159,15 +160,16 @@ public class Gra {
 				bw.setDemandedBandwidth(+random*(50));
 				if(vtlk.preAddCheck(bw))
 					vtlk.add(bw);
-			}*/
+			}
 			
 			vns.add(vn);
-		}
+		}*/
 		
 		//Network stack
+	/*
 		NetworkStack netst = new NetworkStack(sn,vns);	
 		
-		for(int i=0;i<15;i++){
+		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,8,true,true);
@@ -197,12 +199,12 @@ public class Gra {
 				System.out.println("link resource error, virtual network "+i);
 				continue;
 			}
-			System.out.println("vitual network "+i+", mapping succes!\n");*/
+			System.out.println("vitual network "+i+", mapping succes!\n");
 			
-		}
+		}*/
 		
 		System.out.println(sn);
-		
+		/*
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);
 		totalRevenue.setStack(netst);
@@ -218,7 +220,7 @@ public class Gra {
 		acceptedRatio.setStack(netst);
 		System.out.println("accepted ratio : "+acceptedRatio.calculate()+"%");
 		
-		System.out.println("ok");
+		System.out.println("ok");*/
 	}
 
 }
