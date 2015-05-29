@@ -39,52 +39,9 @@ public class Gra {
 
 	public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
-		sn.alt2network("data/sub2");	
+		sn.alt2network("data/longHaul");
 		
-		//add resource example
-		/*
-		SubstrateNode sbnd = (SubstrateNode)sn.getVertices().toArray()[0];
-		CpuResource cpu = new CpuResource(sbnd);
-		if(sbnd.preAddCheck(cpu))
-			sbnd.add(cpu);
-		
-		SubstrateLink sblk = (SubstrateLink)sn.getEdges().toArray()[0];
-		BandwidthResource bw = new BandwidthResource(sblk);
-		if(sblk.preAddCheck(bw))
-			sblk.add(bw);
-		*/
-		
-		//add resource for all
-		for(SubstrateNode sbnd:sn.getVertices()){
-			double random = new Random().nextDouble();
-			CpuResource cpu = new CpuResource(sbnd);
-			cpu.setCycles(50+random*(100-50));
-			if(sbnd.preAddCheck(cpu))
-				sbnd.add(cpu);
-		}
-		
-		Iterator<SubstrateLink> it=sn.getEdges().iterator();
-		while(it.hasNext()){
-			double random = new Random().nextDouble();
-			SubstrateLink sblk1 = (SubstrateLink)it.next();
-			SubstrateLink sblk2 = (SubstrateLink)it.next();
-			BandwidthResource bw1=new BandwidthResource(sblk1);
-			BandwidthResource bw2=new BandwidthResource(sblk2);
-			bw1.setBandwidth(50+random*(100-50));
-			bw2.setBandwidth(50+random*(100-50));
-			sblk1.add(bw1);
-			sblk2.add(bw2);
-			
-		}
-		/*
-		for(SubstrateLink sblk : sn.getEdges()){
-			double random = new Random().nextDouble();
-			BandwidthResource bw = new BandwidthResource(sblk);
-			bw.setBandwidth(50+random*(100-50));
-			if(sblk.preAddCheck(bw))
-				sblk.add(bw);
-		}*/
-		//System.out.println(sn);
+		sn.addAllResource(true);
 		
 		//jung Dijkstra shortest path unweighted
 //		DijkstraShortestPath<SubstrateNode, SubstrateLink> dsp = new DijkstraShortestPath(sn);
@@ -92,7 +49,7 @@ public class Gra {
 //		System.out.println(l);
 		
 		//transformer : weighted Dijkstra shortest path
-		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
+	/*	Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
 			public Double transform(SubstrateLink link){
 				return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
 			}
@@ -112,7 +69,7 @@ public class Gra {
 		
 		Yen<SubstrateNode, SubstrateLink> yen = new Yen(sn,basicTrans);
 		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[2], 3);
-		System.out.println("yen k shortest path : "+ksp);
+		System.out.println("yen k shortest path : "+ksp);*/
 		
 		
 		//SuurballeTarjan 2 disjoint shortest path, minimize total cost of the k paths

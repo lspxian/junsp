@@ -38,9 +38,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Random;
+
 import org.apache.commons.collections15.Factory;
+
 import vnreal.network.Network;
 import vnreal.resources.AbstractResource;
+import vnreal.resources.BandwidthResource;
 import edu.uci.ics.jung.graph.util.Pair;
 
 /**
@@ -233,13 +237,25 @@ public class SubstrateNetwork extends
 				this.addEdge(new SubstrateLink(), start, end);
 				//double direction
 				this.addEdge(new SubstrateLink(), end, start);
-				
-				
-				
 			}
 		}
 		br.close();
-		
+	}
+	
+	public boolean addAllResource(boolean random){
+		for(SubstrateNode sbnd : this.getVertices()){
+			sbnd.addResource(random);
+		}
+		Iterator<SubstrateLink> it=this.getEdges().iterator();
+		while(it.hasNext()){
+			double value = 1;
+			if(random)	value = new Random().nextDouble();
+			SubstrateLink sblk1 = (SubstrateLink)it.next();
+			SubstrateLink sblk2 = (SubstrateLink)it.next();
+			sblk1.addResource(value);
+			sblk2.addResource(value);
+		}
+		return true;
 	}
 	
 }

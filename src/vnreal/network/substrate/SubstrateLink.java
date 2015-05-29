@@ -33,6 +33,7 @@ package vnreal.network.substrate;
 
 import vnreal.network.Link;
 import vnreal.resources.AbstractResource;
+import vnreal.resources.BandwidthResource;
 
 /**
  * A substrate network link class.
@@ -65,5 +66,12 @@ public class SubstrateLink extends Link<AbstractResource> {
 	@Override
 	public String toStringShort() {
 		return "SL(" + getId() + ")";
+	}
+	
+	public boolean addResource(double random){
+		BandwidthResource bw=new BandwidthResource(this);
+		bw.setBandwidth(50+random*(100-50));
+		this.add(bw);
+		return true;
 	}
 }

@@ -31,8 +31,11 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.network.substrate;
 
+import java.util.Random;
+
 import vnreal.network.Node;
 import vnreal.resources.AbstractResource;
+import vnreal.resources.CpuResource;
 
 /**
  * A substrate network node class.
@@ -65,5 +68,23 @@ public class SubstrateNode extends Node<AbstractResource> {
 	@Override
 	public String toStringShort() {
 		return "SN(" + getId() + ")";
+	}
+	
+/**
+ * 
+ * @param random 
+ * @return
+ */
+	public boolean addResource(boolean random){
+		CpuResource cpu = new CpuResource(this);
+		double quantity = 100;
+		if(random)
+			quantity = 50+ new Random().nextDouble()*(100-50);
+		cpu.setCycles(quantity);
+		if(this.preAddCheck(cpu)){
+			this.add(cpu);
+			return true;
+		}
+		return false;
 	}
 }
