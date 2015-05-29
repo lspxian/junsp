@@ -36,6 +36,7 @@ import java.util.List;
 
 import vnreal.constraints.ILinkConstraint;
 import vnreal.demands.AbstractDemand;
+import vnreal.demands.BandwidthDemand;
 import vnreal.network.Link;
 
 /**
@@ -118,5 +119,12 @@ public class VirtualLink extends Link<AbstractDemand> {
 			clone.add(d.getCopy(clone));
 		}
 		 return clone;
+	}
+	
+	public boolean addResource(double random){
+		BandwidthDemand bw=new BandwidthDemand(this);
+		bw.setDemandedBandwidth(random*50);
+		this.add(bw);
+		return true;
 	}
 }

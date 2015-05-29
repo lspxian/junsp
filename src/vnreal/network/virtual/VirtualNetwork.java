@@ -37,9 +37,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-
+import java.util.Random;
 import org.apache.commons.collections15.Factory;
-
 import vnreal.demands.AbstractDemand;
 import vnreal.network.Network;
 import edu.uci.ics.jung.graph.util.Pair;
@@ -235,6 +234,21 @@ public final class VirtualNetwork extends
 		br.close();
 		
 	}
-
+	
+	public boolean addAllResource(boolean random){
+		for(VirtualNode sbnd : this.getVertices()){
+			sbnd.addResource(random);
+		}
+		Iterator<VirtualLink> it=this.getEdges().iterator();
+		while(it.hasNext()){
+			double value = 1;
+			if(random)	value = new Random().nextDouble();
+			VirtualLink sblk1 = (VirtualLink)it.next();
+			VirtualLink sblk2 = (VirtualLink)it.next();
+			sblk1.addResource(value);
+			sblk2.addResource(value);
+		}
+		return true;
+	}
 
 }

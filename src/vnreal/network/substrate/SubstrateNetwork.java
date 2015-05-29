@@ -226,7 +226,6 @@ public class SubstrateNetwork extends
 				nd.setCoordinateX(Double.parseDouble(line.substring(0, line.indexOf(" "))));
 				nd.setCoordinateY(Double.parseDouble(line.substring(line.indexOf(" ")+1)));
 				this.addVertex(nd);
-			
 				
 			}
 			if((edge==true)&&(!line.contains("EDGES"))&&(!line.isEmpty())){

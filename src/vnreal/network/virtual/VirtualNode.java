@@ -31,8 +31,11 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.network.virtual;
 
+import java.util.Random;
+
 import vnreal.demands.AbstractDemand;
 import vnreal.network.Node;
+import vnreal.demands.CpuDemand;
 
 /**
  * A virtual network node class.
@@ -71,5 +74,22 @@ public class VirtualNode extends Node<AbstractDemand> {
 		}
 
 		return clone;
+	}
+	/**
+	 * 
+	 * @param random
+	 * @return
+	 */
+	public boolean addResource(boolean random){
+		CpuDemand cpu = new CpuDemand(this);
+		double quantity = 20;
+		if(random)
+			quantity = new Random().nextDouble()*50;
+		cpu.setDemandedCycles(quantity);;
+		if(this.preAddCheck(cpu)){
+			this.add(cpu);
+			return true;
+		}
+		return false;
 	}
 }

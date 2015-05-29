@@ -1,18 +1,11 @@
 package vnreal.test;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 import mulavito.algorithms.shortestpath.disjoint.SuurballeTarjan;
 import mulavito.algorithms.shortestpath.ksp.Yen;
-
 import org.apache.commons.collections15.Transformer;
-
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPathLinkMapping;
@@ -32,14 +25,12 @@ import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
-import vnreal.resources.BandwidthResource;
-import vnreal.resources.CpuResource;
 
 public class Gra {
 
 	public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
-		sn.alt2network("data/longHaul");
+		sn.alt2network("newData/longHaul");
 		
 		sn.addAllResource(true);
 		
@@ -79,48 +70,15 @@ public class Gra {
 		*/
 		
 		//virtual network list
-		/*
-		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();		
-		
+		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
-			//create virtual network		
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
+			vn.addAllResource(true);
 			//System.out.println("virtual network\n"+vn);
-			
-			//add resource cpu and bw
-			for(VirtualNode vtnd:vn.getVertices()){
-				double random = new Random().nextDouble();
-				CpuDemand cpu = new CpuDemand(vtnd);
-				cpu.setDemandedCycles(random*(50));
-				if(vtnd.preAddCheck(cpu))
-					vtnd.add(cpu);
-			}
-			
-			Iterator<VirtualLink> itv=vn.getEdges().iterator();
-			while(itv.hasNext()){
-				double random = new Random().nextDouble();
-				VirtualLink vtlk1 = (VirtualLink)itv.next();
-				VirtualLink vtlk2 = (VirtualLink)itv.next();
-				BandwidthDemand bw1=new BandwidthDemand(vtlk1);
-				BandwidthDemand bw2=new BandwidthDemand(vtlk2);
-				bw1.setDemandedBandwidth(random*50);
-				bw2.setDemandedBandwidth(random*50);
-				vtlk1.add(bw1);
-				vtlk2.add(bw2);
-				
-			}
-			/*
-			for(VirtualLink vtlk : vn.getEdges()){
-				double random = new Random().nextDouble();
-				BandwidthDemand bw = new BandwidthDemand(vtlk);
-				bw.setDemandedBandwidth(+random*(50));
-				if(vtlk.preAddCheck(bw))
-					vtlk.add(bw);
-			}
-			
 			vns.add(vn);
-		}*/
+			
+		}
 		
 		//Network stack
 	/*
@@ -160,7 +118,7 @@ public class Gra {
 			
 		}*/
 		
-		System.out.println(sn);
+		//System.out.println(sn);
 		/*
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);
