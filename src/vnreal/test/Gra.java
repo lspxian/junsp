@@ -3,9 +3,13 @@ package vnreal.test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import mulavito.algorithms.shortestpath.disjoint.SuurballeTarjan;
+import mulavito.algorithms.shortestpath.ksp.LocalBypass;
 import mulavito.algorithms.shortestpath.ksp.Yen;
+
 import org.apache.commons.collections15.Transformer;
+
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPathLinkMapping;
@@ -25,12 +29,13 @@ import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
+import vnreal.resources.BandwidthResource;
 
 public class Gra {
 
 	public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
-		sn.alt2network("newData/longHaul");
+		sn.alt2network("newData/Cost239");
 		
 		sn.addAllResource(true);
 		
@@ -40,7 +45,7 @@ public class Gra {
 //		System.out.println(l);
 		
 		//transformer : weighted Dijkstra shortest path
-	/*	Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
+		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
 			public Double transform(SubstrateLink link){
 				return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
 			}
@@ -51,17 +56,16 @@ public class Gra {
 				return 1.0;
 			}
 		};
-		
+		/*
 		DijkstraShortestPath<SubstrateNode, SubstrateLink> dspw = new DijkstraShortestPath(sn,weightTrans);
 		List<SubstrateLink> l = dspw.getPath((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[8]);
-		System.out.println("dijkstra : "+l);
+		System.out.println("dijkstra : "+l);*/
 		
 		//yen k shortest path algo
-		
-		Yen<SubstrateNode, SubstrateLink> yen = new Yen(sn,basicTrans);
-		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[1], (SubstrateNode)sn.getVertices().toArray()[2], 3);
-		System.out.println("yen k shortest path : "+ksp);*/
-		
+	/*	Yen<SubstrateNode, SubstrateLink> yen = new Yen(sn,basicTrans);
+		List<List<SubstrateLink>> ksp = yen.getShortestPaths((SubstrateNode)sn.getVertices().toArray()[2], (SubstrateNode)sn.getVertices().toArray()[1], 3);
+		System.out.println("yen k shortest path : "+ksp);
+		*/
 		
 		//SuurballeTarjan 2 disjoint shortest path, minimize total cost of the k paths
 		/*SuurballeTarjan<SubstrateNode, SubstrateLink> st = new SuurballeTarjan(sn, weightTrans);
@@ -69,8 +73,13 @@ public class Gra {
 		System.out.println("Suurballe k disjoint shortest path : "+sdsp);
 		*/
 		
+		LocalBypass<SubstrateNode, SubstrateLink> lb = new LocalBypass(sn,basicTrans);
+		List<List<SubstrateLink>> bypass = lb.getShortestPaths((SubstrateLink)sn.getEdges().toArray()[8], 3);
+		System.out.println("local bypass : "+bypass);
+		
+		
 		//virtual network list
-		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
+	/*	List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
@@ -78,7 +87,7 @@ public class Gra {
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 			
-		}
+		}*/
 		
 		//Network stack
 	/*
@@ -118,7 +127,7 @@ public class Gra {
 			
 		}*/
 		
-		//System.out.println(sn);
+		System.out.println(sn);
 		/*
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);

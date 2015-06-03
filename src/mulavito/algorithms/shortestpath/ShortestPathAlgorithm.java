@@ -50,7 +50,7 @@ import edu.uci.ics.jung.graph.Graph;
  */
 public abstract class ShortestPathAlgorithm<V, E> implements ShortestPath<V, E> {
 	protected Graph<V, E> graph;
-	protected final DijkstraShortestPath<V, E> dijkstra;
+	protected DijkstraShortestPath<V, E> dijkstra;
 	protected final Transformer<E, Number> nev;
 
 	protected ShortestPathAlgorithm(Graph<V, E> graph,

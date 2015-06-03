@@ -8,6 +8,7 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
+import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
 
 public class LocalBypass<V,E> extends Yen<V,E>{
@@ -33,6 +34,7 @@ public class LocalBypass<V,E> extends Yen<V,E>{
 					}
 				});
 		this.graph =  filter.transform(graph);
+		this.dijkstra = new DijkstraShortestPath<V, E>(graph, nev);
 		return super.getShortestPaths(source, dest, k);
 	}
 	
