@@ -3,6 +3,7 @@ package vnreal.test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import mulavito.algorithms.shortestpath.disjoint.SuurballeTarjan;
 import mulavito.algorithms.shortestpath.ksp.LocalBypass;
@@ -14,6 +15,7 @@ import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPathLinkMapping;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
+import vnreal.algorithms.linkmapping.UnsplittingVirtualLinkMapping;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.Consts;
 import vnreal.algorithms.utils.dataSolverFile;
@@ -72,14 +74,14 @@ public class Gra {
 		List<List<SubstrateLink>> sdsp = st.getDisjointPaths((SubstrateNode)sn.getVertices().toArray()[0], (SubstrateNode)sn.getVertices().toArray()[8]);
 		System.out.println("Suurballe k disjoint shortest path : "+sdsp);
 		*/
-		
+		/*
 		LocalBypass<SubstrateNode, SubstrateLink> lb = new LocalBypass(sn,basicTrans);
 		List<List<SubstrateLink>> bypass = lb.getShortestPaths((SubstrateLink)sn.getEdges().toArray()[8], 3);
 		System.out.println("local bypass : "+bypass);
-		
+		*/
 		
 		//virtual network list
-	/*	List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
+		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
@@ -87,10 +89,10 @@ public class Gra {
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 			
-		}*/
+		}
 		
 		//Network stack
-	/*
+	
 		NetworkStack netst = new NetworkStack(sn,vns);	
 		
 		for(int i=0;i<1;i++){
@@ -109,7 +111,8 @@ public class Gra {
 			
 			//link mapping
 			
-			PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
+	//		PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
+			UnsplittingVirtualLinkMapping psvlm = new UnsplittingVirtualLinkMapping(sn,0.3,0.7);
 			if(!psvlm.linkMapping(vns.get(i), nodeMapping)){
 				System.out.println("link resource error, virtual network "+i);
 				continue;
@@ -124,10 +127,10 @@ public class Gra {
 				continue;
 			}
 			System.out.println("vitual network "+i+", mapping succes!\n");
-			
-		}*/
+			*/
+		}
 		
-		System.out.println(sn);
+		//System.out.println(sn);
 		/*
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);

@@ -43,10 +43,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import com.ampl.DataFrame;
+
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
-
 import vnreal.mapping.Mapping;
 import vnreal.network.Link;
 import vnreal.network.Network;
@@ -168,6 +169,12 @@ public class MiscelFunctions {
 		}
 		return newSolverResult;
 	}
+	
+	/*
+	public static Map<List<String>, Double> processAMPLSolverResult(DataFrame dataframe) {
+		
+	}*/
+	
 
 	/**
 	 * 
