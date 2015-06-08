@@ -24,11 +24,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="D:/Workspace/glpk-w64"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/LI/Google Drive/2014-2015/Cplex/cplex.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/LI/Google Drive/2014-2015/Cplex/x64_win64"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/ampl/ampl-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

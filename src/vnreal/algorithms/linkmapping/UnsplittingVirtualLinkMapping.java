@@ -12,9 +12,11 @@ import com.ampl.Variable;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.Consts;
 import vnreal.algorithms.utils.MiscelFunctions;
+import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.dataSolverFile;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
+import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualLink;
@@ -37,6 +39,7 @@ public class UnsplittingVirtualLinkMapping extends AbstractLinkMapping{
 		BandwidthDemand originalBwDem = null, newBwDem;
 		SubstrateNode srcSnode = null;
 		SubstrateNode dstSnode = null;
+		SubstrateLink tSLink;
 		SubstrateNode tSNode = new SubstrateNode();
 		SubstrateNode tDNode = new SubstrateNode();
 		
@@ -74,36 +77,34 @@ public class UnsplittingVirtualLinkMapping extends AbstractLinkMapping{
 						}
 					}
 					
-					for (Iterator<List<String>> cad = solverResult.keySet()
-							.iterator(); cad.hasNext();) {
-						List<String> tmpValues = cad.next();
-						Double vtmp = MiscelFunctions
-								.roundTwelveDecimals(solverResult
-										.get(tmpValues));
-
-						if (srcSnode.getId() == Integer.parseInt(tmpValues
-								.get(0))
-								&& dstSnode.getId() == Integer
-										.parseInt(tmpValues.get(1))
-								&& vtmp != 0) {
-							for (SubstrateNode n : sNet.getVertices()) {
-								if (Integer.parseInt(tmpValues.get(2)) == n
-										.getId()) {
+					//the element of dataframe is a type of java.lang.Double, but represented as Object
+					
+					for(int i=0;i<dataframe.getNumRows();i++){
+						Object[] line = dataframe.getRowByIndex(i);
+						if((int)(double)line[4]!=0&&srcSnode.getId()==(int)(double)line[0]&&dstSnode.getId()==(int)(double)line[1]){
+							
+							for(SubstrateNode n : sNet.getVertices()){
+								if(n.getId()==(int)(double)line[2])
 									tSNode = n;
-								} else {
-									if (Integer.parseInt(tmpValues.get(3)) == n
-											.getId()) {
-										tDNode = n;
-									}
-								}
+								if(n.getId()==(int)(double)line[3])
+									tDNode = n;
 							}
+							tSLink = sNet.findEdge(tSNode, tDNode);
+							newBwDem = new BandwidthDemand(tmpl);
+							newBwDem.setDemandedBandwidth(MiscelFunctions
+									.roundThreeDecimals(originalBwDem.getDemandedBandwidth()));
+
+							if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tSLink)){
+								ampl.close();
+								throw new AssertionError("But we checked before!");
+							}		
+							
 						}
+						
+					}
 					
 				}
 			}
-			
-			
-			System.out.println(dataframe);
 			
 			
 		} catch (IOException e) {
