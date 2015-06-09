@@ -110,9 +110,10 @@ public class UnsplittingVirtualLinkMapping extends AbstractLinkMapping{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
 		ampl.close();
 
-		return false;
+		return true;
 	}
 }

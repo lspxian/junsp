@@ -16,8 +16,8 @@
       param w1;
       param w2;
       /* decision variables: "binary relaxed lambda Variables"*/
-      var lambda {VNlinks cross SNlinks} >= 0, <=1;
-	 /* var lambda{VNlinks cross SNlinks} binary;*/
+      /*var lambda {VNlinks cross SNlinks} >= 0, <=1;*/
+	 var lambda{VNlinks cross SNlinks} binary;
 
       /* objective function */
       minimize z: w1*(sum{(i,j) in SNlinks}sum{(k,l) in VNlinks} lambda[k,l,i,j]*VLinkDemand[k,l]);

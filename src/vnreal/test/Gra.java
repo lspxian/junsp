@@ -15,6 +15,7 @@ import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPathLinkMapping;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
+import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.linkmapping.UnsplittingVirtualLinkMapping;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.Consts;
@@ -38,6 +39,9 @@ public class Gra {
 	public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
 		sn.alt2network("newData/Cost239");
+		
+		System.out.println(sn.getNextHop((SubstrateNode) sn.getVertices().toArray()[8]));
+		System.out.println(sn.getLastHop((SubstrateNode) sn.getVertices().toArray()[8]));
 		
 		sn.addAllResource(true);
 		
@@ -95,7 +99,7 @@ public class Gra {
 	
 		NetworkStack netst = new NetworkStack(sn,vns);	
 		
-		for(int i=0;i<10;i++){
+		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,8,true,true);
@@ -109,15 +113,18 @@ public class Gra {
 			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 			System.out.println(nodeMapping);
 			
+			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
+			ulpc.generateFile(vns.get(i), nodeMapping);
+			
 			//link mapping
 			
 	//		PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
-			UnsplittingVirtualLinkMapping psvlm = new UnsplittingVirtualLinkMapping(sn,0.3,0.7);
+		/*	UnsplittingVirtualLinkMapping psvlm = new UnsplittingVirtualLinkMapping(sn,0.3,0.7);
 			if(!psvlm.linkMapping(vns.get(i), nodeMapping)){
 				System.out.println("link resource error, virtual network "+i);
 				continue;
 			}
-			/*
+			
 			KShortestPath kspath = new KShortestPath(sn);
 			if(kspath.linkMapping(vns.get(i), nodeMapping)){
 				System.out.println("link mapping succes, virtual network "+i);
@@ -130,7 +137,7 @@ public class Gra {
 			*/
 		}
 		
-		System.out.println(sn);
+		//System.out.println(sn);
 		/*
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);
