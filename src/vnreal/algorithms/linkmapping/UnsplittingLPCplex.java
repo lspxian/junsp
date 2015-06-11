@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -12,8 +13,11 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.SftpProgressMonitor;
 
 import vnreal.algorithms.AbstractLinkMapping;
+import vnreal.algorithms.utils.Remote;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.network.substrate.SubstrateLink;
@@ -36,28 +40,35 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 	}
 
 	@Override
-	public boolean linkMapping(VirtualNetwork vNet,
-			Map<VirtualNode, SubstrateNode> nodeMapping) {
+	public boolean linkMapping(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping) {
 		
-		JSch jsch = new JSch();
-		String user = "li.shuopeng";
-		String host = "magi.univ-paris13.fr";
-		int port = 2822;
+		Remote remote = new Remote();
 		try {
-			Session session=jsch.getSession(user, host, port);
-			session.connect();
-		    Channel channel=session.openChannel("sftp");
-		    channel.connect();
-		    ChannelSftp c=(ChannelSftp)channel;
-		    
+			//generate .lp file
+			this.generateFile(vNet, nodeMapping);
 			
-		} catch (JSchException e) {
+			//upload file
+			Boolean  uploadFlag =false;
+			remote.getSftp().put("ILP-LP-Models/CPLEXvne.lp", "pytest/CPLEXvne.lp", new SftpProgressMonitor(){
+				public boolean count(long arg0) {return false;}
+				public void end() {
+					
+					
+				}
+				public void init(int arg0, String arg1, String arg2, long arg3) {}
+				
+			});
+			
+			Map<String, String> solution = remote.executeCmd("python pytest/mysolver.py pytest/CPLEXvne.lp o");
+			System.out.println(solution);
+			
+			
+		} catch (JSchException | IOException | SftpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		return false;
+		remote.disconnect();
+		return true;
 	}
 	
 	public void generateFile(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping) throws IOException{

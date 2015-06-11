@@ -88,7 +88,7 @@ public class Gra {
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
-			vn.alt2network("data/vir"+i);
+			vn.alt2network("newData/vir"+i);
 			vn.addAllResource(true);
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
@@ -99,10 +99,10 @@ public class Gra {
 	
 		NetworkStack netst = new NetworkStack(sn,vns);	
 		
-		for(int i=0;i<2;i++){
+		for(int i=2;i<3;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
-			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,8,true,true);
+			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,15,true,false);
 			
 			if(arnm.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
@@ -114,7 +114,8 @@ public class Gra {
 			System.out.println(nodeMapping);
 			
 			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
-			ulpc.generateFile(vns.get(i), nodeMapping);
+			ulpc.linkMapping(vns.get(i), nodeMapping);
+			//ulpc.generateFile(vns.get(i), nodeMapping);
 			
 			//link mapping
 			

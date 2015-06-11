@@ -31,6 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.algorithms;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -85,6 +86,7 @@ public abstract class AbstractNodeMapping {
 		this.sNet = sNet;
 		unmappedvNodes = null;
 		unmappedsNodes = null;
+		this.setInitialUnmappedsNodes();
 		nodeOverload = subsNodeOverload;
 	}
 
@@ -175,6 +177,14 @@ public abstract class AbstractNodeMapping {
 
 	public List<SubstrateNode> getUnmappedsNodes() {
 		return unmappedsNodes;
+	}
+	
+	public void setInitialUnmappedsNodes(){
+		unmappedsNodes = new LinkedList(sNet.getVertices());
+	}
+	
+	public void  deleteNodeFromUnmapped(SubstrateNode node){
+		unmappedsNodes.remove(node);
 	}
 
 	/**

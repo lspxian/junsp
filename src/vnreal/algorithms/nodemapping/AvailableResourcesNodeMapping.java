@@ -149,6 +149,7 @@ public class AvailableResourcesNodeMapping extends AbstractNodeMapping {
 					// Realize the node mapping
 					if (NodeLinkAssignation.vnm(currVnode, mappedSnode)) {
 						nodeMapping.put(currVnode, mappedSnode);
+						this.deleteNodeFromUnmapped(mappedSnode);
 					} else {
 						// If this exception is thrown, it means that something
 						// in the code is wrong. The feasibility of nodes is
