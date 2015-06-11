@@ -43,24 +43,20 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 	public boolean linkMapping(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping) {
 		
 		Remote remote = new Remote();
+		
 		try {
 			//generate .lp file
 			this.generateFile(vNet, nodeMapping);
 			
 			//upload file
-			Boolean  uploadFlag =false;
-			remote.getSftp().put("ILP-LP-Models/CPLEXvne.lp", "pytest/CPLEXvne.lp", new SftpProgressMonitor(){
-				public boolean count(long arg0) {return false;}
-				public void end() {
-					
-					
-				}
-				public void init(int arg0, String arg1, String arg2, long arg3) {}
-				
-			});
+			remote.getSftp().put("ILP-LP-Models/CPLEXvne.lp", "pytest/CPLEXvne.lp");
 			
+			//solve the problem with python scipt, get output solution
 			Map<String, String> solution = remote.executeCmd("python pytest/mysolver.py pytest/CPLEXvne.lp o");
 			System.out.println(solution);
+			
+			//update resource according to solution
+			
 			
 			
 		} catch (JSchException | IOException | SftpException e) {

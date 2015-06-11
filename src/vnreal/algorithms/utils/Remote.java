@@ -45,7 +45,7 @@ public class Remote {
 			session.setConfig(config);
 			session.connect();
 			sftp = (ChannelSftp) session.openChannel("sftp");
-
+			sftp.connect();
 		} catch (JSchException e) {
 			e.printStackTrace();
 		}
@@ -70,7 +70,7 @@ public class Remote {
 				result.put(variable, value);
 				
 			}
-			if(readLine.equals("The solutions begin here : "))
+			if(solBegin==false&&readLine.equals("The solutions begin here : "))
 				solBegin=true;
 		}
 		
