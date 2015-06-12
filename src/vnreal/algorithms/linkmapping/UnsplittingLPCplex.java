@@ -4,19 +4,17 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
+import org.apache.commons.collections15.map.LinkedMap;
+
 import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import com.jcraft.jsch.SftpProgressMonitor;
 
 import vnreal.algorithms.AbstractLinkMapping;
+import vnreal.algorithms.utils.MiscelFunctions;
+import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.Remote;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
@@ -57,6 +55,49 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 			
 			//update resource according to solution
 			
+			BandwidthDemand originalBwDem = null, newBwDem;
+			VirtualNode srcVnode,dstVnode;
+			SubstrateNode srcSnode = null,dstSnode = null;
+
+			int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
+			
+			Map<SubstrateNode, VirtualNode> inverseNodeMapping = new LinkedMap<SubstrateNode, VirtualNode>();
+			for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+				inverseNodeMapping.put(entry.getValue(), entry.getKey());
+			}
+			
+			for(Map.Entry<String, String> entry : solution.entrySet()){
+				String linklink = entry.getKey();
+				double flow = Double.parseDouble(entry.getValue());
+				srcVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vs")+2, linklink.indexOf("vd")));
+				dstVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vd")+2, linklink.indexOf("ss")));
+				srcSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("ss")+2, linklink.indexOf("sd")));
+				dstSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("sd")+2));
+				
+				srcVnode = inverseNodeMapping.get(sNet.getNodeFromID(srcVnodeId));
+				dstVnode = inverseNodeMapping.get(sNet.getNodeFromID(dstVnodeId));
+				VirtualLink tmpvl = vNet.findEdge(srcVnode, dstVnode);
+				
+				for (AbstractDemand dem : tmpvl) {
+					if (dem instanceof BandwidthDemand) {
+						originalBwDem = (BandwidthDemand) dem;
+						break;
+					}
+				}
+				
+				srcSnode = sNet.getNodeFromID(srcSnodeId);
+				dstSnode = sNet.getNodeFromID(dstSnodeId);
+				SubstrateLink tmpsl = sNet.findEdge(srcSnode, dstSnode);
+				
+				newBwDem = new BandwidthDemand(tmpvl);
+				newBwDem.setDemandedBandwidth(MiscelFunctions
+						.roundThreeDecimals(originalBwDem.getDemandedBandwidth()*flow));
+				
+				if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
+					throw new AssertionError("But we checked before!");
+				}
+				
+			}
 			
 			
 		} catch (JSchException | IOException | SftpException e) {
@@ -108,24 +149,24 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 					
 					//objective
 					obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
-					obj = obj + " n"+srcSnode.getId()+"n"+dstSnode.getId()+"n"+ssnode.getId()+"n"+dsnode.getId();
+					obj = obj + " vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
 					
 					
 					//integer in the <general>
-					general = general +  " n"+srcSnode.getId()+"n"+dstSnode.getId()+"n"+ssnode.getId()+"n"+dsnode.getId()+"\n";
+					general = general +  " vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
 					
 				}
 				
 				//source and destination flow constraints
 				ArrayList<SubstrateNode> nextHop = sNet.getNextHop(srcSnode);
 				for(int i=0;i<nextHop.size();i++){
-					constraint=constraint+" + n"+srcSnode.getId()+"n"+dstSnode.getId()+"n"+srcSnode.getId()+"n"+nextHop.get(i).getId();
+					constraint=constraint+" + vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+srcSnode.getId()+"sd"+nextHop.get(i).getId();
 				}
 				constraint =constraint+" = 1\n";
 				
 				ArrayList<SubstrateNode> lastHop = sNet.getLastHop(dstSnode);
 				for(int i=0;i<lastHop.size();i++){
-					constraint=constraint+" + n"+srcSnode.getId()+"n"+dstSnode.getId()+"n"+lastHop.get(i).getId()+"n"+dstSnode.getId();
+					constraint=constraint+" + vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+lastHop.get(i).getId()+"sd"+dstSnode.getId();
 				}
 				constraint =constraint+" = 1\n";
 				
@@ -135,11 +176,11 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 					if((!snode.equals(srcSnode))&&(!snode.equals(dstSnode))){
 						lastHop = sNet.getLastHop(snode);
 						for(int i=0;i<lastHop.size();i++){
-							constraint=constraint+" + n"+srcSnode.getId()+"n"+dstSnode.getId()+"n"+lastHop.get(i).getId()+"n"+snode.getId();
+							constraint=constraint+" + vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+lastHop.get(i).getId()+"sd"+snode.getId();
 						}
 						nextHop = sNet.getNextHop(snode);
 						for(int i=0;i<nextHop.size();i++){
-							constraint=constraint+" - n"+srcSnode.getId()+"n"+dstSnode.getId()+"n"+snode.getId()+"n"+nextHop.get(i).getId();
+							constraint=constraint+" - vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+snode.getId()+"sd"+nextHop.get(i).getId();
 						}
 						constraint =constraint+" = 0\n";
 					}
@@ -174,7 +215,7 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 					
 					//capacity constraint
 					constraint=constraint+" + "+bwDem.getDemandedBandwidth() +
-							" n"+srcSnode.getId()+"n"+dstSnode.getId()+"n"+ssnode.getId()+"n"+dsnode.getId(); 
+							" vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId(); 
 				}
 			}
 			

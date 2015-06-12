@@ -43,7 +43,7 @@ public class Gra {
 		System.out.println(sn.getNextHop((SubstrateNode) sn.getVertices().toArray()[8]));
 		System.out.println(sn.getLastHop((SubstrateNode) sn.getVertices().toArray()[8]));
 		
-		sn.addAllResource(true);
+		sn.addAllResource(false);
 		
 		//jung Dijkstra shortest path unweighted
 //		DijkstraShortestPath<SubstrateNode, SubstrateLink> dsp = new DijkstraShortestPath(sn);
@@ -99,10 +99,10 @@ public class Gra {
 	
 		NetworkStack netst = new NetworkStack(sn,vns);	
 		
-		for(int i=2;i<3;i++){
+		for(int i=0;i<10;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
-			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,15,true,false);
+			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
 			
 			if(arnm.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
@@ -113,11 +113,11 @@ public class Gra {
 			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 			System.out.println(nodeMapping);
 			
+			//link mapping
+			
 			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
 			ulpc.linkMapping(vns.get(i), nodeMapping);
 			//ulpc.generateFile(vns.get(i), nodeMapping);
-			
-			//link mapping
 			
 	//		PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
 		/*	UnsplittingVirtualLinkMapping psvlm = new UnsplittingVirtualLinkMapping(sn,0.3,0.7);
@@ -138,8 +138,8 @@ public class Gra {
 			*/
 		}
 		
-		//System.out.println(sn);
-		/*
+		System.out.println(sn);
+		
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);
 		totalRevenue.setStack(netst);
@@ -155,7 +155,7 @@ public class Gra {
 		acceptedRatio.setStack(netst);
 		System.out.println("accepted ratio : "+acceptedRatio.calculate()+"%");
 		
-		System.out.println("ok");*/
+		System.out.println("ok");
 	}
 
 }

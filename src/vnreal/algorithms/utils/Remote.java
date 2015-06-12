@@ -63,7 +63,7 @@ public class Remote {
 		boolean solBegin=false;
 		Map<String, String> result = new HashMap<String, String>();
 		while (((readLine = br.readLine()) != null)) {
-			//System.out.println(readLine);
+			System.out.println(readLine);
 			if(solBegin==true){
 				variable = readLine.substring(0, readLine.indexOf(" "));
 				value = readLine.substring(readLine.indexOf(" ")+1);

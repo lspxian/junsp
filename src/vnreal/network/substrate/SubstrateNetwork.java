@@ -279,4 +279,12 @@ public class SubstrateNetwork extends
 		return true;
 	}
 	
+	public SubstrateNode getNodeFromID(int id){
+		for(SubstrateNode sbnd : this.getVertices()){
+			if(sbnd.getId()==id)
+				return sbnd;
+		}
+		return null;
+	}
+	
 }

@@ -38,9 +38,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
+
 import org.apache.commons.collections15.Factory;
+
 import vnreal.demands.AbstractDemand;
 import vnreal.network.Network;
+import vnreal.network.substrate.SubstrateNode;
 import edu.uci.ics.jung.graph.util.Pair;
 
 /**
@@ -250,5 +253,13 @@ public final class VirtualNetwork extends
 		}
 		return true;
 	}
-
+	
+	public VirtualNode getNodeFromID(int id){
+		for(VirtualNode vtnd : this.getVertices()){
+			if(vtnd.getId()==id)
+				return vtnd;
+		}
+		return null;
+	}
+	
 }
