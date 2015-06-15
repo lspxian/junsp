@@ -54,11 +54,9 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 			System.out.println(solution);
 			
 			//update resource according to solution
-			
 			BandwidthDemand originalBwDem = null, newBwDem;
 			VirtualNode srcVnode,dstVnode;
 			SubstrateNode srcSnode = null,dstSnode = null;
-
 			int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
 			
 			Map<SubstrateNode, VirtualNode> inverseNodeMapping = new LinkedMap<SubstrateNode, VirtualNode>();
@@ -118,7 +116,6 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 		String constraint = "Subject To\n";
 		String bounds = "Bounds\n";
 		String general = "General\n";
-		
 
 		for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links.hasNext();) {
 			VirtualLink tmpl = links.next();
@@ -151,10 +148,8 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 					obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
 					obj = obj + " vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
 					
-					
 					//integer in the <general>
 					general = general +  " vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
-					
 				}
 				
 				//source and destination flow constraints
@@ -218,9 +213,7 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 							" vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId(); 
 				}
 			}
-			
 			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
-			
 		}
 		
 		obj = obj+ "\n";

@@ -15,6 +15,7 @@ import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPathLinkMapping;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
+import vnreal.algorithms.linkmapping.SOD_BK;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.linkmapping.UnsplittingVirtualLinkMapping;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
@@ -43,7 +44,7 @@ public class Gra {
 		System.out.println(sn.getNextHop((SubstrateNode) sn.getVertices().toArray()[8]));
 		System.out.println(sn.getLastHop((SubstrateNode) sn.getVertices().toArray()[8]));
 		
-		sn.addAllResource(false);
+		sn.addAllResource(true);
 		
 		//jung Dijkstra shortest path unweighted
 //		DijkstraShortestPath<SubstrateNode, SubstrateLink> dsp = new DijkstraShortestPath(sn);
@@ -99,7 +100,7 @@ public class Gra {
 	
 		NetworkStack netst = new NetworkStack(sn,vns);	
 		
-		for(int i=0;i<10;i++){
+		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
@@ -114,10 +115,14 @@ public class Gra {
 			System.out.println(nodeMapping);
 			
 			//link mapping
-			
+			/*
 			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
 			ulpc.linkMapping(vns.get(i), nodeMapping);
-			//ulpc.generateFile(vns.get(i), nodeMapping);
+			*/
+			
+			SOD_BK sod_bk = new SOD_BK(sn);
+			sod_bk.generateFile(vns.get(i), nodeMapping);
+			
 			
 	//		PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
 		/*	UnsplittingVirtualLinkMapping psvlm = new UnsplittingVirtualLinkMapping(sn,0.3,0.7);
@@ -139,7 +144,7 @@ public class Gra {
 		}
 		
 		System.out.println(sn);
-		
+		/*
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);
 		totalRevenue.setStack(netst);
@@ -155,7 +160,7 @@ public class Gra {
 		acceptedRatio.setStack(netst);
 		System.out.println("accepted ratio : "+acceptedRatio.calculate()+"%");
 		
-		System.out.println("ok");
+		System.out.println("ok");*/
 	}
 
 }
