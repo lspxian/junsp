@@ -31,6 +31,10 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.resources;
 
+import java.util.Map;
+
+import org.apache.commons.collections15.map.LinkedMap;
+
 import vnreal.ExchangeParameter;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.constraints.AbstractConstraint;
@@ -54,6 +58,38 @@ public final class BandwidthResource extends AbstractResource implements
 		ILinkConstraint {
 	private double bandwidth;
 	private double occupiedBandwidth = 0;
+	
+	//for backup 
+	private double reservedBackupBw = 0; // max of delta
+	private Map<Link<? extends AbstractConstraint>,Double> backupBw; //Yfs of guo, or delta of yazid
+	
+
+	public double getReservedBackupBw() {
+		return reservedBackupBw;
+	}
+
+	public void updateReservedBackupBw() {
+		double max = 0 ;
+		for(Map.Entry<Link<? extends AbstractConstraint>, Double> entry: backupBw.entrySet()){
+			if(entry.getValue()>max)
+				max = entry.getValue();
+		}
+		reservedBackupBw = max;
+	}
+
+	public Map<Link<? extends AbstractConstraint>, Double> getBackupBw() {
+		return backupBw;
+	}
+	
+	public double getLinkBackupBw(Link<? extends AbstractConstraint> failure){
+		if(backupBw.containsKey(failure))
+			return  backupBw.get(failure);
+		else return 0;
+	}
+
+	public void setBackupBw(Map<Link<? extends AbstractConstraint>, Double> backupBw) {
+		this.backupBw = backupBw;
+	}
 
 	/*
 	 * Method for the distributed algorithm
@@ -64,10 +100,12 @@ public final class BandwidthResource extends AbstractResource implements
 
 	public BandwidthResource(Link<? extends AbstractConstraint> owner) {
 		super(owner);
+		backupBw = new LinkedMap<Link<? extends AbstractConstraint>,Double>();
 	}
 	
 	public BandwidthResource(Link<? extends AbstractConstraint> owner, String name) {
 		super(owner, name);
+		backupBw = new LinkedMap<Link<? extends AbstractConstraint>,Double>();
 	}
 	
 

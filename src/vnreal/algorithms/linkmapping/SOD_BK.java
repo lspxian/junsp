@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import mulavito.algorithms.shortestpath.ksp.LocalBypass;
 import mulavito.algorithms.shortestpath.ksp.Yen;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.LinkWeight;
@@ -128,11 +129,88 @@ public class SOD_BK extends AbstractLinkMapping{
 			constraint = constraint + primary_flow;
 		}
 		
-		for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
+		//restoration flow constraint
+		for (Iterator<SubstrateLink> flink = sNet.getEdges().iterator();flink.hasNext();){
+			SubstrateLink failure = flink.next();
 			
-			
-			
+			String restoration_flow = "";
+				
+			//R(f)
+			LocalBypass<SubstrateNode, SubstrateLink> bypass = new LocalBypass(sNet, new LinkWeight());
+			List<List<SubstrateLink>> localBypass = bypass.getShortestPaths(failure, 2);
+			//yr(f)
+			for(int i=0;i<localBypass.size();i++){
+				restoration_flow = restoration_flow + " + yf#" + failure.getId() + "r";
+				List<SubstrateLink> localBypassi = localBypass.get(i);
+				for(int j=0;j<localBypassi.size();j++){
+					restoration_flow = restoration_flow + "#" + localBypassi.get(j).getId();
+				}
+			}
+			restoration_flow = restoration_flow + " = ";
+				
+			for (Iterator<VirtualLink> vlink = vNet.getEdges().iterator(); vlink.hasNext();) {
+				VirtualLink tmpvl = vlink.next();
+				
+				// Find their mapped SubstrateNodes
+				srcSnode = nodeMapping.get(vNet.getSource(tmpvl));
+				dstSnode = nodeMapping.get(vNet.getDest(tmpvl));
+				
+				//pre-selected paths
+				LinkWeight linkWeight = new LinkWeight();
+				Yen<SubstrateNode, SubstrateLink> yen = new Yen(sNet,linkWeight);
+				List<List<SubstrateLink>> paths = yen.getShortestPaths(srcSnode, dstSnode, 3);
+				
+				for(int i=0;i<paths.size();i++){
+					List<SubstrateLink> path = paths.get(i);
+					//If(p)
+					if(path.contains(failure)){
+						restoration_flow = restoration_flow + " + Xvl#" + tmpvl.getId() + "sp";
+						for(int j=0;j<path.size();j++){
+							restoration_flow = restoration_flow + "#" +path.get(j).getId();
+						}
+					}
+				}
+			}
+			restoration_flow = restoration_flow + "\n";
+			constraint = constraint + restoration_flow;
 		}
+		
+		//restoration bandwidth constraint
+		for (Iterator<SubstrateLink> flink = sNet.getEdges().iterator();flink.hasNext();){
+			SubstrateLink failure = flink.next();
+			
+			for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
+				SubstrateLink tmpsl = slink.next();
+				for(AbstractResource asrc : tmpsl){
+					if(asrc instanceof BandwidthResource){
+						bwResource = (BandwidthResource) asrc;
+					}
+				}
+				String restoration_bw ="";
+				
+				//R(f)
+				LocalBypass<SubstrateNode, SubstrateLink> bypass = new LocalBypass(sNet, new LinkWeight());
+				List<List<SubstrateLink>> localBypass = bypass.getShortestPaths(failure, 2);
+				//yr(f)
+				for(int i=0;i<localBypass.size();i++){
+					List<SubstrateLink> localBypassi = localBypass.get(i);
+					//Is(r) yr(f)
+					if(localBypassi.contains(tmpsl)){
+						restoration_bw = restoration_bw + " + yf#" + failure.getId() + "r";
+						for(int j=0;j<localBypassi.size();j++){
+							restoration_bw = restoration_bw + "#" + localBypassi.get(j).getId();
+						}
+					}
+				}
+				
+				restoration_bw = restoration_bw + " <= " + " Zs#" + tmpsl.getId() + " + " 
+						+ bwResource.getReservedBackupBw() + " - " + bwResource.getLinkBackupBw(failure)+"\n"; 
+				constraint = constraint + restoration_bw ;
+				
+			}
+		}
+		
+		
 		
 		obj = obj+ "\n";
 		BufferedWriter writer = new BufferedWriter(new FileWriter("ILP-LP-Models/SOD_BK.lp"));
