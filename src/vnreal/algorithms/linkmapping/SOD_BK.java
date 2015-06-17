@@ -23,7 +23,10 @@ import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
 public class SOD_BK extends AbstractLinkMapping{
-
+	
+	private static final int preselected_number = 3;
+	private static final int bypass_number = 3;
+	
 	public SOD_BK(SubstrateNetwork sNet) {
 		super(sNet);
 	}
@@ -43,7 +46,7 @@ public class SOD_BK extends AbstractLinkMapping{
 		
 		BandwidthResource bwResource = null;
 		BandwidthDemand bwDem = null;
-		SubstrateNode srcSnode = null, dstSnode = null, ssnode = null, dsnode = null;
+		SubstrateNode srcSnode = null, dstSnode = null;
 		
 		double delta = 0.01;
 		for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
@@ -72,7 +75,7 @@ public class SOD_BK extends AbstractLinkMapping{
 				//pre-selected paths
 				LinkWeight linkWeight = new LinkWeight();
 				Yen<SubstrateNode, SubstrateLink> yen = new Yen(sNet,linkWeight);
-				List<List<SubstrateLink>> paths = yen.getShortestPaths(srcSnode, dstSnode, 3);
+				List<List<SubstrateLink>> paths = yen.getShortestPaths(srcSnode, dstSnode, SOD_BK.preselected_number);
 				
 				for(int i=0;i<paths.size();i++){
 					List<SubstrateLink> path = paths.get(i);
@@ -95,6 +98,7 @@ public class SOD_BK extends AbstractLinkMapping{
 			obj = obj + " Zs#" + tmpsl.getId();
 			capacity = capacity + " + Zs#" + tmpsl.getId();
 			capacity = capacity + " <= " + bwResource.getAvailableBandwidth()+"\n";
+			bounds = bounds + " Zs#" + tmpsl.getId() + ">= 0 \n";
 			constraint = constraint + capacity;
 		}
 		
@@ -115,15 +119,18 @@ public class SOD_BK extends AbstractLinkMapping{
 			//pre-selected paths
 			LinkWeight linkWeight = new LinkWeight();
 			Yen<SubstrateNode, SubstrateLink> yen = new Yen(sNet,linkWeight);
-			List<List<SubstrateLink>> paths = yen.getShortestPaths(srcSnode, dstSnode, 3);
+			List<List<SubstrateLink>> paths = yen.getShortestPaths(srcSnode, dstSnode, SOD_BK.preselected_number);
 			
 			for(int i=0;i<paths.size();i++){
 				List<SubstrateLink> path = paths.get(i);
 				//Xp(v)
 				primary_flow = primary_flow + " + Xvl#" + tmpvl.getId() + "sp";
+				bounds = bounds + " Xvl#" + tmpvl.getId() + "sp";
 				for(int j=0;j<path.size();j++){
 					primary_flow = primary_flow + "#" +path.get(j).getId();
+					bounds = bounds +  "#" +path.get(j).getId();
 				}
+				bounds = bounds + " >= 0 \n";
 			}
 			primary_flow = primary_flow + " = " + bwDem.getDemandedBandwidth() + "\n";
 			constraint = constraint + primary_flow;
@@ -137,16 +144,19 @@ public class SOD_BK extends AbstractLinkMapping{
 				
 			//R(f)
 			LocalBypass<SubstrateNode, SubstrateLink> bypass = new LocalBypass(sNet, new LinkWeight());
-			List<List<SubstrateLink>> localBypass = bypass.getShortestPaths(failure, 2);
-			//yr(f)
+			List<List<SubstrateLink>> localBypass = bypass.getShortestPaths(failure, SOD_BK.bypass_number);
+
 			for(int i=0;i<localBypass.size();i++){
-				restoration_flow = restoration_flow + " + yf#" + failure.getId() + "r";
 				List<SubstrateLink> localBypassi = localBypass.get(i);
+				//yr(f)
+				restoration_flow = restoration_flow + " + yf#" + failure.getId() + "r";
+				bounds = bounds + " yf#" + failure.getId() + "r";
 				for(int j=0;j<localBypassi.size();j++){
 					restoration_flow = restoration_flow + "#" + localBypassi.get(j).getId();
+					bounds = bounds + "#" + localBypassi.get(j).getId();
 				}
+				bounds = bounds + " >= 0 \n";
 			}
-			restoration_flow = restoration_flow + " = ";
 				
 			for (Iterator<VirtualLink> vlink = vNet.getEdges().iterator(); vlink.hasNext();) {
 				VirtualLink tmpvl = vlink.next();
@@ -158,20 +168,21 @@ public class SOD_BK extends AbstractLinkMapping{
 				//pre-selected paths
 				LinkWeight linkWeight = new LinkWeight();
 				Yen<SubstrateNode, SubstrateLink> yen = new Yen(sNet,linkWeight);
-				List<List<SubstrateLink>> paths = yen.getShortestPaths(srcSnode, dstSnode, 3);
+				List<List<SubstrateLink>> paths = yen.getShortestPaths(srcSnode, dstSnode, SOD_BK.preselected_number);
 				
 				for(int i=0;i<paths.size();i++){
 					List<SubstrateLink> path = paths.get(i);
 					//If(p)
 					if(path.contains(failure)){
-						restoration_flow = restoration_flow + " + Xvl#" + tmpvl.getId() + "sp";
+						restoration_flow = restoration_flow + " - Xvl#" + tmpvl.getId() + "sp";
 						for(int j=0;j<path.size();j++){
 							restoration_flow = restoration_flow + "#" +path.get(j).getId();
 						}
 					}
 				}
 			}
-			restoration_flow = restoration_flow + "\n";
+
+			restoration_flow = restoration_flow + " = 0\n";
 			constraint = constraint + restoration_flow;
 		}
 		
@@ -190,21 +201,24 @@ public class SOD_BK extends AbstractLinkMapping{
 				
 				//R(f)
 				LocalBypass<SubstrateNode, SubstrateLink> bypass = new LocalBypass(sNet, new LinkWeight());
-				List<List<SubstrateLink>> localBypass = bypass.getShortestPaths(failure, 2);
+				List<List<SubstrateLink>> localBypass = bypass.getShortestPaths(failure, SOD_BK.bypass_number);
 				//yr(f)
+				boolean flag = false; // eliminate empty left term
 				for(int i=0;i<localBypass.size();i++){
 					List<SubstrateLink> localBypassi = localBypass.get(i);
 					//Is(r) yr(f)
 					if(localBypassi.contains(tmpsl)){
+						flag = true;
 						restoration_bw = restoration_bw + " + yf#" + failure.getId() + "r";
 						for(int j=0;j<localBypassi.size();j++){
 							restoration_bw = restoration_bw + "#" + localBypassi.get(j).getId();
 						}
 					}
 				}
-				
-				restoration_bw = restoration_bw + " <= " + " Zs#" + tmpsl.getId() + " + " 
-						+ bwResource.getReservedBackupBw() + " - " + bwResource.getLinkBackupBw(failure)+"\n"; 
+				if(flag == true){
+					restoration_bw = restoration_bw  + " - Zs#" + tmpsl.getId() + " <= " 
+							+ bwResource.getReservedBackupBw() + " - " + bwResource.getLinkBackupBw(failure)+"\n"; 					
+				}
 				constraint = constraint + restoration_bw ;
 				
 			}
