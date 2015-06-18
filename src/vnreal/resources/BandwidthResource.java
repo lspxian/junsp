@@ -60,12 +60,16 @@ public final class BandwidthResource extends AbstractResource implements
 	private double occupiedBandwidth = 0;
 	
 	//for backup 
-	private double reservedBackupBw = 0; // max of delta
+	private double reservedBackupBw = 0; // max of delta, Z
 	private Map<Link<? extends AbstractConstraint>,Double> backupBw; //Yfs of guo, or delta of yazid
 	
 
 	public double getReservedBackupBw() {
 		return reservedBackupBw;
+	}
+
+	public void setReservedBackupBw(double reservedBackupBw) {
+		this.reservedBackupBw = reservedBackupBw;
 	}
 
 	public void updateReservedBackupBw() {
@@ -96,6 +100,10 @@ public final class BandwidthResource extends AbstractResource implements
 	 */
 	public void setOccupiedBandwidth(Double occupiedBandwidth) {
 		this.occupiedBandwidth = occupiedBandwidth;
+	}
+
+	public double getOccupiedBandwidth() {
+		return occupiedBandwidth;
 	}
 
 	public BandwidthResource(Link<? extends AbstractConstraint> owner) {

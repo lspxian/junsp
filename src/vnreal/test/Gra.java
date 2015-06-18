@@ -121,7 +121,8 @@ public class Gra {
 			*/
 			
 			SOD_BK sod_bk = new SOD_BK(sn);
-			sod_bk.generateFile(vns.get(i), nodeMapping);
+			sod_bk.linkMapping(vns.get(i), nodeMapping);
+			//sod_bk.generateFile(vns.get(i), nodeMapping);
 			
 			
 	//		PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
@@ -143,7 +144,7 @@ public class Gra {
 			*/
 		}
 		
-		System.out.println(sn);
+		//System.out.println(sn);
 		/*
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);

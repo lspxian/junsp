@@ -49,7 +49,7 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 			//upload file
 			remote.getSftp().put("ILP-LP-Models/CPLEXvne.lp", "pytest/CPLEXvne.lp");
 			
-			//solve the problem with python scipt, get output solution
+			//solve the problem with python script, get output solution
 			Map<String, String> solution = remote.executeCmd("python pytest/mysolver.py pytest/CPLEXvne.lp o");
 			System.out.println(solution);
 			
