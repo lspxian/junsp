@@ -94,6 +94,7 @@ public class Gra {
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 			
+			
 		}
 		
 		//Network stack
