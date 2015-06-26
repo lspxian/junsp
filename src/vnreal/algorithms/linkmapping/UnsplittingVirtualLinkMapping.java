@@ -2,13 +2,9 @@ package vnreal.algorithms.linkmapping;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
 import com.ampl.AMPL;
 import com.ampl.DataFrame;
-import com.ampl.Variable;
-
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.Consts;
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -22,7 +18,15 @@ import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
-
+/**
+ * 
+ * @author LI
+ * This class implements the unsplitting Multi-commodity flow problem with AMPL java api locally.
+ * Given the data and the model file, ampl solves the problem with integrated Cplex.
+ * But this version of cplex is a student version, which limit the number of variables and constraints.
+ * So it can't solve all the VNE problem.
+ * The AMPL in the lib directory of this project is a windows version, so this class will not work in Linux
+ */
 public class UnsplittingVirtualLinkMapping extends AbstractLinkMapping{
 	private double wBw, wCpu;
 

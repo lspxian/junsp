@@ -26,7 +26,18 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
-
+/**
+ * 
+ * @author LI
+ * This class implements the unsplitting multi-commodity flow probem with Cplex on the cloud magi paris 13.
+ * The cloud magi paris 13 has a full version of cplex.
+ * We first generate a .lp file with the function generateFile.
+ * the lp file contains the strings representing objective, constraints, bounds, general. 
+ * For example, vs1vd2ss5sd6, the number 1,2,5,6 are substrate nodes.
+ * This string means the flow of virtual link 1 to 2 on the substrate link 5 to 6
+ * This model is a node-arc based MCF, which includes all the possible paths, 
+ * and the number of variables and constraints explode with the substrate network size. 
+ */
 public class UnsplittingLPCplex extends AbstractLinkMapping{
 	private double wBw, wCpu;
 
