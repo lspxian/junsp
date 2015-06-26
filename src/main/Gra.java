@@ -38,10 +38,8 @@ import vnreal.resources.BandwidthResource;
  * 
  * @author LI
  * This is a test class.
- * The substrate network data is in the data and newData directory.
- * The data directory contains a random substrate network of size 100*100 and some random virtual network
- * The newData directory contains two real substrate networks, Cost239 and LongHaul, which are size of 30*30. 
- * The virtual network in newData is also 30*30
+ * The data directory contains 2 random substrate network, real network Cost239 and LongHaul and 500 random virtual network
+ * All the networks in data are 100*100
  * The virtual networks are generated with GT-ITM tools which is not in this project.
  */
 public class Gra {
