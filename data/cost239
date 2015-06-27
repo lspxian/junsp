@@ -1,4 +1,4 @@
-GRAPH COST239 30*30 11v 26e
+GRAPH COST239 11v 26e
 
 VERTICES ( index name u v w x x y z):
 0 0 16 61

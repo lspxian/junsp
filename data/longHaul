@@ -1,4 +1,4 @@
-GRAPH LONG HAUL 30*30 28v
+GRAPH LONG HAUL 28v
 
 VERTICES ( index name u v w x x y z):
 0 0 19 50

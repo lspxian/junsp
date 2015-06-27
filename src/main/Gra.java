@@ -38,7 +38,7 @@ import vnreal.resources.BandwidthResource;
  * 
  * @author LI
  * This is a test class.
- * The data directory contains 2 random substrate network, real network Cost239 and LongHaul and 500 random virtual network
+ * The data directory contains 2 random substrate networks, real network Cost239 and LongHaul, 500 random virtual networks
  * All the networks in data are 100*100
  * The virtual networks are generated with GT-ITM tools which is not in this project.
  */
@@ -46,10 +46,10 @@ public class Gra {
 
 	public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
-		sn.alt2network("newData/Cost239");
+		sn.alt2network("data/Cost239");
 		
-		System.out.println(sn.getNextHop((SubstrateNode) sn.getVertices().toArray()[8]));
-		System.out.println(sn.getLastHop((SubstrateNode) sn.getVertices().toArray()[8]));
+		//System.out.println(sn.getNextHop((SubstrateNode) sn.getVertices().toArray()[8]));
+		//System.out.println(sn.getLastHop((SubstrateNode) sn.getVertices().toArray()[8]));
 		
 		sn.addAllResource(true);
 		
@@ -96,7 +96,7 @@ public class Gra {
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
-			vn.alt2network("newData/vir"+i);
+			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
@@ -122,13 +122,13 @@ public class Gra {
 			System.out.println(nodeMapping);
 			
 			//link mapping
-			
-			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
-			ulpc.linkMapping(vns.get(i), nodeMapping);
-			
 			/*
+			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
+			ulpc.linkMapping(vns.get(i), nodeMapping);*/
+			
+			
 			SOD_BK sod_bk = new SOD_BK(sn);
-			sod_bk.linkMapping(vns.get(i), nodeMapping);*/
+			sod_bk.linkMapping(vns.get(i), nodeMapping);
 			//sod_bk.generateFile(vns.get(i), nodeMapping);
 			
 			
@@ -151,7 +151,7 @@ public class Gra {
 			*/
 		}
 		
-		//System.out.println(sn);
+		System.out.println(sn);
 		/*
 		//total revenue
 		TotalRevenue totalRevenue = new TotalRevenue(true);

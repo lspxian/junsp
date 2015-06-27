@@ -6,12 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.apache.commons.collections15.map.LinkedMap;
-
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
-
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkAssignation;
@@ -29,7 +26,7 @@ import vnreal.resources.BandwidthResource;
 /**
  * 
  * @author LI
- * This class implements the unsplitting multi-commodity flow probem with Cplex on the cloud magi paris 13.
+ * This class implements the unsplitting multi-commodity flow problem with Cplex on the cloud magi paris 13.
  * The cloud magi paris 13 has a full version of cplex.
  * We first generate a .lp file with the function generateFile.
  * the lp file contains the strings representing objective, constraints, bounds, general. 

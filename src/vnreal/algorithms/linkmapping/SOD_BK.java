@@ -75,11 +75,13 @@ public class SOD_BK extends AbstractLinkMapping{
 						bwResource = (BandwidthResource) asrc;
 					}
 				}
-				//Zs(t+1) = Zs(t) + zs
-				bwResource.setReservedBackupBw(bwResource.getReservedBackupBw()+Double.parseDouble(zs.get(tmpsl)));
-				//zs
-				double additionalBw = Double.parseDouble(zs.get(tmpsl)); 
-				
+				double additionalBw=0;
+				if(zs.get("Zs#"+tmpsl.getId())!=null){
+					//Zs(t+1) = Zs(t) + zs
+					bwResource.setReservedBackupBw(bwResource.getReservedBackupBw()+Double.parseDouble(zs.get("Zs#"+tmpsl.getId())));
+					//zs
+					additionalBw = additionalBw + Double.parseDouble(zs.get("Zs#"+tmpsl.getId())); 
+				}
 				for (Iterator<VirtualLink> vlink = vNet.getEdges().iterator(); vlink.hasNext();) {
 					VirtualLink tmpvl = vlink.next();
 					for(int i=0;i<preselectedPath.get(tmpvl).size();i++){
@@ -93,8 +95,10 @@ public class SOD_BK extends AbstractLinkMapping{
 								stringxpv = stringxpv + "#" +path.get(j).getId();
 							}
 						}
-						//xpv sum
-						additionalBw = additionalBw + Double.parseDouble(xpv.get(stringxpv));
+						if(xpv.get(stringxpv)!=null){
+							//xpv sum
+							additionalBw = additionalBw + Double.parseDouble(xpv.get(stringxpv));
+						}
 					}
 				}
 				//Rs(t+1)
@@ -114,21 +118,16 @@ public class SOD_BK extends AbstractLinkMapping{
 								stringyrf = stringyrf + "#" + localBypassi.get(j).getId();
 							}
 						}
-						additionalBackup = additionalBackup + Double.parseDouble(yrf.get(stringyrf));
+						if(yrf.get(stringyrf)!=null)
+							additionalBackup = additionalBackup + Double.parseDouble(yrf.get(stringyrf));
 					}
 					//Ysf(t+1)
-					bwResource.getBackupBw().replace(failure, bwResource.getBackupBw().get(failure)+additionalBackup);
-					
-					
-					
+					if(bwResource.getBackupBw().get(failure)!=null)
+						bwResource.getBackupBw().replace(failure, bwResource.getBackupBw().get(failure)+additionalBackup);
+					else
+						bwResource.getBackupBw().replace(failure, additionalBackup);
 				}
-				
-				
 			}
-			
-			
-			
-			
 			
 		} catch (IOException | SftpException | JSchException e) {
 			e.printStackTrace();
