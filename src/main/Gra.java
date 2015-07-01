@@ -46,7 +46,7 @@ public class Gra {
 
 	public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
-		sn.alt2network("data/Cost239");
+		sn.alt2network("data/cost239");
 		
 		//System.out.println(sn.getNextHop((SubstrateNode) sn.getVertices().toArray()[8]));
 		//System.out.println(sn.getLastHop((SubstrateNode) sn.getVertices().toArray()[8]));
