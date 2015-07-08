@@ -4,25 +4,26 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
+import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.network.NetworkStack;
-import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
-import vnreal.resources.BandwidthResource;
 
 public class FreeResourceTest {
 
+	@SuppressWarnings("static-access")
 	public static void main(String[] args) throws IOException {
 		
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
 		sn.alt2network("data/cost239");
 		
 		sn.addAllResource(true);
-		
+		//System.out.println(sn);
 		//virtual network list
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
@@ -36,6 +37,7 @@ public class FreeResourceTest {
 		
 		//Network stack
 	
+		@SuppressWarnings("unused")
 		NetworkStack netst = new NetworkStack(sn,vns);	
 		
 		//Mapping
@@ -58,16 +60,17 @@ public class FreeResourceTest {
 			
 			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
 			ulpc.linkMapping(vns.get(i), nodeMapping);
-			
 		}
 		
 		System.out.println(sn);
 		
 		//Free resource
+	
+		NodeLinkDeletion ndl = new NodeLinkDeletion();
 		for(int i=0;i<10;i++){
-			
-			
+			ndl.freeRessource(vns.get(i), sn);
 		}
+		System.out.println(sn);
 		
 		
 		

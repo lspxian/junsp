@@ -1,13 +1,16 @@
 package vnreal.algorithms.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
 import vnreal.network.substrate.SubstrateLink;
+import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualLink;
+import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
@@ -34,14 +37,31 @@ public class NodeLinkDeletion {
 			if(dem instanceof BandwidthDemand){
 				for(SubstrateLink singleslink : slink){
 					for(AbstractResource res : singleslink){
-						if(res instanceof BandwidthResource){
+						if(res instanceof BandwidthResource ){
 							dem.free(res);
 						}
 					}
 				}
 			}
 		}
-		
 		return true;
+	}
+	
+	// This function frees the resource allocations of a virtual network in a substrate network
+	@SuppressWarnings("static-access")
+	public static boolean freeRessource(VirtualNetwork vn, SubstrateNetwork sn) {
+		NodeLinkDeletion ndl = new NodeLinkDeletion();
+		List<SubstrateLink> list = new ArrayList<SubstrateLink>();
+		list.addAll(0, sn.getEdges());
+		for(VirtualNode vnode : vn.getVertices()){
+			for(SubstrateNode snode : sn.getVertices()){
+				ndl.nodeFree(vnode, snode);
+			}
+		}
+		for(VirtualLink vlink : vn.getEdges()){
+			ndl.linkFree(vlink, list);
+		}
+		return true;
+		
 	}
 }
