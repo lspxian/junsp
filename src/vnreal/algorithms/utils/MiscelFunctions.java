@@ -41,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 import com.ampl.DataFrame;
@@ -1293,5 +1294,10 @@ public class MiscelFunctions {
 
 		return (nodeRemaRes + linkRemaRes);
 	}
-
+	public static double negExponential(double average) {
+		Random r = new Random();
+		if (average<= 0)
+		System.out.println("negexp: First parameter is lower" +" than zero");
+		return -Math.log(1-r.nextDouble())/average;
+		}
 }

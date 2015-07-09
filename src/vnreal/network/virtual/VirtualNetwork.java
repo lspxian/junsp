@@ -41,6 +41,7 @@ import java.util.Random;
 
 import org.apache.commons.collections15.Factory;
 
+import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.demands.AbstractDemand;
 import vnreal.network.Network;
 import vnreal.network.substrate.SubstrateNode;
@@ -57,7 +58,9 @@ public final class VirtualNetwork extends
 	/** The layer resp. virtual network id which start from 0. */
 	private final int layer;
 	private String name = null;
-
+	private double lifetime=0.0;	//To know the lifetime of a Vn in the Substrate Network
+	private double mu=1000;			//The mean of the lifetime
+	
 	public VirtualNetwork(int layer, boolean autoUnregisterConstraints, boolean directed){
 		super(autoUnregisterConstraints, directed);
 		this.layer = layer;
@@ -251,6 +254,7 @@ public final class VirtualNetwork extends
 			sblk1.addResource(value);
 			sblk2.addResource(value);
 		}
+		lifetime = MiscelFunctions.negExponential(1.0/mu);
 		return true;
 	}
 	
@@ -260,6 +264,15 @@ public final class VirtualNetwork extends
 				return vtnd;
 		}
 		return null;
+	}
+	/*Added */
+	public double getLifetime()
+	{
+		return lifetime;
+	}
+	public void setLifetim(double mean)
+	{
+		this.lifetime = MiscelFunctions.negExponential(1.0/mean);
 	}
 	
 }
