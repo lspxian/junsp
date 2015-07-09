@@ -12,6 +12,8 @@ import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkDeletion;
+import vnreal.evaluations.metrics.AcceptedVnrRatio;
+import vnreal.evaluations.metrics.TotalRevenue;
 import vnreal.network.NetworkStack;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -28,8 +30,18 @@ public static void main(String[] args) throws IOException {
 		List Events = new ArrayList<VnEvent>();	  // The list of events 
 		double simulationTime = 50000.0;			 //Simulation Time 
 		double time=0.0;							 //for Arrivals Time
-		int i=0;
+		int i=0,j=0;
+		long start=0;
+		long duree=0;
 		double lambda = 4.0/100.0;
+		double meanVn = 1.0/15;
+		double periodTest = MiscelFunctions.negExponential(meanVn);
+		/*for(int k=0;k<=15;k++)
+		{
+			periodTest = MiscelFunctions.negExponential(meanVn);
+			System.out.println(periodTest+"\n");
+		}*/
+		
 		sn.addAllResource(true);
 
 		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
@@ -47,7 +59,7 @@ public static void main(String[] args) throws IOException {
 		
 		//virtual network list
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
-		for( i=0;i<100;i++){
+		for( i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -61,6 +73,8 @@ public static void main(String[] args) throws IOException {
 		//Network stack
 	
 		NetworkStack netst = new NetworkStack(sn,vns);	
+		/*Ratios */
+		List Ratios = new ArrayList<AcceptedVnrRatio>();
 		
 		/*for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
@@ -90,28 +104,29 @@ public static void main(String[] args) throws IOException {
 				VnEvent DepartureEvent = new VnEvent(vns.get(i),time+vns.get(i).getLifetime(),1);
 				Events.add(DepartureEvent);
 				time+=MiscelFunctions.negExponential(lambda);
+				System.out.println(time);
 				i++;
 			}
-
 			Collections.sort(Events);
 		//	System.out.println("After The sort\n");
-			int j=0;
+			
 		//	System.out.println(sn);
+			int k=0;
 		for(i=0;i<Events.size();i++)
 			{	
 				VnEvent currentEvent;
 				currentEvent=(VnEvent) Events.get(i);
 				if(currentEvent.getFlag()==0)
 					{
-					j++;
-					System.out.println("virtual network "+i+": \n"+currentEvent.getConcernedVn());
+						j++;
+					//System.out.println("virtual network "+i+": \n"+currentEvent.getConcernedVn());
 					//node mapping
 					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
 					
 					if(arnm.nodeMapping(currentEvent.getConcernedVn())){
-						System.out.println("node mapping succes, virtual netwotk "+j);
+						//System.out.println("node mapping succes, virtual netwotk "+j);
 					}else{
-						System.out.println("node resource error, virtual network "+j);
+						//System.out.println("node resource error, virtual network "+j);
 						continue;
 					}
 					Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
@@ -121,15 +136,25 @@ public static void main(String[] args) throws IOException {
 					
 					UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
 					ulpc.linkMapping(currentEvent.getConcernedVn(), nodeMapping);
+				
+					System.out.println("Duree d'execution :"+duree);
 					}
-					
 				else
 				{
 					
 					System.out.println("Liberation Ressources");
 					NodeLinkDeletion.freeRessource(currentEvent.getConcernedVn(), sn);
 				}
-				//System.out.println(sn);
+				if((j%4)==0)
+				{
+					System.out.println("sim : "+currentEvent.getAoDTime());
+					AcceptedVnrRatio acceptedRatio = new AcceptedVnrRatio();
+					acceptedRatio.setStack(netst);
+					System.out.println("accepted ratio : "+acceptedRatio.calculate()+"%");
+					k++;
+					
+				}
+
 			}
 		}
 }
