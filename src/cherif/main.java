@@ -1,5 +1,8 @@
 package cherif;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +16,6 @@ import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.evaluations.metrics.AcceptedVnrRatio;
-import vnreal.evaluations.metrics.TotalRevenue;
 import vnreal.network.NetworkStack;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -36,6 +38,8 @@ public static void main(String[] args) throws IOException {
 		double lambda = 4.0/100.0;
 		double meanVn = 1.0/15;
 		double periodTest = MiscelFunctions.negExponential(meanVn);
+		BufferedWriter fout = new BufferedWriter(new FileWriter("aceptedratio.txt"));
+		fout.write("time" + " " + "acepted ration"+"\n");
 		/*for(int k=0;k<=15;k++)
 		{
 			periodTest = MiscelFunctions.negExponential(meanVn);
@@ -59,7 +63,7 @@ public static void main(String[] args) throws IOException {
 		
 		//virtual network list
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
-		for( i=0;i<15;i++){
+		for( i=0;i<100;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -145,17 +149,24 @@ public static void main(String[] args) throws IOException {
 					System.out.println("Liberation Ressources");
 					NodeLinkDeletion.freeRessource(currentEvent.getConcernedVn(), sn);
 				}
-				if((j%4)==0)
+				if((j%2)==0)
 				{
-					System.out.println("sim : "+currentEvent.getAoDTime());
+					try {
 					AcceptedVnrRatio acceptedRatio = new AcceptedVnrRatio();
 					acceptedRatio.setStack(netst);
-					System.out.println("accepted ratio : "+acceptedRatio.calculate()+"%");
+					fout.write(currentEvent.getAoDTime()+" " +acceptedRatio.calculate());
+					fout.write("\n");
 					k++;
+					}catch(FileNotFoundException e){
+						e.printStackTrace();
+					}catch(IOException e){
+						e.printStackTrace();
+					}
 					
 				}
 
 			}
+		fout.close();
 		}
 }
 
