@@ -15,6 +15,7 @@ import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkDeletion;
+import vnreal.evaluations.metrics.AcceptedRatio;
 import vnreal.evaluations.metrics.AcceptedVnrRatio;
 import vnreal.network.NetworkStack;
 import vnreal.network.substrate.SubstrateLink;
@@ -36,10 +37,11 @@ public static void main(String[] args) throws IOException {
 		long start=0;
 		long duree=0;
 		double lambda = 4.0/100.0;
-		double meanVn = 1.0/15;
-		double periodTest = MiscelFunctions.negExponential(meanVn);
+		int acepted = 0,rejected = 0;
+		
+		
+		double periodTest = 0.0;
 		BufferedWriter fout = new BufferedWriter(new FileWriter("aceptedratio.txt"));
-		fout.write("time" + " " + "acepted ration"+"\n");
 		/*for(int k=0;k<=15;k++)
 		{
 			periodTest = MiscelFunctions.negExponential(meanVn);
@@ -63,7 +65,7 @@ public static void main(String[] args) throws IOException {
 		
 		//virtual network list
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
-		for( i=0;i<100;i++){
+		for( i=0;i<500;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -108,7 +110,7 @@ public static void main(String[] args) throws IOException {
 				VnEvent DepartureEvent = new VnEvent(vns.get(i),time+vns.get(i).getLifetime(),1);
 				Events.add(DepartureEvent);
 				time+=MiscelFunctions.negExponential(lambda);
-				System.out.println(time);
+				//System.out.println(time);
 				i++;
 			}
 			Collections.sort(Events);
@@ -128,8 +130,12 @@ public static void main(String[] args) throws IOException {
 					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
 					
 					if(arnm.nodeMapping(currentEvent.getConcernedVn())){
+						acepted++;
+						System.out.println("vn accepté :" + acepted);
 						//System.out.println("node mapping succes, virtual netwotk "+j);
 					}else{
+						rejected++;
+						System.out.println("vn rejeté :" + rejected);
 						//System.out.println("node resource error, virtual network "+j);
 						continue;
 					}
@@ -149,25 +155,31 @@ public static void main(String[] args) throws IOException {
 					System.out.println("Liberation Ressources");
 					NodeLinkDeletion.freeRessource(currentEvent.getConcernedVn(), sn);
 				}
-				if((j%2)==0)
-				{
+				//if((j%8)==0)
+				//{
 					try {
-					AcceptedVnrRatio acceptedRatio = new AcceptedVnrRatio();
-					acceptedRatio.setStack(netst);
-					fout.write(currentEvent.getAoDTime()+" " +acceptedRatio.calculate());
+						AcceptedRatio acceptedRatio = new AcceptedRatio();
+						//acceptedRatio.setStack(netst);
+						
+					//MappedRevenue mappedRevenue = new MappedRevenue(true);
+					//mappedRevenue.setStack(netst);
+						
+						fout.write(currentEvent.getAoDTime()+" " +acceptedRatio.calculate(acepted,rejected));
+					///fout.write(currentEvent.getAoDTime()+" " +mappedRevenue.calculate());
 					fout.write("\n");
 					k++;
 					}catch(FileNotFoundException e){
 						e.printStackTrace();
 					}catch(IOException e){
 						e.printStackTrace();
-					}
+					//}
 					
 				}
 
 			}
 		fout.close();
 		}
+
 }
 
 
