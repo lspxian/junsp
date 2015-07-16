@@ -17,6 +17,10 @@ import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.evaluations.metrics.AcceptedRatio;
 import vnreal.evaluations.metrics.AcceptedVnrRatio;
+import vnreal.evaluations.metrics.Cost;
+import vnreal.evaluations.metrics.LinkCostPerVnr;
+import vnreal.evaluations.metrics.LinkUtilization;
+import vnreal.evaluations.metrics.NodeUtilization;
 import vnreal.network.NetworkStack;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -34,14 +38,21 @@ public static void main(String[] args) throws IOException {
 		double simulationTime = 50000.0;			 //Simulation Time 
 		double time=0.0;							 //for Arrivals Time
 		int i=0,j=0;
-		long start=0;
+	
 		long duree=0;
+		double capacity=0.0,sum=0.0;
 		double lambda = 4.0/100.0;
 		int acepted = 0,rejected = 0;
 		
 		
-		double periodTest = 0.0;
+		
 		BufferedWriter fout = new BufferedWriter(new FileWriter("aceptedratio.txt"));
+		BufferedWriter fout1 = new BufferedWriter(new FileWriter("cost.txt"));
+		BufferedWriter fout2 = new BufferedWriter(new FileWriter("costpermapped.txt"));
+		BufferedWriter fout3 = new BufferedWriter(new FileWriter("costrevenue.txt"));
+		BufferedWriter fout4 = new BufferedWriter(new FileWriter("linkcost.txt"));
+		BufferedWriter fout5 = new BufferedWriter(new FileWriter("linkutilization.txt"));
+		BufferedWriter fout6 = new BufferedWriter(new FileWriter("nodeutilization.txt"));
 		/*for(int k=0;k<=15;k++)
 		{
 			periodTest = MiscelFunctions.negExponential(meanVn);
@@ -131,11 +142,11 @@ public static void main(String[] args) throws IOException {
 					
 					if(arnm.nodeMapping(currentEvent.getConcernedVn())){
 						acepted++;
-						System.out.println("vn accepté :" + acepted);
+						//System.out.println("vn accepté :" + acepted);
 						//System.out.println("node mapping succes, virtual netwotk "+j);
 					}else{
 						rejected++;
-						System.out.println("vn rejeté :" + rejected);
+						//System.out.println("vn rejeté :" + rejected);
 						//System.out.println("node resource error, virtual network "+j);
 						continue;
 					}
@@ -146,7 +157,6 @@ public static void main(String[] args) throws IOException {
 					
 					UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
 					ulpc.linkMapping(currentEvent.getConcernedVn(), nodeMapping);
-				
 					System.out.println("Duree d'execution :"+duree);
 					}
 				else
@@ -157,16 +167,53 @@ public static void main(String[] args) throws IOException {
 				}
 				//if((j%8)==0)
 				//{
+				/*for (SubstrateLink sl : sn.getEdges()) {
+					for (AbstractResource res : sl.get()) {
+						capacity += ((BandwidthResource) res).getBandwidth();
+					}
+				}
+				for (SubstrateLink sl : sn.getEdges()) {
+					for (AbstractResource res : sl.get()) {
+						for (Mapping m : res.getMappings()) {
+							AbstractDemand dem = m.getDemand();
+							if (dem instanceof BandwidthDemand) {
+								sum += ((BandwidthDemand) dem).getDemandedBandwidth();
+							}
+						}
+					}
+				}
+				System.out.println("Link utilisation =" + sum/capacity);*/
 					try {
 						AcceptedRatio acceptedRatio = new AcceptedRatio();
-						//acceptedRatio.setStack(netst);
+						Cost cost = new Cost();
+						/*CostPerMappedNetwork costpermapped = new CostPerMappedNetwork();
+						CostRevenue costrevenue = new CostRevenue(false);*/
+						LinkCostPerVnr linkcost = new LinkCostPerVnr();
+						LinkUtilization linkutilization = new LinkUtilization();
+						NodeUtilization nodeutilization = new NodeUtilization();
+					/*	linkcost.setStack(netst);
+						costrevenue.setStack(netst);
+						costpermapped.setStack(netst);
+						cost.setStack(netst);*/
 						
 					//MappedRevenue mappedRevenue = new MappedRevenue(true);
 					//mappedRevenue.setStack(netst);
 						
 						fout.write(currentEvent.getAoDTime()+" " +acceptedRatio.calculate(acepted,rejected));
-					///fout.write(currentEvent.getAoDTime()+" " +mappedRevenue.calculate());
-					fout.write("\n");
+						fout.write("\n");
+						fout1.write(currentEvent.getAoDTime()+" " +cost.calculateCost(sn));
+						fout1.write("\n");
+						/*fout2.write(currentEvent.getAoDTime()+" " +costpermapped.calculate());
+						fout2.write("\n");
+						fout3.write(currentEvent.getAoDTime()+" " +costrevenue.calculate());
+						fout3.write("\n");*/
+						fout4.write(currentEvent.getAoDTime()+" " +linkcost.linkCost(sn,acepted));
+						fout4.write("\n");
+						fout5.write(currentEvent.getAoDTime()+" " +linkutilization.calculate(sn)/*sum/capacity*/);
+						fout5.write("\n");
+						fout6.write(currentEvent.getAoDTime()+" " +nodeutilization.calculate(sn));
+						fout6.write("\n");
+
 					k++;
 					}catch(FileNotFoundException e){
 						e.printStackTrace();
@@ -178,6 +225,12 @@ public static void main(String[] args) throws IOException {
 
 			}
 		fout.close();
+		fout1.close();
+		fout2.close();
+		fout3.close();
+		fout4.close();
+		fout5.close();
+		fout6.close();
 		}
 
 }

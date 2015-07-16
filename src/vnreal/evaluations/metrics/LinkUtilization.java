@@ -37,28 +37,33 @@ import vnreal.mapping.Mapping;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.resources.AbstractResource;
+import vnreal.resources.BandwidthResource;
 
-public class LinkUtilization extends SimpleEvaluation {
-	public double calculate() {
-		double sum = 0.0;
-		int i = 0;
-		SubstrateNetwork sNetwork = stack.getSubstrate();
-
+public class LinkUtilization  {
+	public static double capacity = 0.0,sum=0.0;
+	/*public LinkUtilization(SubstrateNetwork sn){
+		sNetwork = sn;
+	}*/
+	public double calculate(SubstrateNetwork sNetwork ) {
+	
+		for (SubstrateLink sl : sNetwork.getEdges()) {
+			for (AbstractResource res : sl.get()) {
+				capacity += ((BandwidthResource) res).getBandwidth();
+			}
+		}
 		for (SubstrateLink sl : sNetwork.getEdges()) {
 			for (AbstractResource res : sl.get()) {
 				for (Mapping m : res.getMappings()) {
 					AbstractDemand dem = m.getDemand();
-
 					if (dem instanceof BandwidthDemand) {
 						sum += ((BandwidthDemand) dem).getDemandedBandwidth();
-						i++;
 					}
 				}
-			}
+			
 		}
-
-		return (i == 0 ? 0.0 : (sum / (double) i));
 	}
+		return  sum /capacity ;
+}
 
 	public String toString() {
 		return "LinkUtilization";

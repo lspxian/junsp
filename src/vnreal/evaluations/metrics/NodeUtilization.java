@@ -37,13 +37,16 @@ import vnreal.mapping.Mapping;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.resources.AbstractResource;
+import vnreal.resources.CpuResource;
 
-public class NodeUtilization extends SimpleEvaluation {
-	public double calculate() {
-		double sum = 0.0;
-		int i = 0;
-		SubstrateNetwork sNetwork = stack.getSubstrate();
-
+public class NodeUtilization  {
+	public static double capacity = 0.0,sum=0.0;
+	public double calculate(SubstrateNetwork sNetwork) {
+		for (SubstrateNode sn : sNetwork.getVertices()) {
+			for (AbstractResource res : sn.get()) {
+				capacity += ((CpuResource) res).getCycles();
+			}
+		}
 		for (SubstrateNode sn : sNetwork.getVertices()) {
 			for (AbstractResource res : sn.get()) {
 				for (Mapping m : res.getMappings()) {
@@ -51,13 +54,13 @@ public class NodeUtilization extends SimpleEvaluation {
 
 					if (dem instanceof CpuDemand) {
 						sum += ((CpuDemand) dem).getDemandedCycles();
-						i++;
+						
 					}
 				}
 			}
 		}
 
-		return (i == 0 ? 0.0 : (sum / (double) i));
+		return sum/capacity;
 	}
 
 	public String toString() {
