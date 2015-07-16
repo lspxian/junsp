@@ -36,20 +36,15 @@ import java.util.Iterator;
 import vnreal.demands.BandwidthDemand;
 import vnreal.mapping.Mapping;
 import vnreal.network.substrate.SubstrateLink;
+import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
-public class LinkCostPerVnr extends AbstractEvaluation {
-
-	@Override
-	public double calculate() {
-		return (linkCost());
-	}
-
-	public double linkCost() {
-		double linkCost = 0;
+public class LinkCostPerVnr{
+	public static double linkCost = 0.0;
+	public double linkCost(SubstrateNetwork sNetwork,int acepted) {
 		BandwidthDemand tmpBwDem;
-		for (Iterator<SubstrateLink> tmpSLink = stack.getSubstrate().getEdges()
+		for (Iterator<SubstrateLink> tmpSLink = sNetwork.getEdges()
 				.iterator(); tmpSLink.hasNext();) {
 			SubstrateLink currSLink = tmpSLink.next();
 			for (AbstractResource res : currSLink) {
@@ -61,10 +56,9 @@ public class LinkCostPerVnr extends AbstractEvaluation {
 				}
 			}
 		}
-		RejectedNetworksNumber numRej = new RejectedNetworksNumber();
-		numRej.setStack(stack);
+		
 
-		return linkCost / ((stack.size() - 1) - numRej.getValue());
+		return linkCost / (acepted);
 
 	}
 
