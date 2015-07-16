@@ -51,38 +51,34 @@ package vnreal.evaluations.metrics;
  * @since 2011-03-08
  *
  */
-import java.util.Iterator;
 
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
 import vnreal.mapping.Mapping;
 import vnreal.network.substrate.SubstrateLink;
+import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 import vnreal.resources.CpuResource;
 
-public class Cost extends AbstractEvaluation {
-
-	@Override
+public class Cost  {
+	public static double nodeCost = 0.0, linkCost = 0.0;
+/*	@Override
 	public double calculate() {
 		return (calculateCost());
-	}
+	}*/
 
 	/**
 	 * 
-	 * @return the cost of incurred in the susbtrate network after performing a
+	 * @return the cost of incurred in the substrate network after performing a
 	 *         mapping over a set of VNRs
 	 */
-	public double calculateCost() {
-		double nodeCost = 0;
-		double linkCost = 0;
+	public double calculateCost(SubstrateNetwork sNetwork ) {
 		CpuDemand tmpCpuDem;
 		BandwidthDemand tmpBwDem;
-		for (Iterator<SubstrateLink> tmpSLink = stack.getSubstrate().getEdges()
-				.iterator(); tmpSLink.hasNext();) {
-			SubstrateLink currSLink = tmpSLink.next();
-			for (AbstractResource res : currSLink) {
+		for (SubstrateLink sl : sNetwork.getEdges()) {
+			for (AbstractResource res : sl.get()) {
 				if (res instanceof BandwidthResource) {
 					for (Mapping f : res.getMappings()) {
 						tmpBwDem = (BandwidthDemand) f.getDemand();
@@ -91,10 +87,8 @@ public class Cost extends AbstractEvaluation {
 				}
 			}
 		}
-		for (Iterator<SubstrateNode> tmpNode = stack.getSubstrate()
-				.getVertices().iterator(); tmpNode.hasNext();) {
-			SubstrateNode tmps = tmpNode.next();
-			for (AbstractResource res : tmps) {
+		for (SubstrateNode sn : sNetwork.getVertices()) {
+			for (AbstractResource res : sn.get()) {
 				if (res instanceof CpuResource) {
 					for (Mapping f : res.getMappings()) {
 						tmpCpuDem = (CpuDemand) f.getDemand();
