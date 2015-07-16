@@ -31,17 +31,16 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.evaluations.metrics;
 
-public class CostPerMappedNetwork extends AbstractEvaluation {
-	@Override
-	public double calculate() {
+import vnreal.network.substrate.SubstrateNetwork;
+
+public class CostPerMappedNetwork  {
+	
+	public double calculate(SubstrateNetwork sn,int acepted) {
 		Cost cost = new Cost();
-		RejectedNetworksNumber rejectedNets = new RejectedNetworksNumber();
-		cost.setStack(stack);
-		rejectedNets.setStack(stack);
-		return (cost.getValue()/((stack.size()-1 - rejectedNets.getValue())));
+		
+		return (cost.calculateCost(sn) / acepted);
 	}
 
-	@Override
 	public String toString() {
 		return "CostPerMappedNetwork";
 	}
