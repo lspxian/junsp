@@ -29,12 +29,12 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
 
-public class main {
+public class MainTest {
 public static void main(String[] args) throws IOException {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
 		sn.alt2network("data/cost239");
 		
-		List Events = new ArrayList<VnEvent>();	  // The list of events 
+		List<VnEvent> events = new ArrayList<VnEvent>();	  // The list of events 
 		double simulationTime = 50000.0;			 //Simulation Time 
 		double time=0.0;							 //for Arrivals Time
 		int i=0,j=0;
@@ -60,19 +60,6 @@ public static void main(String[] args) throws IOException {
 		}*/
 		
 		sn.addAllResource(true);
-
-		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
-			public Double transform(SubstrateLink link){
-				return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
-			}
-		};
-		
-		Transformer<SubstrateLink, Double> basicTrans = new Transformer<SubstrateLink,Double>(){
-			public Double transform(SubstrateLink link){
-				return 1.0;
-			}
-		};
-	
 		
 		//virtual network list
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
@@ -91,48 +78,28 @@ public static void main(String[] args) throws IOException {
 	
 		NetworkStack netst = new NetworkStack(sn,vns);	
 		/*Ratios */
-		List Ratios = new ArrayList<AcceptedVnrRatio>();
+		List<AcceptedVnrRatio> Ratios = new ArrayList<AcceptedVnrRatio>();
 		
-		/*for(int i=0;i<1;i++){
-			System.out.println("virtual network "+i+": \n"+vns.get(i));
-			/*Node Mapping and VnEvent Use
-			//node mapping
-			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
-			
-			if(arnm.nodeMapping(vns.get(i))){
-				System.out.println("node mapping succes, virtual netwotk "+i);
-			}else{
-				System.out.println("node resource error, virtual network "+i);
-				continue;
-			}
-			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
-			System.out.println(nodeMapping);*/
-			
-		
-			
-			/*SOD_BK sod_bk = new SOD_BK(sn);
-			sod_bk.linkMapping(vns.get(i), nodeMapping);
-			//sod_bk.generateFile(vns.get(i), nodeMapping);*/
 			i=0;
 			while( (time <=simulationTime)	&& (i <vns.size())) 
 			{
 				VnEvent ArrivalEvent = new VnEvent(vns.get(i),time,0);
-				Events.add(ArrivalEvent);
+				events.add(ArrivalEvent);
 				VnEvent DepartureEvent = new VnEvent(vns.get(i),time+vns.get(i).getLifetime(),1);
-				Events.add(DepartureEvent);
+				events.add(DepartureEvent);
 				time+=MiscelFunctions.negExponential(lambda);
 				//System.out.println(time);
 				i++;
 			}
-			Collections.sort(Events);
+			Collections.sort(events);
 		//	System.out.println("After The sort\n");
 			
 		//	System.out.println(sn);
 			int k=0;
-		for(i=0;i<Events.size();i++)
+		for(i=0;i<events.size();i++)
 			{	
 				VnEvent currentEvent;
-				currentEvent=(VnEvent) Events.get(i);
+				currentEvent=(VnEvent) events.get(i);
 				if(currentEvent.getFlag()==0)
 					{
 						j++;
