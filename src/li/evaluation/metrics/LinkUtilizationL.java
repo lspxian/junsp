@@ -12,6 +12,7 @@ import cherif.Simulation;
 
 public class LinkUtilizationL extends Metric {
 
+	private static double capacity = 0.0,sum = 0.0;
 	public LinkUtilizationL(Simulation simulation) throws IOException {
 		super(simulation);
 	}
@@ -23,7 +24,6 @@ public class LinkUtilizationL extends Metric {
 
 	@Override
 	public double calculate() {
-		double capacity = 0.0,sum=0.0;
 		for (SubstrateLink sl : this.simulation.getSubstrateNetwork().getEdges()) {
 			for (AbstractResource res : sl.get()) {
 				if(res instanceof BandwidthResource){

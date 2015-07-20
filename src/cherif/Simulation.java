@@ -22,7 +22,7 @@ public class Simulation {
 	private ArrayList<VirtualNetwork> vns;
 	private ArrayList<VnEvent> events;
 	private ArrayList<Metric> metrics;
-	private double simulationTime = 50000.0;
+	private double simulationTime = 2000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
@@ -51,7 +51,7 @@ public class Simulation {
 		sn.addAllResource(false);
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<50;i++){
+		for(int i=0;i<100;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
