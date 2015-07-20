@@ -6,12 +6,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.apache.commons.collections15.map.LinkedMap;
+
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkAssignation;
+import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.algorithms.utils.Remote;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
@@ -59,8 +63,16 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 			
 			//solve the problem with python script, get output solution
 			Map<String, String> solution = remote.executeCmd("python pytest/mysolver.py pytest/CPLEXvne.lp o");
-			System.out.println(solution);
+			if(solution.size()==0){
+				System.out.println("link no solution");
+				//delete node mapping
+				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+				}
+				return false;
+			}
 			
+			System.out.println(solution);
 			//update resource according to solution
 			BandwidthDemand originalBwDem = null, newBwDem;
 			VirtualNode srcVnode,dstVnode;

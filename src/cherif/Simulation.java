@@ -46,11 +46,12 @@ public class Simulation {
 	public Simulation() throws IOException{
 		
 		sn=new SubstrateNetwork(false,true); //control the directed or undirected
-		sn.alt2network("data/cost239");
-		sn.addAllResource(true);
+		//sn.alt2network("data/longHaul");
+		sn.alt2network("sndlib/ta2");
+		sn.addAllResource(false);
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<10;i++){
+		for(int i=0;i<50;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -90,11 +91,10 @@ public class Simulation {
 					UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
 					if(ulpc.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
-						
 					}
 					else{
 						this.rejected++;
-						System.out.println("link resource error");
+						System.out.println("link resource error, virtual network"); //TODO print vn id 
 					}
 				}
 				else{
