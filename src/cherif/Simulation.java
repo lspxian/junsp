@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import li.evaluation.metrics.AcceptedRatioL;
+import li.evaluation.metrics.LinkUtilizationL;
 import li.evaluation.metrics.Metric;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
@@ -33,6 +34,9 @@ public class Simulation {
 
 	public int getRejected() {
 		return rejected;
+	}
+	public SubstrateNetwork getSubstrateNetwork(){
+		return sn;
 	}
 
 	public ArrayList<Metric> getMetrics() {
@@ -64,6 +68,7 @@ public class Simulation {
 		//add metric
 		metrics = new ArrayList<Metric>();
 		metrics.add(new AcceptedRatioL(this));
+		metrics.add(new LinkUtilizationL(this));
 		
 	}
 	
