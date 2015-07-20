@@ -38,7 +38,10 @@ public class Simulation {
 	public SubstrateNetwork getSubstrateNetwork(){
 		return sn;
 	}
-
+	public ArrayList<VirtualNetwork> getVirtualNetworks()
+	{
+		return vns;
+	}
 	public ArrayList<Metric> getMetrics() {
 		return metrics;
 	}
