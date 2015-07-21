@@ -31,6 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.evaluations.utils;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -41,7 +42,6 @@ import vnreal.demands.VirtualDemandedSecurity;
 import vnreal.demands.VirtualProvidedSecurity;
 import vnreal.mapping.Mapping;
 import vnreal.network.Network;
-import vnreal.network.NetworkStack;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
@@ -56,11 +56,11 @@ public class VnrUtils {
 	}
 
 	public static Map<VirtualNetwork, Boolean> calculateMappedVnr(
-			NetworkStack stack) {
+			ArrayList<VirtualNetwork> stack) {
 		VirtualNetwork tempVnr;
 		boolean isMapped;
 		Map<VirtualNetwork, Boolean> isMappedVnr = new LinkedHashMap<VirtualNetwork, Boolean>();
-		for (Iterator<Network<?, ?, ?>> net = stack.iterator(); net.hasNext();) {
+		for (Iterator<VirtualNetwork> net = stack.iterator(); net.hasNext();) {
 			Network<?, ?, ?> tmpN = net.next();
 			if (tmpN.getLayer() != 0) {
 				tempVnr = (VirtualNetwork) tmpN;
