@@ -13,7 +13,7 @@ import vnreal.resources.BandwidthResource;
 import vnreal.resources.CpuResource;
 
 public class CostL extends Metric{
-	private static double nodeCost = 0.0, linkCost = 0.0;
+double nodeCost = 0.0, linkCost = 0.0;
 	public CostL(Simulation simulation) throws IOException {
 		super(simulation);
 	}

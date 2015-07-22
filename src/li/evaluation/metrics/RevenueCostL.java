@@ -6,7 +6,7 @@ import cherif.Simulation;
 
 public class RevenueCostL extends Metric{
 	private boolean isPathSplitting;
-
+	private static double RevenueCost=0.0;
 	public RevenueCostL(Simulation simulation, boolean isPsAlgorithm) throws IOException {
 		super(simulation);
 		this.isPathSplitting = isPsAlgorithm;
@@ -19,7 +19,7 @@ public class RevenueCostL extends Metric{
 
 	@Override
 	public double calculate() {
-		double RevenueCost=0.0;
+		//double RevenueCost=0.0;
 		try {
 			
 			CostL cost = new CostL(simulation);

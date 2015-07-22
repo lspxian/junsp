@@ -28,7 +28,7 @@ public class TotalRevenueL extends Metric{
 	public double calculate() {
 		VirtualNetwork tempVnr;
 		double mappedRevenue = 0;
-		for (Iterator<VirtualNetwork> net = simulation.getVirtualNetworks().iterator(); net.hasNext();) {
+		for (Iterator<VirtualNetwork> net = simulation.getList().iterator(); net.hasNext();) {
 			tempVnr = net.next();
 			mappedRevenue += calculateVnetRevenue(tempVnr);
 		}

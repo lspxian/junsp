@@ -16,6 +16,7 @@ import vnreal.network.virtual.VirtualNode;
 
 public class MappedRevenueL extends Metric{
 	private boolean isPathSplitting;
+	 double mappedRevenue = 0;
 
 	public MappedRevenueL(Simulation simulation, boolean isPsAlgorithm) throws IOException {
 		super(simulation);
@@ -33,7 +34,7 @@ public class MappedRevenueL extends Metric{
 		Map<VirtualNetwork, Boolean> isMappedVnr = VnrUtils
 				.calculateMappedVnr(simulation.getVirtualNetworks());
 		VirtualNetwork tempVnr;
-		double mappedRevenue = 0;
+		//double mappedRevenue = 0;
 		for (Iterator<VirtualNetwork> net = simulation.getVirtualNetworks().iterator(); net.hasNext();) {
 			tmpN = net.next();
 			if (tmpN.getLayer() != 0) {

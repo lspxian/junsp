@@ -18,6 +18,7 @@ public class tempCostRevenueL extends Metric{
 	
 private boolean isPathSplitting;
 double costMapped = 0;
+private static double  mappedRevenue = 0;
 
 	public tempCostRevenueL(Simulation simulation, boolean isPsAlgorithm) throws IOException {
 		super(simulation);
@@ -34,7 +35,7 @@ double costMapped = 0;
 		Map<VirtualNetwork, Boolean> isMappedVnr = VnrUtils
 				.calculateMappedVnr(simulation.getVirtualNetworks());
 		VirtualNetwork tempVnr;
-		double mappedRevenue = 0;
+		//double mappedRevenue = 0;
 		int mapped = 0;
 		double costRev = 0;
 		for (Iterator<VirtualNetwork> net = simulation.getVirtualNetworks().iterator(); net.hasNext();) {

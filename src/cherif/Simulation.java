@@ -6,8 +6,17 @@ import java.util.Collections;
 import java.util.Map;
 
 import li.evaluation.metrics.AcceptedRatioL;
+import li.evaluation.metrics.CostL;
+import li.evaluation.metrics.CostPerMappedNetworkL;
+import li.evaluation.metrics.CostRevenueL;
+import li.evaluation.metrics.LinkCostPerVnrL;
 import li.evaluation.metrics.LinkUtilizationL;
+import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.Metric;
+import li.evaluation.metrics.NodeUtilizationL;
+import li.evaluation.metrics.RevenueCostL;
+import li.evaluation.metrics.TotalRevenueL;
+import li.evaluation.metrics.tempCostRevenueL;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -20,6 +29,7 @@ import vnreal.network.virtual.VirtualNode;
 public class Simulation {
 	private SubstrateNetwork sn;
 	private ArrayList<VirtualNetwork> vns;
+	private ArrayList<VirtualNetwork> vnEvent;
 	private ArrayList<VnEvent> events;
 	private ArrayList<Metric> metrics;
 	private double simulationTime = 2000.0;
@@ -27,7 +37,7 @@ public class Simulation {
 	private int accepted = 0;
 	private int rejected = 0;
 	private double lambda = 4.0/100.0;
-	
+	int j=0;
 	public int getAccepted() {
 		return accepted;
 	}
@@ -42,6 +52,14 @@ public class Simulation {
 	{
 		return vns;
 	}
+	public ArrayList<VirtualNetwork> getList()
+	{
+		return vnEvent;
+	}
+	public ArrayList<VnEvent> getVnEvents()
+	{
+		return events;
+	}
 	public ArrayList<Metric> getMetrics() {
 		return metrics;
 	}
@@ -54,11 +72,12 @@ public class Simulation {
 		sn.addAllResource(false);
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<100;i++){
+		for(int i=0;i<50;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
 			vns.add(vn);
+			j++;
 		}
 		
 		events = new ArrayList<VnEvent>();
@@ -73,6 +92,16 @@ public class Simulation {
 		metrics = new ArrayList<Metric>();
 		metrics.add(new AcceptedRatioL(this));
 		metrics.add(new LinkUtilizationL(this));
+		metrics.add(new NodeUtilizationL(this));
+		metrics.add(new CostL(this));
+		metrics.add(new LinkCostPerVnrL(this));
+		metrics.add(new CostPerMappedNetworkL(this));
+		metrics.add(new CostRevenueL(this,false));
+		metrics.add(new MappedRevenueL(this,false));
+		metrics.add(new RevenueCostL(this,false));
+		metrics.add(new tempCostRevenueL(this,false));
+		metrics.add(new TotalRevenueL(this,false));
+		
 		
 	}
 	
@@ -84,7 +113,8 @@ public class Simulation {
 			
 			if(currentEvent.getFlag()==0){
 				AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
-				
+				vnEvent = new ArrayList<VirtualNetwork>();
+				vnEvent.add(currentEvent.getConcernedVn());
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
 					Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 					//System.out.println(nodeMapping);
