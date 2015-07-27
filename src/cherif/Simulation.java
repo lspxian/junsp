@@ -29,15 +29,15 @@ import vnreal.network.virtual.VirtualNode;
 public class Simulation {
 	private SubstrateNetwork sn;
 	private ArrayList<VirtualNetwork> vns;
+	private ArrayList<VirtualNetwork> mappedVNs;
 	private ArrayList<VirtualNetwork> vnEvent;
 	private ArrayList<VnEvent> events;
 	private ArrayList<Metric> metrics;
-	private double simulationTime = 2000.0;
+	private double simulationTime = 20000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
 	private double lambda = 4.0/100.0;
-	int j=0;
 	public int getAccepted() {
 		return accepted;
 	}
@@ -56,6 +56,11 @@ public class Simulation {
 	{
 		return vnEvent;
 	}
+	
+	public ArrayList<VirtualNetwork> getMappedVNs() {
+		return mappedVNs;
+	}
+
 	public ArrayList<VnEvent> getVnEvents()
 	{
 		return events;
@@ -72,36 +77,39 @@ public class Simulation {
 		sn.addAllResource(false);
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<50;i++){
+		for(int i=0;i<1000;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
-			vn.addAllResource(true);
+			vn.addAllResource(false);
 			vns.add(vn);
-			j++;
 		}
 		
 		events = new ArrayList<VnEvent>();
 		for(int i=0;(time <=simulationTime)	&& (i <vns.size());i++){
 			events.add(new VnEvent(vns.get(i),time,0)); //arrival event
-			events.add(new VnEvent(vns.get(i),time+vns.get(i).getLifetime(),1)); // departure event
+			double departure = time+vns.get(i).getLifetime();
+			if(departure<=simulationTime)
+				events.add(new VnEvent(vns.get(i),departure,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda); //generate next vn arrival event
 		}
 		Collections.sort(events);
 		
 		//add metric
 		metrics = new ArrayList<Metric>();
-		metrics.add(new AcceptedRatioL(this));
+		/*metrics.add(new AcceptedRatioL(this));
 		metrics.add(new LinkUtilizationL(this));
 		metrics.add(new NodeUtilizationL(this));
 		metrics.add(new CostL(this));
 		metrics.add(new LinkCostPerVnrL(this));
 		metrics.add(new CostPerMappedNetworkL(this));
-		metrics.add(new CostRevenueL(this,false));
+		metrics.add(new CostRevenueL(this,false));*/
 		metrics.add(new MappedRevenueL(this,false));
-		metrics.add(new RevenueCostL(this,false));
+		/*metrics.add(new RevenueCostL(this,false));
 		metrics.add(new tempCostRevenueL(this,false));
-		metrics.add(new TotalRevenueL(this,false));
+		metrics.add(new TotalRevenueL(this,false));*/
 		
+		mappedVNs = new ArrayList<VirtualNetwork>();
+		vnEvent = new ArrayList<VirtualNetwork>();
 		
 	}
 	
@@ -113,7 +121,7 @@ public class Simulation {
 			
 			if(currentEvent.getFlag()==0){
 				AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
-				vnEvent = new ArrayList<VirtualNetwork>();
+				
 				vnEvent.add(currentEvent.getConcernedVn());
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
 					Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
@@ -124,6 +132,7 @@ public class Simulation {
 					UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
 					if(ulpc.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
+						mappedVNs.add(currentEvent.getConcernedVn());
 					}
 					else{
 						this.rejected++;
