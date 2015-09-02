@@ -17,6 +17,7 @@ import li.evaluation.metrics.NodeUtilizationL;
 import li.evaluation.metrics.RevenueCostL;
 import li.evaluation.metrics.TotalRevenueL;
 import li.evaluation.metrics.tempCostRevenueL;
+import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -77,7 +78,7 @@ public class Simulation {
 		sn.addAllResource(false);
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<1000;i++){
+		for(int i=0;i<10;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(false);
@@ -95,7 +96,7 @@ public class Simulation {
 		Collections.sort(events);
 		
 		//add metric
-		metrics = new ArrayList<Metric>();
+		//metrics = new ArrayList<Metric>();
 		/*metrics.add(new AcceptedRatioL(this));
 		metrics.add(new LinkUtilizationL(this));
 		metrics.add(new NodeUtilizationL(this));
@@ -103,7 +104,7 @@ public class Simulation {
 		metrics.add(new LinkCostPerVnrL(this));
 		metrics.add(new CostPerMappedNetworkL(this));
 		metrics.add(new CostRevenueL(this,false));*/
-		metrics.add(new MappedRevenueL(this,false));
+		//metrics.add(new MappedRevenueL(this,false));
 		/*metrics.add(new RevenueCostL(this,false));
 		metrics.add(new tempCostRevenueL(this,false));
 		metrics.add(new TotalRevenueL(this,false));*/
@@ -129,8 +130,9 @@ public class Simulation {
 					//System.out.println("node mapping succes, virtual netwotk "+j);
 					
 					//link mapping
-					UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
-					if(ulpc.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
+					//UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
+					PathSplittingVirtualLinkMapping psvlm = new PathSplittingVirtualLinkMapping(sn,0.3,0.7);
+					if(psvlm.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
 					}
@@ -149,16 +151,16 @@ public class Simulation {
 				System.out.println("Liberation Ressources");
 				NodeLinkDeletion.freeRessource(currentEvent.getConcernedVn(), sn);
 			}
-			
+			/*
 			for(Metric metric : metrics){ //write data to file
 				metric.getFout().write(currentEvent.getAoDTime()+" " +metric.calculate()+"\n");
-			}
+			}*/
 			
 		}
-		
+		/*
 		for(Metric metric : metrics){
 			metric.getFout().close();
-		}
+		}*/
 		
 		
 		

@@ -46,13 +46,13 @@ public static void main(String[] args) throws IOException {
 		
 		
 		
-		BufferedWriter fout = new BufferedWriter(new FileWriter("aceptedratio.txt"));
-		BufferedWriter fout1 = new BufferedWriter(new FileWriter("cost.txt"));
-		BufferedWriter fout2 = new BufferedWriter(new FileWriter("costpermapped.txt"));
-		BufferedWriter fout3 = new BufferedWriter(new FileWriter("costrevenue.txt"));
-		BufferedWriter fout4 = new BufferedWriter(new FileWriter("linkcost.txt"));
+		//BufferedWriter fout = new BufferedWriter(new FileWriter("aceptedratio.txt"));
+		//BufferedWriter fout1 = new BufferedWriter(new FileWriter("cost.txt"));
+		//BufferedWriter fout2 = new BufferedWriter(new FileWriter("costpermapped.txt"));
+		//BufferedWriter fout3 = new BufferedWriter(new FileWriter("costrevenue.txt"));
+		//BufferedWriter fout4 = new BufferedWriter(new FileWriter("linkcost.txt"));
 		BufferedWriter fout5 = new BufferedWriter(new FileWriter("linkutilization.txt"));
-		BufferedWriter fout6 = new BufferedWriter(new FileWriter("nodeutilization.txt"));
+		//BufferedWriter fout6 = new BufferedWriter(new FileWriter("nodeutilization.txt"));
 		/*for(int k=0;k<=15;k++)
 		{
 			periodTest = MiscelFunctions.negExponential(meanVn);
@@ -63,7 +63,7 @@ public static void main(String[] args) throws IOException {
 		
 		//virtual network list
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
-		for( i=0;i<500;i++){
+		for( i=0;i<50;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -151,13 +151,13 @@ public static void main(String[] args) throws IOException {
 				}
 				System.out.println("Link utilisation =" + sum/capacity);*/
 					try {
-						AcceptedRatio acceptedRatio = new AcceptedRatio();
-						Cost cost = new Cost();
+						//AcceptedRatio acceptedRatio = new AcceptedRatio();
+						//Cost cost = new Cost();
 						/*CostPerMappedNetwork costpermapped = new CostPerMappedNetwork();
 						CostRevenue costrevenue = new CostRevenue(false);*/
-						LinkCostPerVnr linkcost = new LinkCostPerVnr();
+						//LinkCostPerVnr linkcost = new LinkCostPerVnr();
 						LinkUtilization linkutilization = new LinkUtilization();
-						NodeUtilization nodeutilization = new NodeUtilization();
+						//NodeUtilization nodeutilization = new NodeUtilization();
 					/*	linkcost.setStack(netst);
 						costrevenue.setStack(netst);
 						costpermapped.setStack(netst);
@@ -166,20 +166,20 @@ public static void main(String[] args) throws IOException {
 					//MappedRevenue mappedRevenue = new MappedRevenue(true);
 					//mappedRevenue.setStack(netst);
 						
-						fout.write(currentEvent.getAoDTime()+" " +acceptedRatio.calculate(acepted,rejected));
-						fout.write("\n");
-						fout1.write(currentEvent.getAoDTime()+" " +cost.calculateCost(sn));
-						fout1.write("\n");
+						//fout.write(currentEvent.getAoDTime()+" " +acceptedRatio.calculate(acepted,rejected));
+						//fout.write("\n");
+						//fout1.write(currentEvent.getAoDTime()+" " +cost.calculateCost(sn));
+						//fout1.write("\n");
 						/*fout2.write(currentEvent.getAoDTime()+" " +costpermapped.calculate());
 						fout2.write("\n");
 						fout3.write(currentEvent.getAoDTime()+" " +costrevenue.calculate());
 						fout3.write("\n");*/
-						fout4.write(currentEvent.getAoDTime()+" " +linkcost.linkCost(sn,acepted));
-						fout4.write("\n");
+					//	fout4.write(currentEvent.getAoDTime()+" " +linkcost.linkCost(sn,acepted));
+						//fout4.write("\n");
 						fout5.write(currentEvent.getAoDTime()+" " +linkutilization.calculate(sn)/*sum/capacity*/);
 						fout5.write("\n");
-						fout6.write(currentEvent.getAoDTime()+" " +nodeutilization.calculate(sn));
-						fout6.write("\n");
+						//fout6.write(currentEvent.getAoDTime()+" " +nodeutilization.calculate(sn));
+						//fout6.write("\n");
 
 					k++;
 					}catch(FileNotFoundException e){
@@ -191,13 +191,13 @@ public static void main(String[] args) throws IOException {
 				}
 
 			}
-		fout.close();
-		fout1.close();
-		fout2.close();
-		fout3.close();
-		fout4.close();
+		//fout.close();
+		//fout1.close();
+		//fout2.close();
+		//fout3.close();
+		//fout4.close();
 		fout5.close();
-		fout6.close();
+		//fout6.close();
 		}
 
 }
