@@ -1,4 +1,4 @@
-package cherif;
+package li.simulation;
 
 import java.io.IOException;
 import java.util.ArrayList;

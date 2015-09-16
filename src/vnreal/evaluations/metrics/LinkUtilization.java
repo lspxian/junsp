@@ -49,6 +49,7 @@ public class LinkUtilization  {
 		for (SubstrateLink sl : sNetwork.getEdges()) {
 			for (AbstractResource res : sl.get()) {
 				capacity += ((BandwidthResource) res).getBandwidth();
+				System.out.println(capacity);
 			}
 		}
 		for (SubstrateLink sl : sNetwork.getEdges()) {

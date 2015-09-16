@@ -2,13 +2,13 @@ package li.evaluation.metrics;
 
 import java.io.IOException;
 
+import li.simulation.Simulation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.mapping.Mapping;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
-import cherif.Simulation;
 
 public class LinkUtilizationL extends Metric {
 

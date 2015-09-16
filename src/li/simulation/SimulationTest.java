@@ -1,8 +1,6 @@
-package li.evaluation.metrics;
+package li.simulation;
 
 import java.io.IOException;
-
-import cherif.Simulation;
 
 public class SimulationTest {
 

@@ -23,8 +23,6 @@ import vnreal.algorithms.utils.Consts;
 import vnreal.algorithms.utils.dataSolverFile;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
-import vnreal.evaluations.metrics.AcceptedVnrRatio;
-import vnreal.evaluations.metrics.MappedRevenue;
 import vnreal.evaluations.metrics.TotalRevenue;
 import vnreal.network.NetworkStack;
 import vnreal.network.substrate.SubstrateLink;
@@ -103,10 +101,6 @@ public class Gra {
 			
 		}
 		
-		//Network stack
-	
-		NetworkStack netst = new NetworkStack(sn,vns);	
-		
 		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
@@ -122,13 +116,13 @@ public class Gra {
 			System.out.println(nodeMapping);
 			
 			//link mapping
-			/*
+			
 			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
-			ulpc.linkMapping(vns.get(i), nodeMapping);*/
+			ulpc.linkMapping(vns.get(i), nodeMapping);
 			
-			
+			/*
 			SOD_BK sod_bk = new SOD_BK(sn);
-			sod_bk.linkMapping(vns.get(i), nodeMapping);
+			sod_bk.linkMapping(vns.get(i), nodeMapping);*/
 			//sod_bk.generateFile(vns.get(i), nodeMapping);
 			
 			

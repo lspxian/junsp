@@ -2,7 +2,7 @@ package li.evaluation.metrics;
 
 import java.io.IOException;
 
-import cherif.Simulation;
+import li.simulation.Simulation;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
 import vnreal.mapping.Mapping;

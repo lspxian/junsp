@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import cherif.Simulation;
+import li.simulation.Simulation;
 
 public abstract class Metric{
 	

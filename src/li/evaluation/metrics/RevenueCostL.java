@@ -2,7 +2,7 @@ package li.evaluation.metrics;
 
 import java.io.IOException;
 
-import cherif.Simulation;
+import li.simulation.Simulation;
 
 public class RevenueCostL extends Metric{
 	private boolean isPathSplitting;

@@ -1,4 +1,4 @@
-package cherif;
+package li.simulation;
 
 import vnreal.network.virtual.VirtualNetwork;
 
