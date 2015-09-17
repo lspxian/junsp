@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import vnreal.algorithms.linkmapping.SOD_BK;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -45,8 +45,11 @@ public class AlgoTest {
 			
 			//link mapping
 			
-			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
-			ulpc.linkMapping(vns.get(i), nodeMapping);
+			//UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
+			//ulpc.linkMapping(vns.get(i), nodeMapping);
+			SOD_BK sod_bk = new SOD_BK(sn);
+			sod_bk.linkMapping(vns.get(i), nodeMapping);
+			
 		}
 		
 		System.out.println(sn);

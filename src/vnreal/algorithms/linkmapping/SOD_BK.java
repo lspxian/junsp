@@ -6,16 +6,22 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.collections15.map.LinkedMap;
+
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+
 import mulavito.algorithms.shortestpath.ksp.LocalBypass;
 import mulavito.algorithms.shortestpath.ksp.Yen;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.LinkWeight;
+import vnreal.algorithms.utils.MiscelFunctions;
+import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.Remote;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
+import vnreal.mapping.Mapping;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
@@ -73,6 +79,7 @@ public class SOD_BK extends AbstractLinkMapping{
 				for(AbstractResource asrc : tmpsl){
 					if(asrc instanceof BandwidthResource){
 						bwResource = (BandwidthResource) asrc;
+						break;
 					}
 				}
 				double additionalBw=0;
@@ -84,13 +91,20 @@ public class SOD_BK extends AbstractLinkMapping{
 				}
 				for (Iterator<VirtualLink> vlink = vNet.getEdges().iterator(); vlink.hasNext();) {
 					VirtualLink tmpvl = vlink.next();
+					for(AbstractDemand admd :tmpvl){
+						if(admd instanceof BandwidthDemand){
+							bwDem = (BandwidthDemand) admd;
+							break;
+						}
+					}
+					
 					for(int i=0;i<preselectedPath.get(tmpvl).size();i++){
 						List<SubstrateLink> path = preselectedPath.get(tmpvl).get(i);
 						String stringxpv = "";
 						//Is(p)
 						if(path.contains(tmpsl)){
 							//Xp(v)
-							stringxpv = stringxpv + " Xvl#" + tmpvl.getId() + "sp";
+							stringxpv = stringxpv + "Xvl#" + tmpvl.getId() + "sp";
 							for(int j=0;j<path.size();j++){
 								stringxpv = stringxpv + "#" +path.get(j).getId();
 							}
@@ -98,6 +112,16 @@ public class SOD_BK extends AbstractLinkMapping{
 						if(xpv.get(stringxpv)!=null){
 							//xpv sum
 							additionalBw = additionalBw + Double.parseDouble(xpv.get(stringxpv));
+							
+							newBwDem = new BandwidthDemand(tmpvl);
+							newBwDem.setDemandedBandwidth(Double.parseDouble(xpv.get(stringxpv)));
+							
+							new Mapping(newBwDem,bwResource);
+							/*
+							if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
+								throw new AssertionError("But we checked before!");
+							}*/
+							
 						}
 					}
 				}

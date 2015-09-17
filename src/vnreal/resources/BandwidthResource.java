@@ -181,8 +181,11 @@ public final class BandwidthResource extends AbstractResource implements
 		sb.append("Mbit/s");
 		sb.append(" occupied bandwidth=");
 		sb.append(occupiedBandwidth);
+		
 		if (getMappings().size() > 0)
 			sb.append(getMappingsString());
+		sb.append(" reservedBackupBw=");
+		sb.append(reservedBackupBw);
 		return sb.toString();
 	}
 
