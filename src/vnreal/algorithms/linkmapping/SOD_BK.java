@@ -112,7 +112,7 @@ public class SOD_BK extends AbstractLinkMapping{
 						if(xpv.get(stringxpv)!=null){
 							//xpv sum
 							additionalBw = additionalBw + Double.parseDouble(xpv.get(stringxpv));
-							
+							bwResource.setPrimaryBw(bwResource.getPrimaryBw()+Double.parseDouble(xpv.get(stringxpv)));
 							newBwDem = new BandwidthDemand(tmpvl);
 							newBwDem.setDemandedBandwidth(Double.parseDouble(xpv.get(stringxpv)));
 							
@@ -137,13 +137,16 @@ public class SOD_BK extends AbstractLinkMapping{
 						String stringyrf="";
 						//Is(r) yr(f)
 						if(localBypassi.contains(tmpsl)){
-							stringyrf = stringyrf + " + yf#" + failure.getId() + "r";
+							stringyrf = stringyrf + "yf#" + failure.getId() + "r";
 							for(int j=0;j<localBypassi.size();j++){
 								stringyrf = stringyrf + "#" + localBypassi.get(j).getId();
 							}
 						}
-						if(yrf.get(stringyrf)!=null)
+						if(yrf.get(stringyrf)!=null){
 							additionalBackup = additionalBackup + Double.parseDouble(yrf.get(stringyrf));
+							bwResource.getBackupBw().put(failure, Double.parseDouble(yrf.get(stringyrf)));
+						}
+						
 					}
 					//Ysf(t+1)
 					if(bwResource.getBackupBw().get(failure)!=null)

@@ -31,6 +31,8 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.resources;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections15.map.LinkedMap;
@@ -60,9 +62,19 @@ public final class BandwidthResource extends AbstractResource implements
 	private double occupiedBandwidth = 0;
 	
 	//for backup 
+	private double primaryBw = 0;
 	private double reservedBackupBw = 0; // max of delta, Z
 	private Map<Link<? extends AbstractConstraint>,Double> backupBw; //Yfs of guo, or delta of yazid
 	
+	
+
+	public double getPrimaryBw() {
+		return primaryBw;
+	}
+
+	public void setPrimaryBw(double primaryBw) {
+		this.primaryBw = primaryBw;
+	}
 
 	public double getReservedBackupBw() {
 		return reservedBackupBw;
@@ -148,8 +160,8 @@ public final class BandwidthResource extends AbstractResource implements
 			@Override
 			public boolean visit(BandwidthDemand dem) {
 				if (fulfills(dem)) {
-					occupiedBandwidth += MiscelFunctions.roundThreeDecimals(dem
-							.getDemandedBandwidth());
+					occupiedBandwidth += dem
+							.getDemandedBandwidth();
 					new Mapping(dem, getThis());
 					return true;
 				} else
@@ -179,13 +191,14 @@ public final class BandwidthResource extends AbstractResource implements
 		sb.append("BandwidthResource: bandwidth=");
 		sb.append(getBandwidth());
 		sb.append("Mbit/s");
-		sb.append(" occupied bandwidth=");
-		sb.append(occupiedBandwidth);
-		
+		sb.append(" occupied bandwidth="+occupiedBandwidth+"\n");
+		sb.append(" Primary bandwidth="+primaryBw);
 		if (getMappings().size() > 0)
 			sb.append(getMappingsString());
-		sb.append(" reservedBackupBw=");
-		sb.append(reservedBackupBw);
+		sb.append("\n Reserved backup bandwidth="+reservedBackupBw+" protect : ");
+		for(Map.Entry<Link<? extends AbstractConstraint>, Double> entry: backupBw.entrySet()){
+			sb.append(entry.getKey().toString()+entry.getValue());
+		}
 		return sb.toString();
 	}
 
