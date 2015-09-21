@@ -49,7 +49,7 @@ public class NodeLinkDeletion {
 	
 	// This function frees the resource allocations of a virtual network in a substrate network
 	@SuppressWarnings("static-access")
-	public static boolean freeRessource(VirtualNetwork vn, SubstrateNetwork sn) {
+	public static boolean freeResource(VirtualNetwork vn, SubstrateNetwork sn) {
 		NodeLinkDeletion ndl = new NodeLinkDeletion();
 		List<SubstrateLink> list = new ArrayList<SubstrateLink>();
 		list.addAll(0, sn.getEdges());

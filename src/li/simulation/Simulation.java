@@ -149,7 +149,7 @@ public class Simulation {
 			}
 			else{
 				System.out.println("Liberation Ressources");
-				NodeLinkDeletion.freeRessource(currentEvent.getConcernedVn(), sn);
+				NodeLinkDeletion.freeResource(currentEvent.getConcernedVn(), sn);
 			}
 			/*
 			for(Metric metric : metrics){ //write data to file

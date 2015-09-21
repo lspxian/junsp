@@ -195,9 +195,9 @@ public final class BandwidthResource extends AbstractResource implements
 		sb.append(" Primary bandwidth="+primaryBw);
 		if (getMappings().size() > 0)
 			sb.append(getMappingsString());
-		sb.append("\n Reserved backup bandwidth="+reservedBackupBw+" protect : ");
+		sb.append("\n Reserved backup bandwidth="+reservedBackupBw+" by : ");
 		for(Map.Entry<Link<? extends AbstractConstraint>, Double> entry: backupBw.entrySet()){
-			sb.append(entry.getKey().toString()+entry.getValue());
+			sb.append("bw="+entry.getValue()+"@"+entry.getKey().toString()+" ");
 		}
 		return sb.toString();
 	}

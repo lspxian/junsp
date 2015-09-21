@@ -144,15 +144,15 @@ public class SOD_BK extends AbstractLinkMapping{
 						}
 						if(yrf.get(stringyrf)!=null){
 							additionalBackup = additionalBackup + Double.parseDouble(yrf.get(stringyrf));
-							bwResource.getBackupBw().put(failure, Double.parseDouble(yrf.get(stringyrf)));
+							//bwResource.getBackupBw().put(failure, Double.parseDouble(yrf.get(stringyrf)));
 						}
 						
 					}
 					//Ysf(t+1)
 					if(bwResource.getBackupBw().get(failure)!=null)
 						bwResource.getBackupBw().replace(failure, bwResource.getBackupBw().get(failure)+additionalBackup);
-					else
-						bwResource.getBackupBw().replace(failure, additionalBackup);
+					else if(additionalBackup!=0.0)
+						bwResource.getBackupBw().put(failure, additionalBackup);
 				}
 			}
 			
@@ -162,6 +162,11 @@ public class SOD_BK extends AbstractLinkMapping{
 		
 		remote.disconnect();
 		return true;
+	}
+
+	public boolean freeResource(){
+		
+		return false;
 	}
 	
 	public void generateFile(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping) throws IOException{
