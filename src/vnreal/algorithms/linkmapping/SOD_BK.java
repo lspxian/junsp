@@ -166,6 +166,21 @@ public class SOD_BK extends AbstractLinkMapping{
 
 	public boolean freeResource(){
 		
+		BandwidthDemand bwDem = null, newBwDem;
+		BandwidthResource bwResource = null;
+		
+		for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
+			SubstrateLink tmpsl = slink.next();
+			for(AbstractResource asrc : tmpsl){
+				if(asrc instanceof BandwidthResource){
+					bwResource = (BandwidthResource) asrc;
+					break;
+				}
+			}
+			
+			
+		}
+		
 		return false;
 	}
 	

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import vnreal.algorithms.linkmapping.SOD_BK;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.NodeLinkDeletion;
@@ -42,7 +43,7 @@ public class FreeResourceTest {
 		
 		//Mapping
 		
-		for(int i=0;i<5;i++){
+		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
@@ -56,10 +57,13 @@ public class FreeResourceTest {
 			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 			System.out.println(nodeMapping);
 			
+			
 			//link mapping
 			
 			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
 			ulpc.linkMapping(vns.get(i), nodeMapping);
+			//SOD_BK sod_bk = new SOD_BK(sn);
+			//sod_bk.linkMapping(vns.get(i), nodeMapping);
 		}
 		
 		System.out.println(sn);
@@ -67,7 +71,7 @@ public class FreeResourceTest {
 		//Free resource
 	
 		NodeLinkDeletion ndl = new NodeLinkDeletion();
-		for(int i=0;i<5;i++){
+		for(int i=0;i<1;i++){
 			ndl.freeResource(vns.get(i), sn);
 		}
 		System.out.println(sn);
