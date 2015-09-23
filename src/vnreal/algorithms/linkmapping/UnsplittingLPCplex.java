@@ -173,7 +173,24 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 					general = general +  " vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
 				}
 				
+				//flow constraints
+				ArrayList<SubstrateNode> nextHop = sNet.getNextHop(srcSnode);
+				for(Iterator<SubstrateNode> iterator = sNet.getVertices().iterator();iterator.hasNext();){
+					SubstrateNode snode = iterator.next();
+					nextHop = sNet.getHop(snode);
+					for(int i=0;i<nextHop.size();i++){
+						constraint=constraint+" + vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+snode.getId()+"sd"+nextHop.get(i).getId();
+						constraint=constraint+" - vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+nextHop.get(i).getId()+"sd"+snode.getId();
+					}
+					if(snode.equals(srcSnode))	constraint =constraint+" = 1\n";
+					else if(snode.equals(dstSnode)) constraint =constraint+" = -1\n";
+					else	constraint =constraint+" = 0\n";
+					
+				}
+				
+				
 				//source and destination flow constraints
+				/*
 				ArrayList<SubstrateNode> nextHop = sNet.getNextHop(srcSnode);
 				for(int i=0;i<nextHop.size();i++){
 					constraint=constraint+" + vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+srcSnode.getId()+"sd"+nextHop.get(i).getId();
@@ -200,7 +217,7 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 						}
 						constraint =constraint+" = 0\n";
 					}
-				}
+				}*/
 			}
 		}
 		

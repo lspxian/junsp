@@ -45,10 +45,10 @@ public class AlgoTest {
 			
 			//link mapping
 			
-			//UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
-			//ulpc.linkMapping(vns.get(i), nodeMapping);
-			SOD_BK sod_bk = new SOD_BK(sn);
-			sod_bk.linkMapping(vns.get(i), nodeMapping);
+			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
+			ulpc.linkMapping(vns.get(i), nodeMapping);
+			//SOD_BK sod_bk = new SOD_BK(sn);
+			//sod_bk.linkMapping(vns.get(i), nodeMapping);
 			
 		}
 		

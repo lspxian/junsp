@@ -201,6 +201,17 @@ public class SubstrateNetwork extends
 	
 	/*****************shuopeng*********************/
 	
+	public ArrayList<SubstrateNode>getHop(SubstrateNode n){
+		ArrayList<SubstrateNode> hop = new ArrayList<SubstrateNode>();
+		for(Iterator<SubstrateLink> link = this.getEdges().iterator();link.hasNext();){
+			SubstrateLink slink = link.next();
+			if(this.getSource(slink).equals(n))
+				hop.add(this.getDest(slink));
+
+		}
+		return hop;
+	}
+	
 	
 	public ArrayList<SubstrateNode> getNextHop(SubstrateNode n){
 		ArrayList<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
