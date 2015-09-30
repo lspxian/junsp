@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.collections15.Factory;
@@ -298,4 +299,32 @@ public class SubstrateNetwork extends
 		return null;
 	}
 	
+	
+	public List<SubstrateNetwork> divide(){
+		List<SubstrateNetwork> multiNet = new ArrayList<SubstrateNetwork>();
+		SubstrateNetwork sn1 = new SubstrateNetwork();
+		SubstrateNetwork sn2 = new SubstrateNetwork();
+		SubstrateNetwork sn3 = new SubstrateNetwork();
+		SubstrateNetwork sn4 = new SubstrateNetwork();
+		multiNet.add(sn1);
+		multiNet.add(sn2);
+		multiNet.add(sn3);
+		multiNet.add(sn4);
+		for(SubstrateNode snd : this.getVertices()){
+			if(snd.getCoordinateX()<50&snd.getCoordinateY()<50)
+				sn1.addVertex(snd);
+			else if(snd.getCoordinateX()>=50&snd.getCoordinateY()<50)
+				sn2.addVertex(snd);
+			else if(snd.getCoordinateX()>=50&snd.getCoordinateY()>=50)
+				sn3.addVertex(snd);
+			else sn4.addVertex(snd);
+		}
+		
+		for(SubstrateLink sl : this.getEdges()){
+			
+		}
+		
+		return multiNet;
+		
+	}
 }
