@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import li.multiDomain.Domain;
+import vnreal.algorithms.AS_MCF;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
@@ -15,13 +17,11 @@ public class MultiDomainAlgoTest {
 
 	public static void main(String[] args) throws IOException {
 		
-		List<SubstrateNetwork> multiDomain = new ArrayList<SubstrateNetwork>();
+		List<Domain> multiDomain = new ArrayList<Domain>();
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
 		sn.alt2network("data/cost239");
 		sn.addAllResource(true);
-		
-		multiDomain = preconfig(sn);
-		
+		System.out.println(sn);
 		
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
@@ -32,7 +32,7 @@ public class MultiDomainAlgoTest {
 			vns.add(vn);
 		}
 		
-		for(int i=0;i<5;i++){
+		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
@@ -46,10 +46,15 @@ public class MultiDomainAlgoTest {
 			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 			System.out.println(nodeMapping);
 		
+			AS_MCF as_mcf = new AS_MCF(multiDomain);
+			as_mcf.linkMapping(vns.get(i),nodeMapping);
 			
+			multiDomain = sn.divide4Domain();
+			System.out.println(multiDomain.get(0));
+			System.out.println(multiDomain.get(1));
+			System.out.println(multiDomain.get(2));
+			System.out.println(multiDomain.get(3));
 			
-			
-		
 		}
 		
 		
@@ -59,11 +64,5 @@ public class MultiDomainAlgoTest {
 		
 	}
 	
-	static List<SubstrateNetwork> preconfig(SubstrateNetwork sn){
-		//TODO divide
-		
-		
-		
-		return null;
-	}
+
 }

@@ -42,6 +42,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import li.multiDomain.Domain;
+
 import org.apache.commons.collections15.Factory;
 
 import vnreal.network.Network;
@@ -57,6 +59,8 @@ import edu.uci.ics.jung.graph.util.Pair;
 @SuppressWarnings("serial")
 public class SubstrateNetwork extends
 		Network<AbstractResource, SubstrateNode, SubstrateLink> {
+	
+	
 	/**
 	 * constructor used by filter.transform(graph)  
 	 */
@@ -300,28 +304,48 @@ public class SubstrateNetwork extends
 	}
 	
 	
-	public List<SubstrateNetwork> divide(){
-		List<SubstrateNetwork> multiNet = new ArrayList<SubstrateNetwork>();
-		SubstrateNetwork sn1 = new SubstrateNetwork();
-		SubstrateNetwork sn2 = new SubstrateNetwork();
-		SubstrateNetwork sn3 = new SubstrateNetwork();
-		SubstrateNetwork sn4 = new SubstrateNetwork();
-		multiNet.add(sn1);
-		multiNet.add(sn2);
-		multiNet.add(sn3);
-		multiNet.add(sn4);
-		for(SubstrateNode snd : this.getVertices()){
-			if(snd.getCoordinateX()<50&snd.getCoordinateY()<50)
-				sn1.addVertex(snd);
-			else if(snd.getCoordinateX()>=50&snd.getCoordinateY()<50)
-				sn2.addVertex(snd);
-			else if(snd.getCoordinateX()>=50&snd.getCoordinateY()>=50)
-				sn3.addVertex(snd);
-			else sn4.addVertex(snd);
-		}
+	public List<Domain> divide4Domain(){
+		List<Domain> multiNet = new ArrayList<Domain>();
+		Domain dn1 = new Domain();
+		Domain dn2 = new Domain();
+		Domain dn3 = new Domain();
+		Domain dn4 = new Domain();
+		multiNet.add(dn1);
+		multiNet.add(dn2);
+		multiNet.add(dn3);
+		multiNet.add(dn4);
 		
 		for(SubstrateLink sl : this.getEdges()){
-			
+			SubstrateNode source = this.getSource(sl);
+			SubstrateNode dest = this.getDest(sl);
+			double sx = source.getCoordinateX();
+			double sy = source.getCoordinateY();
+			double dx = dest.getCoordinateX();
+			double dy = dest.getCoordinateY();
+			if(sx<50&&sy<50){
+				if(dx<50&&dy<50)	dn1.addEdge(sl, source, dest);
+				else if(dx>=50&&dy<50)	dn1.addInterLink(sl, source, dest, dn2);
+				else if(dx>=50&&dy>=50) dn1.addInterLink(sl, source, dest, dn3);
+				else if(dx<50&&dy>=50) dn1.addInterLink(sl, source, dest, dn4);
+			}
+			else if(sx>=50&&sy<50){
+				if(dx<50&&dy<50)	dn2.addInterLink(sl, source, dest, dn1);
+				else if(dx>=50&&dy<50)	dn2.addEdge(sl, source, dest);
+				else if(dx>=50&&dy>=50) dn2.addInterLink(sl, source, dest, dn3);
+				else if(dx<50&&dy>=50) dn2.addInterLink(sl, source, dest, dn4);
+			}
+			else if(sx>=50&&sy>=50){
+				if(dx<50&&dy<50)	dn3.addInterLink(sl, source, dest, dn1);
+				else if(dx>=50&&dy<50)	dn3.addInterLink(sl, source, dest, dn2);
+				else if(dx>=50&&dy>=50) dn3.addEdge(sl, source, dest);
+				else if(dx<50&&dy>=50) dn3.addInterLink(sl, source, dest, dn4);
+			}
+			else{
+				if(dx<50&&dy<50)	dn4.addInterLink(sl, source, dest, dn1);
+				else if(dx>=50&&dy<50)	dn4.addInterLink(sl, source, dest, dn2);
+				else if(dx>=50&&dy>=50) dn4.addInterLink(sl, source, dest, dn3);
+				else if(dx<50&&dy>=50) dn4.addEdge(sl, source, dest);
+			}
 		}
 		
 		return multiNet;
