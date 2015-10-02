@@ -43,7 +43,7 @@ import edu.uci.ics.jung.graph.UndirectedOrderedSparseMultigraph;
 public abstract class Network<T extends AbstractConstraint, V extends Node<T>, E extends Link<T>>
 		extends ObservableGraph<V, E> implements ILayer<V, E> {
 
-	private boolean autoUnregisterConstraints = true;
+	private boolean autoUnregisterConstraints = true;	//this parmeter is used to remove vertex and edge
 
 	protected Network(boolean autoUnregisterConstraints) {
 		this(autoUnregisterConstraints, true);

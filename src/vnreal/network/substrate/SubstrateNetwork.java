@@ -306,10 +306,10 @@ public class SubstrateNetwork extends
 	
 	public List<Domain> divide4Domain(){
 		List<Domain> multiNet = new ArrayList<Domain>();
-		Domain dn1 = new Domain();
-		Domain dn2 = new Domain();
-		Domain dn3 = new Domain();
-		Domain dn4 = new Domain();
+		Domain dn1 = new Domain(1);
+		Domain dn2 = new Domain(2);
+		Domain dn3 = new Domain(3);
+		Domain dn4 = new Domain(4);
 		multiNet.add(dn1);
 		multiNet.add(dn2);
 		multiNet.add(dn3);

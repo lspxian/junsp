@@ -2,8 +2,6 @@ package li.multiDomain;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import edu.uci.ics.jung.graph.util.Pair;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -17,10 +15,12 @@ import vnreal.resources.AbstractResource;
 public class Domain extends SubstrateNetwork{
 	
 	protected ArrayList<InterLink> interLink;
+	protected int id;
 
-	public Domain() {
+	public Domain(int id) {
 		super(false);
 		interLink = new ArrayList<InterLink>();
+		this.id =id;
 	}
 
 	public Domain(boolean autoUnregisterConstraints) {
@@ -40,6 +40,14 @@ public class Domain extends SubstrateNetwork{
 		this.interLink = interLink;
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public void addInterLink(SubstrateLink sl, SubstrateNode source, SubstrateNode dest, Domain destDomain){
 		this.addVertex(source);
 		this.interLink.add(new InterLink(sl, source, dest, destDomain));
