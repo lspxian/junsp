@@ -1,14 +1,13 @@
 package vnreal.algorithms;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.collections15.Transformer;
-
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import li.multiDomain.Domain;
+import vnreal.algorithms.linkmapping.MultiCommodityFlow;
+import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.network.substrate.AugmentedLink;
 import vnreal.network.substrate.AugmentedNetwork;
 import vnreal.network.substrate.InterLink;
@@ -32,78 +31,102 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 	public boolean linkMapping(VirtualNetwork vNet,
 			Map<VirtualNode, SubstrateNode> nodeMapping) {
 		
-		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
-			public Double transform(SubstrateLink link){
-				return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
-			}
-		};
-		
-		//augmented network for each domain, each request
-		List<AugmentedNetwork> augmentedNets = new ArrayList<AugmentedNetwork>();
+		//Create virtual network for each domain, transform virtual link to virtual inter link, this means to add source domain and destination domain.
+		Map<Domain, VirtualNetwork> vn4d = new HashMap<Domain, VirtualNetwork>();
 		for(Domain domain : domains){
-			AugmentedNetwork an = (AugmentedNetwork) domain.getCopy(false);	//intra substrate links
-			an.setRoot(domain);
-			for(InterLink tmplink : domain.getInterLink()){
-				an.addEdge(tmplink, tmplink.getSource(), tmplink.getDestination());	//inter substrate links
-			}
-			augmentedNets.add(an);
+			vn4d.put(domain,  new VirtualNetwork(1)); //TODO lifetime
 		}
-		
-		//transform virtual link to virtual inter link, this means to add source domain and destination domain.
-		ArrayList<VirtualInterLink> vils = new ArrayList<VirtualInterLink>();
+
 		for(VirtualLink vlink: vNet.getEdges()){
-			SubstrateNode sSource = nodeMapping.get(vNet.getSource(vlink));
-			SubstrateNode sDest = nodeMapping.get(vNet.getDest(vlink));
+			VirtualNode vSource = vNet.getSource(vlink);
+			VirtualNode vDest = vNet.getDest(vlink);
+			SubstrateNode sSource = nodeMapping.get(vSource);
+			SubstrateNode sDest = nodeMapping.get(vDest);
 			for(Domain sdomain : domains){
 				if(sdomain.containsVertex(sSource)){
 					for(Domain ddomain : domains){
 						if(ddomain.containsVertex(sDest)){
-							VirtualInterLink tmp = (VirtualInterLink)vlink;
-							tmp.setsDomain(sdomain);
-							tmp.setdDomain(ddomain);
-							vils.add(tmp);
+							if(sdomain.equals(ddomain))
+								vn4d.get(sdomain).addEdge(vlink, vSource, vDest);	//virtual intra link
+							else{
+								VirtualInterLink tmp = (VirtualInterLink)vlink;
+								tmp.setsDomain(sdomain);
+								tmp.setdDomain(ddomain);
+								vn4d.get(sdomain).addEdge(tmp, vSource, vDest);	//virtual inter link
+							}
 							break;
 						}
 					}
 					break;
 				}
 			}
-		}
+		}	
 		
-		//intra links and partial inter links to map after determination of interface
-		Map<Domain, List<VirtualLink>> domainLinks = new HashMap<Domain, List<VirtualLink>>();
+		
+		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
+			public Double transform(SubstrateLink link){
+				return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
+			}
+		};
+		
+		//Create substrate augmented network for each domain, determine intra substrate links, inter substrate link, augmented links
+		Map<Domain, AugmentedNetwork> an4d = new HashMap<Domain, AugmentedNetwork>();
 		for(Domain domain : domains){
-			domainLinks.put(domain, new ArrayList<VirtualLink>());
-		}
-		
-		for(VirtualInterLink vil : vils){
-			for(InterLink ilink : vil.getdDomain().getInterLink()){
-				if(ilink.getDestDomain().equals(vil.getsDomain())){
-					//dijkstra  
-					SubstrateNode sSource = ilink.getSource();
-					SubstrateNode sDest = nodeMapping.get(vNet.getDest(vil));
-					DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(vil.getsDomain(),weightTrans);
-					
-					AugmentedLink al = new AugmentedLink();
-					al.setPrice((double) dijkstra.getDistance(sSource, sDest));
-					
-					for(AugmentedNetwork an : augmentedNets){
-						if(an.getRoot().equals(vil.getdDomain())){
+			AugmentedNetwork an = (AugmentedNetwork) domain.getCopy(false);	//intra substrate links
+			an.setRoot(domain);
+			for(InterLink tmplink : domain.getInterLink()){
+				an.addEdge(tmplink, tmplink.getSource(), tmplink.getDestination());	//inter substrate links
+			}
+
+			for(VirtualLink vl : vn4d.get(domain).getEdges()){
+				if(vl instanceof VirtualInterLink){
+					VirtualInterLink vil = (VirtualInterLink) vl;
+					for(InterLink ilink : domain.getInterLink()){
+						if(ilink.getDestDomain().equals(vil.getdDomain())){	//如果横跨多了domain， 这个条件无法满足，找不到结果
+							//dijkstra  
+							SubstrateNode sSource = ilink.getDestination();
+							SubstrateNode sDest = nodeMapping.get(vNet.getDest(vil));
+							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(vil.getdDomain(),weightTrans);
+							
+							AugmentedLink al = new AugmentedLink(); //TODO capacity resource ?
+							al.setPrice((double) dijkstra.getDistance(sSource, sDest));
+							
 							an.addEdge(al, sSource, sDest);	//augmented links
 						}
 					}
-					
 				}
 			}
 			
+			an4d.put(domain, an);
 		}
 		
-		//MCF mapping 输入参数是网络还是链接
+		//use mcf with splitting or without splitting
+		for(Domain domain : domains){
+			MultiCommodityFlow mcf = new MultiCommodityFlow(an4d.get(domain));
+			
+			//the nodemapping here is original for all the nodes in all domains. 
+			Map<String, String> solution = mcf.linkMappingWithoutUpdate(vn4d.get(domain), nodeMapping);
+			if(solution.size()==0){
+				System.out.println("link no solution");
+				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+				}
+				return false;
+			}
+			System.out.println(solution);
+			
+			//update : its own mcf, others' augmented links
+			
+			//1) its own mcf result
+			
+			
+			
+		}
+		
+		//update resource
 		
 		
-		
-		
-		return false;
+		return true;
 	}
 
 }
