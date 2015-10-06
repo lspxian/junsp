@@ -64,14 +64,15 @@ public class SubstrateNetwork extends
 	/**
 	 * constructor used by filter.transform(graph)  
 	 */
-	public SubstrateNetwork(){
-		super(false);
-	}
-	//
 	
-	public SubstrateNetwork(boolean autoUnregisterConstraints) {
-		super(autoUnregisterConstraints);
+	public SubstrateNetwork(){	
+		super(false);	//par defaut, undirected
 	}
+	
+	public SubstrateNetwork(boolean directed){
+		super(directed); //true : directed, false: undirected
+	}
+	
 	
 	public SubstrateNetwork(boolean autoUnregisterConstraints, boolean directed) {
 		super(autoUnregisterConstraints, directed);

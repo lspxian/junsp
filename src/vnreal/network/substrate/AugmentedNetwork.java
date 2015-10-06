@@ -1,11 +1,19 @@
 package vnreal.network.substrate;
 
+import li.multiDomain.Domain;
+
 public class AugmentedNetwork extends SubstrateNetwork {
 	protected SubstrateNetwork root;
 
 	public AugmentedNetwork() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+	
+	public AugmentedNetwork(Domain domain){
+		super();
+		
+		this.root = domain;
 	}
 
 	public AugmentedNetwork(boolean autoUnregisterConstraints, boolean directed) {

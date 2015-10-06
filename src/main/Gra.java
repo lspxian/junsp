@@ -43,7 +43,7 @@ import vnreal.resources.BandwidthResource;
 public class Gra {
 
 	public static void main(String[] args) throws IOException {
-		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
+		SubstrateNetwork sn=new SubstrateNetwork(false);	 ////true : directed, false: undirected
 		sn.alt2network("data/cost239");
 		
 		//System.out.println(sn.getNextHop((SubstrateNode) sn.getVertices().toArray()[8]));

@@ -48,12 +48,8 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 						if(ddomain.containsVertex(sDest)){
 							if(sdomain.equals(ddomain))
 								vn4d.get(sdomain).addEdge(vlink, vSource, vDest);	//virtual intra link
-							else{
-								VirtualInterLink tmp = (VirtualInterLink)vlink;
-								tmp.setsDomain(sdomain);
-								tmp.setdDomain(ddomain);
-								vn4d.get(sdomain).addEdge(tmp, vSource, vDest);	//virtual inter link
-							}
+							else
+								vn4d.get(sdomain).addEdge(new VirtualInterLink(vlink, sdomain, ddomain), vSource, vDest);	//virtual inter link
 							break;
 						}
 					}
@@ -74,6 +70,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		for(Domain domain : domains){
 			AugmentedNetwork an = (AugmentedNetwork) domain.getCopy(false);	//intra substrate links
 			an.setRoot(domain);
+			AugmentedNetwork an = new AugmentedNetwork(domain);
 			for(InterLink tmplink : domain.getInterLink()){
 				an.addEdge(tmplink, tmplink.getSource(), tmplink.getDestination());	//inter substrate links
 			}
@@ -89,7 +86,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(vil.getdDomain(),weightTrans);
 							
 							AugmentedLink al = new AugmentedLink(); //TODO capacity resource ?
-							al.setPrice((double) dijkstra.getDistance(sSource, sDest));
+							al.setCost((double) dijkstra.getDistance(sSource, sDest));
 							
 							an.addEdge(al, sSource, sDest);	//augmented links
 						}
@@ -115,15 +112,12 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			}
 			System.out.println(solution);
 			
-			//update : its own mcf, others' augmented links
-			
-			//1) its own mcf result
-			
+			//Don't update here
+						
 			
 			
 		}
 		
-		//update resource
 		
 		
 		return true;

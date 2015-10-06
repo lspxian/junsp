@@ -1,5 +1,6 @@
 package vnreal.network.virtual;
 
+import vnreal.demands.AbstractDemand;
 import li.multiDomain.Domain;
 
 public class VirtualInterLink extends VirtualLink {
@@ -8,6 +9,15 @@ public class VirtualInterLink extends VirtualLink {
 
 	public VirtualInterLink(int layer) {
 		super(layer);
+	}
+	
+	public VirtualInterLink(VirtualLink vl, Domain sDomain, Domain dDomain){
+		super(1);
+		for (AbstractDemand d : vl) {
+			this.add(d.getCopy(this));
+		}
+		this.sDomain = sDomain;
+		this.dDomain = dDomain;
 	}
 
 	public Domain getsDomain() {

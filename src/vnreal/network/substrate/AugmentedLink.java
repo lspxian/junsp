@@ -3,7 +3,7 @@ package vnreal.network.substrate;
 public class AugmentedLink extends SubstrateLink {
 	protected SubstrateNode source;
 	protected SubstrateNode destination;
-	protected double price;
+	protected double cost;
 	
 	public AugmentedLink() {
 		super();
@@ -25,13 +25,14 @@ public class AugmentedLink extends SubstrateLink {
 		this.destination = destination;
 	}
 
-	public double getPrice() {
-		return price;
+	public double getCost() {
+		return cost;
 	}
 
-	public void setPrice(double price) {
-		this.price = price;
+	public void setCost(double cost) {
+		this.cost = cost;
 	}
-	
+
+
 	
 }

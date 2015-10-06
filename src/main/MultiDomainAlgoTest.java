@@ -21,7 +21,7 @@ public class MultiDomainAlgoTest {
 		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
 		sn.alt2network("data/cost239");
 		sn.addAllResource(true);
-		System.out.println(sn);
+		//System.out.println(sn);
 		
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
@@ -45,15 +45,18 @@ public class MultiDomainAlgoTest {
 			}
 			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 			System.out.println(nodeMapping);
-		
-			AS_MCF as_mcf = new AS_MCF(multiDomain);
-			as_mcf.linkMapping(vns.get(i),nodeMapping);
 			
 			multiDomain = sn.divide4Domain();
+			/*
 			System.out.println(multiDomain.get(0));
 			System.out.println(multiDomain.get(1));
 			System.out.println(multiDomain.get(2));
-			System.out.println(multiDomain.get(3));
+			System.out.println(multiDomain.get(3));*/
+			
+			
+			AS_MCF as_mcf = new AS_MCF(multiDomain);
+			as_mcf.linkMapping(vns.get(i),nodeMapping);
+			
 			
 		}
 		

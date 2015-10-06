@@ -65,7 +65,7 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 		return solution;
 	}
 	
-	
+	//generate cplex file for undirected multi commodity flow
 	public void generateFile(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping) throws IOException{
 		BandwidthDemand bwDem = null;
 		BandwidthResource bwResource=null;
