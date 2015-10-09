@@ -22,15 +22,12 @@ public class Domain extends SubstrateNetwork{
 		interLink = new ArrayList<InterLink>();
 		this.id =id;
 	}
-
-	public Domain(boolean autoUnregisterConstraints) {
-		super(autoUnregisterConstraints);
-	}
 	
-	public Domain(boolean autoUnregisterConstraints, boolean directed) {
-		super(autoUnregisterConstraints, directed);
+	public Domain(SubstrateNetwork sn){
+		super(false);
+		sn.getCopy(false, this);
+		interLink = new ArrayList<InterLink>();
 	}
-
 	
 	public ArrayList<InterLink> getInterLink() {
 		return interLink;
@@ -51,6 +48,11 @@ public class Domain extends SubstrateNetwork{
 	public void addInterLink(SubstrateLink sl, SubstrateNode source, SubstrateNode dest, Domain destDomain){
 		this.addVertex(source);
 		this.interLink.add(new InterLink(sl, source, dest, destDomain));
+	}
+	
+	public void getCopy(Domain result){
+		super.getCopy(false, result);
+		
 	}
 	
 	public String toString(){
