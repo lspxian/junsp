@@ -4,14 +4,19 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.apache.commons.collections15.map.LinkedMap;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
 import vnreal.algorithms.AbstractLinkMapping;
+import vnreal.algorithms.utils.MiscelFunctions;
+import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.Remote;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
@@ -39,8 +44,8 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			return false;
 		}
 		System.out.println(solution);
-		//TODO update
-		
+		//update
+		updateResource(vNet, nodeMapping, solution);
 		
 		return true;
 	}
@@ -63,6 +68,61 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 		}
 		remote.disconnect();
 		return solution;
+	}
+	
+	public void updateResource(VirtualNetwork vNet,  Map<VirtualNode, SubstrateNode> nodeMapping, Map<String,String> solution){
+		BandwidthDemand originalBwDem = null, newBwDem;
+		VirtualNode srcVnode,dstVnode;
+		SubstrateNode srcSnode = null,dstSnode = null;
+		int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
+		
+		Map<SubstrateNode, VirtualNode> inverseNodeMapping = new LinkedMap<SubstrateNode, VirtualNode>();
+		for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+			inverseNodeMapping.put(entry.getValue(), entry.getKey());
+		}
+		
+		for(Map.Entry<String, String> entry : solution.entrySet()){
+			String linklink = entry.getKey();
+			double flow = Double.parseDouble(entry.getValue());
+			srcVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vs")+2, linklink.indexOf("vd")));
+			dstVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vd")+2, linklink.indexOf("ss")));
+			srcSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("ss")+2, linklink.indexOf("sd")));
+			dstSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("sd")+2));
+			
+			//for undirected network, flow 0->1 and 1->0 are added to 0<->1, so if we have a flow 1->0, 
+			//we have to change the s and d to meet the original link 0->1
+			
+			if(srcSnodeId>dstSnodeId){
+				int tmp = srcSnodeId;
+				srcSnodeId = dstSnodeId;
+				dstSnodeId = tmp;
+			}
+			
+			srcVnode = inverseNodeMapping.get(sNet.getNodeFromID(srcVnodeId));
+			dstVnode = inverseNodeMapping.get(sNet.getNodeFromID(dstVnodeId));
+			VirtualLink tmpvl = vNet.findEdge(srcVnode, dstVnode);
+			
+			for (AbstractDemand dem : tmpvl) {
+				if (dem instanceof BandwidthDemand) {
+					originalBwDem = (BandwidthDemand) dem;
+					break;
+				}
+			}
+			
+			srcSnode = sNet.getNodeFromID(srcSnodeId);
+			dstSnode = sNet.getNodeFromID(dstSnodeId);
+			SubstrateLink tmpsl = sNet.findEdge(srcSnode, dstSnode);
+			
+			newBwDem = new BandwidthDemand(tmpvl);
+			newBwDem.setDemandedBandwidth(MiscelFunctions
+					.roundThreeDecimals(originalBwDem.getDemandedBandwidth()*flow));
+			
+			if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
+				throw new AssertionError("But we checked before!");
+			}
+			
+			
+		}
 	}
 	
 	//generate cplex file for undirected multi commodity flow
@@ -107,23 +167,33 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 					//objective
 					obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
 					obj = obj + " vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+					obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
+					obj = obj + " vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 					
 					//integer in the <general>
 					//general = general +  " vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
 					
 					//bounds
 					bounds = bounds + "0 <= vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+					bounds = bounds + "0 <= vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
 				}
 				
 				//flow constraints
-				ArrayList<SubstrateNode> nextHop = sNet.getNextHop(srcSnode);
+				Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
 				for(Iterator<SubstrateNode> iterator = sNet.getVertices().iterator();iterator.hasNext();){
 					SubstrateNode snode = iterator.next();
-					nextHop = sNet.getHop(snode);
+					nextHop = sNet.getNeighbors(snode);
+					for(Iterator it=nextHop.iterator();it.hasNext();){
+						SubstrateNode tmmpsn = (SubstrateNode) it.next();
+						constraint=constraint+" + vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
+						constraint=constraint+" - vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
+					}
+					//nextHop = sNet.getHop(snode);
+					/*
 					for(int i=0;i<nextHop.size();i++){
 						constraint=constraint+" + vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+snode.getId()+"sd"+nextHop.get(i).getId();
 						constraint=constraint+" - vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+nextHop.get(i).getId()+"sd"+snode.getId();
-					}
+					}*/
 					if(snode.equals(srcSnode))	constraint =constraint+" = 1\n";
 					else if(snode.equals(dstSnode)) constraint =constraint+" = -1\n";
 					else	constraint =constraint+" = 0\n";
@@ -160,14 +230,16 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 					
 					//capacity constraint
 					constraint=constraint+" + "+bwDem.getDemandedBandwidth() +
-							" vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId(); 
+							" vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+
+							" + "+bwDem.getDemandedBandwidth() +
+							" vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
 				}
 			}
 			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
 		}
 		
 		obj = obj+ "\n";
-		BufferedWriter writer = new BufferedWriter(new FileWriter("ILP-LP-Models/CPLEXvne.lp"));
+		BufferedWriter writer = new BufferedWriter(new FileWriter("ILP-LP-Models/vne-mcf.lp"));
 		writer.write(preambule+obj+constraint+bounds+general+"END");
 		writer.close();
 		

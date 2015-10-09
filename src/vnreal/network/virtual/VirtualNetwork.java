@@ -232,7 +232,7 @@ public final class VirtualNetwork extends
 				this.addEdge(new VirtualLink(layer), start, end);
 				
 				//double direction
-				this.addEdge(new VirtualLink(layer), end, start);
+				//this.addEdge(new VirtualLink(layer), end, start);
 				
 				
 			}
@@ -250,9 +250,9 @@ public final class VirtualNetwork extends
 			double value = 1;
 			if(random)	value = new Random().nextDouble();
 			VirtualLink sblk1 = (VirtualLink)it.next();
-			VirtualLink sblk2 = (VirtualLink)it.next();
+			//VirtualLink sblk2 = (VirtualLink)it.next();
 			sblk1.addResource(value);
-			sblk2.addResource(value);
+			//sblk2.addResource(value);
 		}
 		lifetime = MiscelFunctions.negExponential(1.0/mu);
 		return true;

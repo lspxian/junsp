@@ -3,7 +3,10 @@ package vnreal.algorithms;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apache.commons.collections15.Transformer;
+
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import li.multiDomain.Domain;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
@@ -61,16 +64,15 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		
 		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
 			public Double transform(SubstrateLink link){
-				return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
+				//return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
+				return 1.;
 			}
 		};
 		
 		//Create substrate augmented network for each domain, determine intra substrate links, inter substrate link, augmented links
 		Map<Domain, AugmentedNetwork> an4d = new HashMap<Domain, AugmentedNetwork>();
 		for(Domain domain : domains){
-			AugmentedNetwork an = (AugmentedNetwork) domain.getCopy(false);	//intra substrate links
-			an.setRoot(domain);
-			AugmentedNetwork an = new AugmentedNetwork(domain);
+			AugmentedNetwork an = new AugmentedNetwork(domain);	//intra substrate links
 			for(InterLink tmplink : domain.getInterLink()){
 				an.addEdge(tmplink, tmplink.getSource(), tmplink.getDestination());	//inter substrate links
 			}
@@ -82,10 +84,11 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 						if(ilink.getDestDomain().equals(vil.getdDomain())){	//如果横跨多了domain， 这个条件无法满足，找不到结果
 							//dijkstra  
 							SubstrateNode sSource = ilink.getDestination();
-							SubstrateNode sDest = nodeMapping.get(vNet.getDest(vil));
+							SubstrateNode sDest = nodeMapping.get(vn4d.get(domain).getDest(vil));
 							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(vil.getdDomain(),weightTrans);
 							
 							AugmentedLink al = new AugmentedLink(); //TODO capacity resource ?
+							al.addResource(100);	//normally random(0,1), here random = 100 means that it has infinite bw
 							al.setCost((double) dijkstra.getDistance(sSource, sDest));
 							
 							an.addEdge(al, sSource, sDest);	//augmented links
@@ -113,7 +116,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			System.out.println(solution);
 			
 			//Don't update here
-						
+			
 			
 			
 		}

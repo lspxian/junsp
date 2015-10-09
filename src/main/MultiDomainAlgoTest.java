@@ -47,16 +47,16 @@ public class MultiDomainAlgoTest {
 			System.out.println(nodeMapping);
 			
 			multiDomain = sn.divide4Domain();
-			/*
+			
 			System.out.println(multiDomain.get(0));
 			System.out.println(multiDomain.get(1));
 			System.out.println(multiDomain.get(2));
-			System.out.println(multiDomain.get(3));*/
+			System.out.println(multiDomain.get(3));
 			
-			
+			/*
 			AS_MCF as_mcf = new AS_MCF(multiDomain);
 			as_mcf.linkMapping(vns.get(i),nodeMapping);
-			
+			*/
 			
 		}
 		

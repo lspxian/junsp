@@ -14,6 +14,7 @@ import org.apache.commons.collections15.Transformer;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPathLinkMapping;
+import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.linkmapping.SOD_BK;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
@@ -114,11 +115,17 @@ public class Gra {
 			}
 			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 			System.out.println(nodeMapping);
+			for(VirtualLink vl : vns.get(0).getEdges()){
+				System.out.println(vns.get(0).getDest(vl));			
+			}
 			
 			//link mapping
 			
-			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
-			ulpc.linkMapping(vns.get(i), nodeMapping);
+			//MultiCommodityFlow mcf = new MultiCommodityFlow(sn);
+			//mcf.linkMapping(vns.get(i), nodeMapping);
+			
+			//UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
+			//ulpc.linkMapping(vns.get(i), nodeMapping);
 			
 			/*
 			SOD_BK sod_bk = new SOD_BK(sn);

@@ -10,9 +10,8 @@ public class AugmentedNetwork extends SubstrateNetwork {
 	}
 	
 	public AugmentedNetwork(Domain domain){
-		
-		super(domain);
-		
+		super();
+		domain.getCopy(domain);
 		this.root = domain;
 	}
 

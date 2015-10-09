@@ -207,13 +207,14 @@ public class SubstrateNetwork extends
 	
 	/*****************shuopeng*********************/
 	
-	public ArrayList<SubstrateNode>getHop(SubstrateNode n){
+	public ArrayList<SubstrateNode> getHop(SubstrateNode n){
 		ArrayList<SubstrateNode> hop = new ArrayList<SubstrateNode>();
 		for(Iterator<SubstrateLink> link = this.getEdges().iterator();link.hasNext();){
 			SubstrateLink slink = link.next();
 			if(this.getSource(slink).equals(n))
 				hop.add(this.getDest(slink));
-
+			else if(this.getDest(slink).equals(n))
+				hop.add(this.getSource(slink));
 		}
 		return hop;
 	}
@@ -274,7 +275,7 @@ public class SubstrateNetwork extends
 				SubstrateNode end = (SubstrateNode)arr[Integer.parseInt(line.substring(0, line.indexOf(" ")))];
 				this.addEdge(new SubstrateLink(), start, end);
 				//double direction
-				this.addEdge(new SubstrateLink(), end, start);
+				//this.addEdge(new SubstrateLink(), end, start);
 			}
 		}
 		br.close();
@@ -289,9 +290,9 @@ public class SubstrateNetwork extends
 			double value = 1;
 			if(random)	value = new Random().nextDouble();
 			SubstrateLink sblk1 = (SubstrateLink)it.next();
-			SubstrateLink sblk2 = (SubstrateLink)it.next();
+		//	SubstrateLink sblk2 = (SubstrateLink)it.next();
 			sblk1.addResource(value);
-			sblk2.addResource(value);
+		//	sblk2.addResource(value);
 		}
 		return true;
 	}
