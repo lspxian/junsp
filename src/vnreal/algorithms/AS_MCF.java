@@ -41,8 +41,8 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		}
 
 		for(VirtualLink vlink: vNet.getEdges()){
-			VirtualNode vSource = vNet.getSource(vlink);
-			VirtualNode vDest = vNet.getDest(vlink);
+			VirtualNode vSource = vNet.getEndpoints(vlink).getFirst();
+			VirtualNode vDest = vNet.getEndpoints(vlink).getSecond();
 			SubstrateNode sSource = nodeMapping.get(vSource);
 			SubstrateNode sDest = nodeMapping.get(vDest);
 			for(Domain sdomain : domains){
@@ -84,12 +84,12 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 						if(ilink.getDestDomain().equals(vil.getdDomain())){	//如果横跨多了domain， 这个条件无法满足，找不到结果
 							//dijkstra  
 							SubstrateNode sSource = ilink.getDestination();
-							SubstrateNode sDest = nodeMapping.get(vn4d.get(domain).getDest(vil));
+							SubstrateNode sDest = nodeMapping.get(vn4d.get(domain).getDest(vil));//TODO getDest
 							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(vil.getdDomain(),weightTrans);
 							
-							AugmentedLink al = new AugmentedLink(); //TODO capacity resource ?
+							AugmentedLink al = new AugmentedLink(); 
 							al.addResource(100);	//normally random(0,1), here random = 100 means that it has infinite bw
-							al.setCost((double) dijkstra.getDistance(sSource, sDest));
+							al.setCost((double) dijkstra.getDistance(sSource, sDest));	//dijkstra can't find the path because of directed
 							
 							an.addEdge(al, sSource, sDest);	//augmented links
 						}

@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -142,8 +143,8 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 			VirtualLink tmpl = links.next();
 
 			// Find their mapped SubstrateNodes
-			srcSnode = nodeMapping.get(vNet.getSource(tmpl));
-			dstSnode = nodeMapping.get(vNet.getDest(tmpl));
+			srcSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getFirst());
+			dstSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getSecond());
 			
 			if (!srcSnode.equals(dstSnode)) {
 				// Get current VirtualLink demand
@@ -156,8 +157,8 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 			
 				for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
 					SubstrateLink tmpsl = slink.next();
-					ssnode = sNet.getSource(tmpsl);
-					dsnode = sNet.getDest(tmpsl);
+					ssnode = sNet.getEndpoints(tmpsl).getFirst();
+					dsnode = sNet.getEndpoints(tmpsl).getSecond();
 					
 					for(AbstractResource asrc : tmpsl){
 						if(asrc instanceof BandwidthResource){
@@ -174,13 +175,14 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 				}
 				
 				//flow constraints
-				ArrayList<SubstrateNode> nextHop = sNet.getNextHop(srcSnode);
+				Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
 				for(Iterator<SubstrateNode> iterator = sNet.getVertices().iterator();iterator.hasNext();){
 					SubstrateNode snode = iterator.next();
-					nextHop = sNet.getHop(snode);
-					for(int i=0;i<nextHop.size();i++){
-						constraint=constraint+" + vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+snode.getId()+"sd"+nextHop.get(i).getId();
-						constraint=constraint+" - vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+nextHop.get(i).getId()+"sd"+snode.getId();
+					nextHop = sNet.getNeighbors(snode);
+					for(Iterator it=nextHop.iterator();it.hasNext();){
+						SubstrateNode tmmpsn = (SubstrateNode) it.next();
+						constraint=constraint+" + vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
+						constraint=constraint+" - vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
 					}
 					if(snode.equals(srcSnode))	constraint =constraint+" = 1\n";
 					else if(snode.equals(dstSnode)) constraint =constraint+" = -1\n";
@@ -224,8 +226,8 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 		//capacity constraint
 		for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
 			SubstrateLink tmpsl = slink.next();
-			ssnode = sNet.getSource(tmpsl);
-			dsnode = sNet.getDest(tmpsl);
+			ssnode = sNet.getEndpoints(tmpsl).getFirst();
+			dsnode = sNet.getEndpoints(tmpsl).getSecond();
 			
 			for(AbstractResource asrc : tmpsl){
 				if(asrc instanceof BandwidthResource){
@@ -235,8 +237,8 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 			
 			for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links.hasNext();) {
 				VirtualLink tmpl = links.next();
-				srcSnode = nodeMapping.get(vNet.getSource(tmpl));
-				dstSnode = nodeMapping.get(vNet.getDest(tmpl));
+				srcSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getFirst());
+				dstSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getSecond());
 				
 				if (!srcSnode.equals(dstSnode)) {
 					for (AbstractDemand dem : tmpl) {

@@ -141,8 +141,8 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			VirtualLink tmpl = links.next();
 
 			// Find their mapped SubstrateNodes
-			srcSnode = nodeMapping.get(vNet.getSource(tmpl));
-			dstSnode = nodeMapping.get(vNet.getDest(tmpl));
+			srcSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getFirst());
+			dstSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getSecond());
 			
 			if (!srcSnode.equals(dstSnode)) {
 				// Get current VirtualLink demand
@@ -155,8 +155,8 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			
 				for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
 					SubstrateLink tmpsl = slink.next();
-					ssnode = sNet.getSource(tmpsl);
-					dsnode = sNet.getDest(tmpsl);
+					ssnode = sNet.getEndpoints(tmpsl).getFirst();
+					dsnode = sNet.getEndpoints(tmpsl).getSecond();
 					
 					for(AbstractResource asrc : tmpsl){
 						if(asrc instanceof BandwidthResource){
@@ -206,8 +206,8 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 		//capacity constraint
 		for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
 			SubstrateLink tmpsl = slink.next();
-			ssnode = sNet.getSource(tmpsl);
-			dsnode = sNet.getDest(tmpsl);
+			ssnode = sNet.getEndpoints(tmpsl).getFirst();
+			dsnode = sNet.getEndpoints(tmpsl).getSecond();
 			
 			for(AbstractResource asrc : tmpsl){
 				if(asrc instanceof BandwidthResource){
@@ -217,8 +217,8 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			
 			for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links.hasNext();) {
 				VirtualLink tmpl = links.next();
-				srcSnode = nodeMapping.get(vNet.getSource(tmpl));
-				dstSnode = nodeMapping.get(vNet.getDest(tmpl));
+				srcSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getFirst());
+				dstSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getSecond());
 				
 				if (!srcSnode.equals(dstSnode)) {
 					for (AbstractDemand dem : tmpl) {

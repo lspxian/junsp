@@ -165,8 +165,8 @@ public final class VirtualNetwork extends
 		for (Iterator<VirtualLink> tempItSubLink = originalLinks.iterator(); tempItSubLink
 				.hasNext();) {
 			tmpSLink = tempItSubLink.next();
-			tmpSNode = getSource(tmpSLink);
-			tmpDNode = getDest(tmpSLink);
+			tmpSNode = this.getEndpoints(tmpSLink).getFirst();
+			tmpDNode = this.getEndpoints(tmpSLink).getSecond();
 			copyVNetwork.addEdge(tmpSLink, tmpSNode, tmpDNode);
 		}
 

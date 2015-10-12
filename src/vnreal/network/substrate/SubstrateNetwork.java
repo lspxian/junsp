@@ -166,8 +166,9 @@ public class SubstrateNetwork extends
 		for (Iterator<SubstrateLink> tempItSubLink = originalLinks.iterator(); tempItSubLink
 				.hasNext();) {
 			tmpSLink = tempItSubLink.next();
-			tmpSNode = getSource(tmpSLink);
-			tmpDNode = getDest(tmpSLink);
+			
+			tmpSNode = this.getEndpoints(tmpSLink).getFirst();
+			tmpDNode = this.getEndpoints(tmpSLink).getSecond();
 
 			if (deepCopy) {
 				result.addEdge(tmpSLink.getCopy(),
@@ -211,33 +212,12 @@ public class SubstrateNetwork extends
 		ArrayList<SubstrateNode> hop = new ArrayList<SubstrateNode>();
 		for(Iterator<SubstrateLink> link = this.getEdges().iterator();link.hasNext();){
 			SubstrateLink slink = link.next();
-			if(this.getSource(slink).equals(n))
-				hop.add(this.getDest(slink));
-			else if(this.getDest(slink).equals(n))
-				hop.add(this.getSource(slink));
+			if(this.getEndpoints(slink).getFirst().equals(n))
+				hop.add(this.getEndpoints(slink).getSecond());
+			else if(this.getEndpoints(slink).getSecond().equals(n))
+				hop.add(this.getEndpoints(slink).getFirst());
 		}
 		return hop;
-	}
-	
-	
-	public ArrayList<SubstrateNode> getNextHop(SubstrateNode n){
-		ArrayList<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
-		for(Iterator<SubstrateLink> link = this.getEdges().iterator();link.hasNext();){
-			SubstrateLink slink = link.next();
-			if(this.getSource(slink).equals(n))
-				nextHop.add(this.getDest(slink));
-		}
-		return nextHop;
-	}
-	
-	public ArrayList<SubstrateNode> getLastHop(SubstrateNode n){
-		ArrayList<SubstrateNode> lastHop = new ArrayList<SubstrateNode>();
-		for(Iterator<SubstrateLink> link = this.getEdges().iterator();link.hasNext();){
-			SubstrateLink slink = link.next();
-			if(this.getDest(slink).equals(n))
-				lastHop.add(this.getSource(slink));
-		}
-		return lastHop;
 	}
 
 	/**
@@ -318,8 +298,8 @@ public class SubstrateNetwork extends
 		multiNet.add(dn4);
 		
 		for(SubstrateLink sl : this.getEdges()){
-			SubstrateNode source = this.getSource(sl);
-			SubstrateNode dest = this.getDest(sl);
+			SubstrateNode source = this.getEndpoints(sl).getFirst();
+			SubstrateNode dest = this.getEndpoints(sl).getSecond();
 			double sx = source.getCoordinateX();
 			double sy = source.getCoordinateY();
 			double dx = dest.getCoordinateX();

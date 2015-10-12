@@ -45,8 +45,8 @@ public abstract class Network<T extends AbstractConstraint, V extends Node<T>, E
 
 	private boolean autoUnregisterConstraints = true;	//this parmeter is used to remove vertex and edge
 
-	protected Network(boolean autoUnregisterConstraints) {
-		this(autoUnregisterConstraints, true);
+	protected Network(boolean directed) {
+		this(false, directed);
 	}
 		
 	protected Network(boolean autoUnregisterConstraints, boolean directed) {
