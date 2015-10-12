@@ -42,21 +42,24 @@ public class Generator {
 	
 	//create virtual networks
 	public void createVgb() throws IOException{
-		File dir = new File("data");
+		File dir = new File("data200");
 		if(!dir.exists())
 			dir.mkdir();
 		
-		for(int i=0;i<500;i++){ //VN quantity
+		for(int i=0;i<15;i++){ //VN quantity
 			Random random = new Random();
 			Random random2 = new Random();
-			PrintWriter pw = new PrintWriter("data/vgb"+i+"Cmd");	//create file
-			pw.println("geo 1 "+random.nextInt(100));	//write in file
+			PrintWriter pw = new PrintWriter("gt-itm/data/vgb"+i+"Cmd");	//create file
+			pw.println("geo 1 "+random.nextInt(100));	//write in file, initial random number seed
 			int node=random2.nextInt(8)+2;
-			pw.println(node+" 100 3 0.5"); //100*100 plane, connectivity probability 0.5
+			pw.println(node+" 200 3 0.5"); //100*100 plane, connectivity probability 0.5
 			pw.close();
+			//this.runShellCmd("ls ./gt-itm");
+			
 			this.runShellCmd("./gt-itm/itm gt-itm/data/vgb"+i+"Cmd");	//create graph, gb format, middle step
 			
-			this.runShellCmd("./gt-itm/sgb2alt gt-itm/data/vgb"+i+"Cmd-0.gb"+" data/vir"+i); //result in ./data, name vir0, vir1...
+			this.runShellCmd("./gt-itm/sgb2alt gt-itm/data/vgb"+i+"Cmd-0.gb"+" data200/vir"+i); //result in ./data, name vir0, vir1...
+			
 		}
 
 	}
