@@ -1,5 +1,6 @@
 package li.multiDomain;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import vnreal.network.substrate.InterLink;
@@ -23,10 +24,19 @@ public class Domain extends SubstrateNetwork{
 		interLink = new ArrayList<InterLink>();
 	}
 	
+	public Domain(int x, int y, String filePath, boolean randomResource) throws IOException{
+		this();
+		this.coordinateX = x;
+		this.coordinateY = y;
+		this.alt2network(filePath);
+		this.addAllResource(randomResource);
+	}
+	
 	public Domain(SubstrateNetwork sn, int x, int y){
-		super(false);
+		this();
 		sn.getCopy(false, this);
-		interLink = new ArrayList<InterLink>();
+		this.coordinateX = x;
+		this.coordinateY = y;
 	}
 	
 	public ArrayList<InterLink> getInterLink() {
@@ -58,6 +68,10 @@ public class Domain extends SubstrateNetwork{
 		this.interLink.add(new InterLink(sl, source, dest, destDomain));
 	}
 	
+	public void addInterLink(SubstrateNode source,SubstrateNode dest, Domain destDomain,boolean randomResource){
+		this.interLink.add(new InterLink(source,dest,destDomain,randomResource));
+	}
+	
 	public void getCopy(Domain result){
 		super.getCopy(false, result);
 		
@@ -66,12 +80,15 @@ public class Domain extends SubstrateNetwork{
 	public String toString(){
 		String result= super.toString();
 		result += "\nINTER LINK:\n";
+		
 		for (InterLink l : interLink) {
+			result += l.toString();
+			/*
 			result += l.getId() + "  (" + l.getSource().getId() + "<->"
 					+ l.getDestination().getId() + ") \n";
 			for (AbstractResource r : l.get()) {
 				result += "  " + r.toString() + "\n";
-			}
+			}*/
 		}
 		
 		return result;

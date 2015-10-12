@@ -1,5 +1,7 @@
 package vnreal.network.substrate;
 
+import java.util.Random;
+
 import li.multiDomain.Domain;
 import vnreal.resources.AbstractResource;
 
@@ -11,6 +13,16 @@ public class InterLink extends SubstrateLink {
 	public InterLink() {
 		super();
 	}
+	
+	public InterLink(SubstrateNode source, SubstrateNode dest, Domain destDomain, boolean randomResource){
+		this();
+		this.source = source;
+		this.destination = dest;
+		this.destDomain = destDomain;
+		if(randomResource)	this.addResource(new Random().nextDouble());
+		else this.addResource(1.0);
+	}
+	
 	public InterLink(SubstrateLink sl,SubstrateNode source, SubstrateNode dest, Domain destDomain){
 		super();
 		this.setName(sl.getName());
@@ -43,6 +55,13 @@ public class InterLink extends SubstrateLink {
 	}
 	@Override
 	public String toString() {
-		return "InterLink(" + getId() + ")";
+		String result = "InterLink with domain ("+this.destDomain.getCoordinateX()
+		+","+this.destDomain.getCoordinateY()+"),node@["
+				+this.source.getId()+ "<->"+this.destination.getId()+"]\n";
+		for (AbstractResource r : this.get()) {
+			result += "  " + r.toString() + "\n";
+		}
+		return result;
+		//return "InterLink[" + getId() + ")";
 	}
 }
