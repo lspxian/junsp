@@ -2,21 +2,14 @@ package main;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.commons.collections15.map.LinkedMap;
-
 import li.multiDomain.Domain;
 import vnreal.algorithms.AS_MCF;
-import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
-import vnreal.network.substrate.InterLink;
-import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
-import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 
@@ -111,10 +104,10 @@ public class MultiDomainAlgoTest {
 			System.out.println(nodeMapping);	
 			
 			
-			/*
+			
 			AS_MCF as_mcf = new AS_MCF(multiDomain);
 			as_mcf.linkMapping(vns.get(i),nodeMapping);
-			*/
+			
 			
 		}
 		
