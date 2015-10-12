@@ -2,13 +2,17 @@ package main;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.commons.collections15.map.LinkedMap;
+
 import li.multiDomain.Domain;
 import vnreal.algorithms.AS_MCF;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
+import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
@@ -49,7 +53,6 @@ public class MultiDomainAlgoTest {
 				
 			}
 		}
-		System.out.println(maxDistance);
 		
 		//generate inter links
 		double alpha = 0.2;	//alpha increases the probability of edges between any nodes in the graph
@@ -67,7 +70,6 @@ public class MultiDomainAlgoTest {
 						by = end.getCoordinateY()+endDomain.getCoordinateY()*100;
 						distance = Math.sqrt(Math.pow(ax-ay, 2) + Math.pow(bx-by, 2));
 						double proba = alpha * Math.exp(-distance/beta/maxDistance);
-						//System.out.println(proba);
 						if(proba>new Random().nextDouble()){
 							//source, destination, destination domain, random resource
 							startDomain.addInterLink(start, end, endDomain, false);
@@ -79,18 +81,18 @@ public class MultiDomainAlgoTest {
 				
 			}
 		}
+		
 		System.out.println(multiDomain.get(0));
 		System.out.println(multiDomain.get(1));
 		System.out.println(multiDomain.get(2));
 		System.out.println(multiDomain.get(3));
 	
 		
-	
-		/*
+
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<15;i++){
+		for(int i=0;i<10;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
-			vn.alt2network("data/vir"+i);
+			vn.alt2network("data200/vir"+i);
 			vn.addAllResource(true);
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
@@ -98,28 +100,23 @@ public class MultiDomainAlgoTest {
 		
 		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
-			//node mapping
-			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
-			
-			if(arnm.nodeMapping(vns.get(i))){
+			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,30);
+			if(mdar.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
 			}else{
 				System.out.println("node resource error, virtual network "+i);
 				continue;
 			}
-			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
-			System.out.println(nodeMapping);
-			
-			multiDomain = sn.divide4Domain();
-			
-
+			Map<VirtualNode, SubstrateNode> nodeMapping = mdar.getNodeMapping();
+			System.out.println(nodeMapping);	
 			
 			
+			/*
 			AS_MCF as_mcf = new AS_MCF(multiDomain);
 			as_mcf.linkMapping(vns.get(i),nodeMapping);
+			*/
 			
-			
-		}*/
+		}
 		
 		
 		

@@ -102,7 +102,7 @@ public class SubstrateNetwork extends
 	public String toString() {
 		String result = "NODES:\n";
 		for (SubstrateNode n : getVertices()) {
-			result += n.getId() + "\n";
+			result += n.getId() + "("+n.getCoordinateX()+","+n.getCoordinateY()+")"+"\n";
 			for (AbstractResource r : n.get()) {
 				result += "  " + r.toString() + "\n";
 			}
