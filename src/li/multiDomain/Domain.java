@@ -15,15 +15,15 @@ import vnreal.resources.AbstractResource;
 public class Domain extends SubstrateNetwork{
 	
 	protected ArrayList<InterLink> interLink;
-	protected int id;
-
-	public Domain(int id) {
+	protected int coordinateX;
+	protected int coordinateY;
+	
+	public Domain() {
 		super(false);
 		interLink = new ArrayList<InterLink>();
-		this.id =id;
 	}
 	
-	public Domain(SubstrateNetwork sn){
+	public Domain(SubstrateNetwork sn, int x, int y){
 		super(false);
 		sn.getCopy(false, this);
 		interLink = new ArrayList<InterLink>();
@@ -36,13 +36,21 @@ public class Domain extends SubstrateNetwork{
 	public void setInterLink(ArrayList<InterLink> interLink) {
 		this.interLink = interLink;
 	}
-	
-	public int getId() {
-		return id;
+
+	public int getCoordinateX() {
+		return coordinateX;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setCoordinateX(int coordinateX) {
+		this.coordinateX = coordinateX;
+	}
+
+	public int getCoordinateY() {
+		return coordinateY;
+	}
+
+	public void setCoordinateY(int coordinateY) {
+		this.coordinateY = coordinateY;
 	}
 
 	public void addInterLink(SubstrateLink sl, SubstrateNode source, SubstrateNode dest, Domain destDomain){
@@ -68,5 +76,6 @@ public class Domain extends SubstrateNetwork{
 		
 		return result;
 	}
+	
 }
 

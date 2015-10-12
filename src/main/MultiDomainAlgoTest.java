@@ -18,9 +18,12 @@ public class MultiDomainAlgoTest {
 	public static void main(String[] args) throws IOException {
 		
 		List<Domain> multiDomain = new ArrayList<Domain>();
-		SubstrateNetwork sn=new SubstrateNetwork(false,true); //control the directed or undirected
-		sn.alt2network("data/cost239");
-		sn.addAllResource(true);
+		SubstrateNetwork sn1=new SubstrateNetwork(false,true); //control the directed or undirected
+		sn1.alt2network("data/cost239");
+		sn1.addAllResource(true);
+		SubstrateNetwork sn2 = new SubstrateNetwork(false,true);
+		sn2.alt2network("sndlib/abliene");
+		sn2.addAllResource(true);
 		//System.out.println(sn);
 		
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();

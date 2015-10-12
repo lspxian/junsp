@@ -38,6 +38,7 @@ public class VirtualInterLink extends VirtualLink {
 
 	@Override
 	public String toString(){
-		return super.toString()+"@("+this.sDomain.getId()+"->"+this.dDomain.getId()+") ";
+		return super.toString()+"@[("+this.sDomain.getCoordinateX()+","+this.sDomain.getCoordinateY()
+				+")->("+this.dDomain.getCoordinateX()+","+this.dDomain.getCoordinateY()+")] ";
 	}
 }
