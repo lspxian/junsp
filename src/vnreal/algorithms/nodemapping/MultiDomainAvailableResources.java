@@ -27,6 +27,7 @@ public class MultiDomainAvailableResources extends AbstractMultiDomainNodeMappin
 						vnode.getCoordinateY()/100.0<domain.getCoordinateY()+1){
 					vnode.setCoordinateX(vnode.getCoordinateX()%100);
 					vnode.setCoordinateY(vnode.getCoordinateY()%100);
+					vnode.setDomain(domain); 	//the virtual node belong to a domain
 					tmpvl.addVertex(vnode);
 				}
 			}

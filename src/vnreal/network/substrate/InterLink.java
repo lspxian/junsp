@@ -6,58 +6,52 @@ import li.multiDomain.Domain;
 import vnreal.resources.AbstractResource;
 
 public class InterLink extends SubstrateLink {
-	protected SubstrateNode source;
-	protected SubstrateNode destination;
-	protected Domain destDomain;
+	protected SubstrateNode interior;
+	protected SubstrateNode exterior;
+	protected Domain exterDomain;
 	
 	public InterLink() {
 		super();
 	}
 	
-	public InterLink(SubstrateNode source, SubstrateNode dest, Domain destDomain, boolean randomResource){
+	public InterLink(SubstrateNode interior, SubstrateNode exterior, Domain exterDomain, boolean randomResource){
 		this();
-		this.source = source;
-		this.destination = dest;
-		this.destDomain = destDomain;
+		this.interior = interior;
+		this.exterior = exterior;
+		this.exterDomain = exterDomain;
 		if(randomResource)	this.addResource(new Random().nextDouble());
 		else this.addResource(1.0);
 	}
 	
-	public InterLink(SubstrateLink sl,SubstrateNode source, SubstrateNode dest, Domain destDomain){
+	public InterLink(SubstrateLink sl,SubstrateNode interior, SubstrateNode exterior, Domain exterDomain){
 		super();
 		this.setName(sl.getName());
 		for (AbstractResource r : sl) {
 			this.add(r.getCopy(this));
 		}
-		this.source = source;
-		this.destination = dest;
-		this.destDomain = destDomain;
+		this.interior = interior;
+		this.exterior = exterior;
+		this.exterDomain = exterDomain;
 	}
 	
-	public SubstrateNode getSource() {
-		return source;
+
+	public SubstrateNode getInterior() {
+		return interior;
 	}
-	public void setSource(SubstrateNode source) {
-		this.source = source;
+
+	public SubstrateNode getExterior() {
+		return exterior;
 	}
-	public SubstrateNode getDestination() {
-		return destination;
+
+	public Domain getExterDomain() {
+		return exterDomain;
 	}
-	public void setDestination(SubstrateNode destination) {
-		this.destination = destination;
-	}
-	
-	public Domain getDestDomain() {
-		return destDomain;
-	}
-	public void setDestDomain(Domain destDomain) {
-		this.destDomain = destDomain;
-	}
+
 	@Override
 	public String toString() {
-		String result = "InterLink with domain ("+this.destDomain.getCoordinateX()
-		+","+this.destDomain.getCoordinateY()+"),node@["
-				+this.source.getId()+ "<->"+this.destination.getId()+"]\n";
+		String result = "InterLink with domain ("+this.exterDomain.getCoordinateX()
+		+","+this.exterDomain.getCoordinateY()+"),node@["
+				+this.interior.getId()+ "<->"+this.exterior.getId()+"]\n";
 		for (AbstractResource r : this.get()) {
 			result += "  " + r.toString() + "\n";
 		}

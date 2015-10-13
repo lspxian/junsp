@@ -1,5 +1,6 @@
 package vnreal.algorithms;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map.Entry;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
+import edu.uci.ics.jung.graph.util.EdgeType;
 import li.multiDomain.Domain;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.utils.NodeLinkDeletion;
@@ -34,34 +36,6 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 	public boolean linkMapping(VirtualNetwork vNet,
 			Map<VirtualNode, SubstrateNode> nodeMapping) {
 		
-		//Create virtual network for each domain, transform virtual link to virtual inter link, this means to add source domain and destination domain.
-		Map<Domain, VirtualNetwork> vn4d = new HashMap<Domain, VirtualNetwork>();
-		for(Domain domain : domains){
-			vn4d.put(domain,  new VirtualNetwork(1)); //TODO lifetime
-		}
-
-		for(VirtualLink vlink: vNet.getEdges()){
-			VirtualNode vSource = vNet.getEndpoints(vlink).getFirst();
-			VirtualNode vDest = vNet.getEndpoints(vlink).getSecond();
-			SubstrateNode sSource = nodeMapping.get(vSource);
-			SubstrateNode sDest = nodeMapping.get(vDest);
-			for(Domain sdomain : domains){
-				if(sdomain.containsVertex(sSource)){
-					for(Domain ddomain : domains){
-						if(ddomain.containsVertex(sDest)){
-							if(sdomain.equals(ddomain))
-								vn4d.get(sdomain).addEdge(vlink, vSource, vDest);	//virtual intra link
-							else
-								vn4d.get(sdomain).addEdge(new VirtualInterLink(vlink, sdomain, ddomain), vSource, vDest);	//virtual inter link
-							break;
-						}
-					}
-					break;
-				}
-			}
-		}	
-		
-		
 		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
 			public Double transform(SubstrateLink link){
 				//return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
@@ -69,36 +43,66 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			}
 		};
 		
-		//Create substrate augmented network for each domain, determine intra substrate links, inter substrate link, augmented links
-		Map<Domain, AugmentedNetwork> an4d = new HashMap<Domain, AugmentedNetwork>();
+		Collection<VirtualLink> virtualLinks = vNet.getEdges();
 		for(Domain domain : domains){
+			//Create virtual network for each domain, transform virtual link to virtual inter link, this means to add source domain and destination domain.
+			VirtualNetwork tmpvn = new VirtualNetwork(1);
+			for(VirtualLink vlink : virtualLinks){
+				VirtualNode vSource = vNet.getEndpoints(vlink).getFirst();
+				VirtualNode vDest = vNet.getEndpoints(vlink).getSecond();
+				SubstrateNode sSource = nodeMapping.get(vSource);
+				SubstrateNode sDest = nodeMapping.get(vDest);
+				if(domain.containsVertex(sSource)&&domain.containsVertex(sDest)){
+					tmpvn.addEdge(vlink, vSource, vDest, EdgeType.UNDIRECTED);
+					//virtualLinks.remove(vlink);
+				}
+				else if(domain.containsVertex(sSource)||domain.containsVertex(sDest))
+					tmpvn.addEdge(new VirtualInterLink(vlink,vSource,vDest), vSource, vDest, EdgeType.UNDIRECTED);
+			}
+			//System.out.println(tmpvn);
+			
+			//Create substrate augmented network for each domain, determine intra substrate links, inter substrate link, augmented links
 			AugmentedNetwork an = new AugmentedNetwork(domain);	//intra substrate links
 			for(InterLink tmplink : domain.getInterLink()){
-				an.addEdge(tmplink, tmplink.getSource(), tmplink.getDestination());	//inter substrate links
+				an.addEdge(tmplink, tmplink.getInterior(), tmplink.getExterior(), EdgeType.UNDIRECTED);	//inter substrate links
 			}
-
-			for(VirtualLink vl : vn4d.get(domain).getEdges()){
+			
+			for(VirtualLink vl : tmpvn.getEdges()){
 				if(vl instanceof VirtualInterLink){
 					VirtualInterLink vil = (VirtualInterLink) vl;
+					VirtualNode vnode1 = vil.getNode1();
+					VirtualNode vnode2 = vil.getNode2();
+					SubstrateNode snode1 = nodeMapping.get(vnode1);
+					SubstrateNode snode2 = nodeMapping.get(vnode2);
+					SubstrateNode dijkDest=null;
+					Domain exterDomain = null;
+					if(vnode1.getDomain().equals(domain)){
+						exterDomain = vnode2.getDomain();
+						dijkDest = snode2;
+					}
+					else if(vnode2.getDomain().equals(domain)){
+						exterDomain = vnode1.getDomain();
+						dijkDest = snode1;
+					}
+					else	continue;
 					for(InterLink ilink : domain.getInterLink()){
-						if(ilink.getDestDomain().equals(vil.getdDomain())){	//如果横跨多了domain， 这个条件无法满足，找不到结果
-							//dijkstra  
-							SubstrateNode sSource = ilink.getDestination();
-							SubstrateNode sDest = nodeMapping.get(vn4d.get(domain).getDest(vil));//TODO getDest
-							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(vil.getdDomain(),weightTrans);
-							
-							AugmentedLink al = new AugmentedLink(); 
+						if(exterDomain.containsVertex(ilink.getExterior())){
+							SubstrateNode dijkSource = ilink.getExterior();
+							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain,weightTrans);
+							AugmentedLink al = new AugmentedLink();
 							al.addResource(100);	//normally random(0,1), here random = 100 means that it has infinite bw
-							al.setCost((double) dijkstra.getDistance(sSource, sDest));	//dijkstra can't find the path because of directed
-							
-							an.addEdge(al, sSource, sDest);	//augmented links
+							double cost = (double) dijkstra.getDistance(dijkSource, dijkDest);
+							System.out.println(cost);
+							al.setCost(cost);	
+							an.addEdge(al, dijkSource, dijkDest, EdgeType.UNDIRECTED);	//augmented links
 						}
+						
 					}
 				}
 			}
-			
-			an4d.put(domain, an);
 		}
+		
+	/*	
 		
 		//use mcf with splitting or without splitting
 		for(Domain domain : domains){
@@ -121,7 +125,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			
 		}
 		
-		
+		*/
 		
 		return true;
 	}

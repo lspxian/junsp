@@ -33,6 +33,7 @@ package vnreal.network.virtual;
 
 import java.util.Random;
 
+import li.multiDomain.Domain;
 import vnreal.demands.AbstractDemand;
 import vnreal.network.Node;
 import vnreal.demands.CpuDemand;
@@ -45,7 +46,9 @@ import vnreal.demands.CpuDemand;
  */
 public class VirtualNode extends Node<AbstractDemand> {
 	private final int layer;
+	protected Domain domain;	//for multi domain
 
+	
 	public VirtualNode(int layer) {
 		super();
 		this.layer = layer;
@@ -53,6 +56,12 @@ public class VirtualNode extends Node<AbstractDemand> {
 
 	public int getLayer() {
 		return layer;
+	}
+	
+	public VirtualNode(Domain domain){
+		super();
+		this.layer=1;
+		this.domain = domain;
 	}
 
 	@Override
@@ -65,8 +74,16 @@ public class VirtualNode extends Node<AbstractDemand> {
 		return "VN(" + getId() + ")";
 	}
 	
+	public Domain getDomain() {
+		return domain;
+	}
+
+	public void setDomain(Domain domain) {
+		this.domain = domain;
+	}
+
 	public VirtualNode getCopy() {
-		VirtualNode clone = new VirtualNode(layer);
+		VirtualNode clone = new VirtualNode(domain);
 		clone.setName(getName());
 
 		for (AbstractDemand r : this) {

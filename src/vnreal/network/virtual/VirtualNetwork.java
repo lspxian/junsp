@@ -72,7 +72,12 @@ public final class VirtualNetwork extends
 	}
 
 	public VirtualNetwork(int layer) {
-		this(layer, true);
+		this(layer, false,false);
+	}
+	
+	public VirtualNetwork(){
+		super(false, false);
+		this.layer = 1;
 	}
 
 	@Override

@@ -74,12 +74,12 @@ public class MultiDomainAlgoTest {
 				
 			}
 		}
-		
+		/*
 		System.out.println(multiDomain.get(0));
 		System.out.println(multiDomain.get(1));
 		System.out.println(multiDomain.get(2));
 		System.out.println(multiDomain.get(3));
-	
+	*/
 		
 
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
@@ -92,7 +92,7 @@ public class MultiDomainAlgoTest {
 		}
 		
 		for(int i=0;i<1;i++){
-			System.out.println("virtual network "+i+": \n"+vns.get(i));
+			//System.out.println("virtual network "+i+": \n"+vns.get(i));
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,30);
 			if(mdar.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
@@ -101,7 +101,7 @@ public class MultiDomainAlgoTest {
 				continue;
 			}
 			Map<VirtualNode, SubstrateNode> nodeMapping = mdar.getNodeMapping();
-			System.out.println(nodeMapping);	
+			//System.out.println(nodeMapping);	
 			
 			
 			
