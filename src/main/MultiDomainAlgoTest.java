@@ -49,7 +49,7 @@ public class MultiDomainAlgoTest {
 		
 		//generate inter links
 		double alpha = 0.2;	//alpha increases the probability of edges between any nodes in the graph
-		double beta = 0.1;	//beta yields a larger ratio of long edges to short edges.
+		double beta = 0.2;	//beta yields a larger ratio of long edges to short edges.
 		for(int i=0;i<multiDomain.size();i++){
 			Domain startDomain = multiDomain.get(i);
 			for(int j=i+1;j<multiDomain.size();j++){
@@ -101,7 +101,7 @@ public class MultiDomainAlgoTest {
 				continue;
 			}
 			Map<VirtualNode, SubstrateNode> nodeMapping = mdar.getNodeMapping();
-			//System.out.println(nodeMapping);	
+			System.out.println(nodeMapping);	
 			
 			
 			

@@ -102,7 +102,7 @@ public class SubstrateNetwork extends
 	public String toString() {
 		String result = "NODES:\n";
 		for (SubstrateNode n : getVertices()) {
-			result += n.getId() + "("+n.getCoordinateX()+","+n.getCoordinateY()+")"+"\n";
+			result += n + "("+n.getCoordinateX()+","+n.getCoordinateY()+")"+"\n";
 			for (AbstractResource r : n.get()) {
 				result += "  " + r.toString() + "\n";
 			}
@@ -111,7 +111,7 @@ public class SubstrateNetwork extends
 		result += "\nEDGES:\n";
 		for (SubstrateLink l : getEdges()) {
 			Pair<SubstrateNode> pair = getEndpoints(l);
-			result += l.getId() + "  (" + pair.getFirst().getId() + "<->"
+			result += l + "  (" + pair.getFirst().getId() + "<->"
 					+ pair.getSecond().getId() + ") \n";
 			for (AbstractResource r : l.get()) {
 				result += "  " + r.toString() + "\n";
@@ -126,6 +126,12 @@ public class SubstrateNetwork extends
 		return new SubstrateNetwork(autoUnregister);
 	}
 
+	public SubstrateNetwork getCopy(){
+		SubstrateNetwork result = new SubstrateNetwork();
+		getCopy(false, result);
+		return result;
+	}
+	
 	@Override
 	public SubstrateNetwork getCopy(boolean autoUnregister) {
 		SubstrateNetwork result = new SubstrateNetwork(autoUnregister);
@@ -178,7 +184,20 @@ public class SubstrateNetwork extends
 				result.addEdge(tmpSLink, tmpSNode, tmpDNode);
 			}
 		}
+	}
+	
+	//Down cast
+	public void copy(SubstrateNetwork sNet){	
+		SubstrateNode tmpSNode, tmpDNode;
+		SubstrateLink tmpSLink;
+		for (Iterator<SubstrateLink> tempItSubLink = sNet.getEdges().iterator(); tempItSubLink
+				.hasNext();) {
+			tmpSLink = tempItSubLink.next();
+			tmpSNode = sNet.getEndpoints(tmpSLink).getFirst();
+			tmpDNode = sNet.getEndpoints(tmpSLink).getSecond();
 
+			this.addEdge(tmpSLink, tmpSNode, tmpDNode);
+		}
 	}
 
 	public void generateDuplicateEdges() {

@@ -62,7 +62,7 @@ public class VirtualLink extends Link<AbstractDemand> {
 
 	@Override
 	public String toString() {
-		//return "VirtualLink(" + getId() + ")@" + getLayer();
+		
 		return "VirtualLink(" + getId() + ")";
 	}
 

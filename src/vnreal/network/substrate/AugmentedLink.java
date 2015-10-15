@@ -32,7 +32,10 @@ public class AugmentedLink extends SubstrateLink {
 	public void setCost(double cost) {
 		this.cost = cost;
 	}
-
+	
+	public String toString(){
+		return "Augmented Link("+ getId() + ")";
+	}
 
 	
 }

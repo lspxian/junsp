@@ -44,7 +44,10 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		};
 		
 		Collection<VirtualLink> virtualLinks = vNet.getEdges();
-		for(Domain domain : domains){
+		//for(Domain domain : domains){
+		for(int i=0;i<1;i++){
+			//System.out.println(domains.get(1));
+			Domain domain = domains.get(3);
 			//Create virtual network for each domain, transform virtual link to virtual inter link, this means to add source domain and destination domain.
 			VirtualNetwork tmpvn = new VirtualNetwork(1);
 			for(VirtualLink vlink : virtualLinks){
@@ -59,7 +62,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				else if(domain.containsVertex(sSource)||domain.containsVertex(sDest))
 					tmpvn.addEdge(new VirtualInterLink(vlink,vSource,vDest), vSource, vDest, EdgeType.UNDIRECTED);
 			}
-			//System.out.println(tmpvn);
+			System.out.println(tmpvn);
 			
 			//Create substrate augmented network for each domain, determine intra substrate links, inter substrate link, augmented links
 			AugmentedNetwork an = new AugmentedNetwork(domain);	//intra substrate links
@@ -88,18 +91,39 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 					for(InterLink ilink : domain.getInterLink()){
 						if(exterDomain.containsVertex(ilink.getExterior())){
 							SubstrateNode dijkSource = ilink.getExterior();
-							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain,weightTrans);
-							AugmentedLink al = new AugmentedLink();
-							al.addResource(100);	//normally random(0,1), here random = 100 means that it has infinite bw
-							double cost = (double) dijkstra.getDistance(dijkSource, dijkDest);
-							System.out.println(cost);
-							al.setCost(cost);	
-							an.addEdge(al, dijkSource, dijkDest, EdgeType.UNDIRECTED);	//augmented links
+							if(!dijkSource.equals(dijkDest)){
+								DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain,weightTrans);
+								AugmentedLink al = new AugmentedLink();
+								double cost = (double) dijkstra.getDistance(dijkSource, dijkDest);
+								System.out.println(cost);
+								al.setCost(cost);
+								al.addResource(100/(cost));	//normally random(0,1), here random = 100 means that it has infinite bw
+								an.addEdge(al, dijkSource, dijkDest, EdgeType.UNDIRECTED);	//augmented links
+							}
+							
 						}
 						
 					}
 				}
 			}
+			System.out.println(an);
+			
+			MultiCommodityFlow mcf = new MultiCommodityFlow(an);
+			
+			//the nodemapping here is original for all the nodes in all domains. 
+			Map<String, String> solution = mcf.linkMappingWithoutUpdate(tmpvn, nodeMapping);
+			if(solution.size()==0){
+				System.out.println("link no solution");
+				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+				}
+				return false;
+			}
+			System.out.println(solution);
+			//Don't update here
+			
+			
+			
 		}
 		
 	/*	

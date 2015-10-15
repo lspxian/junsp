@@ -129,7 +129,7 @@ public final class VirtualNetwork extends
 	public String toString() {
 		String result = "NODES:\n";
 		for (VirtualNode n : getVertices()) {
-			result += n.getId() + "\n";
+			result += n + "\n";
 			for (AbstractDemand d : n.get()) {
 				result += "  " + d.toString() + "\n";
 			}
@@ -138,7 +138,7 @@ public final class VirtualNetwork extends
 		result += "\nEDGES:\n";
 		for (VirtualLink l : getEdges()) {
 			Pair<VirtualNode> pair = getEndpoints(l);
-			result += l.getId() + "  (" + pair.getFirst().getId() + "<->"
+			result += l + "  (" + pair.getFirst().getId() + "<->"
 					+ pair.getSecond().getId() + ")\n";
 			for (AbstractDemand d : l.get()) {
 				result += "  " + d.toString() + "\n";

@@ -2,6 +2,7 @@ package li.multiDomain;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
@@ -34,7 +35,7 @@ public class Domain extends SubstrateNetwork{
 	
 	public Domain(SubstrateNetwork sn, int x, int y){
 		this();
-		sn.getCopy(false, this);
+		this.copy(sn);
 		this.coordinateX = x;
 		this.coordinateY = y;
 	}
@@ -72,10 +73,7 @@ public class Domain extends SubstrateNetwork{
 		this.interLink.add(new InterLink(source,dest,destDomain,randomResource));
 	}
 	
-	public void getCopy(Domain result){
-		super.getCopy(false, result);
-		
-	}
+
 	
 	public String toString(){
 		String result= super.toString();

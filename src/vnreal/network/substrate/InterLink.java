@@ -49,13 +49,8 @@ public class InterLink extends SubstrateLink {
 
 	@Override
 	public String toString() {
-		String result = "InterLink with domain ("+this.exterDomain.getCoordinateX()
-		+","+this.exterDomain.getCoordinateY()+"),node@["
-				+this.interior.getId()+ "<->"+this.exterior.getId()+"]\n";
-		for (AbstractResource r : this.get()) {
-			result += "  " + r.toString() + "\n";
-		}
-		return result;
-		//return "InterLink[" + getId() + ")";
+		return "Inter Link(" + getId() + ") to domain("+this.exterDomain.getCoordinateX()
+			+","+this.exterDomain.getCoordinateY()+") ";
+		
 	}
 }

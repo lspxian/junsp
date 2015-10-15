@@ -52,6 +52,7 @@ public class VirtualNode extends Node<AbstractDemand> {
 	public VirtualNode(int layer) {
 		super();
 		this.layer = layer;
+		this.domain=null;
 	}
 
 	public int getLayer() {
@@ -66,7 +67,10 @@ public class VirtualNode extends Node<AbstractDemand> {
 
 	@Override
 	public String toString() {
-		return "VirtualNode(" + getId() + ")@" + getLayer();
+		String result= "VirtualNode(" + getId() + ")";
+		if(domain!=null)
+			result += "@domain("+domain.getCoordinateX()+","+domain.getCoordinateY()+")";
+		return result;
 	}
 
 	@Override

@@ -30,7 +30,7 @@ public class VirtualInterLink extends VirtualLink {
 
 	@Override
 	public String toString(){
-		return super.toString()+"@[("+this.node1.getDomain().getCoordinateX()+","+this.node1.getDomain().getCoordinateY()
-				+")->("+this.node2.getDomain().getCoordinateX()+","+this.node2.getDomain().getCoordinateY()+")] ";
+		return "Virtual Inter Link(" + getId() + ")"+"@[("+this.node1.getDomain().getCoordinateX()+","+this.node1.getDomain().getCoordinateY()
+				+")<->("+this.node2.getDomain().getCoordinateX()+","+this.node2.getDomain().getCoordinateY()+")] ";
 	}
 }
