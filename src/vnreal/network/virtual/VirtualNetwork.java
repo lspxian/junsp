@@ -129,7 +129,7 @@ public final class VirtualNetwork extends
 	public String toString() {
 		String result = "NODES:\n";
 		for (VirtualNode n : getVertices()) {
-			result += n + "\n";
+			result += n + "("+n.getCoordinateX()+","+n.getCoordinateY()+")"+"\n";
 			for (AbstractDemand d : n.get()) {
 				result += "  " + d.toString() + "\n";
 			}
@@ -280,4 +280,11 @@ public final class VirtualNetwork extends
 		this.lifetime = MiscelFunctions.negExponential(1.0/mean);
 	}
 	
+	//scale coordinate
+	public void scale(double x, double y){
+		for(VirtualNode vnode : this.getVertices()){
+			vnode.setCoordinateX(vnode.getCoordinateX()*x);
+			vnode.setCoordinateY(vnode.getCoordinateY()*y);
+		}
+	}
 }

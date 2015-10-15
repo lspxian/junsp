@@ -21,11 +21,9 @@ public class MultiDomainAlgoTest {
 		//int x,int y, file path, resource
 		multiDomain.add(new Domain(0,0,"data/cost239", false));
 		multiDomain.add(new Domain(1,0,"sndlib/abilene", false));
-		multiDomain.add(new Domain(1,1,"data/cost239", false));
-		multiDomain.add(new Domain(0,1,"sndlib/abilene", false));
-		
-		//System.out.println(sn);
-		
+		//multiDomain.add(new Domain(1,1,"data/cost239", false));
+		//multiDomain.add(new Domain(0,1,"sndlib/abilene", false));
+				
 		//max distance for all the domains
 		double maxDistance=0, distance=0, ax,ay,bx,by;		
 		for(int i=0;i<multiDomain.size();i++){
@@ -74,10 +72,10 @@ public class MultiDomainAlgoTest {
 				
 			}
 		}
-		/*
+		
 		System.out.println(multiDomain.get(0));
 		System.out.println(multiDomain.get(1));
-		System.out.println(multiDomain.get(2));
+	/*	System.out.println(multiDomain.get(2));
 		System.out.println(multiDomain.get(3));
 	*/
 		
@@ -87,13 +85,15 @@ public class MultiDomainAlgoTest {
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data200/vir"+i);
 			vn.addAllResource(true);
+			vn.scale(1, 0.5);
+			
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 		}
 		
 		for(int i=0;i<1;i++){
-			//System.out.println("virtual network "+i+": \n"+vns.get(i));
-			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,30);
+			System.out.println("virtual network "+i+": \n"+vns.get(i));
+			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,50);
 			if(mdar.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
 			}else{
@@ -104,9 +104,9 @@ public class MultiDomainAlgoTest {
 			System.out.println(nodeMapping);	
 			
 			
-			
+			/*
 			AS_MCF as_mcf = new AS_MCF(multiDomain);
-			as_mcf.linkMapping(vns.get(i),nodeMapping);
+			as_mcf.linkMapping(vns.get(i),nodeMapping);*/
 			
 			
 		}

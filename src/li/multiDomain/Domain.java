@@ -77,16 +77,12 @@ public class Domain extends SubstrateNetwork{
 	
 	public String toString(){
 		String result= super.toString();
-		result += "\nINTER LINK:\n";
-		
-		for (InterLink l : interLink) {
-			result += l.toString();
-			/*
-			result += l.getId() + "  (" + l.getSource().getId() + "<->"
-					+ l.getDestination().getId() + ") \n";
+		for (InterLink l : interLink) {			
+			result += l + "  (" + l.getInterior().getId() + "<->"
+					+ l.getExterior().getId() + ") \n";
 			for (AbstractResource r : l.get()) {
 				result += "  " + r.toString() + "\n";
-			}*/
+			}
 		}
 		
 		return result;
