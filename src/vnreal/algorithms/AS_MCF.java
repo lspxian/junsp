@@ -45,11 +45,11 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		
 		Collection<VirtualLink> virtualLinks = vNet.getEdges();
 		//for(Domain domain : domains){
-		for(int i=0;i<1;i++){
+		for(int i=0;i<domains.size();i++){
 			//System.out.println(domains.get(1));
-			Domain domain = domains.get(3);
+			Domain domain = domains.get(i);
 			//Create virtual network for each domain, transform virtual link to virtual inter link, this means to add source domain and destination domain.
-			VirtualNetwork tmpvn = new VirtualNetwork(1);
+			VirtualNetwork tmpvn = new VirtualNetwork();
 			for(VirtualLink vlink : virtualLinks){
 				VirtualNode vSource = vNet.getEndpoints(vlink).getFirst();
 				VirtualNode vDest = vNet.getEndpoints(vlink).getSecond();
@@ -89,17 +89,18 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 					}
 					else	continue;
 					for(InterLink ilink : domain.getInterLink()){
-						if(exterDomain.containsVertex(ilink.getExterior())){
-							SubstrateNode dijkSource = ilink.getExterior();
-							if(!dijkSource.equals(dijkDest)){
-								DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain,weightTrans);
-								AugmentedLink al = new AugmentedLink();
-								double cost = (double) dijkstra.getDistance(dijkSource, dijkDest);
-								System.out.println(cost);
-								al.setCost(cost);
-								al.addResource(100/(cost));	//normally random(0,1), here random = 100 means that it has infinite bw
-								an.addEdge(al, dijkSource, dijkDest, EdgeType.UNDIRECTED);	//augmented links
-							}
+						SubstrateNode dijkSource = ilink.getExterior();
+						if(exterDomain.containsVertex(dijkSource)&&
+								(!dijkSource.equals(dijkDest))&&
+								(!an.existLink(dijkSource, dijkDest))){		//augmented link does not exist in the augmented network
+							
+							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain,weightTrans);
+							AugmentedLink al = new AugmentedLink();
+							double cost = (double) dijkstra.getDistance(dijkSource, dijkDest);
+							System.out.println(cost);
+							al.setCost(cost);
+							al.addResource(100/(cost));	//normally random(0,1), here random = 100 means that it has infinite bw
+							an.addEdge(al, dijkSource, dijkDest, EdgeType.UNDIRECTED);	//augmented links
 							
 						}
 						
@@ -120,36 +121,12 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				return false;
 			}
 			System.out.println(solution);
-			//Don't update here
-			
-			
-			
-		}
-		
-	/*	
-		
-		//use mcf with splitting or without splitting
-		for(Domain domain : domains){
-			MultiCommodityFlow mcf = new MultiCommodityFlow(an4d.get(domain));
-			
-			//the nodemapping here is original for all the nodes in all domains. 
-			Map<String, String> solution = mcf.linkMappingWithoutUpdate(vn4d.get(domain), nodeMapping);
-			if(solution.size()==0){
-				System.out.println("link no solution");
-				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
-					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
-				}
-				return false;
-			}
-			System.out.println(solution);
-			
-			//Don't update here
-			
+			//Don't update here	
 			
 			
 		}
 		
-		*/
+		
 		
 		return true;
 	}

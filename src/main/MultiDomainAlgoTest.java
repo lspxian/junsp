@@ -46,8 +46,8 @@ public class MultiDomainAlgoTest {
 		}
 		
 		//generate inter links
-		double alpha = 0.2;	//alpha increases the probability of edges between any nodes in the graph
-		double beta = 0.2;	//beta yields a larger ratio of long edges to short edges.
+		double alpha = 0.5;	//alpha increases the probability of edges between any nodes in the graph
+		double beta = 0.1;	//beta yields a larger ratio of long edges to short edges.
 		for(int i=0;i<multiDomain.size();i++){
 			Domain startDomain = multiDomain.get(i);
 			for(int j=i+1;j<multiDomain.size();j++){
@@ -72,10 +72,10 @@ public class MultiDomainAlgoTest {
 				
 			}
 		}
-		
+		/*
 		System.out.println(multiDomain.get(0));
 		System.out.println(multiDomain.get(1));
-	/*	System.out.println(multiDomain.get(2));
+		System.out.println(multiDomain.get(2));
 		System.out.println(multiDomain.get(3));
 	*/
 		
@@ -92,7 +92,7 @@ public class MultiDomainAlgoTest {
 		}
 		
 		for(int i=0;i<1;i++){
-			System.out.println("virtual network "+i+": \n"+vns.get(i));
+			//System.out.println("virtual network "+i+": \n"+vns.get(i));
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,50);
 			if(mdar.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
@@ -103,10 +103,8 @@ public class MultiDomainAlgoTest {
 			Map<VirtualNode, SubstrateNode> nodeMapping = mdar.getNodeMapping();
 			System.out.println(nodeMapping);	
 			
-			
-			/*
 			AS_MCF as_mcf = new AS_MCF(multiDomain);
-			as_mcf.linkMapping(vns.get(i),nodeMapping);*/
+			as_mcf.linkMapping(vns.get(i),nodeMapping);
 			
 			
 		}
