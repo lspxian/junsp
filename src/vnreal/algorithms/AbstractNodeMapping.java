@@ -41,7 +41,6 @@ import java.util.Map;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.IdDemand;
-import vnreal.network.NetworkStack;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;

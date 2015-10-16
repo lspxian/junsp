@@ -45,23 +45,17 @@ import vnreal.demands.CpuDemand;
  * @author Vlad Singeorzan
  */
 public class VirtualNode extends Node<AbstractDemand> {
-	private final int layer;
 	protected Domain domain;	//for multi domain
 
 	
-	public VirtualNode(int layer) {
+	public VirtualNode() {
 		super();
-		this.layer = layer;
 		this.domain=null;
 	}
 
-	public int getLayer() {
-		return layer;
-	}
 	
 	public VirtualNode(Domain domain){
 		super();
-		this.layer=1;
 		this.domain = domain;
 	}
 

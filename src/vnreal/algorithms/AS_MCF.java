@@ -7,12 +7,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.collections15.Transformer;
+import org.apache.commons.collections15.map.LinkedMap;
 
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import li.multiDomain.Domain;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.utils.NodeLinkDeletion;
+import vnreal.demands.AbstractDemand;
+import vnreal.demands.BandwidthDemand;
 import vnreal.network.substrate.AugmentedLink;
 import vnreal.network.substrate.AugmentedNetwork;
 import vnreal.network.substrate.InterLink;
@@ -35,6 +38,10 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet,
 			Map<VirtualNode, SubstrateNode> nodeMapping) {
+		Map<SubstrateNode, VirtualNode> inverseNodeMapping = new LinkedMap<SubstrateNode, VirtualNode>();
+		for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+			inverseNodeMapping.put(entry.getValue(), entry.getKey());
+		}
 		
 		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
 			public Double transform(SubstrateLink link){
@@ -43,11 +50,14 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			}
 		};
 		
+		Map<Domain, VirtualNetwork> newVnet = new HashMap<Domain, VirtualNetwork>();
+		
 		Collection<VirtualLink> virtualLinks = vNet.getEdges();
 		//for(Domain domain : domains){
 		for(int i=0;i<domains.size();i++){
 			//System.out.println(domains.get(1));
 			Domain domain = domains.get(i);
+			newVnet.put(domain, new VirtualNetwork());	//initialize the 2nd mcf
 			//Create virtual network for each domain, transform virtual link to virtual inter link, this means to add source domain and destination domain.
 			VirtualNetwork tmpvn = new VirtualNetwork();
 			for(VirtualLink vlink : virtualLinks){
@@ -57,6 +67,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				SubstrateNode sDest = nodeMapping.get(vDest);
 				if(domain.containsVertex(sSource)&&domain.containsVertex(sDest)){
 					tmpvn.addEdge(vlink, vSource, vDest, EdgeType.UNDIRECTED);
+					newVnet.get(domain).addEdge(vlink, vSource, vDest, EdgeType.UNDIRECTED);
 					//virtualLinks.remove(vlink);
 				}
 				else if(domain.containsVertex(sSource)||domain.containsVertex(sDest))
@@ -123,10 +134,63 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			System.out.println(solution);
 			//Don't update here	
 			
-			
+			VirtualNode srcVnode,dstVnode;
+			SubstrateNode srcSnode = null,dstSnode = null;
+			int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
+			for(Map.Entry<String, String> entry : solution.entrySet()){
+				String linklink = entry.getKey();
+				double flow = Double.parseDouble(entry.getValue());
+				srcVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vs")+2, linklink.indexOf("vd")));
+				dstVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vd")+2, linklink.indexOf("ss")));
+				srcSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("ss")+2, linklink.indexOf("sd")));
+				dstSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("sd")+2));
+				
+				srcVnode = inverseNodeMapping.get(domain.getNodeFromID(srcVnodeId));
+				dstVnode = inverseNodeMapping.get(domain.getNodeFromID(dstVnodeId));
+				if(domain.containsVertex(dstSnode))
+				{
+					VirtualNode tmp = dstVnode;
+					dstVnode = srcVnode;
+					srcVnode = tmp;
+				}
+				Domain exterDomain = dstVnode.getDomain();
+				VirtualLink tmpvl = tmpvn.findEdge(srcVnode, dstVnode);
+				
+				srcSnode = an.getNodeFromID(srcSnodeId);
+				dstSnode = an.getNodeFromID(dstSnodeId);
+				if(nodeMapping.get(dstVnode).equals(srcSnode)){
+					SubstrateNode tmp = dstSnode;
+					dstSnode = srcSnode;
+					srcSnode = tmp;
+				}
+				SubstrateLink tmpsl = an.findEdge(srcSnode, dstSnode);
+				
+				tmpvl.getSolution().put(domain, new HashMap<SubstrateLink,Double>());
+				if(tmpsl instanceof AugmentedLink){
+					VirtualNode newVNode = new VirtualNode();
+					nodeMapping.put(newVNode, srcSnode);
+					
+					BandwidthDemand bwDem=null;
+					for(AbstractDemand dem : tmpvl){
+						if (dem instanceof BandwidthDemand) {
+							bwDem = (BandwidthDemand) dem;
+							break;
+						}
+					}
+					VirtualLink newVLink = new VirtualLink();
+					BandwidthDemand bw=new BandwidthDemand(newVLink);
+					bw.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
+					newVLink.add(bw);
+					newVnet.get(exterDomain).addEdge(newVLink, newVNode, dstVnode, EdgeType.UNDIRECTED);	//要写一个整体化的mcf
+				}
+				else {
+					tmpvl.getSolution().get(domain).put(tmpsl, flow);
+				}
+				
+				
+			}
+		
 		}
-		
-		
 		
 		return true;
 	}

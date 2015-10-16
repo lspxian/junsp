@@ -52,7 +52,6 @@ import vnreal.demands.CpuDemand;
 import vnreal.mapping.Mapping;
 import vnreal.network.Link;
 import vnreal.network.Network;
-import vnreal.network.NetworkStack;
 import vnreal.network.Node;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -214,38 +213,7 @@ public class MiscelFunctions {
 		return (total_demBW + total_demCPU);
 	}
 
-	/**
-	 * Method to sort the set of virtual networks taking into account the
-	 * revenues
-	 * 
-	 * @param stack
-	 *            set of VNRs and substrate net
-	 * @return ordered VNR stack by revenues
-	 */
-	@SuppressWarnings("unchecked")
-	public static NetworkStack sortByRevenues(NetworkStack stack) {
-		Map<Object, Double> Revenues = new LinkedHashMap<Object, Double>();
-		Iterable networks = new LinkedList<Network<?, ?, ?>>();
-		double revenue;
-		for (Iterator<Network<?, ?, ?>> net = stack.iterator(); net.hasNext();) {
-			Network<?, ?, ?> tmpN = net.next();
-			if (tmpN.getLayer() != 0) {
-				revenue = calculateVnetRevenue((VirtualNetwork) tmpN);
-				Revenues.put(((VirtualNetwork) tmpN), revenue);
-			}
-		}
-		Map<Object, Double> sortedRevenues = sortByValue(Revenues);
-		networks = sortedRevenues.keySet();
-
-		List<VirtualNetwork> virtualNetworks = new LinkedList<VirtualNetwork>();
-		for (Iterator<Network<?, ?, ?>> n = networks.iterator(); n.hasNext();) {
-			Network<?, ?, ?> tmp = n.next();
-			virtualNetworks.add((VirtualNetwork) tmp);
-		}
-		NetworkStack new_stack = new NetworkStack(stack.getSubstrate(),
-				virtualNetworks);
-		return new_stack;
-	}
+	
 
 	/**
 	 * 
@@ -609,55 +577,7 @@ public class MiscelFunctions {
 		return null;
 	}
 
-	/** unregister mapping of a virtual node that could not be mapped */
-	public static void clearVnodeMappings(VirtualNetwork vNet, VirtualNode vNode) {
-
-		for (AbstractDemand dem : vNode.get()) {
-			List<Mapping> mappingsCopy = new ArrayList<Mapping>();
-			if (!dem.getMappings().isEmpty()) {
-				mappingsCopy.addAll(dem.getMappings());
-				for (Mapping m : mappingsCopy)
-					m.getDemand().free(m.getResource());
-			}
-		}
-
-		for (VirtualLink link : vNet.getOutEdges(vNode)) {
-			for (AbstractDemand dem : link.get()) {
-				List<Mapping> mappingsCopy = new ArrayList<Mapping>();
-				if (!dem.getMappings().isEmpty()) {
-					mappingsCopy.addAll(dem.getMappings());
-					for (Mapping m : mappingsCopy)
-						m.getDemand().free(m.getResource());
-				}
-			}
-			for (AbstractDemand dem : link.getHiddenHopDemands()) {
-				List<Mapping> mappingsCopy = new ArrayList<Mapping>();
-				if (!dem.getMappings().isEmpty()) {
-					mappingsCopy.addAll(dem.getMappings());
-					for (Mapping m : mappingsCopy)
-						m.getDemand().free(m.getResource());
-				}
-			}
-		}
-		for (VirtualLink link : vNet.getInEdges(vNode)) {
-			for (AbstractDemand dem : link.get()) {
-				List<Mapping> mappingsCopy = new ArrayList<Mapping>();
-				if (!dem.getMappings().isEmpty()) {
-					mappingsCopy.addAll(dem.getMappings());
-					for (Mapping m : mappingsCopy)
-						m.getDemand().free(m.getResource());
-				}
-			}
-			for (AbstractDemand dem : link.getHiddenHopDemands()) {
-				List<Mapping> mappingsCopy = new ArrayList<Mapping>();
-				if (!dem.getMappings().isEmpty()) {
-					mappingsCopy.addAll(dem.getMappings());
-					for (Mapping m : mappingsCopy)
-						m.getDemand().free(m.getResource());
-				}
-			}
-		}
-	}
+	
 
 	public static boolean hasLinkMappings(VirtualLink vLink) {
 		for (AbstractDemand dem : vLink.get())
@@ -705,85 +625,7 @@ public class MiscelFunctions {
 		return unmappedLinks;
 	}
 
-	public static void createMatlabFiles(VirtualNetwork vNet/*
-															 * ,
-															 * Map<VirtualNode,
-															 * SubstrateNode>
-															 * nodeMapping
-															 */) {
-		int i;
-		int[][] vNetTopo = new int[vNet.getVertices().size()][vNet
-				.getVertices().size()];
-		double[][] vNetHhDemands = new double[vNet.getVertices().size()][vNet
-				.getVertices().size()];
-		// FIXME Just for now, our algorithm will just have BW metrics in links
-		// and CPU in nodes
-		double[][] vNetBwDem = new double[vNet.getVertices().size()][vNet
-				.getVertices().size()];
-		double[] vNetCpuDem = new double[vNet.getVertices().size()];
-		// int[] nodeMapp = new int[vNet.getVertices().size()];
-		Map<Integer, Integer> nodeMapVirtVir = vNodesidToMatlabId(vNet);
-
-		// Loop to fill the matrices with 0 values
-		i = 0;
-		for (Iterator<VirtualNode> itt = vNet.getVertices().iterator(); itt
-				.hasNext();) {
-			// VirtualNode tempVirNode = itt.next();
-			itt.next();
-			vNetCpuDem[i] = 0;
-			// nodeMapp[i] = nodeMapping.get(tempVirNode).getId();
-			for (int j = 0; j < vNet.getVertices().size(); j++) {
-				vNetTopo[i][j] = 0;
-				vNetBwDem[i][j] = 0;
-				vNetHhDemands[i][j] = 0;
-			}
-			i++;
-		}
-
-		// Loop to fill the link demand (including hidden hops) matrices
-		for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links
-				.hasNext();) {
-			VirtualLink tempLink = links.next();
-			vNetTopo[nodeMapVirtVir.get(vNet.getSource(tempLink).getId())][nodeMapVirtVir
-					.get(vNet.getDest(tempLink).getId())] = 1;
-			for (AbstractDemand dem : tempLink)
-				if (dem instanceof BandwidthDemand) {
-					vNetBwDem[nodeMapVirtVir.get(vNet.getSource(tempLink)
-							.getId())][nodeMapVirtVir.get(vNet
-							.getDest(tempLink).getId())] = ((BandwidthDemand) dem)
-							.getDemandedBandwidth();
-					break;
-				}
-
-			// Get the hidden hops demand
-			for (AbstractDemand dem : tempLink.getHiddenHopDemands())
-				if (dem instanceof CpuDemand) {
-					vNetHhDemands[nodeMapVirtVir.get(vNet.getSource(tempLink)
-							.getId())][nodeMapVirtVir.get(vNet
-							.getDest(tempLink).getId())] = ((CpuDemand) dem)
-							.getDemandedCycles();
-					break;
-				}
-		}
-
-		// Loop to fill the node demand matrices
-		i = 0;
-		for (Iterator<VirtualNode> nodes = vNet.getVertices().iterator(); nodes
-				.hasNext();) {
-			VirtualNode tempNode = nodes.next();
-			for (AbstractDemand dem : tempNode) {
-				if (dem instanceof CpuDemand) {
-					vNetCpuDem[i] = ((CpuDemand) dem).getDemandedCycles();
-					break;
-				}
-			}
-			i++;
-		}
-
-		/* Files that will be shared with matlab program are created */
-		MatlabFilesCreator.createVirtualFiles(vNetTopo, vNetBwDem, vNetCpuDem,
-				vNetHhDemands, vNet.getLayer());
-	}
+	
 
 	public static Map<Integer, Integer> vNodesidToMatlabId(VirtualNetwork vNet) {
 		int i = 0;
@@ -981,60 +823,7 @@ public class MiscelFunctions {
 		return false;
 	}
 
-	/**
-	 * 
-	 * @param oldStack
-	 * @return New stack with one virtual network that is a sum of the set of
-	 *         virtual networks
-	 */
-	public static NetworkStack allVnsInOne(NetworkStack oldStack) {
-		NetworkStack newStack;
-		List<VirtualNetwork> vns = new LinkedList<VirtualNetwork>();
-		VirtualNetwork vNet = new VirtualNetwork(1);
-		vns.add(vNet);
-		Map<VirtualNode, VirtualNode> virtualToVirtual = null;
-		for (Network<?, ?, ?> net : oldStack) {
-			virtualToVirtual = new LinkedHashMap<VirtualNode, VirtualNode>();
-			if (net instanceof VirtualNetwork) {
-				for (VirtualNode vNode : ((VirtualNetwork) net).getVertices()) {
-					VirtualNode tempNode = new VirtualNode(vNet.getLayer());
-					for (AbstractDemand dem : vNode) {
-						if (dem instanceof CpuDemand) {
-							CpuDemand tempCpuDem = new CpuDemand(tempNode);
-							tempCpuDem.setDemandedCycles(((CpuDemand) dem)
-									.getDemandedCycles());
-							tempNode.add(tempCpuDem);
-							vNet.addVertex(tempNode);
-							virtualToVirtual.put(vNode, tempNode);
-							break;
-						}
-					}
-				}
 
-				for (VirtualLink vLink : ((VirtualNetwork) net).getEdges()) {
-					VirtualLink tempVlink = new VirtualLink(vNet.getLayer());
-					for (AbstractDemand dem : vLink) {
-						if (dem instanceof BandwidthDemand) {
-							BandwidthDemand tempBwDem = new BandwidthDemand(
-									tempVlink);
-							tempBwDem
-									.setDemandedBandwidth(((BandwidthDemand) dem)
-											.getDemandedBandwidth());
-							tempVlink.add(tempBwDem);
-							vNet.addEdge(tempVlink, virtualToVirtual
-									.get(((VirtualNetwork) net)
-											.getSource(vLink)),
-									virtualToVirtual.get(((VirtualNetwork) net)
-											.getDest(vLink)));
-							break;
-						}
-					}
-				}
-			}
-		}
-		newStack = new NetworkStack(oldStack.getSubstrate(), vns);
-		return newStack;
-	}
 
 	/**
 	 * 
@@ -1042,68 +831,7 @@ public class MiscelFunctions {
 	 * @return New stack with one virtual network that is a sum of the set of
 	 *         virtual networks
 	 */
-	public static NetworkStack allVnsInOneforBFS(NetworkStack oldStack) {
-		NetworkStack newStack;
-		List<VirtualNetwork> vns = new LinkedList<VirtualNetwork>();
-		VirtualNetwork vNet = new VirtualNetwork(1);
-		vns.add(vNet);
-		VirtualNode tempNode = null, nodePrevNet = null, nodeLastNet = null;
-		VirtualLink tempVlink = null;
-		Map<VirtualNode, VirtualNode> virtualToVirtual = new LinkedHashMap<VirtualNode, VirtualNode>();
-
-		for (Network<?, ?, ?> net : oldStack) {
-
-			if (net instanceof VirtualNetwork) {
-				for (VirtualNode vNode : ((VirtualNetwork) net).getVertices()) {
-					tempNode = new VirtualNode(vNet.getLayer());
-					for (AbstractDemand dem : vNode) {
-						if (dem instanceof CpuDemand) {
-							CpuDemand tempCpuDem = new CpuDemand(tempNode);
-							tempCpuDem.setDemandedCycles(((CpuDemand) dem)
-									.getDemandedCycles());
-							tempNode.add(tempCpuDem);
-							vNet.addVertex(tempNode);
-							virtualToVirtual.put(vNode, tempNode);
-							break;
-						}
-					}
-					if (nodeLastNet != null) {
-						VirtualLink temp = new VirtualLink(vNet.getLayer());
-						BandwidthDemand bwDem = new BandwidthDemand(temp);
-						bwDem.setDemandedBandwidth((double) -1);
-						temp.add(bwDem);
-						vNet.addEdge(temp, virtualToVirtual.get(nodeLastNet),
-								tempNode);
-						nodeLastNet = null;
-					}
-					nodePrevNet = vNode;
-				}
-				nodeLastNet = nodePrevNet;
-
-				for (VirtualLink vLink : ((VirtualNetwork) net).getEdges()) {
-					tempVlink = new VirtualLink(vNet.getLayer());
-					for (AbstractDemand dem : vLink) {
-						if (dem instanceof BandwidthDemand) {
-							BandwidthDemand tempBwDem = new BandwidthDemand(
-									tempVlink);
-							tempBwDem
-									.setDemandedBandwidth(((BandwidthDemand) dem)
-											.getDemandedBandwidth());
-							tempVlink.add(tempBwDem);
-							vNet.addEdge(tempVlink, virtualToVirtual
-									.get(((VirtualNetwork) net)
-											.getSource(vLink)),
-									virtualToVirtual.get(((VirtualNetwork) net)
-											.getDest(vLink)));
-							break;
-						}
-					}
-				}
-			}
-		}
-		newStack = new NetworkStack(oldStack.getSubstrate(), vns);
-		return newStack;
-	}
+	
 
 	public static List<SubstrateNode> findFulfillingNodesEA(VirtualNode vNode,
 			List<SubstrateNode> filtratedsNodes, int dist,
@@ -1256,27 +984,7 @@ public class MiscelFunctions {
 	
 	
 
-	public static List<SubstrateLink> findLinksInactivesDemand(
-			NetworkStack stack) {
-		List<SubstrateLink> subsLinksOneDem = new LinkedList<SubstrateLink>();
-		for (SubstrateNode tempSnode : stack.getSubstrate().getVertices()) {
-			for (AbstractResource res : tempSnode) {
-				if (res instanceof CpuResource) {
-					if (res.getMappings().isEmpty()) {
-						for (SubstrateLink tempSlink : stack.getSubstrate()
-								.getIncidentEdges(tempSnode)) {
-							if (!subsLinksOneDem.contains(tempSlink))
-								subsLinksOneDem.add(tempSlink);
-						}
-
-						break;
-					}
-
-				}
-			}
-		}
-		return subsLinksOneDem;
-	}
+	
 
 	public static double getRemaRes(SubstrateNetwork sNet) {
 		double nodeRemaRes = 0;

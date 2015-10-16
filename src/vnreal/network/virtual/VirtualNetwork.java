@@ -82,19 +82,12 @@ public final class VirtualNetwork extends
 
 	@Override
 	public boolean addVertex(VirtualNode vertex) {
-		if (vertex.getLayer() == getLayer())
 			return super.addVertex(vertex);
-		else
-			return false;
 	}
 
 	@Override
 	public boolean addEdge(VirtualLink edge, VirtualNode v, VirtualNode w) {
-		if (edge.getLayer() == getLayer() && v.getLayer() == getLayer()
-				&& w.getLayer() == getLayer())
-			return super.addEdge(edge, new Pair<VirtualNode>(v, w));
-		else
-			return false;
+		return super.addEdge(edge, new Pair<VirtualNode>(v, w));
 	}
 
 	public String getName() {
@@ -120,7 +113,7 @@ public final class VirtualNetwork extends
 		return new Factory<VirtualLink>() {
 			@Override
 			public VirtualLink create() {
-				return new VirtualLink(layer);
+				return new VirtualLink();
 			}
 		};
 	}
@@ -218,7 +211,7 @@ public final class VirtualNetwork extends
 				edge=true;
 			}
 			if((node==true)&&(!line.contains("VERTICES"))&&(!line.isEmpty())){
-				VirtualNode nd=new VirtualNode(layer); //layer, don't know what it means, 1 for all
+				VirtualNode nd=new VirtualNode(); //layer, don't know what it means, 1 for all
 				line = line.substring(line.indexOf(" ")+1);
 				line = line.substring(line.indexOf(" ")+1);
 
@@ -234,7 +227,7 @@ public final class VirtualNetwork extends
 				VirtualNode start =  (VirtualNode)arr[Integer.parseInt(line.substring(0, line.indexOf(" ")))];
 				line = line.substring(line.indexOf(" ")+1);
 				VirtualNode end = (VirtualNode)arr[Integer.parseInt(line.substring(0, line.indexOf(" ")))];
-				this.addEdge(new VirtualLink(layer), start, end);
+				this.addEdge(new VirtualLink(), start, end);
 				
 				//double direction
 				//this.addEdge(new VirtualLink(layer), end, start);

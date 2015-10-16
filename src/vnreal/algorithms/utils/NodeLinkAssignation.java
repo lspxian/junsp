@@ -188,21 +188,7 @@ public class NodeLinkAssignation {
 	 * @return boolean value indicating whether mapping has been Successful or
 	 *         not.
 	 */
-	public final static boolean vlm(VirtualLink vl, List<SubstrateLink> spath,
-			SubstrateNetwork sNet, SubstrateNode srcSNode) {
-		for (SubstrateLink sl : spath) {
-			// ... a resource to each link demand must be assigned.
-			if (!occupy(vl.get(), sl)) {
-				return false;
-			} else {
-				if (!sNet.getSource(sl).equals(srcSNode)) {
-					if (!occupy(vl.getHiddenHopDemands(), sNet.getSource(sl)))
-						return false;
-				}
-			}
-		}
-		return true;
-	}
+
 	
 	public final static boolean vlmSimple(VirtualLink vl, List<SubstrateLink> spath){
 		for(SubstrateLink sl : spath){
@@ -294,22 +280,7 @@ public class NodeLinkAssignation {
 	 * @return boolean value indicating whether the path accomplishes the
 	 *         demands
 	 */
-	public final static boolean verifyPath(VirtualLink vl,
-			List<SubstrateLink> path, SubstrateNode srcSNode,
-			SubstrateNetwork sNet) {
-		for (SubstrateLink tSLink : path) {
-			if (!fulfills(vl.get(), tSLink)) {
-				return false;
-			} else {
-				if (!sNet.getSource(tSLink).equals(srcSNode)) {
-					if (!fulfills(vl.getHiddenHopDemands(),
-							sNet.getSource(tSLink)))
-						return false;
-				}
-			}
-		}
-		return true;
-	}
+	
 	
 	public final static boolean verifyPathSimple(VirtualLink vl,
 			List<SubstrateLink> path) {

@@ -9,7 +9,6 @@ import vnreal.algorithms.linkmapping.SOD_BK;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.NodeLinkDeletion;
-import vnreal.network.NetworkStack;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
@@ -35,11 +34,6 @@ public class FreeResourceTest {
 			vns.add(vn);
 			
 		}
-		
-		//Network stack
-	
-		@SuppressWarnings("unused")
-		NetworkStack netst = new NetworkStack(sn,vns);	
 		
 		//Mapping
 		

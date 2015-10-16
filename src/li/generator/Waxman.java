@@ -27,7 +27,7 @@ public class Waxman {
 		//generate nodes
 		VirtualNode vn;
 		for(int i=0;i<nodeNomber;i++){
-			vn=new VirtualNode(1);
+			vn=new VirtualNode();
 			vn.setCoordinateX(Math.random()*xMax);
 			vn.setCoordinateY(Math.random()*yMax);
 			network.addVertex(vn);
@@ -50,7 +50,7 @@ public class Waxman {
 						+ Math.pow(start.getCoordinateY()-end.getCoordinateY(), 2));
 				double proba = alpha * Math.exp(-distance/beta/maxDistance);
 				if(proba>Math.random()){
-					VirtualLink vl = new VirtualLink(1);
+					VirtualLink vl = new VirtualLink();
 					network.addEdge(vl, start, end);
 				}
 				

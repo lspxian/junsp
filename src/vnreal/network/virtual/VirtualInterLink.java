@@ -7,12 +7,12 @@ public class VirtualInterLink extends VirtualLink {
 	protected VirtualNode node1;
 	protected VirtualNode node2;
 
-	public VirtualInterLink(int layer) {
-		super(layer);
+	public VirtualInterLink() {
+		super();
 	}
 	
 	public VirtualInterLink(VirtualLink vl,VirtualNode n1, VirtualNode n2){
-		super(1);
+		super();
 		for (AbstractDemand d : vl) {
 			this.add(d.getCopy(this));
 		}

@@ -31,13 +31,18 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.network.virtual;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import li.multiDomain.Domain;
+import li.multiDomain.Solution;
 import vnreal.constraints.ILinkConstraint;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.network.Link;
+import vnreal.network.substrate.SubstrateLink;
 
 /**
  * A virtual network link class.
@@ -46,23 +51,26 @@ import vnreal.network.Link;
  * @author Vlad Singeorzan
  */
 public class VirtualLink extends Link<AbstractDemand> {
-	private final int layer;
-	private final List<AbstractDemand> hhs;
+	private Map<Domain, Map<SubstrateLink, Double>> solution;
 
-	public VirtualLink(int layer) {
+	
+	public VirtualLink() {
 		super();
-		this.layer = layer;
-		hhs = new LinkedList<AbstractDemand>();
+		this.solution = new HashMap<Domain, Map<SubstrateLink, Double>>();
 		setName(getId() + "");
 	}
 
-	public int getLayer() {
-		return layer;
+	public Map<Domain, Map<SubstrateLink, Double>> getSolution() {
+		return solution;
 	}
+
+	public void setSolution(Map<Domain, Map<SubstrateLink, Double>> solution) {
+		this.solution = solution;
+	}
+
 
 	@Override
 	public String toString() {
-		
 		return "VirtualLink(" + getId() + ")";
 	}
 
@@ -97,24 +105,8 @@ public class VirtualLink extends Link<AbstractDemand> {
 		}
 	}
 
-	public void addHiddenHopDemand(AbstractDemand hh) {
-		hhs.add(hh);
-	}
-
-	public List<AbstractDemand> getHiddenHopDemands() {
-		return hhs;
-	}
-
-	public void clearHiddenHopDemands() {
-		// Release and remove old hh demand before setting up a new one
-		for (AbstractDemand hh : hhs)
-			if (!hh.unregisterAll())
-				throw new AssertionError();
-		hhs.clear();
-	}
-	
 	public VirtualLink getCopy() {
-		VirtualLink clone = new VirtualLink(layer);
+		VirtualLink clone = new VirtualLink();
 		
 		for (AbstractDemand d : this) {
 			clone.add(d.getCopy(clone));
