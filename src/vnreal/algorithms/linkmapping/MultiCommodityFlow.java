@@ -8,15 +8,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.apache.commons.collections15.map.LinkedMap;
-
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
-
 import vnreal.algorithms.AbstractLinkMapping;
-import vnreal.algorithms.utils.MiscelFunctions;
-import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.Remote;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
@@ -71,15 +65,10 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 	}
 	
 	public void updateResource(VirtualNetwork vNet,  Map<VirtualNode, SubstrateNode> nodeMapping, Map<String,String> solution){
-		BandwidthDemand originalBwDem = null, newBwDem;
-		VirtualNode srcVnode,dstVnode;
-		SubstrateNode srcSnode = null,dstSnode = null;
+		BandwidthDemand bwDem = null;
+		VirtualNode srcVnode = null, dstVnode = null;
+		SubstrateNode srcSnode = null, dstSnode = null;
 		int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
-		
-		Map<SubstrateNode, VirtualNode> inverseNodeMapping = new LinkedMap<SubstrateNode, VirtualNode>();
-		for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
-			inverseNodeMapping.put(entry.getValue(), entry.getKey());
-		}
 		
 		for(Map.Entry<String, String> entry : solution.entrySet()){
 			String linklink = entry.getKey();
@@ -98,13 +87,13 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 				dstSnodeId = tmp;
 			}
 			
-			srcVnode = inverseNodeMapping.get(sNet.getNodeFromID(srcVnodeId));
-			dstVnode = inverseNodeMapping.get(sNet.getNodeFromID(dstVnodeId));
+			srcVnode = vNet.getNodeFromID(srcVnodeId);
+			dstVnode = vNet.getNodeFromID(dstVnodeId);
 			VirtualLink tmpvl = vNet.findEdge(srcVnode, dstVnode);
 			
 			for (AbstractDemand dem : tmpvl) {
 				if (dem instanceof BandwidthDemand) {
-					originalBwDem = (BandwidthDemand) dem;
+					bwDem = (BandwidthDemand) dem;
 					break;
 				}
 			}
@@ -113,13 +102,17 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			dstSnode = sNet.getNodeFromID(dstSnodeId);
 			SubstrateLink tmpsl = sNet.findEdge(srcSnode, dstSnode);
 			
-			newBwDem = new BandwidthDemand(tmpvl);
-			newBwDem.setDemandedBandwidth(MiscelFunctions
-					.roundThreeDecimals(originalBwDem.getDemandedBandwidth()*flow));
+			for(AbstractResource ares : tmpsl){
+				if(ares instanceof BandwidthResource){
+					((BandwidthResource) ares).setOccupiedBandwidth(bwDem.getDemandedBandwidth()*flow);
+					break;
+				}
+			}
 			
+			/*
 			if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
 				throw new AssertionError("But we checked before!");
-			}
+			}*/
 			
 			
 		}
@@ -129,7 +122,8 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 	public void generateFile(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping) throws IOException{
 		BandwidthDemand bwDem = null;
 		BandwidthResource bwResource=null;
-		SubstrateNode srcSnode = null, dstSnode = null, ssnode=null, dsnode=null;
+		SubstrateNode ssnode=null, dsnode=null;
+		VirtualNode srcVnode = null, dstVnode = null;
 
 		String preambule = "\\Problem : vne\n";
 		String obj = "Minimize\n"+"obj : ";
@@ -141,67 +135,61 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			VirtualLink tmpl = links.next();
 
 			// Find their mapped SubstrateNodes
-			srcSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getFirst());
-			dstSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getSecond());
+			srcVnode = vNet.getEndpoints(tmpl).getFirst();
+			dstVnode = vNet.getEndpoints(tmpl).getSecond();
 			
-			if (!srcSnode.equals(dstSnode)) {
-				// Get current VirtualLink demand
-				for (AbstractDemand dem : tmpl) {
-					if (dem instanceof BandwidthDemand) {
-						bwDem = (BandwidthDemand) dem;
-						break;
-					}
+			// Get current VirtualLink demand
+			for (AbstractDemand dem : tmpl) {
+				if (dem instanceof BandwidthDemand) {
+					bwDem = (BandwidthDemand) dem;
+					break;
 				}
-			
-				for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
-					SubstrateLink tmpsl = slink.next();
-					ssnode = sNet.getEndpoints(tmpsl).getFirst();
-					dsnode = sNet.getEndpoints(tmpsl).getSecond();
-					
-					for(AbstractResource asrc : tmpsl){
-						if(asrc instanceof BandwidthResource){
-							bwResource = (BandwidthResource) asrc;
-						}
+			}
+		
+			for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
+				SubstrateLink tmpsl = slink.next();
+				ssnode = sNet.getEndpoints(tmpsl).getFirst();
+				dsnode = sNet.getEndpoints(tmpsl).getSecond();
+				
+				for(AbstractResource asrc : tmpsl){
+					if(asrc instanceof BandwidthResource){
+						bwResource = (BandwidthResource) asrc;
 					}
-					
-					//objective
-					obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
-					obj = obj + " vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-					obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
-					obj = obj + " vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
-					
-					//integer in the <general>
-					//general = general +  " vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
-					
-					//bounds
-					bounds = bounds + "0 <= vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
-					bounds = bounds + "0 <= vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
 				}
 				
-				//flow constraints
-				Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
-				for(Iterator<SubstrateNode> iterator = sNet.getVertices().iterator();iterator.hasNext();){
-					SubstrateNode snode = iterator.next();
-					nextHop = sNet.getNeighbors(snode);
-					for(Iterator it=nextHop.iterator();it.hasNext();){
-						SubstrateNode tmmpsn = (SubstrateNode) it.next();
-						constraint=constraint+" + vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
-						constraint=constraint+" - vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
-					}
-					//nextHop = sNet.getHop(snode);
-					/*
-					for(int i=0;i<nextHop.size();i++){
-						constraint=constraint+" + vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+snode.getId()+"sd"+nextHop.get(i).getId();
-						constraint=constraint+" - vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+nextHop.get(i).getId()+"sd"+snode.getId();
-					}*/
-					if(snode.equals(srcSnode))	constraint =constraint+" = 1\n";
-					else if(snode.equals(dstSnode)) constraint =constraint+" = -1\n";
-					else	constraint =constraint+" = 0\n";
-					
+				//objective
+				obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
+				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+				obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
+				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+				
+				//integer in the <general>
+				//general = general +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
+				
+				//bounds
+				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
+			}
+			
+			//flow constraints
+			Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
+			for(Iterator<SubstrateNode> iterator = sNet.getVertices().iterator();iterator.hasNext();){
+				SubstrateNode snode = iterator.next();
+				nextHop = sNet.getNeighbors(snode);
+				for(Iterator<SubstrateNode> it=nextHop.iterator();it.hasNext();){
+					SubstrateNode tmmpsn = it.next();
+					constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
+					constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
 				}
+
+				if(snode.equals(nodeMapping.get(srcVnode)))	constraint =constraint+" = 1\n";
+				else if(snode.equals(nodeMapping.get(dstVnode))) constraint =constraint+" = -1\n";
+				else	constraint =constraint+" = 0\n";
 				
 			}
+			
 		}
+
 		
 		//capacity constraint
 		for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
@@ -217,10 +205,9 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			
 			for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links.hasNext();) {
 				VirtualLink tmpl = links.next();
-				srcSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getFirst());
-				dstSnode = nodeMapping.get(vNet.getEndpoints(tmpl).getSecond());
+				srcVnode = vNet.getEndpoints(tmpl).getFirst();
+				dstVnode = vNet.getEndpoints(tmpl).getSecond();
 				
-				if (!srcSnode.equals(dstSnode)) {
 					for (AbstractDemand dem : tmpl) {
 						if (dem instanceof BandwidthDemand) {
 							bwDem = (BandwidthDemand) dem;
@@ -230,10 +217,10 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 					
 					//capacity constraint
 					constraint=constraint+" + "+bwDem.getDemandedBandwidth() +
-							" vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+
+							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+
 							" + "+bwDem.getDemandedBandwidth() +
-							" vs"+srcSnode.getId()+"vd"+dstSnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
-				}
+							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
+				
 			}
 			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
 		}
