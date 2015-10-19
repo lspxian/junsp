@@ -32,9 +32,11 @@
 package vnreal.network.virtual;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import li.multiDomain.Domain;
 import li.multiDomain.Solution;
@@ -43,6 +45,8 @@ import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.network.Link;
 import vnreal.network.substrate.SubstrateLink;
+import vnreal.resources.AbstractResource;
+import vnreal.resources.BandwidthResource;
 
 /**
  * A virtual network link class.
@@ -56,7 +60,14 @@ public class VirtualLink extends Link<AbstractDemand> {
 	
 	public VirtualLink() {
 		super();
-		this.solution = new HashMap<Domain, Map<SubstrateLink, Double>>();
+		this.solution = new TreeMap<Domain, Map<SubstrateLink, Double>>(new Comparator<Domain>(){
+			@Override
+			public int compare(Domain o1, Domain o2) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			
+		});
 		setName(getId() + "");
 	}
 
@@ -67,7 +78,6 @@ public class VirtualLink extends Link<AbstractDemand> {
 	public void setSolution(Map<Domain, Map<SubstrateLink, Double>> solution) {
 		this.solution = solution;
 	}
-
 
 	@Override
 	public String toString() {
@@ -120,4 +130,17 @@ public class VirtualLink extends Link<AbstractDemand> {
 		this.add(bw);
 		return true;
 	}
+	
+	public double getCost(Domain d){
+		Double cost = 0.;
+		for(Map.Entry<SubstrateLink, Double> entry : solution.get(d).entrySet())
+			for(AbstractResource r : entry.getKey()){
+				if(r instanceof BandwidthResource)
+					cost += entry.getValue()/((BandwidthResource) r).getAvailableBandwidth();
+				break;
+			}
+		return cost;	
+	}
+	
+
 }

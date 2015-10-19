@@ -6,6 +6,7 @@ import li.multiDomain.Domain;
 public class VirtualInterLink extends VirtualLink {
 	protected VirtualNode node1;
 	protected VirtualNode node2;
+	protected VirtualLink origLink;
 
 	public VirtualInterLink() {
 		super();
@@ -18,6 +19,7 @@ public class VirtualInterLink extends VirtualLink {
 		}
 		this.node1 = n1;
 		this.node2 = n2;
+		this.origLink = vl;
 	}
 
 	public VirtualNode getNode1() {
@@ -26,6 +28,10 @@ public class VirtualInterLink extends VirtualLink {
 
 	public VirtualNode getNode2() {
 		return node2;
+	}
+
+	public VirtualLink getOrigLink() {
+		return origLink;
 	}
 
 	@Override

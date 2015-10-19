@@ -22,6 +22,7 @@ import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
+import vnreal.network.virtual.AugmentedVirtualLink;
 import vnreal.network.virtual.VirtualInterLink;
 import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
@@ -38,10 +39,11 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet,
 			Map<VirtualNode, SubstrateNode> nodeMapping) {
+		/*
 		Map<SubstrateNode, VirtualNode> inverseNodeMapping = new LinkedMap<SubstrateNode, VirtualNode>();
 		for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 			inverseNodeMapping.put(entry.getValue(), entry.getKey());
-		}
+		}*/
 		
 		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
 			public Double transform(SubstrateLink link){
@@ -120,8 +122,8 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			}
 			System.out.println(an);
 			
+			//first mcf
 			MultiCommodityFlow mcf = new MultiCommodityFlow(an);
-			
 			//the nodemapping here is original for all the nodes in all domains. 
 			Map<String, String> solution = mcf.linkMappingWithoutUpdate(tmpvn, nodeMapping);
 			if(solution.size()==0){
@@ -132,9 +134,9 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				return false;
 			}
 			System.out.println(solution);
-			//Don't update here	
 			
-			VirtualNode srcVnode,dstVnode;
+			//Don't update here, 	
+			VirtualNode srcVnode = null, dstVnode = null;
 			SubstrateNode srcSnode = null,dstSnode = null;
 			int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
 			for(Map.Entry<String, String> entry : solution.entrySet()){
@@ -145,51 +147,106 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				srcSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("ss")+2, linklink.indexOf("sd")));
 				dstSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("sd")+2));
 				
-				srcVnode = inverseNodeMapping.get(domain.getNodeFromID(srcVnodeId));
-				dstVnode = inverseNodeMapping.get(domain.getNodeFromID(dstVnodeId));
-				if(domain.containsVertex(dstSnode))
-				{
-					VirtualNode tmp = dstVnode;
-					dstVnode = srcVnode;
-					srcVnode = tmp;
-				}
-				Domain exterDomain = dstVnode.getDomain();
-				VirtualLink tmpvl = tmpvn.findEdge(srcVnode, dstVnode);
-				
+				srcVnode = tmpvn.getNodeFromID(srcVnodeId);
+				dstVnode = tmpvn.getNodeFromID(dstVnodeId);
 				srcSnode = an.getNodeFromID(srcSnodeId);
 				dstSnode = an.getNodeFromID(dstSnodeId);
-				if(nodeMapping.get(dstVnode).equals(srcSnode)){
-					SubstrateNode tmp = dstSnode;
-					dstSnode = srcSnode;
-					srcSnode = tmp;
-				}
+				
+				VirtualLink tmpvl = tmpvn.findEdge(srcVnode, dstVnode);
 				SubstrateLink tmpsl = an.findEdge(srcSnode, dstSnode);
+				BandwidthDemand bwDem=null;
+				Domain exterDomain = null;
+				for(AbstractDemand dem : tmpvl){
+					if (dem instanceof BandwidthDemand) {
+						bwDem = (BandwidthDemand) dem;
+						break;
+					}
+				}
 				
 				tmpvl.getSolution().put(domain, new HashMap<SubstrateLink,Double>());
-				if(tmpsl instanceof AugmentedLink){
+				if(!(tmpvl instanceof VirtualInterLink)){
+					tmpvl.getSolution().get(domain).put(tmpsl, flow);
+				}
+				else if(tmpsl instanceof AugmentedLink){
+					VirtualInterLink tmpvil = (VirtualInterLink) tmpvl;
+					if(domain.containsVertex(nodeMapping.get(dstVnode))){
+						VirtualNode tmp = dstVnode;
+						dstVnode = srcVnode;
+						srcVnode = tmp;
+					}
+					exterDomain = dstVnode.getDomain();
+					
+					if(nodeMapping.get(dstVnode).equals(srcSnode)){
+						SubstrateNode tmp = dstSnode;
+						dstSnode = srcSnode;
+						srcSnode = tmp;
+					}
+					
 					VirtualNode newVNode = new VirtualNode();
 					nodeMapping.put(newVNode, srcSnode);
-					
-					BandwidthDemand bwDem=null;
-					for(AbstractDemand dem : tmpvl){
-						if (dem instanceof BandwidthDemand) {
-							bwDem = (BandwidthDemand) dem;
-							break;
-						}
-					}
-					VirtualLink newVLink = new VirtualLink();
+					AugmentedVirtualLink newVLink = new AugmentedVirtualLink(domain, tmpvil.getOrigLink());	//original virtual link
 					BandwidthDemand bw=new BandwidthDemand(newVLink);
 					bw.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
 					newVLink.add(bw);
-					newVnet.get(exterDomain).addEdge(newVLink, newVNode, dstVnode, EdgeType.UNDIRECTED);	//要写一个整体化的mcf
+					newVnet.get(exterDomain).addEdge(newVLink, newVNode, dstVnode, EdgeType.UNDIRECTED);	
 				}
 				else {
-					tmpvl.getSolution().get(domain).put(tmpsl, flow);
+					VirtualInterLink tmpvil = (VirtualInterLink) tmpvl;	
+					tmpvil.getOrigLink().getSolution().get(domain).put(tmpsl, flow);	////original virtual link
 				}
-				
 				
 			}
 		
+		}
+		
+		// 2nd mcf
+		for(Map.Entry<Domain, VirtualNetwork> e : newVnet.entrySet()){
+			Domain domain = e.getKey();
+			VirtualNetwork tmpvn = e.getValue();
+			MultiCommodityFlow mcf = new MultiCommodityFlow(domain);
+			Map<String, String> solution = mcf.linkMappingWithoutUpdate(tmpvn, nodeMapping);
+			if(solution.size()==0){
+				System.out.println("link no solution");
+				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+				}
+				return false;
+			}
+			
+			VirtualNode srcVnode = null, dstVnode = null;
+			SubstrateNode srcSnode = null,dstSnode = null;
+			int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
+			for(Map.Entry<String, String> entry : solution.entrySet()){
+				String linklink = entry.getKey();
+				double flow = Double.parseDouble(entry.getValue());
+				srcVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vs")+2, linklink.indexOf("vd")));
+				dstVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vd")+2, linklink.indexOf("ss")));
+				srcSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("ss")+2, linklink.indexOf("sd")));
+				dstSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("sd")+2));
+				
+				srcVnode = tmpvn.getNodeFromID(srcVnodeId);
+				dstVnode = tmpvn.getNodeFromID(dstVnodeId);
+				srcSnode = domain.getNodeFromID(srcSnodeId);
+				dstSnode = domain.getNodeFromID(dstSnodeId);
+				
+				VirtualLink tmpvl = tmpvn.findEdge(srcVnode, dstVnode);
+				SubstrateLink tmpsl = domain.findEdge(srcSnode, dstSnode);
+				
+				if(tmpvl instanceof AugmentedVirtualLink){
+					AugmentedVirtualLink augmentedvl = (AugmentedVirtualLink) tmpvl;
+					augmentedvl.getOriginalVL().getSolution().get(
+							augmentedvl.getOriginalDomain()).put(tmpsl, flow);
+				}
+				else {
+					//TODO intra virtual link mapping self-compare
+					
+				}
+			}
+		}
+		
+		//compare 2 mcf results to get a better solution
+		for(VirtualLink vl : vNet.getEdges()){
+			
 		}
 		
 		return true;
