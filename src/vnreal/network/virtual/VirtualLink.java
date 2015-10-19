@@ -31,15 +31,9 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.network.virtual;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
 import li.multiDomain.Domain;
-import li.multiDomain.Solution;
 import vnreal.constraints.ILinkConstraint;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
@@ -60,14 +54,7 @@ public class VirtualLink extends Link<AbstractDemand> {
 	
 	public VirtualLink() {
 		super();
-		this.solution = new TreeMap<Domain, Map<SubstrateLink, Double>>(new Comparator<Domain>(){
-			@Override
-			public int compare(Domain o1, Domain o2) {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-			
-		});
+		this.solution = new HashMap<Domain, Map<SubstrateLink, Double>>();
 		setName(getId() + "");
 	}
 
@@ -142,5 +129,16 @@ public class VirtualLink extends Link<AbstractDemand> {
 		return cost;	
 	}
 	
-
+	public Map<SubstrateLink, Double> getMinCost(){
+		Map<SubstrateLink, Double> result = null;
+		double cost = 10000;
+		for(Map.Entry<Domain, Map<SubstrateLink, Double>> e : solution.entrySet()){
+			double currentCost = this.getCost(e.getKey());
+			if(currentCost<cost){
+				cost = currentCost;
+				result = e.getValue();
+			}
+		}
+		return result;
+	}
 }
