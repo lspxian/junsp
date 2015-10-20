@@ -81,7 +81,7 @@ public class MultiDomainAlgoTest {
 		
 
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<10;i++){
+		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data200/vir"+i);
 			vn.addAllResource(true);
@@ -94,7 +94,7 @@ public class MultiDomainAlgoTest {
 		for(int i=0;i<1;i++){
 			//System.out.println("virtual network "+i+": \n"+vns.get(i));
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,50);
-			if(mdar.nodeMapping(vns.get(i))){
+			if(mdar.nodeMapping(vns.get(12))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
 			}else{
 				System.out.println("node resource error, virtual network "+i);
@@ -104,7 +104,7 @@ public class MultiDomainAlgoTest {
 			System.out.println(nodeMapping);	
 			
 			AS_MCF as_mcf = new AS_MCF(multiDomain);
-			as_mcf.linkMapping(vns.get(i),nodeMapping);
+			as_mcf.linkMapping(vns.get(12),nodeMapping);
 			
 			
 		}

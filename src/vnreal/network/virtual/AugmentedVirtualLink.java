@@ -19,5 +19,7 @@ public class AugmentedVirtualLink extends VirtualLink {
 		return originalDomain;
 	}
 	
-	
+	public String toString(){
+		return "Augmented Virtual Link(" + getId() + ")";
+	}
 }

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.collections15.Transformer;
-import org.apache.commons.collections15.map.LinkedMap;
 
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.util.EdgeType;
@@ -39,11 +38,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet,
 			Map<VirtualNode, SubstrateNode> nodeMapping) {
-		/*
-		Map<SubstrateNode, VirtualNode> inverseNodeMapping = new LinkedMap<SubstrateNode, VirtualNode>();
-		for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
-			inverseNodeMapping.put(entry.getValue(), entry.getKey());
-		}*/
+
 		
 		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
 			public Double transform(SubstrateLink link){
@@ -53,13 +48,15 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		};
 		
 		Map<Domain, VirtualNetwork> newVnet = new HashMap<Domain, VirtualNetwork>();
+		for(Domain d : domains){
+			newVnet.put(d, new VirtualNetwork());	//initialize the 2nd mcf
+		}
 		
 		Collection<VirtualLink> virtualLinks = vNet.getEdges();
 		//for(Domain domain : domains){
 		for(int i=0;i<domains.size();i++){
 			//System.out.println(domains.get(1));
 			Domain domain = domains.get(i);
-			newVnet.put(domain, new VirtualNetwork());	//initialize the 2nd mcf
 			//Create virtual network for each domain, transform virtual link to virtual inter link, this means to add source domain and destination domain.
 			VirtualNetwork tmpvn = new VirtualNetwork();
 			for(VirtualLink vlink : virtualLinks){
@@ -67,6 +64,9 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				VirtualNode vDest = vNet.getEndpoints(vlink).getSecond();
 				SubstrateNode sSource = nodeMapping.get(vSource);
 				SubstrateNode sDest = nodeMapping.get(vDest);
+
+				vlink.getSolution().put(domain, new HashMap<SubstrateLink, Double>());	//initialize solution
+				
 				if(domain.containsVertex(sSource)&&domain.containsVertex(sDest)){
 					tmpvn.addEdge(vlink, vSource, vDest, EdgeType.UNDIRECTED);
 					newVnet.get(domain).addEdge(vlink, vSource, vDest, EdgeType.UNDIRECTED);
@@ -133,7 +133,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				}
 				return false;
 			}
-			System.out.println(solution);
+			//System.out.println(solution);
 			
 			//Don't update here, 	
 			VirtualNode srcVnode = null, dstVnode = null;
@@ -192,7 +192,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				}
 				else {
 					VirtualInterLink tmpvil = (VirtualInterLink) tmpvl;	
-					tmpvil.getOrigLink().getSolution().get(domain).put(tmpsl, flow);	////original virtual link
+					tmpvil.getOrigLink().getSolution().get(domain).put(tmpsl, flow);	//original virtual link
 				}
 				
 			}
@@ -200,6 +200,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		}
 		
 		// 2nd mcf
+		/*
 		for(Map.Entry<Domain, VirtualNetwork> e : newVnet.entrySet()){
 			Domain domain = e.getKey();
 			VirtualNetwork tmpvn = e.getValue();
@@ -244,10 +245,15 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			}
 		}
 		
-		//compare 2 mcf results to get a better solution
+		//compare 2 mcf results to get a better solution, update resource
 		for(VirtualLink vl : vNet.getEdges()){
-			
-		}
+			System.out.println(vl);
+			Map<SubstrateLink, Double> flows = vl.getMinCost();
+			for(Map.Entry<SubstrateLink, Double> e : flows.entrySet()){
+				System.out.println(e.getKey());
+				System.out.println(e.getValue());
+			}
+		}*/
 		
 		return true;
 	}
