@@ -13,6 +13,8 @@ import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import li.multiDomain.Domain;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
+import vnreal.algorithms.utils.MiscelFunctions;
+import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
@@ -27,6 +29,7 @@ import vnreal.network.virtual.VirtualInterLink;
 import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
+import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
 // multi-domains, autonomous system multi-commodity flow algorithm 
@@ -76,7 +79,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				else if(domain.containsVertex(sSource)||domain.containsVertex(sDest))
 					tmpvn.addEdge(new VirtualInterLink(vlink,vSource,vDest), vSource, vDest, EdgeType.UNDIRECTED);
 			}
-			System.out.println(tmpvn);
+			//System.out.println(tmpvn);
 			
 			//Create substrate augmented network for each domain, determine intra substrate links, inter substrate link, augmented links
 			AugmentedNetwork an = new AugmentedNetwork(domain);	//intra substrate links
@@ -111,7 +114,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain,weightTrans);
 							AugmentedLink al = new AugmentedLink();
 							double cost = (double) dijkstra.getDistance(dijkSource, dijkDest);
-							System.out.println(cost);
+							//System.out.println(cost);
 							al.setCost(cost);
 							al.addResource(100/(cost));	//normally random(0,1), here random = 100 means that it has infinite bw
 							an.addEdge(al, dijkSource, dijkDest, EdgeType.UNDIRECTED);	//augmented links
@@ -121,7 +124,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 					}
 				}
 			}
-			System.out.println(an);
+			//System.out.println(an);
 			
 			//first mcf
 			MultiCommodityFlow mcf = new MultiCommodityFlow(an);
@@ -164,9 +167,10 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 					}
 				}
 				
-				tmpvl.getSolution().put(domain, new HashMap<SubstrateLink,Double>());
 				if(!(tmpvl instanceof VirtualInterLink)){
-					tmpvl.getSolution().get(domain).put(tmpsl, flow);
+					//for the first solution of an virtual intra link, use augmented network as key
+					tmpvl.getSolution().put(an, new TreeMap<SubstrateLink, Double>());
+					tmpvl.getSolution().get(an).put(tmpsl, flow);
 				}
 				else if(tmpsl instanceof AugmentedLink){
 					VirtualInterLink tmpvil = (VirtualInterLink) tmpvl;
@@ -240,19 +244,50 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 							augmentedvl.getOriginalDomain()).put(tmpsl, flow);
 				}
 				else {
-					//TODO intra virtual link mapping self-compare
-					
+					//for the second time, use domain as key, intra virtual link mapping self-compare
+					tmpvl.getSolution().get(domain).put(tmpsl, flow);
 				}
 			}
 		}
 		
 		//compare 2 mcf results to get a better solution, update resource
+		/*
 		for(VirtualLink vl : vNet.getEdges()){
 			System.out.println(vl);
 			Map<SubstrateLink, Double> flows = vl.getMinCost();
 			for(Map.Entry<SubstrateLink, Double> e : flows.entrySet()){
 				System.out.println(e.getKey());
 				System.out.println(e.getValue());
+			}
+		}*/
+		
+		for(VirtualLink vl : vNet.getEdges()){
+			BandwidthDemand bwDem = null, newBwDem;
+			Map<SubstrateLink, Double> flows = vl.getMinCost();
+			
+			for(AbstractDemand dem : vl){
+				if (dem instanceof BandwidthDemand) {
+					bwDem = (BandwidthDemand) dem;
+					break;
+				}
+			}
+			
+			for(Map.Entry<SubstrateLink, Double> e : flows.entrySet()){
+			
+				newBwDem = new BandwidthDemand(vl);
+				newBwDem.setDemandedBandwidth(MiscelFunctions
+						.roundThreeDecimals(bwDem.getDemandedBandwidth()*e.getValue()));
+				if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, e.getKey())){
+					throw new AssertionError("But we checked before!");
+				}
+				/*
+				for(AbstractResource ares : e.getKey()){
+					if(ares instanceof BandwidthResource){
+						((BandwidthResource) ares).setOccupiedBandwidth(bwDem.getDemandedBandwidth()*e.getValue());
+						break;
+					}
+					
+				}*/
 			}
 		}
 		

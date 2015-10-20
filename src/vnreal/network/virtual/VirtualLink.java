@@ -39,6 +39,7 @@ import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.network.Link;
 import vnreal.network.substrate.SubstrateLink;
+import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
@@ -49,20 +50,20 @@ import vnreal.resources.BandwidthResource;
  * @author Vlad Singeorzan
  */
 public class VirtualLink extends Link<AbstractDemand> {
-	private Map<Domain, Map<SubstrateLink, Double>> solution;
+	private Map<SubstrateNetwork, Map<SubstrateLink, Double>> solution;
 
 	
 	public VirtualLink() {
 		super();
-		this.solution = new HashMap<Domain, Map<SubstrateLink, Double>>();
+		this.solution = new HashMap<SubstrateNetwork, Map<SubstrateLink, Double>>();
 		setName(getId() + "");
 	}
 
-	public Map<Domain, Map<SubstrateLink, Double>> getSolution() {
+	public Map<SubstrateNetwork, Map<SubstrateLink, Double>> getSolution() {
 		return solution;
 	}
 
-	public void setSolution(Map<Domain, Map<SubstrateLink, Double>> solution) {
+	public void setSolution(Map<SubstrateNetwork, Map<SubstrateLink, Double>> solution) {
 		this.solution = solution;
 	}
 
@@ -118,7 +119,7 @@ public class VirtualLink extends Link<AbstractDemand> {
 		return true;
 	}
 	
-	public double getCost(Domain d){
+	public double getCost(SubstrateNetwork d){
 		Double cost = 0.;
 		if(solution.get(d).isEmpty()){
 			return 10000;
@@ -138,7 +139,7 @@ public class VirtualLink extends Link<AbstractDemand> {
 	public Map<SubstrateLink, Double> getMinCost(){
 		Map<SubstrateLink, Double> result = null;
 		double cost = 10000;
-		for(Map.Entry<Domain, Map<SubstrateLink, Double>> e : solution.entrySet()){
+		for(Map.Entry<SubstrateNetwork, Map<SubstrateLink, Double>> e : solution.entrySet()){
 			double currentCost = this.getCost(e.getKey());
 			if(currentCost<cost){
 				cost = currentCost;

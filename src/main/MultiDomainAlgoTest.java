@@ -62,7 +62,7 @@ public class MultiDomainAlgoTest {
 						distance = Math.sqrt(Math.pow(ax-ay, 2) + Math.pow(bx-by, 2));
 						double proba = alpha * Math.exp(-distance/beta/maxDistance);
 						if(proba>new Random().nextDouble()){
-							//source, destination, destination domain, random resource
+							//source, destination, destination domain, random resource TODO
 							startDomain.addInterLink(start, end, endDomain, false);
 							endDomain.addInterLink(end, start, startDomain, false);
 						}
@@ -92,7 +92,7 @@ public class MultiDomainAlgoTest {
 		}
 		
 		for(int i=0;i<1;i++){
-			//System.out.println("virtual network "+i+": \n"+vns.get(i));
+			System.out.println("virtual network "+12+": \n"+vns.get(12));
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,50);
 			if(mdar.nodeMapping(vns.get(12))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
@@ -106,7 +106,8 @@ public class MultiDomainAlgoTest {
 			AS_MCF as_mcf = new AS_MCF(multiDomain);
 			as_mcf.linkMapping(vns.get(12),nodeMapping);
 			
-			
+			System.out.println(multiDomain.get(0));
+			System.out.println(multiDomain.get(1));
 		}
 		
 		

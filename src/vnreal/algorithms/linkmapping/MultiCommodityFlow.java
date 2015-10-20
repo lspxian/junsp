@@ -114,7 +114,6 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 				throw new AssertionError("But we checked before!");
 			}*/
 			
-			
 		}
 	}
 	
