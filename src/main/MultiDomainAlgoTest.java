@@ -9,6 +9,7 @@ import java.util.Random;
 import li.multiDomain.Domain;
 import vnreal.algorithms.AS_MCF;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
+import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
@@ -63,8 +64,11 @@ public class MultiDomainAlgoTest {
 						double proba = alpha * Math.exp(-distance/beta/maxDistance);
 						if(proba>new Random().nextDouble()){
 							//source, destination, destination domain, random resource TODO
-							startDomain.addInterLink(start, end, endDomain, false);
-							endDomain.addInterLink(end, start, startDomain, false);
+							InterLink il = new InterLink(start, end, false);
+							startDomain.addInterLink(il);
+							endDomain.addInterLink(il);
+							//startDomain.addInterLink(start, end, endDomain, false);
+							//endDomain.addInterLink(end, start, startDomain, false);
 						}
 					}
 				}

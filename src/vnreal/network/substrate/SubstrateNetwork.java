@@ -304,7 +304,7 @@ public class SubstrateNetwork extends
 		return null;
 	}
 	
-	
+	/*
 	public List<Domain> divide4Domain(){
 		List<Domain> multiNet = new ArrayList<Domain>();
 		Domain dn1 = new Domain();
@@ -351,5 +351,5 @@ public class SubstrateNetwork extends
 		
 		return multiNet;
 		
-	}
+	}*/
 }

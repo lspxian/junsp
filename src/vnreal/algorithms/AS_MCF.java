@@ -61,6 +61,13 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		for(int i=0;i<domains.size();i++){
 			//System.out.println(domains.get(1));
 			Domain domain = domains.get(i);
+			
+			//Create substrate augmented network for each domain, determine intra substrate links, inter substrate link, augmented links
+			AugmentedNetwork an = new AugmentedNetwork(domain);	//intra substrate links
+			for(InterLink tmplink : domain.getInterLink()){
+				an.addEdge(tmplink, tmplink.getNode1(), tmplink.getNode2(), EdgeType.UNDIRECTED);	//inter substrate links
+			}
+			
 			//Create virtual network for each domain, transform virtual link to virtual inter link, this means to add source domain and destination domain.
 			VirtualNetwork tmpvn = new VirtualNetwork();
 			for(VirtualLink vlink : virtualLinks){
@@ -70,6 +77,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				SubstrateNode sDest = nodeMapping.get(vDest);
 
 				vlink.getSolution().put(domain, new TreeMap<SubstrateLink, Double>());	//initialize solution
+				if(!(vlink instanceof VirtualInterLink))	vlink.getSolution().put(an, new TreeMap<SubstrateLink, Double>());
 				
 				if(domain.containsVertex(sSource)&&domain.containsVertex(sDest)){
 					tmpvn.addEdge(vlink, vSource, vDest, EdgeType.UNDIRECTED);
@@ -80,13 +88,8 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 					tmpvn.addEdge(new VirtualInterLink(vlink,vSource,vDest), vSource, vDest, EdgeType.UNDIRECTED);
 			}
 			//System.out.println(tmpvn);
-			
+
 			//Create substrate augmented network for each domain, determine intra substrate links, inter substrate link, augmented links
-			AugmentedNetwork an = new AugmentedNetwork(domain);	//intra substrate links
-			for(InterLink tmplink : domain.getInterLink()){
-				an.addEdge(tmplink, tmplink.getInterior(), tmplink.getExterior(), EdgeType.UNDIRECTED);	//inter substrate links
-			}
-			
 			for(VirtualLink vl : tmpvn.getEdges()){
 				if(vl instanceof VirtualInterLink){
 					VirtualInterLink vil = (VirtualInterLink) vl;
@@ -94,7 +97,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 					VirtualNode vnode2 = vil.getNode2();
 					SubstrateNode snode1 = nodeMapping.get(vnode1);
 					SubstrateNode snode2 = nodeMapping.get(vnode2);
-					SubstrateNode dijkDest=null;
+					SubstrateNode dijkDest = null, dijkSource = null;
 					Domain exterDomain = null;
 					if(vnode1.getDomain().equals(domain)){
 						exterDomain = vnode2.getDomain();
@@ -106,7 +109,11 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 					}
 					else	continue;
 					for(InterLink ilink : domain.getInterLink()){
-						SubstrateNode dijkSource = ilink.getExterior();
+						if(domain.containsVertex(ilink.getNode1()))
+							dijkSource = ilink.getNode2();
+						else if(domain.containsVertex(ilink.getNode2()))
+							dijkSource = ilink.getNode1();
+						
 						if(exterDomain.containsVertex(dijkSource)&&
 								(!dijkSource.equals(dijkDest))&&
 								(!an.existLink(dijkSource, dijkDest))){		//augmented link does not exist in the augmented network
@@ -169,7 +176,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				
 				if(!(tmpvl instanceof VirtualInterLink)){
 					//for the first solution of an virtual intra link, use augmented network as key
-					tmpvl.getSolution().put(an, new TreeMap<SubstrateLink, Double>());
+					
 					tmpvl.getSolution().get(an).put(tmpsl, flow);
 				}
 				else if(tmpsl instanceof AugmentedLink){
@@ -250,7 +257,6 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			}
 		}
 		
-		//compare 2 mcf results to get a better solution, update resource
 		/*
 		for(VirtualLink vl : vNet.getEdges()){
 			System.out.println(vl);
@@ -261,6 +267,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			}
 		}*/
 		
+		//compare 2 mcf results to get a better solution, update resource
 		for(VirtualLink vl : vNet.getEdges()){
 			BandwidthDemand bwDem = null, newBwDem;
 			Map<SubstrateLink, Double> flows = vl.getMinCost();

@@ -63,7 +63,10 @@ public class Domain extends SubstrateNetwork{
 	public void setCoordinateY(int coordinateY) {
 		this.coordinateY = coordinateY;
 	}
-
+	public void addInterLink(InterLink il){
+		this.interLink.add(il);
+	}
+	/*
 	public void addInterLink(SubstrateLink sl, SubstrateNode source, SubstrateNode dest, Domain destDomain){
 		this.addVertex(source);
 		this.interLink.add(new InterLink(sl, source, dest, destDomain));
@@ -72,15 +75,15 @@ public class Domain extends SubstrateNetwork{
 	public void addInterLink(SubstrateNode source,SubstrateNode dest, Domain destDomain,boolean randomResource){
 		this.interLink.add(new InterLink(source,dest,destDomain,randomResource));
 	}
-	
+	*/
 
 	
 	public String toString(){
 		String result= "Domain("+this.getCoordinateX()+","+this.getCoordinateY()+") : \n";
 		result+=super.toString();
 		for (InterLink l : interLink) {			
-			result += l + "  (" + l.getInterior().getId() + "<->"
-					+ l.getExterior().getId() + ") \n";
+			result += l + "  (" + l.getNode1().getId() + "<->"
+					+ l.getNode2().getId() + ") \n";
 			for (AbstractResource r : l.get()) {
 				result += "  " + r.toString() + "\n";
 			}
