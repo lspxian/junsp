@@ -31,6 +31,8 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.network.substrate;
 
+import java.util.Comparator;
+
 import vnreal.network.Link;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
@@ -41,7 +43,7 @@ import vnreal.resources.BandwidthResource;
  * @author Michael Duelli
  * @author Vlad Singeorzan
  */
-public class SubstrateLink extends Link<AbstractResource> {
+public class SubstrateLink extends Link<AbstractResource> implements Comparable<SubstrateLink>{
 
 	public SubstrateLink() {
 		super();
@@ -74,4 +76,13 @@ public class SubstrateLink extends Link<AbstractResource> {
 		this.add(bw);
 		return true;
 	}
+
+	@Override
+	public int compareTo(SubstrateLink o) {
+		if(this.getId()>o.getId())	return 1;
+		else if(this.getId()<o.getId())	return -1;
+		else return 0;
+	}
+
+
 }

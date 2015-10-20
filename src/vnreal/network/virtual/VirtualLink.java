@@ -120,13 +120,19 @@ public class VirtualLink extends Link<AbstractDemand> {
 	
 	public double getCost(Domain d){
 		Double cost = 0.;
-		for(Map.Entry<SubstrateLink, Double> entry : solution.get(d).entrySet())
-			for(AbstractResource r : entry.getKey()){
-				if(r instanceof BandwidthResource)
-					cost += entry.getValue()/((BandwidthResource) r).getAvailableBandwidth();
-				break;
-			}
-		return cost;	
+		if(solution.get(d).isEmpty()){
+			return 10000;
+		}
+		else{
+			for(Map.Entry<SubstrateLink, Double> entry : solution.get(d).entrySet())
+				for(AbstractResource r : entry.getKey()){
+					if(r instanceof BandwidthResource)
+						cost += entry.getValue()/((BandwidthResource) r).getAvailableBandwidth();
+					break;
+				}
+			return cost;
+		}
+			
 	}
 	
 	public Map<SubstrateLink, Double> getMinCost(){

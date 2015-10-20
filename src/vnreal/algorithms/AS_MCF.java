@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.apache.commons.collections15.Transformer;
 
@@ -65,7 +66,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				SubstrateNode sSource = nodeMapping.get(vSource);
 				SubstrateNode sDest = nodeMapping.get(vDest);
 
-				vlink.getSolution().put(domain, new HashMap<SubstrateLink, Double>());	//initialize solution
+				vlink.getSolution().put(domain, new TreeMap<SubstrateLink, Double>());	//initialize solution
 				
 				if(domain.containsVertex(sSource)&&domain.containsVertex(sDest)){
 					tmpvn.addEdge(vlink, vSource, vDest, EdgeType.UNDIRECTED);
@@ -200,7 +201,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		}
 		
 		// 2nd mcf
-		/*
+		
 		for(Map.Entry<Domain, VirtualNetwork> e : newVnet.entrySet()){
 			Domain domain = e.getKey();
 			VirtualNetwork tmpvn = e.getValue();
@@ -253,7 +254,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				System.out.println(e.getKey());
 				System.out.println(e.getValue());
 			}
-		}*/
+		}
 		
 		return true;
 	}
