@@ -8,6 +8,7 @@ import java.util.Random;
 
 import li.multiDomain.Domain;
 import vnreal.algorithms.linkmapping.AS_MCF;
+import vnreal.algorithms.linkmapping.Shen2014;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateNode;
@@ -47,8 +48,8 @@ public class MultiDomainAlgoTest {
 		}
 		
 		//generate inter links
-		double alpha = 0.5;	//alpha increases the probability of edges between any nodes in the graph
-		double beta = 0.1;	//beta yields a larger ratio of long edges to short edges.
+		double alpha = 0.6;	//alpha increases the probability of edges between any nodes in the graph
+		double beta = 0.2;	//beta yields a larger ratio of long edges to short edges.
 		for(int i=0;i<multiDomain.size();i++){
 			Domain startDomain = multiDomain.get(i);
 			for(int j=i+1;j<multiDomain.size();j++){
@@ -107,8 +108,13 @@ public class MultiDomainAlgoTest {
 			Map<VirtualNode, SubstrateNode> nodeMapping = mdar.getNodeMapping();
 			System.out.println(nodeMapping);	
 			
+			/*
 			AS_MCF as_mcf = new AS_MCF(multiDomain);
 			as_mcf.linkMapping(vns.get(12),nodeMapping);
+			*/
+			
+			Shen2014 shen = new Shen2014(multiDomain);
+			shen.linkMapping(vns.get(12), nodeMapping);
 			
 			System.out.println(multiDomain.get(0));
 			System.out.println(multiDomain.get(1));

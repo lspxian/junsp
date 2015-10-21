@@ -109,7 +109,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 							dijkSource = ilink.getNode1();
 						
 						if(exterDomain.containsVertex(dijkSource)&&
-								(!dijkSource.equals(dijkDest))&&
+								(!dijkSource.equals(dijkDest))&&			//mapped substrate node is the border node
 								(!an.existLink(dijkSource, dijkDest))){		//augmented link does not exist in the augmented network
 							
 							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain,weightTrans);

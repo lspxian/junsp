@@ -47,7 +47,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 					for(AbstractResource ares : link){
 						if(ares instanceof BandwidthResource){
 							BandwidthResource bwres = (BandwidthResource)ares;
-							return 1/bwres.getAvailableBandwidth();
+							return 100/bwres.getAvailableBandwidth();
 						}
 					}
 				}
@@ -61,7 +61,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			VirtualNode v2 = vNet.getEndpoints(vl).getSecond();
 			Domain d1 = v1.getDomain();
 			Domain d2 = v2.getDomain();
-			SubstrateNode bound1=null, bound2=null;
+			SubstrateNode border1=null, border2=null;
 			vl.getSolution().put(newDomain, new TreeMap<SubstrateLink,Double>());	//initialize solution
 
 			BandwidthDemand bwd = null;
@@ -80,19 +80,39 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 				if(sl instanceof InterLink){
 					
 					if(d1.containsVertex(((InterLink) sl).getNode1())){
-						bound1 = ((InterLink) sl).getNode1();
-						bound2 = ((InterLink) sl).getNode2();
+						border1 = ((InterLink) sl).getNode1();
+						border2 = ((InterLink) sl).getNode2();
 					}
 					else{
-						bound2 = ((InterLink) sl).getNode1();
-						bound1 = ((InterLink) sl).getNode2();
+						border2 = ((InterLink) sl).getNode1();
+						border1 = ((InterLink) sl).getNode2();
 					}
-					VirtualNode tmp = new VirtualNode();	//augmented node
-					nodeMapping.put(tmp, bound1);
-					newVnet.get(d1).addEdge(new AugmentedVirtualLink(d1,vl), tmp, v1, EdgeType.UNDIRECTED);	//augmented virtual link
-					tmp = new VirtualNode();	//augmented node
-					nodeMapping.put(tmp, bound2);
-					newVnet.get(d2).addEdge(new AugmentedVirtualLink(d2,vl), tmp, v2, EdgeType.UNDIRECTED);	//augmented virtual link
+					VirtualNode tmp = null;
+					AugmentedVirtualLink newVLink=null;
+					BandwidthDemand bw = null;
+					//substrate node that virtual node maps to may be the border node(augmented node).
+					//in this case, don't create virtual node and augmented virtual link!!!
+					//in as mcf this is done by augmented link, before the creation of augmented node
+					if(!nodeMapping.get(v1).equals(border1)){	
+						tmp = new VirtualNode();	//augmented node
+						nodeMapping.put(tmp, border1);
+						//first augmented virtual link
+						newVLink = new AugmentedVirtualLink(d1,vl);
+						bw=new BandwidthDemand(newVLink);
+						bw.setDemandedBandwidth(bwd.getDemandedBandwidth());
+						newVLink.add(bw);
+						newVnet.get(d1).addEdge(newVLink, tmp, v1, EdgeType.UNDIRECTED);
+					}
+					if(!nodeMapping.get(v2).equals(border2)){
+						tmp = new VirtualNode();	//augmented node
+						nodeMapping.put(tmp, border2);
+						//second augmented virtual link
+						newVLink = new AugmentedVirtualLink(d1,vl);
+						bw=new BandwidthDemand(newVLink);
+						bw.setDemandedBandwidth(bwd.getDemandedBandwidth());
+						newVLink.add(bw);
+						newVnet.get(d2).addEdge(newVLink, tmp, v2, EdgeType.UNDIRECTED);	//augmented virtual link						
+					}
 					
 					vl.getSolution().get(newDomain).put(sl, bwd.getDemandedBandwidth());
 					
@@ -150,7 +170,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 				}
 				else {
 					//for the second time, use domain as key, intra virtual link mapping 
-					tmpvl.getSolution().get(domain).put(tmpsl, bwDem.getDemandedBandwidth()*flow);
+					tmpvl.getSolution().get(newDomain).put(tmpsl, bwDem.getDemandedBandwidth()*flow);
 				}
 			}
 		}
