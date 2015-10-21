@@ -63,6 +63,7 @@ public class Domain extends SubstrateNetwork{
 	public void setCoordinateY(int coordinateY) {
 		this.coordinateY = coordinateY;
 	}
+	
 	public void addInterLink(InterLink il){
 		this.interLink.add(il);
 	}

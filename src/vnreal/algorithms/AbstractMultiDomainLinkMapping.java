@@ -10,7 +10,7 @@ import vnreal.network.virtual.VirtualNode;
 
 public abstract class AbstractMultiDomainLinkMapping {
 	protected List<Domain> domains;
-	AbstractMultiDomainLinkMapping(List<Domain> domains){
+	public AbstractMultiDomainLinkMapping(List<Domain> domains){
 		this.domains = domains;
 	}
 	public abstract boolean linkMapping(VirtualNetwork vNet,

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Random;
 
 import li.multiDomain.Domain;
-import vnreal.algorithms.AS_MCF;
+import vnreal.algorithms.linkmapping.AS_MCF;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateNode;
@@ -63,7 +63,7 @@ public class MultiDomainAlgoTest {
 						distance = Math.sqrt(Math.pow(ax-ay, 2) + Math.pow(bx-by, 2));
 						double proba = alpha * Math.exp(-distance/beta/maxDistance);
 						if(proba>new Random().nextDouble()){
-							//source, destination, destination domain, random resource TODO
+							//source, destination, destination domain, random resource 
 							InterLink il = new InterLink(start, end, false);
 							startDomain.addInterLink(il);
 							endDomain.addInterLink(il);
