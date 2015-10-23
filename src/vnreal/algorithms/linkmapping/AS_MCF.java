@@ -37,14 +37,14 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 	public boolean linkMapping(VirtualNetwork vNet,
 			Map<VirtualNode, SubstrateNode> nodeMapping) {
 
-		
+		//link cost, hop
 		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
 			public Double transform(SubstrateLink link){
 				//return 1/((BandwidthResource)link.get().get(0)).getAvailableBandwidth();
 				return 1.;
 			}
 		};
-		
+		//newVnet stores the 2nd local mcf
 		Map<Domain, VirtualNetwork> newVnet = new HashMap<Domain, VirtualNetwork>();
 		for(Domain d : domains){
 			newVnet.put(d, new VirtualNetwork());	//initialize the 2nd mcf
@@ -53,9 +53,8 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		Collection<VirtualLink> virtualLinks = vNet.getEdges();
 		//for(Domain domain : domains){
 		for(int i=0;i<domains.size();i++){
-			//System.out.println(domains.get(1));
 			Domain domain = domains.get(i);
-			
+			//in each domain, 
 			//Create substrate augmented network for each domain, determine intra substrate links, inter substrate link, augmented links
 			AugmentedNetwork an = new AugmentedNetwork(domain);	//intra substrate links
 			for(InterLink tmplink : domain.getInterLink()){
