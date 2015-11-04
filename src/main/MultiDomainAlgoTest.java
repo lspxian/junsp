@@ -27,7 +27,7 @@ public class MultiDomainAlgoTest {
 		//multiDomain.add(new Domain(0,1,"sndlib/abilene", false));
 				
 		//max distance for all the domains
-		double maxDistance=0, distance=0, ax,ay,bx,by;		
+		double maxDistance=0, distance=0, ax,ay,bx,by;
 		for(int i=0;i<multiDomain.size();i++){
 			Domain startDomain = multiDomain.get(i);
 			for(int j=i;j<multiDomain.size();j++){
@@ -88,34 +88,34 @@ public class MultiDomainAlgoTest {
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
-			vn.alt2network("data200/vir"+i);
+			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
-			vn.scale(1, 0.5);
+			vn.scale(2, 1);
 			
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 		}
 		
 		for(int i=0;i<1;i++){
-			System.out.println("virtual network "+12+": \n"+vns.get(12));
+			System.out.println("virtual network "+0+": \n"+vns.get(i));
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,50);
-			if(mdar.nodeMapping(vns.get(12))){
+			if(mdar.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
 			}else{
 				System.out.println("node resource error, virtual network "+i);
 				continue;
 			}
 			Map<VirtualNode, SubstrateNode> nodeMapping = mdar.getNodeMapping();
-			System.out.println(nodeMapping);	
+			System.out.println(nodeMapping);
+			
+			
+			AS_MCF as_mcf = new AS_MCF(multiDomain);
+			as_mcf.linkMapping(vns.get(i),nodeMapping);
 			
 			/*
-			AS_MCF as_mcf = new AS_MCF(multiDomain);
-			as_mcf.linkMapping(vns.get(12),nodeMapping);
-			*/
-			
 			Shen2014 shen = new Shen2014(multiDomain);
 			shen.linkMapping(vns.get(12), nodeMapping);
-			
+			*/
 			System.out.println(multiDomain.get(0));
 			System.out.println(multiDomain.get(1));
 		}

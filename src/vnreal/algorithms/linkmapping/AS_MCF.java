@@ -72,17 +72,17 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				vlink.getSolution().put(domain, new TreeMap<SubstrateLink, Double>());	//initialize solution
 				if(!(vlink instanceof VirtualInterLink))	vlink.getSolution().put(an, new TreeMap<SubstrateLink, Double>());
 				
-				if(domain.containsVertex(sSource)&&domain.containsVertex(sDest)){
+				if(domain.containsVertex(sSource)&&domain.containsVertex(sDest)){	//virtual intra link
 					tmpvn.addEdge(vlink, vSource, vDest, EdgeType.UNDIRECTED);
 					newVnet.get(domain).addEdge(vlink, vSource, vDest, EdgeType.UNDIRECTED);
 					//virtualLinks.remove(vlink);
 				}
-				else if(domain.containsVertex(sSource)||domain.containsVertex(sDest))
+				else if(domain.containsVertex(sSource)||domain.containsVertex(sDest))	//virtual inter link
 					tmpvn.addEdge(new VirtualInterLink(vlink,vSource,vDest), vSource, vDest, EdgeType.UNDIRECTED);
 			}
 			//System.out.println(tmpvn);
 
-			//Create substrate augmented network for each domain, determine intra substrate links, inter substrate link, augmented links
+			//Each augmented link corresponds to a virtual inter link
 			for(VirtualLink vl : tmpvn.getEdges()){
 				if(vl instanceof VirtualInterLink){
 					VirtualInterLink vil = (VirtualInterLink) vl;
@@ -129,6 +129,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			//first mcf
 			MultiCommodityFlow mcf = new MultiCommodityFlow(an);
 			//the nodemapping here is original for all the nodes in all domains. 
+			if(tmpvn.getEdgeCount()==0)	continue;	//if there is no virtual links in this domain
 			Map<String, String> solution = mcf.linkMappingWithoutUpdate(tmpvn, nodeMapping);
 			if(solution.size()==0){
 				System.out.println("link no solution");
@@ -210,6 +211,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			Domain domain = e.getKey();
 			VirtualNetwork tmpvn = e.getValue();
 			MultiCommodityFlow mcf = new MultiCommodityFlow(domain);
+			if(tmpvn.getEdgeCount()==0)		continue;	//if there is no virtual links in this domain
 			Map<String, String> solution = mcf.linkMappingWithoutUpdate(tmpvn, nodeMapping);
 			if(solution.size()==0){
 				System.out.println("link no solution");
@@ -279,17 +281,10 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				newBwDem = new BandwidthDemand(vl);
 				newBwDem.setDemandedBandwidth(MiscelFunctions
 						.roundThreeDecimals(e.getValue()));
-				if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, e.getKey())){
+				if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, e.getKey())){	//update
 					throw new AssertionError("But we checked before!");
 				}
-				/*
-				for(AbstractResource ares : e.getKey()){
-					if(ares instanceof BandwidthResource){
-						((BandwidthResource) ares).setOccupiedBandwidth(bwDem.getDemandedBandwidth()*e.getValue());
-						break;
-					}
-					
-				}*/
+				
 			}
 		}
 		
