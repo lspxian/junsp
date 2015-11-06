@@ -210,8 +210,8 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		for(Map.Entry<Domain, VirtualNetwork> e : newVnet.entrySet()){
 			Domain domain = e.getKey();
 			VirtualNetwork tmpvn = e.getValue();
-			MultiCommodityFlow mcf = new MultiCommodityFlow(domain);
 			if(tmpvn.getEdgeCount()==0)		continue;	//if there is no virtual links in this domain
+			MultiCommodityFlow mcf = new MultiCommodityFlow(domain);
 			Map<String, String> solution = mcf.linkMappingWithoutUpdate(tmpvn, nodeMapping);
 			if(solution.size()==0){
 				System.out.println("link no solution");

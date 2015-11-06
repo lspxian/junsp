@@ -1,6 +1,8 @@
 package main;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,10 @@ import vnreal.network.virtual.VirtualNode;
 public class MultiDomainAlgoTest {
 
 	public static void main(String[] args) throws IOException {
+		
+		//print to a file instead of console
+		PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
+		System.setOut(out);
 		
 		List<Domain> multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
@@ -108,14 +114,14 @@ public class MultiDomainAlgoTest {
 			Map<VirtualNode, SubstrateNode> nodeMapping = mdar.getNodeMapping();
 			System.out.println(nodeMapping);
 			
-			
+			/*
 			AS_MCF as_mcf = new AS_MCF(multiDomain);
 			as_mcf.linkMapping(vns.get(i),nodeMapping);
-			
-			/*
-			Shen2014 shen = new Shen2014(multiDomain);
-			shen.linkMapping(vns.get(12), nodeMapping);
 			*/
+			
+			Shen2014 shen = new Shen2014(multiDomain);
+			shen.linkMapping(vns.get(i), nodeMapping);
+			
 			System.out.println(multiDomain.get(0));
 			System.out.println(multiDomain.get(1));
 		}
