@@ -67,16 +67,10 @@ public class Domain extends SubstrateNetwork{
 	public void addInterLink(InterLink il){
 		this.interLink.add(il);
 	}
-	/*
-	public void addInterLink(SubstrateLink sl, SubstrateNode source, SubstrateNode dest, Domain destDomain){
-		this.addVertex(source);
-		this.interLink.add(new InterLink(sl, source, dest, destDomain));
-	}
 	
-	public void addInterLink(SubstrateNode source,SubstrateNode dest, Domain destDomain,boolean randomResource){
-		this.interLink.add(new InterLink(source,dest,destDomain,randomResource));
+	public Domain deepCopy(){
+		return new Domain(this.getCopy(),this.coordinateX,this.coordinateY);
 	}
-	*/
 
 	
 	public String toString(){
