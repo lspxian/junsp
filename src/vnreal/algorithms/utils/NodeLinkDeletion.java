@@ -3,6 +3,7 @@ package vnreal.algorithms.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import li.multiDomain.Domain;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
@@ -48,20 +49,24 @@ public class NodeLinkDeletion {
 	}
 	
 	// This function frees the resource allocations of a virtual network in a substrate network
-	@SuppressWarnings("static-access")
 	public static boolean freeResource(VirtualNetwork vn, SubstrateNetwork sn) {
-		NodeLinkDeletion ndl = new NodeLinkDeletion();
 		List<SubstrateLink> list = new ArrayList<SubstrateLink>();
-		list.addAll(0, sn.getEdges());
+		list.addAll(sn.getEdges());		//substrate links
+		
+		if(sn instanceof Domain){	//inter links in case of multi domain
+			list.addAll(((Domain) sn).getInterLink());
+		}
+			
 		for(VirtualNode vnode : vn.getVertices()){
 			for(SubstrateNode snode : sn.getVertices()){
-				ndl.nodeFree(vnode, snode);
+				nodeFree(vnode, snode);
 			}
 		}
 		for(VirtualLink vlink : vn.getEdges()){
-			ndl.linkFree(vlink, list);
+			linkFree(vlink, list);
 		}
 		return true;
 		
 	}
+	
 }

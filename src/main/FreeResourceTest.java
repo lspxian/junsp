@@ -64,9 +64,8 @@ public class FreeResourceTest {
 		
 		//Free resource
 	
-		NodeLinkDeletion ndl = new NodeLinkDeletion();
 		for(int i=0;i<1;i++){
-			ndl.freeResource(vns.get(i), sn);
+			NodeLinkDeletion.freeResource(vns.get(i), sn);
 		}
 		System.out.println(sn);
 		

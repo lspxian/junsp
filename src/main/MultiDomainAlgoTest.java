@@ -22,8 +22,8 @@ public class MultiDomainAlgoTest {
 	public static void main(String[] args) throws IOException {
 		
 		//print to a file instead of console
-		PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
-		System.setOut(out);
+		//PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
+		//System.setOut(out);
 		
 		List<Domain> multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
@@ -31,7 +31,8 @@ public class MultiDomainAlgoTest {
 		multiDomain.add(new Domain(1,0,"sndlib/abilene", false));
 		//multiDomain.add(new Domain(1,1,"data/cost239", false));
 		//multiDomain.add(new Domain(0,1,"sndlib/abilene", false));
-				
+		
+		/*
 		//max distance for all the domains
 		double maxDistance=0, distance=0, ax,ay,bx,by;
 		for(int i=0;i<multiDomain.size();i++){
@@ -54,7 +55,7 @@ public class MultiDomainAlgoTest {
 		}
 		
 		//generate inter links
-		double alpha = 0.6;	//alpha increases the probability of edges between any nodes in the graph
+		double alpha = 0.5;	//alpha increases the probability of edges between any nodes in the graph
 		double beta = 0.2;	//beta yields a larger ratio of long edges to short edges.
 		for(int i=0;i<multiDomain.size();i++){
 			Domain startDomain = multiDomain.get(i);
@@ -74,8 +75,6 @@ public class MultiDomainAlgoTest {
 							InterLink il = new InterLink(start, end, false);
 							startDomain.addInterLink(il);
 							endDomain.addInterLink(il);
-							//startDomain.addInterLink(start, end, endDomain, false);
-							//endDomain.addInterLink(end, start, startDomain, false);
 						}
 					}
 				}
@@ -83,12 +82,12 @@ public class MultiDomainAlgoTest {
 				
 			}
 		}
+		*/
+		staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		/*
 		System.out.println(multiDomain.get(0));
 		System.out.println(multiDomain.get(1));
-		System.out.println(multiDomain.get(2));
-		System.out.println(multiDomain.get(3));
-	*/
+		*/
 	
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
@@ -103,14 +102,17 @@ public class MultiDomainAlgoTest {
 		
 		List<Domain> tmpDomains;
 		
+		for(int i=0;i<2;i++){
+			System.out.println("virtual network "+i+": \n"+vns.get(i));
+		}
 		
 		System.out.println("********as_mcf****************");
 		tmpDomains = new ArrayList<Domain>();
 		for(Domain domain : multiDomain){
 			tmpDomains.add(domain.deepCopy());
 		}
-		for(int i=0;i<1;i++){
-			System.out.println("virtual network "+0+": \n"+vns.get(i));
+		for(int i=1;i<2;i++){
+			System.out.println("virtual network "+i+": \n");
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(tmpDomains,50);
 			if(mdar.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
@@ -121,22 +123,25 @@ public class MultiDomainAlgoTest {
 			Map<VirtualNode, SubstrateNode> nodeMapping = mdar.getNodeMapping();
 			System.out.println(nodeMapping);
 			
+			System.out.println("link mapping, virtual network "+i+"\n");
 			AS_MCF as_mcf = new AS_MCF(tmpDomains);
 			as_mcf.linkMapping(vns.get(i),nodeMapping);
+			System.out.println("virtual network "+i+" finished \n\n");
 			
-			System.out.println(tmpDomains.get(0));
-			System.out.println(tmpDomains.get(1));
 		}
 		
 		
+		System.out.println(tmpDomains.get(0));
+		System.out.println(tmpDomains.get(1));
 		
+		/*
 		System.out.println("********shen2014****************");
 		tmpDomains = new ArrayList<Domain>();
 		for(Domain domain : multiDomain){
 			tmpDomains.add(domain.deepCopy());
 		}
-		for(int i=0;i<1;i++){
-			System.out.println("virtual network "+0+": \n"+vns.get(i));
+		for(int i=0;i<5;i++){
+			System.out.println("virtual network "+i+": \n");
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(tmpDomains,50);
 			if(mdar.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
@@ -146,18 +151,44 @@ public class MultiDomainAlgoTest {
 			}
 			Map<VirtualNode, SubstrateNode> nodeMapping = mdar.getNodeMapping();
 			System.out.println(nodeMapping);
-			
+
+			System.out.println("link mapping, virtual network "+i+"\n");
 			Shen2014 shen = new Shen2014(tmpDomains);
 			shen.linkMapping(vns.get(i), nodeMapping);
-			
-			System.out.println(tmpDomains.get(0));
-			System.out.println(tmpDomains.get(1));
+			System.out.println("virtual network "+i+" finished \n\n");
 		}
-		
-		
+		System.out.println(tmpDomains.get(0));
+		System.out.println(tmpDomains.get(1));
+		*/
 		
 		
 	}
 	
+	
+	public static void staticInterLinks(Domain d1, Domain d2){
+		InterLink il = new InterLink(d1.getNodeFromID(0),d2.getNodeFromID(40),false);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il = new InterLink(d1.getNodeFromID(2),d2.getNodeFromID(47),false);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il = new InterLink(d1.getNodeFromID(3),d2.getNodeFromID(45),false);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il = new InterLink(d1.getNodeFromID(4),d2.getNodeFromID(47),false);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il = new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(47),false);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il = new InterLink(d1.getNodeFromID(8),d2.getNodeFromID(39),false);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il = new InterLink(d1.getNodeFromID(9),d2.getNodeFromID(46),false);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+	}
 
 }
+
+

@@ -68,8 +68,11 @@ public class Domain extends SubstrateNetwork{
 		this.interLink.add(il);
 	}
 	
-	public Domain deepCopy(){
-		return new Domain(this.getCopy(),this.coordinateX,this.coordinateY);
+	public Domain deepCopy(){	//this is not correct
+		 Domain d = new Domain(this.getCopy(),this.coordinateX,this.coordinateY);
+		 
+		 
+		 return d;
 	}
 
 	
