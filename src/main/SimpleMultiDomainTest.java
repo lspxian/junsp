@@ -20,8 +20,8 @@ public class SimpleMultiDomainTest {
 	public static void main(String[] args) throws IOException {
 		
 		//print to a file instead of console
-		PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
-		System.setOut(out);
+		//PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
+		//System.setOut(out);
 		
 		List<Domain> multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
@@ -32,19 +32,19 @@ public class SimpleMultiDomainTest {
 		MultiDomainAlgoTest.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<15;i++){
+		for(int i=0;i<100;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
 			vn.scale(2, 1);
 			vns.add(vn);
 		}
-		
+		/*
 		for(int i=0;i<4;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
-		}
+		}*/
 		
-		for(int i=0;i<2;i++){
+		for(int i=12;i<14;i++){
 			System.out.println("virtual network "+i+": \n");
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,50);
 			if(mdar.nodeMapping(vns.get(i))){
