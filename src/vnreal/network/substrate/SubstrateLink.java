@@ -33,6 +33,7 @@ package vnreal.network.substrate;
 
 import java.util.Comparator;
 
+import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.network.Link;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
@@ -72,7 +73,7 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 	
 	public boolean addResource(double random){
 		BandwidthResource bw=new BandwidthResource(this);
-		bw.setBandwidth(50+random*(100-50));
+		bw.setBandwidth(MiscelFunctions.roundThreeDecimals(50+random*(100-50)));
 		this.add(bw);
 		return true;
 	}

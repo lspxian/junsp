@@ -34,6 +34,7 @@ package vnreal.network.virtual;
 import java.util.HashMap;
 import java.util.Map;
 import li.multiDomain.Domain;
+import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.constraints.ILinkConstraint;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
@@ -114,7 +115,7 @@ public class VirtualLink extends Link<AbstractDemand> {
 	
 	public boolean addResource(double random){
 		BandwidthDemand bw=new BandwidthDemand(this);
-		bw.setDemandedBandwidth(random*50);
+		bw.setDemandedBandwidth(MiscelFunctions.roundThreeDecimals(random*30));
 		this.add(bw);
 		return true;
 	}
@@ -136,7 +137,18 @@ public class VirtualLink extends Link<AbstractDemand> {
 			
 	}
 	
-	public Map<SubstrateLink, Double> getMinCost(){
+	public double getMinCostValue(){
+		double cost = 10000;
+		for(Map.Entry<SubstrateNetwork, Map<SubstrateLink, Double>> e : solution.entrySet()){
+			double currentCost = this.getCost(e.getKey());
+			if(currentCost<cost){
+				cost = currentCost;
+			}
+		}
+		return cost;
+	}
+	
+	public Map<SubstrateLink, Double> getMinCostMap(){
 		Map<SubstrateLink, Double> result = null;
 		double cost = 10000;
 		for(Map.Entry<SubstrateNetwork, Map<SubstrateLink, Double>> e : solution.entrySet()){

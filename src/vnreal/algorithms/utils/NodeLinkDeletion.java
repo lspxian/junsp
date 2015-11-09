@@ -69,4 +69,11 @@ public class NodeLinkDeletion {
 		
 	}
 	
+	public static boolean multiDomainFreeResource(VirtualNetwork vn, List<Domain> domains){
+		for(Domain d : domains){
+			NodeLinkDeletion.freeResource(vn, d);				
+		}
+		return true;
+	}
+	
 }

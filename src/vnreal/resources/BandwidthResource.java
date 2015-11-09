@@ -162,6 +162,7 @@ public final class BandwidthResource extends AbstractResource implements
 				if (fulfills(dem)) {
 					occupiedBandwidth += dem
 							.getDemandedBandwidth();
+					occupiedBandwidth = MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
 					new Mapping(dem, getThis());
 					return true;
 				} else
@@ -176,7 +177,9 @@ public final class BandwidthResource extends AbstractResource implements
 			@Override
 			public boolean visit(BandwidthDemand dem) {
 				if (getMapping(dem) != null) {
-					occupiedBandwidth -= MiscelFunctions.roundThreeDecimals(dem
+					//use the bandwidth of the mapping to free ressource, this works for splitting
+					BandwidthDemand bwd = (BandwidthDemand) getMapping(dem).getDemand();	
+					occupiedBandwidth -= MiscelFunctions.roundThreeDecimals(bwd
 							.getDemandedBandwidth());
 					return getMapping(dem).unregister();
 				} else

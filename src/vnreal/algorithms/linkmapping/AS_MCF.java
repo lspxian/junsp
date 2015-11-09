@@ -213,12 +213,18 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			if(tmpvn.getEdgeCount()==0)		continue;	//if there is no virtual links in this domain
 			MultiCommodityFlow mcf = new MultiCommodityFlow(domain);
 			Map<String, String> solution = mcf.linkMappingWithoutUpdate(tmpvn, nodeMapping);
+			
+			//if 2nd mcf no solution, don't return, but clear original link solution, 
 			if(solution.size()==0){
-				System.out.println("link no solution");
-				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
-					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+				System.out.println("2nd mcf link no solution");
+				for(VirtualLink tmpvl : tmpvn.getEdges()){
+					if(tmpvl instanceof AugmentedVirtualLink){
+						AugmentedVirtualLink augmentedvl = (AugmentedVirtualLink) tmpvl;
+						augmentedvl.getOriginalVL().getSolution().get(
+								augmentedvl.getOriginalDomain()).clear();
+					}
 				}
-				return false;
+				
 			}
 			
 			VirtualNode srcVnode = null, dstVnode = null;
@@ -274,7 +280,16 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 		//compare 2 mcf results to get a better solution, update resource
 		for(VirtualLink vl : vNet.getEdges()){
 			BandwidthDemand newBwDem;
-			Map<SubstrateLink, Double> flows = vl.getMinCost();
+			
+			if(vl.getMinCostValue()==10000){
+				System.out.println("all 2nd mcf no solution, link mapping no solution. \n");
+				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+				}
+				return false;
+			}
+			
+			Map<SubstrateLink, Double> flows = vl.getMinCostMap();
 			
 			for(Map.Entry<SubstrateLink, Double> e : flows.entrySet()){
 			

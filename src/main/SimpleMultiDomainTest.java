@@ -28,7 +28,6 @@ public class SimpleMultiDomainTest {
 		multiDomain.add(new Domain(0,0,"data/cost239", false));
 		multiDomain.add(new Domain(1,0,"sndlib/abilene", false));
 
-		
 		MultiDomainAlgoTest.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
@@ -44,8 +43,8 @@ public class SimpleMultiDomainTest {
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 		}*/
 		
-		for(int i=12;i<14;i++){
-			System.out.println("virtual network "+i+": \n");
+		for(int i=17;i<18;i++){
+			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,50);
 			if(mdar.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
@@ -61,16 +60,18 @@ public class SimpleMultiDomainTest {
 			as_mcf.linkMapping(vns.get(i),nodeMapping);
 			System.out.println("virtual network "+i+" finished \n\n");
 			
+			System.out.println(multiDomain.get(0));
+			System.out.println(multiDomain.get(1));
+			
 			
 			//Multi domain free resource
-			for(Domain d : multiDomain){
-				NodeLinkDeletion.freeResource(vns.get(i), d);				
-			}
-			
-		}
-		System.out.println(multiDomain.get(0));
-		System.out.println(multiDomain.get(1));
+			NodeLinkDeletion.multiDomainFreeResource(vns.get(i), multiDomain);				
+			/*
+			System.out.println(multiDomain.get(0));
+			System.out.println(multiDomain.get(1));
+			*/
 		
+		}
 		
 	}
 
