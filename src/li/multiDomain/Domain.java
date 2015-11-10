@@ -2,7 +2,9 @@ package li.multiDomain;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
@@ -35,7 +37,7 @@ public class Domain extends SubstrateNetwork{
 	
 	public Domain(SubstrateNetwork sn, int x, int y){
 		this();
-		this.copy(sn);
+		sn.getCopy(this);
 		this.coordinateX = x;
 		this.coordinateY = y;
 	}
@@ -68,11 +70,32 @@ public class Domain extends SubstrateNetwork{
 		this.interLink.add(il);
 	}
 	
-	public Domain deepCopy(){	//this is not correct
-		 Domain d = new Domain(this.getCopy(),this.coordinateX,this.coordinateY);
-		 
-		 
-		 return d;
+	//TODO to test
+	public void getDomainCopy(boolean deepCopy, Domain result){	
+			InterLink tmpILink;
+			SubstrateNode tmpSNode, tmpDNode;
+			
+			this.getCopy(deepCopy, result);
+			
+			LinkedList<InterLink> originalInterLinks = new LinkedList<InterLink>(
+					this.getInterLink());
+			for(Iterator<InterLink> tempItInterLink = originalInterLinks.iterator();tempItInterLink.hasNext();){
+				tmpILink = tempItInterLink.next();
+				
+				tmpSNode = tmpILink.getNode1();
+				tmpDNode = tmpILink.getNode2();
+				
+				if(deepCopy){
+					InterLink il = new InterLink(tmpILink.getCopy(),
+							tmpSNode.getCopy(),
+							tmpDNode.getCopy());
+					result.addInterLink(il);
+				}else{
+					result.addInterLink(tmpILink);
+				}
+			}
+			
+			
 	}
 
 	

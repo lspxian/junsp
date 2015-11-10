@@ -1,5 +1,6 @@
 package vnreal.algorithms.linkmapping;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,48 +75,52 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			//intra virtual link
 			if(d1.equals(d2))
 				newVnet.get(d1).addEdge(vl, v1, v2, EdgeType.UNDIRECTED);
-			//inter virtual link, create augmented virtual link
-			List<SubstrateLink> path = dijkstra.getPath(nodeMapping.get(v1), nodeMapping.get(v2));
-			for(SubstrateLink sl : path){
-				if(sl instanceof InterLink){
-					
-					if(d1.containsVertex(((InterLink) sl).getNode1())){
-						border1 = ((InterLink) sl).getNode1();
-						border2 = ((InterLink) sl).getNode2();
+			else{
+				
+				//inter virtual link, create augmented virtual link
+				List<SubstrateLink> path = dijkstra.getPath(nodeMapping.get(v1), nodeMapping.get(v2));
+				for(SubstrateLink sl : path){
+					if(sl instanceof InterLink){
+						
+						if(d1.containsVertex(((InterLink) sl).getNode1())){
+							border1 = ((InterLink) sl).getNode1();
+							border2 = ((InterLink) sl).getNode2();
+						}
+						else{
+							border2 = ((InterLink) sl).getNode1();
+							border1 = ((InterLink) sl).getNode2();
+						}
+						VirtualNode tmp = null;
+						AugmentedVirtualLink newVLink=null;
+						BandwidthDemand bw = null;
+						//substrate node that virtual node maps to may be the border node(augmented node).
+						//in this case, don't create virtual node and augmented virtual link!!!
+						//in as mcf this is done by augmented link, before the creation of augmented node
+						if(!nodeMapping.get(v1).equals(border1)){	
+							tmp = new VirtualNode();	//augmented node
+							nodeMapping.put(tmp, border1);
+							//first augmented virtual link
+							newVLink = new AugmentedVirtualLink(d1,vl);
+							bw=new BandwidthDemand(newVLink);
+							bw.setDemandedBandwidth(bwd.getDemandedBandwidth());
+							newVLink.add(bw);
+							newVnet.get(d1).addEdge(newVLink, tmp, v1, EdgeType.UNDIRECTED);
+						}
+						if(!nodeMapping.get(v2).equals(border2)){
+							tmp = new VirtualNode();	//augmented node
+							nodeMapping.put(tmp, border2);
+							//second augmented virtual link
+							newVLink = new AugmentedVirtualLink(d1,vl);
+							bw=new BandwidthDemand(newVLink);
+							bw.setDemandedBandwidth(bwd.getDemandedBandwidth());
+							newVLink.add(bw);
+							newVnet.get(d2).addEdge(newVLink, tmp, v2, EdgeType.UNDIRECTED);	//augmented virtual link						
+						}
+						
+						vl.getSolution().get(newDomain).put(sl, bwd.getDemandedBandwidth());
+						System.out.println("inter link : "+sl);
+						
 					}
-					else{
-						border2 = ((InterLink) sl).getNode1();
-						border1 = ((InterLink) sl).getNode2();
-					}
-					VirtualNode tmp = null;
-					AugmentedVirtualLink newVLink=null;
-					BandwidthDemand bw = null;
-					//substrate node that virtual node maps to may be the border node(augmented node).
-					//in this case, don't create virtual node and augmented virtual link!!!
-					//in as mcf this is done by augmented link, before the creation of augmented node
-					if(!nodeMapping.get(v1).equals(border1)){	
-						tmp = new VirtualNode();	//augmented node
-						nodeMapping.put(tmp, border1);
-						//first augmented virtual link
-						newVLink = new AugmentedVirtualLink(d1,vl);
-						bw=new BandwidthDemand(newVLink);
-						bw.setDemandedBandwidth(bwd.getDemandedBandwidth());
-						newVLink.add(bw);
-						newVnet.get(d1).addEdge(newVLink, tmp, v1, EdgeType.UNDIRECTED);
-					}
-					if(!nodeMapping.get(v2).equals(border2)){
-						tmp = new VirtualNode();	//augmented node
-						nodeMapping.put(tmp, border2);
-						//second augmented virtual link
-						newVLink = new AugmentedVirtualLink(d1,vl);
-						bw=new BandwidthDemand(newVLink);
-						bw.setDemandedBandwidth(bwd.getDemandedBandwidth());
-						newVLink.add(bw);
-						newVnet.get(d2).addEdge(newVLink, tmp, v2, EdgeType.UNDIRECTED);	//augmented virtual link						
-					}
-					
-					vl.getSolution().get(newDomain).put(sl, bwd.getDemandedBandwidth());
-					
 				}
 			}
 			
@@ -132,6 +137,15 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 				System.out.println("link no solution");
 				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+				}
+				//restore node coordinate to [0,100]
+				for(Domain d : domains){
+					for(SubstrateNode snode : d.getVertices()){
+						double x = snode.getCoordinateX()-d.getCoordinateX()*100;
+						double y = snode.getCoordinateY()-d.getCoordinateY()*100;
+						snode.setCoordinateX(x);
+						snode.setCoordinateY(y);
+					}
 				}
 				return false;
 			}
@@ -192,11 +206,21 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			}
 		}
 		
+		//restore node coordinate to [0,100]
+		for(Domain domain : domains){
+			for(SubstrateNode snode : domain.getVertices()){
+				double x = snode.getCoordinateX()-domain.getCoordinateX()*100;
+				double y = snode.getCoordinateY()-domain.getCoordinateY()*100;
+				snode.setCoordinateX(x);
+				snode.setCoordinateY(y);
+			}
+		}
 		return true;
 	}
 
 	//merge multi-domain
 	private Domain merge(List<Domain> domains) {
+		
 		Domain newDomain = new Domain();
 		for(Domain domain : domains){
 			//add substrate node
@@ -207,8 +231,13 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 				snode.setCoordinateY(y);
 			}
 			//add substrate link
-			for(SubstrateLink sl : domain.getEdges())
+			for(SubstrateLink sl : domain.getEdges()){
+				
 				newDomain.addEdge(sl, domain.getEndpoints(sl).getFirst(), domain.getEndpoints(sl).getSecond(), EdgeType.UNDIRECTED);
+				
+				
+				
+			}
 			//add inter link
 			for(InterLink il : domain.getInterLink()){
 				if(!newDomain.getInterLink().contains(il)){

@@ -30,6 +30,17 @@ public class InterLink extends SubstrateLink{
 		this.node1 = n1;
 		this.node2 = n2;
 	}
+	
+	//for deep copy in Domain
+	public InterLink(InterLink sl, SubstrateNode n1, SubstrateNode n2){
+		super();
+		this.setName(sl.getName());
+		for (AbstractResource r : sl) {
+			this.add(r.getCopy(this));
+		}
+		this.node1 = n1;
+		this.node2 = n2;
+	}
 
 	public SubstrateNode getNode1() {
 		return node1;

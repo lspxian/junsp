@@ -11,6 +11,7 @@ import li.multiDomain.Domain;
 import main.MultiDomainAlgoTest;
 import vnreal.algorithms.linkmapping.AS_MCF;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
+import vnreal.algorithms.linkmapping.Shen2014;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -93,8 +94,9 @@ public class MultiDomainSimulation {
 					//System.out.println("node mapping succes, virtual netwotk "+j);
 					
 					//link mapping
-					AS_MCF as_mcf = new AS_MCF(multiDomain);
-					if(as_mcf.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
+					//AS_MCF as_mcf = new AS_MCF(multiDomain);
+					Shen2014 shen = new Shen2014(multiDomain);
+					if(shen.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
 					}
