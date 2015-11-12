@@ -24,13 +24,14 @@ public class LocalBypass<V,E> extends Yen<V,E>{
 	public List<List<E>> getShortestPaths(E link,int k){
 		V source = graph.getSource(link);
 		V dest = graph.getDest(link);
-		Set<E> blocked = new HashSet<E>();
-		blocked.add(link);
+		//Set<E> blocked = new HashSet<E>();
+		//blocked.add(link);
 		EdgePredicateFilter<V, E> filter = new EdgePredicateFilter<V, E>(
 				new Predicate<E>() {
 					@Override
 					public boolean evaluate(E e) {
-						return !blocked.contains(e);
+						return !e.equals(link);
+						//return !blocked.contains(e);
 					}
 				});
 		this.graph =  filter.transform(graph);

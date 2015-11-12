@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
+
+import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import li.multiDomain.Domain;
@@ -42,6 +45,8 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 		
 		Domain newDomain = merge(domains);
 		
+		
+		
 		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
 			public Double transform(SubstrateLink link){
 				if(link instanceof InterLink){
@@ -69,6 +74,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			for(AbstractDemand abd : vl){
 				if(abd instanceof BandwidthDemand){
 					bwd = (BandwidthDemand)abd;
+					break;
 				}
 			}
 			
@@ -76,6 +82,35 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			if(d1.equals(d2))
 				newVnet.get(d1).addEdge(vl, v1, v2, EdgeType.UNDIRECTED);
 			else{
+				
+				//block the links without enough available capacities
+				//TODO!!!!
+				EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(
+						new Predicate<SubstrateLink>() {
+							@Override
+							public boolean evaluate(SubstrateLink sl) {
+								if(sl instanceof InterLink){
+									InterLink il = (InterLink) sl;
+									BandwidthResource bdsrc = null;
+									for(AbstractResource asrc : il)
+										if(asrc instanceof BandwidthResource){
+											bdsrc = (BandwidthResource) asrc;
+											break;
+										}
+									BandwidthDemand bwd = null;
+									for(AbstractDemand abd : vl){
+										if(abd instanceof BandwidthDemand){
+											bwd = (BandwidthDemand)abd;
+											break;
+										}
+									}
+									if(bdsrc.getAvailableBandwidth()< bwd.getDemandedBandwidth())
+										return false;
+								}
+								return true;
+							}
+						});
+				newDomain = (Domain) filter.transform(newDomain);
 				
 				//inter virtual link, create augmented virtual link
 				List<SubstrateLink> path = dijkstra.getPath(nodeMapping.get(v1), nodeMapping.get(v2));
@@ -201,6 +236,10 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 				newBwDem.setDemandedBandwidth(MiscelFunctions
 						.roundThreeDecimals(e.getValue()));
 				if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, e.getKey())){
+					for(Map.Entry<SubstrateLink, Double> es : flows.entrySet()){
+						System.out.println(es.getKey()+" "+es.getValue());
+						
+					}
 					throw new AssertionError("But we checked before!");
 				}
 			}

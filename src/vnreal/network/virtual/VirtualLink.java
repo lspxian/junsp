@@ -115,7 +115,10 @@ public class VirtualLink extends Link<AbstractDemand> {
 	
 	public boolean addResource(double random){
 		BandwidthDemand bw=new BandwidthDemand(this);
-		bw.setDemandedBandwidth(MiscelFunctions.roundThreeDecimals(random*30));
+		double quantity = 10;
+		if(random!=1.0)	
+			quantity = MiscelFunctions.roundThreeDecimals(random*20);
+		bw.setDemandedBandwidth(quantity);
 		this.add(bw);
 		return true;
 	}

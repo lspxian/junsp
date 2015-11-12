@@ -85,9 +85,16 @@ public class MultiDomainSimulation {
 		for(VnEvent currentEvent : events){
 			
 			if(currentEvent.getFlag()==0){
-				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,50);
+				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,80);
 				
 				vnEvent.add(currentEvent.getConcernedVn());
+				
+				System.out.println(multiDomain.get(0));
+				System.out.println(multiDomain.get(1));
+				System.out.println(currentEvent.getConcernedVn());
+				System.out.println("accepted : "+this.accepted+"\n");
+				System.out.println("rejected : "+this.rejected+"\n");
+				
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
 					Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 					//System.out.println(nodeMapping);

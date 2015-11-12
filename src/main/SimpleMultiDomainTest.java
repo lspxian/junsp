@@ -21,8 +21,8 @@ public class SimpleMultiDomainTest {
 	public static void main(String[] args) throws IOException {
 		
 		//print to a file instead of console
-		PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
-		System.setOut(out);
+		//PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
+		//System.setOut(out);
 		
 		List<Domain> multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
@@ -44,9 +44,9 @@ public class SimpleMultiDomainTest {
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 		}*/
 		
-		for(int i=11;i<25;i++){
+		for(int i=1;i<2;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
-			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,50);
+			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,80);
 			if(mdar.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
 			}else{
