@@ -70,6 +70,11 @@ public class Domain extends SubstrateNetwork{
 		this.interLink.add(il);
 	}
 	
+	public Domain deepCopy(){
+		//TODO
+		return null;
+		
+	}
 	//TODO to test
 	public void getDomainCopy(boolean deepCopy, Domain result){	
 			InterLink tmpILink;

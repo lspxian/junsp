@@ -51,6 +51,8 @@ package vnreal.algorithms.utils;
  * @since 2010-11-20
  */
 
+
+//shuopeng delete all hiden hop, did not test
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -210,12 +212,14 @@ public class dataSolverFile {
 							break;
 						}
 					}
+					/*
 					for (AbstractDemand dem : currVLink.getHiddenHopDemands()) {
 						if (dem instanceof CpuDemand) {
 							tempHhCpuDem = (CpuDemand) dem;
 							break;
 						}
 					}
+					*/
 					if (!linksToMap
 							.containsKey(Long.toString(tempSrc.getId())
 									+ " " + Long.toString(tempDst.getId()))) {
@@ -682,7 +686,7 @@ public class dataSolverFile {
 			}
 
 			// Write virtual links hidden hops CPU demands
-
+			/*
 			out.write(";\n\n");
 			out.write("param: \t\tHHDemand :=\n");
 
@@ -697,7 +701,7 @@ public class dataSolverFile {
 									.getDemandedCycles()));
 					break;
 				}
-			}
+			}*/
 
 			// Write weight of each parameter
 			out.write(";\n\n");
@@ -1024,7 +1028,7 @@ public class dataSolverFile {
 			}
 
 			// Write virtual links hidden hops CPU demands
-
+			/*
 			out.write(";\n\n");
 			out.write("param: \t\tHHDemand :=\n");
 
@@ -1039,7 +1043,7 @@ public class dataSolverFile {
 									.getDemandedCycles()));
 					break;
 				}
-			}
+			}*/
 
 			// Write weight of each parameter
 			out.write(";\n\n");
@@ -1139,6 +1143,7 @@ public class dataSolverFile {
 						break;
 					}
 				}
+				/*
 				tempHhCpuDem = null;
 				for (AbstractDemand dem : vLinkList.get(i)
 						.getHiddenHopDemands()) {
@@ -1146,7 +1151,7 @@ public class dataSolverFile {
 						tempHhCpuDem = (CpuDemand) dem;
 						break;
 					}
-				}
+				}*/
 
 				if (!linksToMap.containsKey(Long.toString(srcNodeList.get(i)
 						.getId())
@@ -1323,12 +1328,13 @@ public class dataSolverFile {
 							break;
 						}
 					}
+					/*
 					for (AbstractDemand dem : currVLink.getHiddenHopDemands()) {
 						if (dem instanceof CpuDemand) {
 							tempHhCpuDem = (CpuDemand) dem;
 							break;
 						}
-					}
+					}*/
 					if (!linksToMap
 							.containsKey(Long.toString(tempSrc.getId())
 									+ " " + Long.toString(tempDst.getId()))) {
@@ -1572,12 +1578,14 @@ public class dataSolverFile {
 							break;
 						}
 					}
+					/*
 					for (AbstractDemand dem : currVLink.getHiddenHopDemands()) {
 						if (dem instanceof CpuDemand) {
 							tempHhCpuDem = (CpuDemand) dem;
 							break;
 						}
 					}
+					*/
 					if (!linksToMap
 							.containsKey(Long.toString(tempSrc.getId())
 									+ " " + Long.toString(tempDst.getId()))) {

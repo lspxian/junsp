@@ -116,16 +116,14 @@ public class KShortestPathLinkMapping extends AbstractLinkMapping {
 				for (List<SubstrateLink> path : paths) {
 
 					// Verify if the path fulfills the demand
-					if (!NodeLinkAssignation.verifyPath(tVLink, path, sNode,
-							sNet)) {
-
-						// Current path cannot fulfill the VirtualLink or the
-						// Hidden Hop Demand... Lets check another
+					if (!NodeLinkAssignation.verifyPathSimple(tVLink, path)) {
+						//TODO
+						// Current path cannot fulfill the VirtualLink or the 
 						ind2 = 1;
 					} else {
-						// Perform virtual link mapping (VLM) for each link in
-						// the path.
-						if (!NodeLinkAssignation.vlm(tVLink, path, sNet, sNode))
+						// Perform virtual link mapping (VLM) for each link in the path.
+						// TODO test
+						if (!NodeLinkAssignation.vlmSimple(tVLink, path))
 							throw new AssertionError("But we checked before!");
 
 						mappedLinks++;
