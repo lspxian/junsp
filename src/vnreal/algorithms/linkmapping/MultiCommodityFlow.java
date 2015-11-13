@@ -24,9 +24,17 @@ import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
 public class MultiCommodityFlow extends AbstractLinkMapping {
-
+	private String localPath ;
+	private String remotePath ;
 	public MultiCommodityFlow(SubstrateNetwork sNet) {
 		super(sNet);
+		this.localPath = "ILP-LP-Models/vne-mcf.lp";
+		this.remotePath = "pytest/vne-mcf.lp";
+	}
+	public MultiCommodityFlow(SubstrateNetwork sNet, String localPath, String remotePath) {
+		super(sNet);
+		this.localPath = localPath;
+		this.remotePath = remotePath;
 	}
 
 	@Override
@@ -52,10 +60,10 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			this.generateFile(vNet, nodeMapping);
 			
 			//upload file
-			remote.getSftp().put("ILP-LP-Models/vne-mcf.lp", "pytest/vne-mcf.lp");
+			remote.getSftp().put(localPath, remotePath);
 			
 			//solve the problem with python script, get output solution
-			solution = remote.executeCmd("python pytest/mysolver.py pytest/vne-mcf.lp o");
+			solution = remote.executeCmd("python pytest/mysolver.py "+remotePath+" o");
 			
 		} catch (JSchException | IOException | SftpException e) {
 			e.printStackTrace();
@@ -225,7 +233,7 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 		}
 		
 		obj = obj+ "\n";
-		BufferedWriter writer = new BufferedWriter(new FileWriter("ILP-LP-Models/vne-mcf.lp"));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(localPath));
 		writer.write(preambule+obj+constraint+bounds+general+"END");
 		writer.close();
 		

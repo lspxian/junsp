@@ -2,3 +2,5 @@
 .DS_Store
 bin/*
 /bin/
+output.txt
+ILP-LP-Models/vne-mcf.lp
