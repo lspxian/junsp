@@ -60,7 +60,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 					break;
 				}
 			}
-			vl.getSolution().put(newDomain, new TreeMap<SubstrateLink,Double>());	//initialize solution
+			//vl.getSolution().put(newDomain, new TreeMap<SubstrateLink,Double>());	//initialize solution
 			//intra virtual link
 			if(d1.equals(d2))
 				newVnet.get(d1).addEdge(vl, v1, v2, EdgeType.UNDIRECTED);
@@ -88,7 +88,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			
 				for(SubstrateLink sl : path){
 					if(sl instanceof InterLink){
-						
+						//create augmented link
 						if(d1.containsVertex(((InterLink) sl).getNode1())){ 
 							border1 = ((InterLink) sl).getNode1();
 							border2 = ((InterLink) sl).getNode2();
@@ -124,9 +124,16 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 							newVnet.get(d2).addEdge(newVLink, tmp, v2, EdgeType.UNDIRECTED);	//augmented virtual link						
 						}
 						
-						vl.getSolution().get(newDomain).put(sl, bwd.getDemandedBandwidth());
 						System.out.println("inter link : "+sl);
+						//update resource on the inter link
+						//vl.getSolution().get(newDomain).put(sl, bwd.getDemandedBandwidth());
 						
+						//BandwidthDemand newBwDem = new BandwidthDemand(vl);
+						//newBwDem.setDemandedBandwidth(MiscelFunctions
+							//	.roundThreeDecimals(bwd.getDemandedBandwidth()));
+						if(!NodeLinkAssignation.vlmSingleLinkSimple(bwd, sl)){
+							throw new AssertionError("But we checked before!");
+						}
 					}
 				}
 			}
@@ -145,14 +152,19 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 				}
-				//restore node coordinate to [0,100]
 				for(Domain d : domains){
+					//restore node coordinate to [0,100]
 					for(SubstrateNode snode : d.getVertices()){
 						double x = snode.getCoordinateX()-d.getCoordinateX()*100;
 						double y = snode.getCoordinateY()-d.getCoordinateY()*100;
 						snode.setCoordinateX(x);
 						snode.setCoordinateY(y);
 					}
+					//free inter link resource that are attributed by dijkstra
+					for(VirtualLink vlink : vNet.getEdges()){
+						NodeLinkDeletion.linkFree(vlink, d.getInterLink());
+					}
+					
 				}
 				return false;
 			}
@@ -160,7 +172,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			VirtualNode srcVnode = null, dstVnode = null;
 			SubstrateNode srcSnode = null,dstSnode = null;
 			int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
-			BandwidthDemand bwDem=null;
+			BandwidthDemand bwDem=null, newDem=null;
 			
 			for(Map.Entry<String, String> entry : solution.entrySet()){
 				String linklink = entry.getKey();
@@ -184,7 +196,18 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 						break;
 					}
 				}
+				if(tmpvl instanceof AugmentedVirtualLink){
+					newDem = new BandwidthDemand(((AugmentedVirtualLink) tmpvl).getOriginalVL());
+				}else{
+					newDem = new BandwidthDemand(tmpvl);
+				}
+				newDem.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
 				
+				if(!NodeLinkAssignation.vlmSingleLinkSimple(newDem, tmpsl)){
+					throw new AssertionError("But we checked before!");
+				}
+				
+				/*
 				if(tmpvl instanceof AugmentedVirtualLink){
 					AugmentedVirtualLink augmentedvl = (AugmentedVirtualLink) tmpvl;
 					augmentedvl.getOriginalVL().getSolution().get(
@@ -193,11 +216,12 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 				else {
 					//for the second time, use domain as key, intra virtual link mapping 
 					tmpvl.getSolution().get(newDomain).put(tmpsl, bwDem.getDemandedBandwidth()*flow);
-				}
+				}*/
 			}
 		}
 		
 		//update resource
+		/*
 		for(VirtualLink vl : vNet.getEdges()){
 			BandwidthDemand newBwDem;
 			Map<SubstrateLink, Double> flows = vl.getSolution().get(newDomain);
@@ -215,7 +239,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 					throw new AssertionError("But we checked before!");
 				}
 			}
-		}
+		}*/
 		
 		//restore node coordinate to [0,100]
 		for(Domain domain : domains){

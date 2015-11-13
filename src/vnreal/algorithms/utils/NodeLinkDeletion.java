@@ -7,6 +7,7 @@ import li.multiDomain.Domain;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
+import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
@@ -76,4 +77,19 @@ public class NodeLinkDeletion {
 		return true;
 	}
 	
+	//it seems that it's duplicate
+	public static boolean linkFree(VirtualLink vlink, ArrayList<InterLink> slink){
+		for(AbstractDemand dem : vlink){
+			if(dem instanceof BandwidthDemand){
+				for(InterLink singleslink : slink){
+					for(AbstractResource res : singleslink){
+						if(res instanceof BandwidthResource ){
+							dem.free(res);
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
 }
