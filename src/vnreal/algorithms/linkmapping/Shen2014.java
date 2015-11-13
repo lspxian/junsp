@@ -11,6 +11,7 @@ import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
+import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import li.multiDomain.Domain;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
@@ -45,30 +46,12 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 		
 		Domain newDomain = merge(domains);
 		
-		
-		
-		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
-			public Double transform(SubstrateLink link){
-				if(link instanceof InterLink){
-					for(AbstractResource ares : link){
-						if(ares instanceof BandwidthResource){
-							BandwidthResource bwres = (BandwidthResource)ares;
-							return 100/bwres.getAvailableBandwidth();
-						}
-					}
-				}
-				return 1.;
-			}
-		};
-		
-		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(newDomain,weightTrans);
 		for(VirtualLink vl : vNet.getEdges()){
 			VirtualNode v1 = vNet.getEndpoints(vl).getFirst();
 			VirtualNode v2 = vNet.getEndpoints(vl).getSecond();
 			Domain d1 = v1.getDomain();
 			Domain d2 = v2.getDomain();
 			SubstrateNode border1=null, border2=null;
-			vl.getSolution().put(newDomain, new TreeMap<SubstrateLink,Double>());	//initialize solution
 
 			BandwidthDemand bwd = null;
 			for(AbstractDemand abd : vl){
@@ -77,47 +60,36 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 					break;
 				}
 			}
-			
+			vl.getSolution().put(newDomain, new TreeMap<SubstrateLink,Double>());	//initialize solution
 			//intra virtual link
 			if(d1.equals(d2))
 				newVnet.get(d1).addEdge(vl, v1, v2, EdgeType.UNDIRECTED);
 			else{
+				// inter virtual link
+				List<SubstrateLink> path = constraintShortestPath(newDomain, nodeMapping.get(v1), nodeMapping.get(v2), vl);
 				
-				//block the links without enough available capacities
-				//TODO!!!!
-				EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(
-						new Predicate<SubstrateLink>() {
-							@Override
-							public boolean evaluate(SubstrateLink sl) {
-								if(sl instanceof InterLink){
-									InterLink il = (InterLink) sl;
-									BandwidthResource bdsrc = null;
-									for(AbstractResource asrc : il)
-										if(asrc instanceof BandwidthResource){
-											bdsrc = (BandwidthResource) asrc;
-											break;
-										}
-									BandwidthDemand bwd = null;
-									for(AbstractDemand abd : vl){
-										if(abd instanceof BandwidthDemand){
-											bwd = (BandwidthDemand)abd;
-											break;
-										}
-									}
-									if(bdsrc.getAvailableBandwidth()< bwd.getDemandedBandwidth())
-										return false;
-								}
-								return true;
-							}
-						});
-				newDomain = (Domain) filter.transform(newDomain);
-				
-				//inter virtual link, create augmented virtual link
-				List<SubstrateLink> path = dijkstra.getPath(nodeMapping.get(v1), nodeMapping.get(v2));
+				//inter link no resource
+				if(path.isEmpty()){
+					System.out.println("Inter link no resource");
+					for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+						NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+					}
+					//restore node coordinate to [0,100]
+					for(Domain d : domains){
+						for(SubstrateNode snode : d.getVertices()){
+							double x = snode.getCoordinateX()-d.getCoordinateX()*100;
+							double y = snode.getCoordinateY()-d.getCoordinateY()*100;
+							snode.setCoordinateX(x);
+							snode.setCoordinateY(y);
+						}
+					}
+					return false;
+				}
+			
 				for(SubstrateLink sl : path){
 					if(sl instanceof InterLink){
 						
-						if(d1.containsVertex(((InterLink) sl).getNode1())){
+						if(d1.containsVertex(((InterLink) sl).getNode1())){ 
 							border1 = ((InterLink) sl).getNode1();
 							border2 = ((InterLink) sl).getNode2();
 						}
@@ -257,6 +229,56 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 		return true;
 	}
 
+	private List<SubstrateLink> constraintShortestPath(Domain newDomain, SubstrateNode substrateNode,
+			SubstrateNode substrateNode2, VirtualLink vl) {
+
+		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
+			public Double transform(SubstrateLink link){
+				if(link instanceof InterLink){
+					for(AbstractResource ares : link){
+						if(ares instanceof BandwidthResource){
+							BandwidthResource bwres = (BandwidthResource)ares;
+							return 100/bwres.getAvailableBandwidth();
+						}
+					}
+				}
+				return 1.;
+			}
+		};
+		
+		//block the links without enough available capacities
+		//TODO!!!!
+		EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(
+				new Predicate<SubstrateLink>() {
+					@Override
+					public boolean evaluate(SubstrateLink sl) {
+						if(sl instanceof InterLink){
+							InterLink il = (InterLink) sl;
+							BandwidthResource bdsrc = null;
+							for(AbstractResource asrc : il)
+								if(asrc instanceof BandwidthResource){
+									bdsrc = (BandwidthResource) asrc;
+									break;
+								}
+							BandwidthDemand bwd = null;
+							for(AbstractDemand abd : vl){
+								if(abd instanceof BandwidthDemand){
+									bwd = (BandwidthDemand)abd;
+									break;
+								}
+							}
+							if(bdsrc.getAvailableBandwidth()< bwd.getDemandedBandwidth())
+								return false;
+						}
+						return true;
+					}
+				});
+		Graph<SubstrateNode, SubstrateLink> tmp = filter.transform(newDomain);
+		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(tmp,weightTrans);
+		return dijkstra.getPath(substrateNode, substrateNode2);
+		
+	}
+
 	//merge multi-domain
 	private Domain merge(List<Domain> domains) {
 		
@@ -271,11 +293,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			}
 			//add substrate link
 			for(SubstrateLink sl : domain.getEdges()){
-				
 				newDomain.addEdge(sl, domain.getEndpoints(sl).getFirst(), domain.getEndpoints(sl).getSecond(), EdgeType.UNDIRECTED);
-				
-				
-				
 			}
 			//add inter link
 			for(InterLink il : domain.getInterLink()){
@@ -288,5 +306,6 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 		
 		return newDomain;
 	}
-
+	
+	
 }

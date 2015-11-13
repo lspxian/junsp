@@ -44,7 +44,7 @@ public class MultiDomainSimulation {
 		MultiDomainAlgoTest.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<100;i++){
+		for(int i=0;i<20;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);

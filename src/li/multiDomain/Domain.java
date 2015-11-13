@@ -21,6 +21,7 @@ public class Domain extends SubstrateNetwork{
 	protected ArrayList<InterLink> interLink;
 	protected int coordinateX;
 	protected int coordinateY;
+
 	
 	public Domain() {
 		super(false);

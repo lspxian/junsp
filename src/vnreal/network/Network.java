@@ -44,7 +44,9 @@ public abstract class Network<T extends AbstractConstraint, V extends Node<T>, E
 		extends ObservableGraph<V, E> implements ILayer<V, E> {
 
 	private boolean autoUnregisterConstraints = true;	//this parmeter is used to remove vertex and edge
-
+	private static long idSource = 0;
+	private final long id;
+	
 	protected Network(boolean directed) {
 		this(false, directed);
 	}
@@ -52,8 +54,14 @@ public abstract class Network<T extends AbstractConstraint, V extends Node<T>, E
 	protected Network(boolean autoUnregisterConstraints, boolean directed) {
 		super(directed ? new DirectedOrderedSparseMultigraph<V, E>() : new UndirectedOrderedSparseMultigraph<V,E>());
 		this.autoUnregisterConstraints = autoUnregisterConstraints;
+		this.id = idSource;
+		idSource++;
 	}
 	
+	public long getId() {
+		return id;
+	}
+
 	@Override
 	public boolean removeVertex(V v) {
 		if (autoUnregisterConstraints) {
