@@ -64,6 +64,18 @@ public class InterLink extends SubstrateLink{
 		
 	}
 	
+	public InterLink getCopy(SubstrateNode snode1, SubstrateNode snode2) {
+		InterLink clone = new InterLink();
+		clone.setNode1(snode1);
+		clone.setNode2(snode2);
+		clone.setName(getName());
+
+		for (AbstractResource r : this) {
+			clone.add(r.getCopy(clone));
+		}
+
+		return clone;
+	}
 }
 /*
 public class InterLink extends SubstrateLink {

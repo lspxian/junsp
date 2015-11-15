@@ -16,6 +16,7 @@ import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import li.multiDomain.Domain;
+import li.multiDomain.MultiDomainUtil;
 
 public class SimpleMultiDomainTest {
 
@@ -30,7 +31,7 @@ public class SimpleMultiDomainTest {
 		multiDomain.add(new Domain(0,0,"data/cost239", false));
 		multiDomain.add(new Domain(1,0,"sndlib/abilene", false));
 
-		MultiDomainAlgoTest.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<100;i++){

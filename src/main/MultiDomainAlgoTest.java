@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Random;
 
 import li.multiDomain.Domain;
+import li.multiDomain.MultiDomainUtil;
 import vnreal.algorithms.linkmapping.AS_MCF;
 import vnreal.algorithms.linkmapping.Shen2014;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
@@ -32,58 +33,7 @@ public class MultiDomainAlgoTest {
 		//multiDomain.add(new Domain(1,1,"data/cost239", false));
 		//multiDomain.add(new Domain(0,1,"sndlib/abilene", false));
 		
-		/*
-		//max distance for all the domains
-		double maxDistance=0, distance=0, ax,ay,bx,by;
-		for(int i=0;i<multiDomain.size();i++){
-			Domain startDomain = multiDomain.get(i);
-			for(int j=i;j<multiDomain.size();j++){
-				Domain endDomain = multiDomain.get(j);
-				for(SubstrateNode start : startDomain.getVertices()){
-					for(SubstrateNode end : endDomain.getVertices()){
-						ax = start.getCoordinateX()+startDomain.getCoordinateX()*100;
-						ay = start.getCoordinateY()+startDomain.getCoordinateY()*100;
-						bx = end.getCoordinateX()+endDomain.getCoordinateX()*100;
-						by = end.getCoordinateY()+endDomain.getCoordinateY()*100;
-						distance = Math.sqrt(Math.pow(ax-ay, 2) + Math.pow(bx-by, 2));
-						if(distance>maxDistance)	maxDistance = distance;
-						
-					}
-				}
-				
-			}
-		}
-		
-		//generate inter links
-		double alpha = 0.5;	//alpha increases the probability of edges between any nodes in the graph
-		double beta = 0.2;	//beta yields a larger ratio of long edges to short edges.
-		for(int i=0;i<multiDomain.size();i++){
-			Domain startDomain = multiDomain.get(i);
-			for(int j=i+1;j<multiDomain.size();j++){
-				Domain endDomain = multiDomain.get(j);
-				//for each pair of domain, generate inter links by Waxman
-				for(SubstrateNode start : startDomain.getVertices()){
-					for(SubstrateNode end : endDomain.getVertices()){
-						ax = start.getCoordinateX()+startDomain.getCoordinateX()*100;
-						ay = start.getCoordinateY()+startDomain.getCoordinateY()*100;
-						bx = end.getCoordinateX()+endDomain.getCoordinateX()*100;
-						by = end.getCoordinateY()+endDomain.getCoordinateY()*100;
-						distance = Math.sqrt(Math.pow(ax-ay, 2) + Math.pow(bx-by, 2));
-						double proba = alpha * Math.exp(-distance/beta/maxDistance);
-						if(proba>new Random().nextDouble()){
-							//source, destination, destination domain, random resource 
-							InterLink il = new InterLink(start, end, false);
-							startDomain.addInterLink(il);
-							endDomain.addInterLink(il);
-						}
-					}
-				}
-				
-				
-			}
-		}
-		*/
-		staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		/*
 		System.out.println(multiDomain.get(0));
 		System.out.println(multiDomain.get(1));
@@ -95,17 +45,23 @@ public class MultiDomainAlgoTest {
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
 			vn.scale(2, 1);
-			
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 		}
 		
-		List<Domain> tmpDomains;
 		
 		for(int i=0;i<2;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 		}
+		List<Domain> tmpDomains = MultiDomainUtil.getCopy(true, multiDomain);
 		
+		System.out.println(multiDomain.get(0));
+		System.out.println(multiDomain.get(1));
+		System.out.println(tmpDomains.get(0));
+		System.out.println(tmpDomains.get(1));
+		
+		
+		/*
 		System.out.println("********as_mcf****************");
 		tmpDomains = new ArrayList<Domain>();
 		for(Domain domain : multiDomain){
@@ -134,7 +90,7 @@ public class MultiDomainAlgoTest {
 		System.out.println(tmpDomains.get(0));
 		System.out.println(tmpDomains.get(1));
 		
-		/*
+		
 		System.out.println("********shen2014****************");
 		tmpDomains = new ArrayList<Domain>();
 		for(Domain domain : multiDomain){
@@ -165,29 +121,7 @@ public class MultiDomainAlgoTest {
 	}
 	
 	
-	public static void staticInterLinks(Domain d1, Domain d2){
-		InterLink il = new InterLink(d1.getNodeFromID(0),d2.getNodeFromID(40),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(2),d2.getNodeFromID(47),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(3),d2.getNodeFromID(45),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(4),d2.getNodeFromID(47),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(47),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(8),d2.getNodeFromID(39),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(9),d2.getNodeFromID(46),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-	}
+	
 
 }
 

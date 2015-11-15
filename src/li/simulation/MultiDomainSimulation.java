@@ -8,6 +8,7 @@ import java.util.Map;
 
 import li.evaluation.metrics.Metric;
 import li.multiDomain.Domain;
+import li.multiDomain.MultiDomainUtil;
 import main.MultiDomainAlgoTest;
 import vnreal.algorithms.linkmapping.AS_MCF;
 import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
@@ -42,7 +43,7 @@ public class MultiDomainSimulation {
 		multiDomain.add(new Domain(0,0,"data/cost239", false));
 		multiDomain.add(new Domain(1,0,"sndlib/abilene", false));
 
-		MultiDomainAlgoTest.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<100;i++){
