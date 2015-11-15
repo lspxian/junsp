@@ -10,6 +10,7 @@ import li.evaluation.metrics.Metric;
 import li.multiDomain.Domain;
 import main.MultiDomainAlgoTest;
 import vnreal.algorithms.linkmapping.AS_MCF;
+import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.linkmapping.Shen2014;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
@@ -44,7 +45,7 @@ public class MultiDomainSimulation {
 		MultiDomainAlgoTest.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<2;i++){
+		for(int i=0;i<100;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -89,8 +90,8 @@ public class MultiDomainSimulation {
 				
 				vnEvent.add(currentEvent.getConcernedVn());
 				
-				System.out.println(multiDomain.get(0));
-				System.out.println(multiDomain.get(1));
+				//System.out.println(multiDomain.get(0));
+				//System.out.println(multiDomain.get(1));
 				System.out.println(currentEvent.getConcernedVn());
 				System.out.println("accepted : "+this.accepted+"\n");
 				System.out.println("rejected : "+this.rejected+"\n");
@@ -100,10 +101,12 @@ public class MultiDomainSimulation {
 					//System.out.println(nodeMapping);
 					//System.out.println("node mapping succes, virtual netwotk "+j);
 					
-					//link mapping
+					//link mapping method
 					//AS_MCF as_mcf = new AS_MCF(multiDomain);
-					Shen2014 shen = new Shen2014(multiDomain);
-					if(shen.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
+					//Shen2014 shen = new Shen2014(multiDomain);
+					MultiDomainAsOneDomain mdaod = new MultiDomainAsOneDomain(multiDomain);
+					
+					if(mdaod.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
 					}

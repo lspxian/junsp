@@ -169,10 +169,10 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 				return false;
 			}
 			
+			BandwidthDemand bwDem=null, newDem=null;
 			VirtualNode srcVnode = null, dstVnode = null;
 			SubstrateNode srcSnode = null,dstSnode = null;
 			int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
-			BandwidthDemand bwDem=null, newDem=null;
 			
 			for(Map.Entry<String, String> entry : solution.entrySet()){
 				String linklink = entry.getKey();

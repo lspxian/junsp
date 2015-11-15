@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import vnreal.algorithms.linkmapping.AS_MCF;
+import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
 import vnreal.algorithms.linkmapping.Shen2014;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
 import vnreal.algorithms.utils.NodeLinkDeletion;
@@ -61,8 +62,12 @@ public class SimpleMultiDomainTest {
 			//AS_MCF as_mcf = new AS_MCF(multiDomain);
 			//as_mcf.linkMapping(vns.get(i),nodeMapping);
 			
-			Shen2014 shen = new Shen2014(multiDomain);
-			shen.linkMapping(vns.get(i), nodeMapping);
+			//Shen2014 shen = new Shen2014(multiDomain);
+			//shen.linkMapping(vns.get(i), nodeMapping);
+			
+			MultiDomainAsOneDomain mdaod = new MultiDomainAsOneDomain(multiDomain);
+			mdaod.linkMapping(vns.get(i), nodeMapping);
+			
 			System.out.println("virtual network "+i+" finished \n\n");
 			
 			/*

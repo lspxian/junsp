@@ -8,9 +8,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+
 import vnreal.algorithms.AbstractLinkMapping;
+import vnreal.algorithms.utils.NodeLinkAssignation;
+import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.algorithms.utils.Remote;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
@@ -43,6 +47,9 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 		Map<String, String> solution = linkMappingWithoutUpdate(vNet, nodeMapping);
 		if(solution.size()==0){
 			System.out.println("link no solution");
+			for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+				NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+			}
 			return false;
 		}
 		System.out.println(solution);
@@ -73,7 +80,7 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 	}
 	
 	public void updateResource(VirtualNetwork vNet,  Map<VirtualNode, SubstrateNode> nodeMapping, Map<String,String> solution){
-		BandwidthDemand bwDem = null;
+		BandwidthDemand bwDem = null,newBwDem;
 		VirtualNode srcVnode = null, dstVnode = null;
 		SubstrateNode srcSnode = null, dstSnode = null;
 		int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
@@ -110,17 +117,20 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			dstSnode = sNet.getNodeFromID(dstSnodeId);
 			SubstrateLink tmpsl = sNet.findEdge(srcSnode, dstSnode);
 			
+			/*
 			for(AbstractResource ares : tmpsl){
 				if(ares instanceof BandwidthResource){
 					((BandwidthResource) ares).setOccupiedBandwidth(bwDem.getDemandedBandwidth()*flow);
 					break;
 				}
-			}
+			}*/
 			
-			/*
+			newBwDem = new BandwidthDemand(tmpvl);
+			newBwDem.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
+			
 			if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
 				throw new AssertionError("But we checked before!");
-			}*/
+			}
 			
 		}
 	}
