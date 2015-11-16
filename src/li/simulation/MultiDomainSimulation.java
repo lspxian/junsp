@@ -48,11 +48,12 @@ public class MultiDomainSimulation {
 		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<1000;i++){
+		for(int i=50;i<100;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
 			vn.scale(2, 1);
+			System.out.println(vn);		//print vn
 			vns.add(vn);
 		}
 		
