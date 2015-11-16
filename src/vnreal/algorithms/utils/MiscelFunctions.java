@@ -102,6 +102,7 @@ public class MiscelFunctions {
 	public static double roundToDecimals(double d, int decimalPlace) {
 		BigDecimal bd = new BigDecimal(Double.toString(d));
 		bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+//		bd = bd.setScale(decimalPlace, BigDecimal.ROUND_DOWN);
 		return bd.doubleValue();
 	}
 

@@ -70,9 +70,9 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 				SubstrateNode sDest = nodeMapping.get(vDest);
 
 				vlink.getSolution().put(domain, new TreeMap<SubstrateLink, Double>());	//initialize solution
-				if(!(vlink instanceof VirtualInterLink))	vlink.getSolution().put(an, new TreeMap<SubstrateLink, Double>());
 				
 				if(domain.containsVertex(sSource)&&domain.containsVertex(sDest)){	//virtual intra link
+					vlink.getSolution().put(an, new TreeMap<SubstrateLink, Double>());
 					tmpvn.addEdge(vlink, vSource, vDest, EdgeType.UNDIRECTED);
 					newVnet.get(domain).addEdge(vlink, vSource, vDest, EdgeType.UNDIRECTED);
 					//virtualLinks.remove(vlink);
@@ -259,6 +259,16 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 					AugmentedVirtualLink augmentedvl = (AugmentedVirtualLink) tmpvl;
 					augmentedvl.getOriginalVL().getSolution().get(
 							augmentedvl.getOriginalDomain()).put(tmpsl, bwDem.getDemandedBandwidth()*flow);
+					
+					//merge two flows TODO test
+					Map<SubstrateLink, Double> tmpMap = augmentedvl.getOriginalVL().getSolution().get(augmentedvl.getOriginalDomain());
+					if(tmpMap.containsKey(tmpsl)){
+						tmpMap.put(tmpsl, tmpMap.get(tmpsl)+bwDem.getDemandedBandwidth()*flow);
+					}
+					else{
+						tmpMap.put(tmpsl, bwDem.getDemandedBandwidth()*flow);
+					}
+					
 				}
 				else {
 					//for the second time, use domain as key, intra virtual link mapping 

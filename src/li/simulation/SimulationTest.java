@@ -14,7 +14,14 @@ public class SimulationTest {
 		
 		//Simulation simulation = new Simulation();
 		MultiDomainSimulation simulation = new MultiDomainSimulation();
-		simulation.runSimulation();
+//		simulation.runSimulation("AS_MCF");
+//		simulation.reset();
+		
+		simulation.runSimulation("Shen2014");
+		simulation.reset();
+		simulation.runSimulation("MultiDomainAsOneDomain");
+		
+		System.out.println("job done");
 	}
 
 }

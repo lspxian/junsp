@@ -90,9 +90,20 @@ public final class BandwidthDemand extends AbstractDemand implements
 		return new ResourceVisitorAdapter() {
 			@Override
 			public boolean visit(BandwidthResource res) {
-				return MiscelFunctions.roundThreeDecimals(res
+				boolean result = MiscelFunctions.roundThreeDecimals(res
 						.getAvailableBandwidth()) >= MiscelFunctions
 						.roundThreeDecimals(getDemandedBandwidth());
+				if(!result){
+					System.out.println(res
+						.getAvailableBandwidth());
+					System.out.println(MiscelFunctions.roundThreeDecimals(res
+						.getAvailableBandwidth()));
+					System.out.println(getDemandedBandwidth());
+					System.out.println(MiscelFunctions
+						.roundThreeDecimals(getDemandedBandwidth()));
+					System.out.println("pause");
+				}
+				return result;
 			}
 		};
 	}

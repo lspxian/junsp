@@ -10,6 +10,8 @@ import li.evaluation.metrics.Metric;
 import li.multiDomain.Domain;
 import li.multiDomain.MultiDomainUtil;
 import main.MultiDomainAlgoTest;
+import vnreal.algorithms.AbstractLinkMapping;
+import vnreal.algorithms.AbstractMultiDomainLinkMapping;
 import vnreal.algorithms.linkmapping.AS_MCF;
 import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
@@ -30,7 +32,7 @@ public class MultiDomainSimulation {
 	private ArrayList<VirtualNetwork> vnEvent;
 	private ArrayList<VnEvent> events;
 	private ArrayList<Metric> metrics;
-	private double simulationTime = 20000.0;
+	private double simulationTime = 50000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
@@ -46,7 +48,7 @@ public class MultiDomainSimulation {
 		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<100;i++){
+		for(int i=0;i<1000;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -83,7 +85,7 @@ public class MultiDomainSimulation {
 		
 	}
 	
-	public void runSimulation() throws IOException{
+	public void runSimulation(String methodStr) throws IOException{
 		for(VnEvent currentEvent : events){
 			
 			if(currentEvent.getFlag()==0){
@@ -93,7 +95,7 @@ public class MultiDomainSimulation {
 				
 				//System.out.println(multiDomain.get(0));
 				//System.out.println(multiDomain.get(1));
-				System.out.println(currentEvent.getConcernedVn());
+//				System.out.println(currentEvent.getConcernedVn());
 				System.out.println("accepted : "+this.accepted+"\n");
 				System.out.println("rejected : "+this.rejected+"\n");
 				
@@ -103,11 +105,24 @@ public class MultiDomainSimulation {
 					//System.out.println("node mapping succes, virtual netwotk "+j);
 					
 					//link mapping method
-					//AS_MCF as_mcf = new AS_MCF(multiDomain);
-					//Shen2014 shen = new Shen2014(multiDomain);
-					MultiDomainAsOneDomain mdaod = new MultiDomainAsOneDomain(multiDomain);
+					AbstractMultiDomainLinkMapping method;
+					switch (methodStr)
+					{
+						case "AS_MCF" : 
+							method = new AS_MCF(multiDomain);
+							break;
+						case "Shen2014" : 
+							method = new Shen2014(multiDomain);
+							break;
+						case "MultiDomainAsOneDomain" : 
+							method = new MultiDomainAsOneDomain(multiDomain);
+							break;
+						default : 
+							System.out.println("methode doesn't exist");
+							method = null;
+					}
 					
-					if(mdaod.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
+					if(method.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
 					}
@@ -136,8 +151,17 @@ public class MultiDomainSimulation {
 		/*
 		for(Metric metric : metrics){
 			metric.getFout().close();
-		}*/		
-		System.out.println("accepted : "+this.accepted+"\n");
-		System.out.println("rejected : "+this.rejected+"\n");
+		}*/	
+		System.out.println(methodStr);
+		System.out.println("accepted : "+this.accepted);
+		System.out.println("rejected : "+this.rejected);
+	}
+	
+	public void reset(){
+		MultiDomainUtil.reset(this.multiDomain);
+		this.accepted = 0;
+		this.rejected = 0;
+		mappedVNs = new ArrayList<VirtualNetwork>();
+		vnEvent = new ArrayList<VirtualNetwork>();
 	}
 }

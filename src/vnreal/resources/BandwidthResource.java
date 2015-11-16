@@ -140,8 +140,8 @@ public final class BandwidthResource extends AbstractResource implements
 	}
 
 	public Double getAvailableBandwidth() {
-		return MiscelFunctions
-				.roundThreeDecimals(bandwidth - occupiedBandwidth);
+		return bandwidth - occupiedBandwidth;
+		//return MiscelFunctions.roundThreeDecimals(bandwidth - occupiedBandwidth);
 	}
 
 	@Override

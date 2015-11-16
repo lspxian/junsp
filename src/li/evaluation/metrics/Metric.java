@@ -24,6 +24,11 @@ public abstract class Metric{
 		this.fout = new BufferedWriter(new FileWriter("evaluationData/"+this.name()+".txt"));
 	}
 	
+	public Metric(Simulation simulation, String method) throws IOException{
+		this.simulation = simulation;
+		this.fout = new BufferedWriter(new FileWriter("evaluationData/"+method+this.name()+".txt"));
+	}
+	
 	public abstract String name();
 	public abstract double calculate();
 }
