@@ -13,6 +13,10 @@ import vnreal.network.substrate.SubstrateNode;
 
 public class MultiDomainUtil {
 	
+	/*in one domain, the inter link contains the node of other domain, so we can't get 
+	 * copy of a domain with its local information
+	 * 
+	 */
 	public static List<Domain> getCopy(boolean deepCopy, List<Domain> multiDomain){
 		List<Domain> result = new ArrayList<Domain>();
 		
@@ -156,5 +160,12 @@ public class MultiDomainUtil {
 		il = new InterLink(d1.getNodeFromID(9),d2.getNodeFromID(46),false);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
+	}
+	
+	//delete all resource
+	public static boolean reset(List<Domain> multiDomain){
+		for(Domain d : multiDomain)
+			d.reset();
+		return true;
 	}
 }

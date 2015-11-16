@@ -187,7 +187,7 @@ public final class BandwidthResource extends AbstractResource implements
 			}
 		};
 	}
-
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -215,6 +215,12 @@ public final class BandwidthResource extends AbstractResource implements
 		clone.occupiedBandwidth = occupiedBandwidth;
 
 		return clone;
+	}
+	
+	public boolean reset(){
+		this.setOccupiedBandwidth(0.0);
+		this.unregisterAll();
+		return true;
 	}
 
 }

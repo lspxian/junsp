@@ -25,7 +25,7 @@ public class NodeLinkDeletion {
 			if(dem instanceof CpuDemand){
 				for(AbstractResource res : snode){
 					if(res instanceof CpuResource){
-						dem.free(res);
+						dem.free(res);	//false may be returned here but it doesn't matter
 					}
 				}
 			}
@@ -76,6 +76,28 @@ public class NodeLinkDeletion {
 		}
 		return true;
 	}
+	
+	//free all resource
+	public static boolean resetNet(SubstrateNetwork sn){
+		for(SubstrateNode snode : sn.getVertices()){
+			for(AbstractResource res : snode){
+				if(res instanceof CpuResource){
+					((CpuResource) res).reset();
+				}
+			}
+		}
+		
+		for(SubstrateLink slink : sn.getEdges()){
+			for(AbstractResource res : slink){
+				if(res instanceof BandwidthResource){
+					((BandwidthResource) res).reset();
+				}
+			}
+		}
+		
+		return true;
+	}
+	
 	
 	//it seems that it's duplicate
 	public static boolean linkFree(VirtualLink vlink, ArrayList<InterLink> slink){

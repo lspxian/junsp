@@ -148,4 +148,11 @@ public final class CpuResource extends AbstractResource implements
 
 		return clone;
 	}
+
+	public boolean reset() {
+		this.setOccupiedCycles(0.0);
+		this.unregisterAll();
+		return true;
+	}
+
 }

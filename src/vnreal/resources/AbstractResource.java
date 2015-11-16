@@ -140,4 +140,5 @@ public abstract class AbstractResource extends AbstractConstraint {
 	public abstract AbstractResource getCopy(
 			NetworkEntity<? extends AbstractConstraint> owner);
 
+	//public abstract boolean reset();
 }

@@ -291,6 +291,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			
 			Map<SubstrateLink, Double> flows = vl.getMinCostMap();
 			
+			//inter links will not be visited twice, so there is just one occupy
 			for(Map.Entry<SubstrateLink, Double> e : flows.entrySet()){
 			
 				newBwDem = new BandwidthDemand(vl);

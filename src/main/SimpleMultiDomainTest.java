@@ -46,7 +46,7 @@ public class SimpleMultiDomainTest {
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 		}*/
 		
-		for(int i=1;i<10;i++){
+		for(int i=1;i<7;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,80);
 			if(mdar.nodeMapping(vns.get(i))){
@@ -63,11 +63,11 @@ public class SimpleMultiDomainTest {
 			//AS_MCF as_mcf = new AS_MCF(multiDomain);
 			//as_mcf.linkMapping(vns.get(i),nodeMapping);
 			
-			//Shen2014 shen = new Shen2014(multiDomain);
-			//shen.linkMapping(vns.get(i), nodeMapping);
+			Shen2014 shen = new Shen2014(multiDomain);
+			shen.linkMapping(vns.get(i), nodeMapping);
 			
-			MultiDomainAsOneDomain mdaod = new MultiDomainAsOneDomain(multiDomain);
-			mdaod.linkMapping(vns.get(i), nodeMapping);
+			//MultiDomainAsOneDomain mdaod = new MultiDomainAsOneDomain(multiDomain);
+			//mdaod.linkMapping(vns.get(i), nodeMapping);
 			
 			System.out.println("virtual network "+i+" finished \n\n");
 			
@@ -79,11 +79,18 @@ public class SimpleMultiDomainTest {
 			//Multi domain free resource
 			//NodeLinkDeletion.multiDomainFreeResource(vns.get(i), multiDomain);				
 			
-			System.out.println(multiDomain.get(0));
-			System.out.println(multiDomain.get(1));
 			
 		
 		}
+		
+		System.out.println(multiDomain.get(0));
+		System.out.println(multiDomain.get(1));
+		
+		MultiDomainUtil.reset(multiDomain);
+		
+		System.out.println(multiDomain.get(0));
+		System.out.println(multiDomain.get(1));
+		
 		
 	}
 
