@@ -117,14 +117,6 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			dstSnode = sNet.getNodeFromID(dstSnodeId);
 			SubstrateLink tmpsl = sNet.findEdge(srcSnode, dstSnode);
 			
-			/*
-			for(AbstractResource ares : tmpsl){
-				if(ares instanceof BandwidthResource){
-					((BandwidthResource) ares).setOccupiedBandwidth(bwDem.getDemandedBandwidth()*flow);
-					break;
-				}
-			}*/
-			
 			newBwDem = new BandwidthDemand(tmpvl);
 			newBwDem.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
 			

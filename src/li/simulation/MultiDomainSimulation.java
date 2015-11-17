@@ -16,6 +16,7 @@ import vnreal.algorithms.linkmapping.AS_MCF;
 import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.linkmapping.Shen2014;
+import vnreal.algorithms.linkmapping.TwoDomainMCF;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -48,12 +49,12 @@ public class MultiDomainSimulation {
 		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=50;i<100;i++){
+		for(int i=0;i<100;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
 			vn.scale(2, 1);
-			System.out.println(vn);		//print vn
+			//System.out.println(vn);		//print vn
 			vns.add(vn);
 		}
 		
@@ -96,9 +97,9 @@ public class MultiDomainSimulation {
 				
 				//System.out.println(multiDomain.get(0));
 				//System.out.println(multiDomain.get(1));
-//				System.out.println(currentEvent.getConcernedVn());
 				System.out.println("accepted : "+this.accepted+"\n");
 				System.out.println("rejected : "+this.rejected+"\n");
+				System.out.println(currentEvent.getConcernedVn());
 				
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
 					Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
@@ -109,6 +110,9 @@ public class MultiDomainSimulation {
 					AbstractMultiDomainLinkMapping method;
 					switch (methodStr)
 					{
+						case "TwoDomainMCF" :
+							method = new TwoDomainMCF(multiDomain);
+							break;
 						case "AS_MCF" : 
 							method = new AS_MCF(multiDomain);
 							break;
@@ -126,11 +130,18 @@ public class MultiDomainSimulation {
 					if(method.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
+						System.out.println(multiDomain.get(0));
+						System.out.println(multiDomain.get(1));
 					}
 					else{
 						this.rejected++;
 						System.out.println("link resource error, virtual network"); //TODO print vn id 
 					}
+					
+					//reset virtual node domain value
+					for(VirtualNode viNode : currentEvent.getConcernedVn().getVertices())
+						viNode.setDomain(null);
+					
 				}
 				else{
 					this.rejected++;
@@ -156,6 +167,7 @@ public class MultiDomainSimulation {
 		System.out.println(methodStr);
 		System.out.println("accepted : "+this.accepted);
 		System.out.println("rejected : "+this.rejected);
+		
 	}
 	
 	public void reset(){

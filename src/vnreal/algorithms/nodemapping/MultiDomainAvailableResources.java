@@ -44,6 +44,16 @@ public class MultiDomainAvailableResources extends AbstractMultiDomainNodeMappin
 				return false;
 			}
 			
+			//reset coordinate of vn
+			for(VirtualNode vnode : vNet.getVertices()){
+				if((vnode.getDomain()!=null)&&vnode.getDomain().equals(domain)){
+					vnode.setCoordinateX(vnode.getCoordinateX()+domain.getCoordinateX()*100);
+					vnode.setCoordinateY(vnode.getCoordinateY()+domain.getCoordinateY()*100);
+				}
+			}
+			
+			
+			
 		}
 		return true;
 	}

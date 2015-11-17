@@ -25,6 +25,8 @@ import vnreal.network.virtual.VirtualInterLink;
 import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
+import vnreal.resources.AbstractResource;
+import vnreal.resources.BandwidthResource;
 
 // multi-domains, autonomous system multi-commodity flow algorithm 
 public class AS_MCF extends AbstractMultiDomainLinkMapping {
@@ -287,6 +289,9 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			}
 		}*/
 		
+		
+		Map<BandwidthDemand, BandwidthResource> mapping = new HashMap<BandwidthDemand, BandwidthResource>();
+		BandwidthResource tmpbd=null;
 		//compare 2 mcf results to get a better solution, update resource
 		for(VirtualLink vl : vNet.getEdges()){
 			BandwidthDemand newBwDem;
@@ -308,11 +313,30 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 			
 				System.out.println(e.getKey().toString()+" "+e.getValue());
 				
+				for(AbstractResource absRes : e.getKey()){
+					if(absRes instanceof BandwidthResource){
+						tmpbd = (BandwidthResource) absRes;
+					}
+				}
+				
 				newBwDem = new BandwidthDemand(vl);
 				newBwDem.setDemandedBandwidth(MiscelFunctions
 						.roundThreeDecimals(e.getValue()));
+				
 				if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, e.getKey())){	//update
-					throw new AssertionError("But we checked before!");
+//					throw new AssertionError("But we checked before!");
+					System.out.println("flow colision, reject !");
+					
+					for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+						NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+					}
+					for(Map.Entry<BandwidthDemand, BandwidthResource> en : mapping.entrySet()){
+						en.getKey().free(en.getValue());
+					}
+					return false;
+				}
+				else{
+					mapping.put(newBwDem, tmpbd);
 				}
 				
 			}
