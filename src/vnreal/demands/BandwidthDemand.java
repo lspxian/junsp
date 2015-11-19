@@ -67,7 +67,7 @@ public final class BandwidthDemand extends AbstractDemand implements
 
 	@ExchangeParameter
 	public void setDemandedBandwidth(Double bandwidth) {
-		this.demandedBandwidth = bandwidth;
+		this.demandedBandwidth = MiscelFunctions.roundThreeDecimals(bandwidth);
 	}
 
 	@ExchangeParameter

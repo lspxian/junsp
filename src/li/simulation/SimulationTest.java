@@ -18,20 +18,20 @@ public class SimulationTest {
 		//Simulation simulation = new Simulation();
 		MultiDomainSimulation simulation = new MultiDomainSimulation();
 		
-		System.setOut(tdmcf);
-		simulation.runSimulation("TwoDomainMCF");
+//		System.setOut(tdmcf);
+//		simulation.runSimulation("TwoDomainMCF");
+//		simulation.reset();
+		
+		System.setOut(shen);
+		simulation.runSimulation("Shen2014");
 		simulation.reset();
 		
-//		System.setOut(shen);
-//		simulation.runSimulation("Shen2014");
-//		simulation.reset();
-//		
-//		System.setOut(as);
-//		simulation.runSimulation("AS_MCF");
-//		simulation.reset();
-//		
 //		System.setOut(md);
 //		simulation.runSimulation("MultiDomainAsOneDomain");
+//		simulation.reset();
+
+//		System.setOut(as);
+//		simulation.runSimulation("AS_MCF");
 //		simulation.reset();
 		
 		PrintStream original = System.out;

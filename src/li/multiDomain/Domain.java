@@ -2,6 +2,7 @@ package li.multiDomain;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -24,7 +25,6 @@ public class Domain extends SubstrateNetwork{
 	protected ArrayList<InterLink> interLink;
 	protected int coordinateX;
 	protected int coordinateY;
-
 	
 	public Domain() {
 		super(false);
@@ -73,7 +73,6 @@ public class Domain extends SubstrateNetwork{
 	public void addInterLink(InterLink il){
 		this.interLink.add(il);
 	}
-
 	
 	public String toString(){
 		String result= "Domain("+this.getCoordinateX()+","+this.getCoordinateY()+") : \n";
@@ -99,6 +98,13 @@ public class Domain extends SubstrateNetwork{
 			}
 		}
 		return true;
+	}
+	
+	public Collection<SubstrateLink> getAllLinks(){
+		Collection<SubstrateLink> result =  new ArrayList<SubstrateLink>();
+		result.addAll(this.getEdges());
+		result.addAll(this.getInterLink());
+		return result;
 	}
 }
 

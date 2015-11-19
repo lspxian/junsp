@@ -140,8 +140,7 @@ public final class BandwidthResource extends AbstractResource implements
 	}
 
 	public Double getAvailableBandwidth() {
-		return bandwidth - occupiedBandwidth;
-		//return MiscelFunctions.roundThreeDecimals(bandwidth - occupiedBandwidth);
+		return MiscelFunctions.roundThreeDecimals(bandwidth - occupiedBandwidth);
 	}
 
 	@Override
@@ -181,6 +180,7 @@ public final class BandwidthResource extends AbstractResource implements
 					BandwidthDemand bwd = (BandwidthDemand) getMapping(dem).getDemand();	
 					occupiedBandwidth -= MiscelFunctions.roundThreeDecimals(bwd
 							.getDemandedBandwidth());
+					occupiedBandwidth = MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
 					return getMapping(dem).unregister();
 				} else
 					return false;
