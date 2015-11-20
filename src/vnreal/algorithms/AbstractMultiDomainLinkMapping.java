@@ -10,8 +10,17 @@ import vnreal.network.virtual.VirtualNode;
 
 public abstract class AbstractMultiDomainLinkMapping {
 	protected List<Domain> domains;
+	protected String localPath ;
+	protected String remotePath ;
 	public AbstractMultiDomainLinkMapping(List<Domain> domains){
 		this.domains = domains;
+		this.localPath = "ILP-LP-Models/vne-mcf.lp";
+		this.remotePath = "pytest/vne-mcf.lp";
+	}
+	public AbstractMultiDomainLinkMapping(List<Domain> domains,String localPath, String remotePath){
+		this.domains = domains;
+		this.localPath = localPath;
+		this.remotePath = remotePath;
 	}
 	public abstract boolean linkMapping(VirtualNetwork vNet,
 			Map<VirtualNode, SubstrateNode> nodeMapping);

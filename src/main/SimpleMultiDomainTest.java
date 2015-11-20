@@ -9,6 +9,7 @@ import java.util.Map;
 
 import vnreal.algorithms.linkmapping.AS_MCF;
 import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
+import vnreal.algorithms.linkmapping.MultiDomainRanking;
 import vnreal.algorithms.linkmapping.Shen2014;
 import vnreal.algorithms.linkmapping.TwoDomainMCF;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
@@ -47,7 +48,7 @@ public class SimpleMultiDomainTest {
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 		}*/
 		
-		for(int i=0;i<10;i++){
+		for(int i=3;i<4;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,80);
 			if(mdar.nodeMapping(vns.get(i))){
@@ -61,17 +62,16 @@ public class SimpleMultiDomainTest {
 			
 			System.out.println("link mapping, virtual network "+i+"\n");
 			
-			TwoDomainMCF tdmcf = new TwoDomainMCF(multiDomain);
-			tdmcf.linkMapping(vns.get(i), nodeMapping);
+//			MultiDomainRanking method = new MultiDomainRanking(multiDomain);
 			
-//			AS_MCF as_mcf = new AS_MCF(multiDomain);
-//			as_mcf.linkMapping(vns.get(i),nodeMapping);
+			TwoDomainMCF method = new TwoDomainMCF(multiDomain);
+			
+//			AS_MCF method = new AS_MCF(multiDomain);
 		
-//			Shen2014 shen = new Shen2014(multiDomain);
-//			shen.linkMapping(vns.get(i), nodeMapping);
+//			Shen2014 method = new Shen2014(multiDomain);
 			
-//			MultiDomainAsOneDomain mdaod = new MultiDomainAsOneDomain(multiDomain);
-//			mdaod.linkMapping(vns.get(i), nodeMapping);
+//			MultiDomainAsOneDomain method = new MultiDomainAsOneDomain(multiDomain);
+			method.linkMapping(vns.get(i), nodeMapping);
 			
 			System.out.println("virtual network "+i+" finished \n\n");
 			

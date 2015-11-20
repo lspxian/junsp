@@ -111,11 +111,11 @@ public final class BandwidthResource extends AbstractResource implements
 	 * Method for the distributed algorithm
 	 */
 	public void setOccupiedBandwidth(Double occupiedBandwidth) {
-		this.occupiedBandwidth = occupiedBandwidth;
+		this.occupiedBandwidth = MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
 	}
 
 	public double getOccupiedBandwidth() {
-		return occupiedBandwidth;
+		return MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
 	}
 
 	public BandwidthResource(Link<? extends AbstractConstraint> owner) {
@@ -131,12 +131,12 @@ public final class BandwidthResource extends AbstractResource implements
 
 	@ExchangeParameter
 	public void setBandwidth(Double bandwidth) {
-		this.bandwidth = bandwidth;
+		this.bandwidth = MiscelFunctions.roundThreeDecimals(bandwidth);
 	}
 
 	@ExchangeParameter
 	public Double getBandwidth() {
-		return this.bandwidth;
+		return MiscelFunctions.roundThreeDecimals(this.bandwidth);
 	}
 
 	public Double getAvailableBandwidth() {
