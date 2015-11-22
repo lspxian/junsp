@@ -5,11 +5,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -65,12 +68,13 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		this.mapping = new LinkedHashMap<BandwidthDemand, BandwidthResource>();
 		this.linkToMap = new ArrayList<VirtualLink>();
 	}
-
+	
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
 		
 		//initialize the links to map, delete the link once it's mapped
 		this.linkToMap.addAll(vNet.getEdges());
+		sortDomain();
 		
 		for(Domain domain : this.domains){
 			this.createLocalVNet(domain, vNet, nodeMapping);
@@ -79,7 +83,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			if(this.localVNets.get(domain).getEdgeCount()!=0){
 				this.fulfillAugmentedNet(domain, vNet, nodeMapping);
 				
-				Map<String, String> solution = this.linkMappingWithoutUpdate(vNet, nodeMapping, this.augmentedNets.get(domain));
+				Map<String, String> solution = this.linkMappingWithoutUpdate(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
 				
 				if(solution.size()==0){
 					System.out.println("link no solution");
@@ -94,6 +98,22 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		}
 		
 		return true;
+	}
+	
+	private void sortDomain(){
+		Collections.sort(this.domains, new Comparator<Domain>(){
+
+			@Override
+			public int compare(Domain arg0, Domain arg1) {
+				Random random = new Random();
+				double dob = random.nextDouble();
+				if(dob>0.5){
+					return 1;
+				}
+				else return -1;
+			}
+			
+		});
 	}
 	
 	private void createLocalVNet(Domain domain, VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping){
@@ -362,12 +382,20 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 				newVLink.add(bw);
 				//add augmented virtual link to second domain
 				this.localVNets.get(exterDomain).addEdge(newVLink, newVNode, dstVnode, EdgeType.UNDIRECTED);
+				this.linkToMap.remove(tmpvil.getOrigLink());	//remove virtual link which is the original link of virtual inter link
 			}
 			else {
 				//update
-				if(tmpvl instanceof VirtualInterLink){
+				VirtualLink linkRemove = tmpvl ; 
+				if((tmpvl instanceof VirtualInterLink)){
 					VirtualInterLink tmpvil = (VirtualInterLink) tmpvl;
+					linkRemove = tmpvil.getOrigLink();
 					newBwDem = new BandwidthDemand(tmpvil.getOrigLink());
+				}
+				else if((tmpvl instanceof AugmentedVirtualLink)){
+					AugmentedVirtualLink tmpvil = (AugmentedVirtualLink) tmpvl;
+					linkRemove = tmpvil.getOriginalVL();
+					newBwDem = new BandwidthDemand(tmpvil.getOriginalVL());
 				}
 				else{
 					newBwDem = new BandwidthDemand(tmpvl);						
@@ -383,7 +411,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 				}
 				else{
 					mapping.put(newBwDem, tmpbd);
-					this.linkToMap.remove(tmpvl);
+					this.linkToMap.remove(linkRemove);
 				}
 			}
 		}

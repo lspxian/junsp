@@ -14,6 +14,7 @@ import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
 import vnreal.algorithms.linkmapping.AS_MCF;
 import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
+import vnreal.algorithms.linkmapping.MultiDomainRanking;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.linkmapping.Shen2014;
 import vnreal.algorithms.linkmapping.TwoDomainMCF;
@@ -49,7 +50,7 @@ public class MultiDomainSimulation {
 		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=400;i<500;i++){
+		for(int i=0;i<1000;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -110,21 +111,24 @@ public class MultiDomainSimulation {
 					AbstractMultiDomainLinkMapping method;
 					switch (methodStr)
 					{
-						case "TwoDomainMCF" :
-							method = new TwoDomainMCF(multiDomain);
-							break;
-						case "AS_MCF" : 
-							method = new AS_MCF(multiDomain);
-							break;
-						case "Shen2014" : 
-							method = new Shen2014(multiDomain);
-							break;
-						case "MultiDomainAsOneDomain" : 
-							method = new MultiDomainAsOneDomain(multiDomain);
-							break;
-						default : 
-							System.out.println("methode doesn't exist");
-							method = null;
+					case "MultiDomainRanking" : 
+						method = new MultiDomainRanking(multiDomain);
+						break;
+					case "Shen2014" : 
+						method = new Shen2014(multiDomain);
+						break;
+					case "MultiDomainAsOneDomain" : 
+						method = new MultiDomainAsOneDomain(multiDomain);
+						break;
+					case "TwoDomainMCF" :
+						method = new TwoDomainMCF(multiDomain);
+						break;
+					case "AS_MCF" : 
+						method = new AS_MCF(multiDomain);
+						break;
+					default : 
+						System.out.println("methode doesn't exist");
+						method = null;
 					}
 					
 					if(method.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
