@@ -167,9 +167,9 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 				}
 				
 				//objective
-				obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
+				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-				obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
+				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//integer in the <general>

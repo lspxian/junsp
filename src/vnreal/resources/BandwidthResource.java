@@ -115,7 +115,7 @@ public final class BandwidthResource extends AbstractResource implements
 	}
 
 	public double getOccupiedBandwidth() {
-		return MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
+		return occupiedBandwidth;
 	}
 
 	public BandwidthResource(Link<? extends AbstractConstraint> owner) {
@@ -136,11 +136,11 @@ public final class BandwidthResource extends AbstractResource implements
 
 	@ExchangeParameter
 	public Double getBandwidth() {
-		return MiscelFunctions.roundThreeDecimals(this.bandwidth);
+		return this.bandwidth;
 	}
 
 	public Double getAvailableBandwidth() {
-		return MiscelFunctions.roundThreeDecimals(bandwidth - occupiedBandwidth);
+		return bandwidth - occupiedBandwidth;
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import com.jcraft.jsch.SftpException;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import li.multiDomain.Domain;
+import li.multiDomain.LinkStressComparator;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
@@ -74,6 +75,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		
 		//initialize the links to map, delete the link once it's mapped
 		this.linkToMap.addAll(vNet.getEdges());
+//		Collections.sort(this.domains,new LinkStressComparator());
 		sortDomain();
 		
 		for(Domain domain : this.domains){
@@ -241,9 +243,9 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					}
 					
 					//objective
-					obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
+					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-					obj = obj + " + "+bwDem.getDemandedBandwidth()/bwResource.getAvailableBandwidth();
+					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 					
 					//integer in the <general>

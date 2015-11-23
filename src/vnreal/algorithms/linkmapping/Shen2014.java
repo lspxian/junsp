@@ -262,7 +262,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 					for(AbstractResource ares : link){
 						if(ares instanceof BandwidthResource){
 							BandwidthResource bwres = (BandwidthResource)ares;
-							return 100/bwres.getAvailableBandwidth();
+							return 100/(bwres.getAvailableBandwidth()+0.001);
 						}
 					}
 				}

@@ -72,7 +72,7 @@ public final class BandwidthDemand extends AbstractDemand implements
 
 	@ExchangeParameter
 	public Double getDemandedBandwidth() {
-		return MiscelFunctions.roundThreeDecimals(demandedBandwidth);
+		return demandedBandwidth;
 	}
 
 	@Override
