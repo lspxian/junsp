@@ -298,7 +298,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 					}
 				});
 		Graph<SubstrateNode, SubstrateLink> tmp = filter.transform(newDomain);
-		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(tmp,weightTrans);
+		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(tmp);	//dijkstra weight=1
 		return dijkstra.getPath(substrateNode, substrateNode2);
 		
 	}
