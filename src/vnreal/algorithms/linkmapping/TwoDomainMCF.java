@@ -131,7 +131,6 @@ public class TwoDomainMCF extends AbstractMultiDomainLinkMapping {
 						AugmentedLink al = new AugmentedLink();
 						double cost = (double) dijkstra.getDistance(dijkSource, dijkDest);
 						//System.out.println(cost);
-						al.setCost(cost);
 						al.addResource(100/(cost));	//normally random(0,1), here random = 100 means that it has infinite bw
 						an.addEdge(al, dijkSource, dijkDest, EdgeType.UNDIRECTED);	//augmented links
 						

@@ -255,7 +255,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 
 	private List<SubstrateLink> constraintShortestPath(Domain newDomain, SubstrateNode substrateNode,
 			SubstrateNode substrateNode2, VirtualLink vl) {
-
+/*
 		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
 			public Double transform(SubstrateLink link){
 				if(link instanceof InterLink){
@@ -268,7 +268,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 				}
 				return 1.;
 			}
-		};
+		};*/
 		
 		//block the links without enough available capacities
 		//TODO!!!!
