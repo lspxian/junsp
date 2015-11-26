@@ -101,6 +101,8 @@ public final class BandwidthDemand extends AbstractDemand implements
 					System.out.println(getDemandedBandwidth());
 					System.out.println(MiscelFunctions
 						.roundThreeDecimals(getDemandedBandwidth()));
+					System.out.println(res.getOwner());
+					System.out.println();
 					System.out.println("pause");
 				}
 				return result;

@@ -8,6 +8,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.collections15.Transformer;
+
+import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
@@ -105,6 +108,24 @@ public class Domain extends SubstrateNetwork{
 		result.addAll(this.getEdges());
 		result.addAll(this.getInterLink());
 		return result;
+	}
+	
+	public double cumulatedBWCost(SubstrateNode sn1, SubstrateNode sn2){
+		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
+			public Double transform(SubstrateLink link){
+				for(AbstractResource ares : link){
+					if(ares instanceof BandwidthResource){
+						BandwidthResource bwres = (BandwidthResource)ares;
+						return 1/(bwres.getAvailableBandwidth()+0.001);
+					}
+				}
+				return 0.;
+			}
+		};
+		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(this, weightTrans);
+		return (double) dijkstra.getDistance(sn1, sn2);
+		 
+		
 	}
 }
 

@@ -28,7 +28,7 @@ public class MethodTest {
 			vns.add(vn);
 		}
 		
-		for(int i=0;i<5;i++){
+		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,80,true,false);

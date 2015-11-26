@@ -39,6 +39,7 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
+import vnreal.resources.CostResource;
 
 public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 	
@@ -75,8 +76,8 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		
 		//initialize the links to map, delete the link once it's mapped
 		this.linkToMap.addAll(vNet.getEdges());
-//		Collections.sort(this.domains,new LinkStressComparator());
-		sortDomain();
+		Collections.sort(this.domains,new LinkStressComparator());
+//		sortDomain();
 		
 		for(Domain domain : this.domains){
 			this.createLocalVNet(domain, vNet, nodeMapping);
@@ -167,12 +168,17 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 							(!dijkSource.equals(dijkDest))&&			//mapped substrate node is the border node
 							(!an.existLink(dijkSource, dijkDest))){		//augmented link does not exist in the augmented network
 						
-						DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain);
 						AugmentedLink al = new AugmentedLink();
+						CostResource cost = new CostResource(al);	//cost = sum(1/Rbw)
+						cost.setCost(exterDomain.cumulatedBWCost(dijkSource, dijkDest));
+						al.add(cost);
+
+						/*
+						DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain);
 						double cost = (double) dijkstra.getDistance(dijkSource, dijkDest);
-						//System.out.println(cost);
-						al.setCost(cost);
+						//System.out.println(cost); //TODO
 						al.addResource(100/(cost));	//normally random(0,1), here random = 100 means that it has infinite bw
+						*/
 						an.addEdge(al, dijkSource, dijkDest, EdgeType.UNDIRECTED);	//augmented links
 						
 					}
@@ -206,6 +212,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		Domain tmpDomain = (Domain) an.getRoot(); 
 		BandwidthDemand bwDem = null;
 		BandwidthResource bwResource=null;
+		CostResource cost = null;
 		SubstrateNode ssnode=null, dsnode=null;
 		VirtualNode srcVnode = null, dstVnode = null;
 
@@ -235,22 +242,38 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 				ssnode = an.getEndpoints(tmpsl).getFirst();
 				dsnode = an.getEndpoints(tmpsl).getSecond();
 				
+				//intra virtual link, objective contains just intra substrate links
 				if((tmpl instanceof VirtualInterLink)||tmpDomain.containsEdge(tmpsl)){	//for multi domain
-					for(AbstractResource asrc : tmpsl){
-						if(asrc instanceof BandwidthResource){
-							bwResource = (BandwidthResource) asrc;
+					if(tmpsl instanceof AugmentedLink){
+						for(AbstractResource asrc : tmpsl){
+							if(asrc instanceof CostResource){
+								cost = (CostResource) asrc;
+								break;
+							}
 						}
+						
+						//objective
+						obj = obj + " + "+bwDem.getDemandedBandwidth()*cost.getCost();
+						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+						obj = obj + " + "+bwDem.getDemandedBandwidth()*cost.getCost();
+						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+						
 					}
-					
-					//objective
-					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
-					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
-					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
-					
-					//integer in the <general>
-					//general = general +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
-					
+					else{	//iner substrate links and inter substrate links
+						for(AbstractResource asrc : tmpsl){
+							if(asrc instanceof BandwidthResource){
+								bwResource = (BandwidthResource) asrc;
+								break;
+							}
+						}
+						
+						//objective
+						obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+						obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+					}
+
 					//bounds
 					bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
 					bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";

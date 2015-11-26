@@ -48,7 +48,7 @@ public class SimpleMultiDomainTest {
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 		}*/
 		
-		for(int i=50;i<60;i++){
+		for(int i=0;i<10;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,80);
 			if(mdar.nodeMapping(vns.get(i))){
@@ -71,6 +71,7 @@ public class SimpleMultiDomainTest {
 //			Shen2014 method = new Shen2014(multiDomain);
 			
 //			MultiDomainAsOneDomain method = new MultiDomainAsOneDomain(multiDomain);
+			
 			method.linkMapping(vns.get(i), nodeMapping);
 			
 			System.out.println("virtual network "+i+" finished \n\n");
