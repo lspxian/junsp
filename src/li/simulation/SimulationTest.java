@@ -23,13 +23,13 @@ public class SimulationTest {
 		simulation.runSimulation("MultiDomainRanking");
 		simulation.reset();
 
-		System.setOut(shen);
-		simulation.runSimulation("Shen2014");
-		simulation.reset();
-				
-		System.setOut(md);
-		simulation.runSimulation("MultiDomainAsOneDomain");
-		simulation.reset();
+//		System.setOut(shen);
+//		simulation.runSimulation("Shen2014");
+//		simulation.reset();
+//				
+//		System.setOut(md);
+//		simulation.runSimulation("MultiDomainAsOneDomain");
+//		simulation.reset();
 
 //		System.setOut(tdmcf);
 //		simulation.runSimulation("TwoDomainMCF");

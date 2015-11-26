@@ -50,7 +50,7 @@ public class MultiDomainSimulation {
 		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<500;i++){
+		for(int i=0;i<5;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -96,15 +96,13 @@ public class MultiDomainSimulation {
 				
 				vnEvent.add(currentEvent.getConcernedVn());
 				
-				//System.out.println(multiDomain.get(0));
-				//System.out.println(multiDomain.get(1));
 				System.out.println("accepted : "+this.accepted+"\n");
 				System.out.println("rejected : "+this.rejected+"\n");
 				System.out.println(currentEvent.getConcernedVn());
 				
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
 					Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
-					//System.out.println(nodeMapping);
+					System.out.println(nodeMapping);
 					//System.out.println("node mapping succes, virtual netwotk "+j);
 					
 					//link mapping method
@@ -127,15 +125,14 @@ public class MultiDomainSimulation {
 						method = new AS_MCF(multiDomain);
 						break;
 					default : 
-						System.out.println("methode doesn't exist");
+						System.out.println("The methode doesn't exist");
 						method = null;
 					}
 					
 					if(method.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
-						System.out.println(multiDomain.get(0));
-						System.out.println(multiDomain.get(1));
+						
 					}
 					else{
 						this.rejected++;
@@ -157,7 +154,8 @@ public class MultiDomainSimulation {
 				System.out.println("Liberation Ressources");
 				NodeLinkDeletion.multiDomainFreeResource(currentEvent.getConcernedVn(), multiDomain);
 			}
-			
+			System.out.println(multiDomain.get(0));
+			System.out.println(multiDomain.get(1));
 			/*
 			for(Metric metric : metrics){ //write data to file
 				metric.getFout().write(currentEvent.getAoDTime()+" " +metric.calculate()+"\n");
