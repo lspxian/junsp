@@ -145,6 +145,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			Domain domain = e.getKey();
 			VirtualNetwork tmpvn = e.getValue();
 			if(tmpvn.getEdgeCount()==0)		continue;	//if there is no virtual links in this domain
+			System.out.println(tmpvn);
 			MultiCommodityFlow mcf = new MultiCommodityFlow(domain);
 			Map<String, String> solution = mcf.linkMappingWithoutUpdate(tmpvn, nodeMapping);
 			if(solution.size()==0){

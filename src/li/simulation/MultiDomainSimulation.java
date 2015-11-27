@@ -44,13 +44,13 @@ public class MultiDomainSimulation {
 		
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-		multiDomain.add(new Domain(0,0,"data/cost239", false));
-		multiDomain.add(new Domain(1,0,"sndlib/abilene", false));
+		multiDomain.add(new Domain(0,0,"data/cost239", true));
+		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
 
 		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<5;i++){
+		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -152,6 +152,7 @@ public class MultiDomainSimulation {
 			}
 			else{
 				System.out.println("Liberation Ressources");
+				System.out.println(currentEvent.getConcernedVn());
 				NodeLinkDeletion.multiDomainFreeResource(currentEvent.getConcernedVn(), multiDomain);
 			}
 			System.out.println(multiDomain.get(0));

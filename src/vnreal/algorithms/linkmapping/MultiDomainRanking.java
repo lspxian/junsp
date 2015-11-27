@@ -214,7 +214,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		BandwidthResource bwResource=null;
 		CostResource cost = null;
 		SubstrateNode ssnode=null, dsnode=null;
-		VirtualNode srcVnode = null, dstVnode = null;
+		VirtualNode srcVnode = null, dstVnode = null, tmpVnode=null;
 
 		String preambule = "\\Problem : vne\n";
 		String obj = "Minimize\n"+"obj : ";
@@ -236,70 +236,112 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					break;
 				}
 			}
-		
-			for (Iterator<SubstrateLink> slink = an.getEdges().iterator();slink.hasNext();){
-				SubstrateLink tmpsl = slink.next();
-				ssnode = an.getEndpoints(tmpsl).getFirst();
-				dsnode = an.getEndpoints(tmpsl).getSecond();
-				
-				//intra virtual link, objective contains just intra substrate links
-				if((tmpl instanceof VirtualInterLink)||tmpDomain.containsEdge(tmpsl)){	//for multi domain
-					if(tmpsl instanceof AugmentedLink){
-						for(AbstractResource asrc : tmpsl){
-							if(asrc instanceof CostResource){
-								cost = (CostResource) asrc;
-								break;
-							}
+			
+			//virtual intra link and augmented virtual link
+			if(!(tmpl instanceof VirtualInterLink)){
+				//substrate links contains domain intra links
+				for (Iterator<SubstrateLink> slink = tmpDomain.getEdges().iterator();slink.hasNext();){
+					SubstrateLink tmpsl = slink.next();
+					ssnode = an.getEndpoints(tmpsl).getFirst();
+					dsnode = an.getEndpoints(tmpsl).getSecond();
+					for(AbstractResource asrc : tmpsl){
+						if(asrc instanceof BandwidthResource){
+							bwResource = (BandwidthResource) asrc;
+							break;
 						}
-						
-						//objective
-						obj = obj + " + "+bwDem.getDemandedBandwidth()*cost.getCost();
-						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-						obj = obj + " + "+bwDem.getDemandedBandwidth()*cost.getCost();
-						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
-						
 					}
-					else{	//iner substrate links and inter substrate links
+					//objective
+					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+					//bounds
+					bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+					bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
+				}
+				
+				//flow constraints
+				Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
+				for(Iterator<SubstrateNode> iterator = tmpDomain.getVertices().iterator();iterator.hasNext();){
+					SubstrateNode snode = iterator.next();
+					nextHop = tmpDomain.getNeighbors(snode);
+					for(Iterator<SubstrateNode> it=nextHop.iterator();it.hasNext();){
+						SubstrateNode tmmpsn = it.next();
+						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
+						constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
+					}
+					if(snode.equals(nodeMapping.get(srcVnode)))	constraint =constraint+" = 1\n";
+					else if(snode.equals(nodeMapping.get(dstVnode))) constraint =constraint+" = -1\n";
+					else	constraint =constraint+" = 0\n";
+				}
+				
+			}
+			else{	//inter virtual links
+				if(tmpDomain.containsVertex(nodeMapping.get(dstVnode))){
+					tmpVnode = dstVnode;
+					dstVnode = srcVnode;
+					srcVnode = tmpVnode;
+				}
+				
+				for (Iterator<SubstrateLink> slink = an.getEdges().iterator();slink.hasNext();){
+					SubstrateLink tmpsl = slink.next();
+					ssnode = an.getEndpoints(tmpsl).getFirst();
+					dsnode = an.getEndpoints(tmpsl).getSecond();
+					//intra substrate links and inter substrate links
+					if(!(slink instanceof AugmentedLink)){
 						for(AbstractResource asrc : tmpsl){
 							if(asrc instanceof BandwidthResource){
 								bwResource = (BandwidthResource) asrc;
 								break;
 							}
 						}
-						
 						//objective
 						obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
 						obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+						//bounds
+						bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+						bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
 					}
-
-					//bounds
-					bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
-					bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
+					else	//augmented substrate links correspond to virtual inter links which means node mapping of srcVnode and dstVnode    
+						if(nodeMapping.get(dstVnode).equals(ssnode)||nodeMapping.get(dstVnode).equals(dsnode))
+					{
+						for(AbstractResource asrc : tmpsl){
+							if(asrc instanceof CostResource){
+								cost = (CostResource) asrc;
+								break;
+							}
+						}
+						//objective
+						obj = obj + " + "+bwDem.getDemandedBandwidth()*cost.getCost();
+						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+						obj = obj + " + "+bwDem.getDemandedBandwidth()*cost.getCost();
+						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+						//bounds
+						bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+						bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
+					}
+				}
+				
+				//flow constraints
+				Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
+				for(Iterator<SubstrateNode> iterator = an.getVertices().iterator();iterator.hasNext();){
+					SubstrateNode snode = iterator.next();
+					nextHop = an.getNeighbors(snode);
+					for(Iterator<SubstrateNode> it=nextHop.iterator();it.hasNext();){
+						//TODO
+						SubstrateNode tmmpsn = it.next();
+						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
+						constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
+					}
+					if(snode.equals(nodeMapping.get(srcVnode)))	constraint =constraint+" = 1\n";
+					else if(snode.equals(nodeMapping.get(dstVnode))) constraint =constraint+" = -1\n";
+					else	constraint =constraint+" = 0\n";
 				}
 				
 			}
 			
-			//flow constraints
-			Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
-			for(Iterator<SubstrateNode> iterator = an.getVertices().iterator();iterator.hasNext();){
-				SubstrateNode snode = iterator.next();
-				if(!(tmpl instanceof VirtualInterLink)&&(!tmpDomain.containsVertex(snode)))	continue;	//multi domain
-				nextHop = an.getNeighbors(snode);
-				for(Iterator<SubstrateNode> it=nextHop.iterator();it.hasNext();){
-					SubstrateNode tmmpsn = it.next();
-					if((tmpl instanceof VirtualInterLink)||(tmpDomain.containsVertex(snode)&&tmpDomain.containsVertex(tmmpsn))){	//for multi domain
-						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
-						constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
-					}
-				}
-
-				if(snode.equals(nodeMapping.get(srcVnode)))	constraint =constraint+" = 1\n";
-				else if(snode.equals(nodeMapping.get(dstVnode))) constraint =constraint+" = -1\n";
-				else	constraint =constraint+" = 0\n";
-				
-			}
 			
 		}
 

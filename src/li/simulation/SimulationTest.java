@@ -9,6 +9,7 @@ public class SimulationTest {
 	public static void main(String[] args) throws IOException {
 		
 		//print to a file instead of console
+		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));
 		PrintStream shen = new PrintStream(new FileOutputStream("shen.txt"));
 		PrintStream as = new PrintStream(new FileOutputStream("AS_MCF.txt"));
 		PrintStream md = new PrintStream(new FileOutputStream("MultiDomainAsOneDomain.txt"));
@@ -18,8 +19,9 @@ public class SimulationTest {
 		
 		//Simulation simulation = new Simulation();
 		MultiDomainSimulation simulation = new MultiDomainSimulation();
+		System.setOut(tmp);
 		
-		System.setOut(mdrk);
+//		System.setOut(mdrk);
 		simulation.runSimulation("MultiDomainRanking");
 		simulation.reset();
 

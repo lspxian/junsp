@@ -30,8 +30,8 @@ public class SimpleMultiDomainTest {
 		
 		List<Domain> multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-		multiDomain.add(new Domain(0,0,"data/cost239", false));
-		multiDomain.add(new Domain(1,0,"sndlib/abilene", false));
+		multiDomain.add(new Domain(0,0,"data/cost239", true));
+		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
 
 		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
@@ -48,7 +48,7 @@ public class SimpleMultiDomainTest {
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 		}*/
 		
-		for(int i=0;i<10;i++){
+		for(int i=0;i<6;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,80);
 			if(mdar.nodeMapping(vns.get(i))){
@@ -77,13 +77,13 @@ public class SimpleMultiDomainTest {
 			System.out.println("virtual network "+i+" finished \n\n");
 			
 			
-			System.out.println(multiDomain.get(0));
-			System.out.println(multiDomain.get(1));
 			
 			
 			//Multi domain free resource
-			//NodeLinkDeletion.multiDomainFreeResource(vns.get(i), multiDomain);				
+//			NodeLinkDeletion.multiDomainFreeResource(vns.get(i), multiDomain);				
 			
+			System.out.println(multiDomain.get(0));
+			System.out.println(multiDomain.get(1));
 		
 		}
 		
