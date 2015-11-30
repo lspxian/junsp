@@ -48,7 +48,7 @@ public class SimpleMultiDomainTest {
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 		}*/
 		
-		for(int i=0;i<6;i++){
+		for(int i=5;i<6;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,80);
 			if(mdar.nodeMapping(vns.get(i))){
@@ -80,7 +80,7 @@ public class SimpleMultiDomainTest {
 			
 			
 			//Multi domain free resource
-//			NodeLinkDeletion.multiDomainFreeResource(vns.get(i), multiDomain);				
+			NodeLinkDeletion.multiDomainFreeResource(vns.get(i), multiDomain);				
 			
 			System.out.println(multiDomain.get(0));
 			System.out.println(multiDomain.get(1));

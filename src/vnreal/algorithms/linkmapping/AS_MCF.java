@@ -114,7 +114,7 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 								(!an.existLink(dijkSource, dijkDest))){		//augmented link does not exist in the augmented network
 							
 							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain,weightTrans);
-							AugmentedLink al = new AugmentedLink();
+							AugmentedLink al = new AugmentedLink(vl);	//TODO
 							double cost = (double) dijkstra.getDistance(dijkSource, dijkDest);
 							//System.out.println(cost);
 							al.addResource(100/(cost));	//normally random(0,1), here random = 100 means that it has infinite bw

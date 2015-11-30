@@ -142,22 +142,22 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		AugmentedNetwork an = this.augmentedNets.get(domain);
 		for(VirtualLink vl : tmpvn.getEdges()){
 			if(vl instanceof VirtualInterLink){
+				SubstrateNode dijkDest = null, dijkSource = null;
 				VirtualInterLink vil = (VirtualInterLink) vl;
 				VirtualNode vnode1 = vil.getNode1();
 				VirtualNode vnode2 = vil.getNode2();
-				SubstrateNode snode1 = nodeMapping.get(vnode1);
-				SubstrateNode snode2 = nodeMapping.get(vnode2);
-				SubstrateNode dijkDest = null, dijkSource = null;
-				Domain exterDomain = null;
-				if(vnode1.getDomain().equals(domain)){
-					exterDomain = vnode2.getDomain();
-					dijkDest = snode2;
-				}
+				
+				if(vnode1.getDomain().equals(domain)){}
 				else if(vnode2.getDomain().equals(domain)){
-					exterDomain = vnode1.getDomain();
-					dijkDest = snode1;
+					VirtualNode tmpnode = vnode2;
+					vnode2 = vnode1;
+					vnode1 = tmpnode;
 				}
 				else	continue;
+				
+				Domain exterDomain = vnode2.getDomain();
+				dijkDest = nodeMapping.get(vnode2);;
+				
 				for(InterLink ilink : domain.getInterLink()){
 					if(domain.containsVertex(ilink.getNode1()))
 						dijkSource = ilink.getNode2();
@@ -168,7 +168,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 							(!dijkSource.equals(dijkDest))&&			//mapped substrate node is the border node
 							(!an.existLink(dijkSource, dijkDest))){		//augmented link does not exist in the augmented network
 						
-						AugmentedLink al = new AugmentedLink();
+						AugmentedLink al = new AugmentedLink(vnode2);
 						CostResource cost = new CostResource(al);	//cost = sum(1/Rbw)
 						cost.setCost(exterDomain.cumulatedBWCost(dijkSource, dijkDest));
 						al.add(cost);
@@ -329,15 +329,24 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 				for(Iterator<SubstrateNode> iterator = an.getVertices().iterator();iterator.hasNext();){
 					SubstrateNode snode = iterator.next();
 					nextHop = an.getNeighbors(snode);
+					boolean flag = false;
 					for(Iterator<SubstrateNode> it=nextHop.iterator();it.hasNext();){
 						//TODO
 						SubstrateNode tmmpsn = it.next();
+						SubstrateLink tmpsl = an.findEdge(snode, tmmpsn);
+						if((tmpsl instanceof AugmentedLink)){
+							AugmentedLink tmpal = (AugmentedLink)tmpsl;
+							if(!tmpal.getDestNode().equals(dstVnode))
+								continue;
+						}
+						
 						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
 						constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
+						flag = true;
 					}
 					if(snode.equals(nodeMapping.get(srcVnode)))	constraint =constraint+" = 1\n";
 					else if(snode.equals(nodeMapping.get(dstVnode))) constraint =constraint+" = -1\n";
-					else	constraint =constraint+" = 0\n";
+					else if(flag)	constraint =constraint+" = 0\n";
 				}
 				
 			}
