@@ -19,19 +19,19 @@ public class SimulationTest {
 		
 		//Simulation simulation = new Simulation();
 		MultiDomainSimulation simulation = new MultiDomainSimulation();
-		System.setOut(tmp);
+//		System.setOut(tmp);
 		
-//		System.setOut(mdrk);
+		System.setOut(mdrk);
 		simulation.runSimulation("MultiDomainRanking");
 		simulation.reset();
 
-//		System.setOut(shen);
-//		simulation.runSimulation("Shen2014");
-//		simulation.reset();
-//				
-//		System.setOut(md);
-//		simulation.runSimulation("MultiDomainAsOneDomain");
-//		simulation.reset();
+		System.setOut(shen);
+		simulation.runSimulation("Shen2014");
+		simulation.reset();
+				
+		System.setOut(md);
+		simulation.runSimulation("MultiDomainAsOneDomain");
+		simulation.reset();
 
 //		System.setOut(tdmcf);
 //		simulation.runSimulation("TwoDomainMCF");
