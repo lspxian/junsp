@@ -9,6 +9,10 @@ import java.util.Map;
 import li.evaluation.metrics.Metric;
 import li.multiDomain.Domain;
 import li.multiDomain.MultiDomainUtil;
+import li.multiDomain.metrics.AcceptedRatioMD;
+import li.multiDomain.metrics.LinkUtilizationMD;
+import li.multiDomain.metrics.MappedRevenueMD;
+import li.multiDomain.metrics.MetricMD;
 import main.MultiDomainAlgoTest;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
@@ -33,13 +37,33 @@ public class MultiDomainSimulation {
 	private ArrayList<VirtualNetwork> mappedVNs;
 	private ArrayList<VirtualNetwork> vnEvent;
 	private ArrayList<VnEvent> events;
-	private ArrayList<Metric> metrics;
+	private ArrayList<MetricMD> metrics;
 	private double simulationTime = 50000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
-	private double lambda = 4.0/100.0;
+	private double lambda = 2.0/100.0;
 	
+	public List<Domain> getMultiDomain() {
+		return multiDomain;
+	}
+
+	public int getAccepted() {
+		return accepted;
+	}
+
+	public int getRejected() {
+		return rejected;
+	}
+
+	public ArrayList<VirtualNetwork> getVns() {
+		return vns;
+	}
+
+	public ArrayList<VirtualNetwork> getMappedVNs() {
+		return mappedVNs;
+	}
+
 	public MultiDomainSimulation() throws IOException{
 		
 		multiDomain = new ArrayList<Domain>();
@@ -50,7 +74,7 @@ public class MultiDomainSimulation {
 		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<500;i++){
+		for(int i=0;i<100;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -70,9 +94,9 @@ public class MultiDomainSimulation {
 		Collections.sort(events);
 		
 		//add metric
-		//metrics = new ArrayList<Metric>();
-		/*metrics.add(new AcceptedRatioL(this));
-		metrics.add(new LinkUtilizationL(this));
+		metrics = new ArrayList<MetricMD>();
+		/*metrics.add(new LinkUtilizationL(this));
+		metrics.add(new AcceptedRatioL(this));
 		metrics.add(new NodeUtilizationL(this));
 		metrics.add(new CostL(this));
 		metrics.add(new LinkCostPerVnrL(this));
@@ -89,6 +113,11 @@ public class MultiDomainSimulation {
 	}
 	
 	public void runSimulation(String methodStr) throws IOException{
+		//add metrics
+		metrics.add(new AcceptedRatioMD(this, methodStr));
+		metrics.add(new LinkUtilizationMD(this, methodStr));
+		metrics.add(new MappedRevenueMD(this, methodStr));
+		
 		for(VnEvent currentEvent : events){
 			
 			if(currentEvent.getFlag()==0){
@@ -96,8 +125,8 @@ public class MultiDomainSimulation {
 				
 				vnEvent.add(currentEvent.getConcernedVn());
 				
-				System.out.println("accepted : "+this.accepted+"\n");
-				System.out.println("rejected : "+this.rejected+"\n");
+				System.out.println("accepted : "+this.accepted);
+				System.out.println("rejected : "+this.rejected);
 				System.out.println(currentEvent.getConcernedVn());
 				
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
@@ -157,16 +186,19 @@ public class MultiDomainSimulation {
 			}
 			System.out.println(multiDomain.get(0));
 			System.out.println(multiDomain.get(1));
-			/*
-			for(Metric metric : metrics){ //write data to file
-				metric.getFout().write(currentEvent.getAoDTime()+" " +metric.calculate()+"\n");
-			}*/
+			
+			for(MetricMD metric : metrics){ //write data to file
+				double value = metric.calculate();
+				System.out.println(value+" ");
+				metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
+			}
 			
 		}
-		/*
-		for(Metric metric : metrics){
+		
+		for(MetricMD metric : metrics){
 			metric.getFout().close();
-		}*/	
+		}
+		
 		System.out.println(methodStr);
 		System.out.println("accepted : "+this.accepted);
 		System.out.println("rejected : "+this.rejected);
@@ -179,5 +211,6 @@ public class MultiDomainSimulation {
 		this.rejected = 0;
 		mappedVNs = new ArrayList<VirtualNetwork>();
 		vnEvent = new ArrayList<VirtualNetwork>();
+		metrics = new ArrayList<MetricMD>();
 	}
 }

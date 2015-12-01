@@ -99,6 +99,11 @@ public final class BandwidthDemand extends AbstractDemand implements
 					System.out.println(res.getOwner());
 					System.out.println(BandwidthDemand.this.getOwner());	//to get outer class, use OuterClass.this
 					System.out.println("pause");
+					
+					if(getDemandedBandwidth()-res.getAvailableBandwidth()<=0.001){
+						BandwidthDemand.this.demandedBandwidth = BandwidthDemand.this.demandedBandwidth - 0.001;
+						return true;
+					}
 					return false;
 				}
 				return true;

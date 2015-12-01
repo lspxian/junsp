@@ -145,7 +145,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			Domain domain = e.getKey();
 			VirtualNetwork tmpvn = e.getValue();
 			if(tmpvn.getEdgeCount()==0)		continue;	//if there is no virtual links in this domain
-			System.out.println(tmpvn);
+			//System.out.println(tmpvn);
 			MultiCommodityFlow mcf = new MultiCommodityFlow(domain);
 			Map<String, String> solution = mcf.linkMappingWithoutUpdate(tmpvn, nodeMapping);
 			if(solution.size()==0){
@@ -208,16 +208,6 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 					throw new AssertionError("But we checked before!");
 				}
 				
-				/*
-				if(tmpvl instanceof AugmentedVirtualLink){
-					AugmentedVirtualLink augmentedvl = (AugmentedVirtualLink) tmpvl;
-					augmentedvl.getOriginalVL().getSolution().get(
-							newDomain).put(tmpsl, bwDem.getDemandedBandwidth()*flow);
-				}
-				else {
-					//for the second time, use domain as key, intra virtual link mapping 
-					tmpvl.getSolution().get(newDomain).put(tmpsl, bwDem.getDemandedBandwidth()*flow);
-				}*/
 			}
 		}
 		

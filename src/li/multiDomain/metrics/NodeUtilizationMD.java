@@ -1,31 +1,42 @@
-package li.evaluation.metrics;
+package li.multiDomain.metrics;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
-import li.simulation.Simulation;
+import li.multiDomain.Domain;
+import li.simulation.MultiDomainSimulation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.CpuDemand;
 import vnreal.mapping.Mapping;
-import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.CpuResource;
 
-public class NodeUtilizationL extends Metric{
+public class NodeUtilizationMD extends MetricMD {
 	public static double capacity = 0.0,sum=0.0;
-	public NodeUtilizationL(Simulation simulation) throws IOException {
-		super(simulation);
+
+	public NodeUtilizationMD(MultiDomainSimulation simulation, String method) throws IOException {
+		super(simulation, method);
 	}
-	
+
+	@Override
+	public String name() {
+		return "NodeUtilization";
+	}
+
 	@Override
 	public double calculate() {
-		SubstrateNetwork sNetwork = this.simulation.getSubstrateNetwork();
-		for (SubstrateNode sn : sNetwork.getVertices()) {
+		ArrayList<SubstrateNode> allNodes = new ArrayList<SubstrateNode>();
+		for(Domain d : this.simulation.getMultiDomain()){
+			allNodes.addAll(d.getVertices());
+		}
+		
+		for (SubstrateNode sn : allNodes) {
 			for (AbstractResource res : sn.get()) {
 				capacity += ((CpuResource) res).getCycles();
 			}
 		}
-		for (SubstrateNode sn : sNetwork.getVertices()) {
+		for (SubstrateNode sn : allNodes) {
 			for (AbstractResource res : sn.get()) {
 				for (Mapping m : res.getMappings()) {
 					AbstractDemand dem = m.getDemand();
@@ -37,11 +48,8 @@ public class NodeUtilizationL extends Metric{
 				}
 			}
 		}
+
 		return sum/capacity;
 	}
-		
-	@Override
-	public String name() {
-		return "NodeUtilization";
-	}
+
 }
