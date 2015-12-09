@@ -18,6 +18,7 @@ import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
+import li.gt_itm.Generator;
 import li.multiDomain.Domain;
 import li.multiDomain.MultiDomainUtil;
 
@@ -31,11 +32,16 @@ public class SimpleMultiDomainTest {
 		
 		List<Domain> multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-		multiDomain.add(new Domain(0,0,"data/cost239", true));
-		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
+//		multiDomain.add(new Domain(0,0,"data/cost239", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
+		//use gt-itm to create random net
+		multiDomain.add(new Domain(0,0, true));
+		multiDomain.add(new Domain(1,0, true));
 
-		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+//		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+		MultiDomainUtil.randomInterLinks(multiDomain);
 		
+		/*
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<100;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
@@ -43,16 +49,22 @@ public class SimpleMultiDomainTest {
 			vn.addAllResource(true);
 			vn.scale(2, 1);
 			vns.add(vn);
-		}
-		/*
-		for(int i=0;i<4;i++){
-			System.out.println("virtual network "+i+": \n"+vns.get(i));
 		}*/
-		
-		for(int i=0;i<2;i++){
-			System.out.println("virtual network "+i+": \n"+vns.get(i));
+
+/*			
+		for(int i=0;i<1;i++){
+			//VirtualNetwork vn = vns.get(i);
+			
+			VirtualNetwork vn = new VirtualNetwork(1,false);
+			Generator.createVirNet();
+			vn.alt2network("./gt-itm/sub");
+			vn.addAllResource(true);
+			vn.scale(2, 1);
+			
+			System.out.println("virtual network "+i+": \n"+vn);
+			
 			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,80);
-			if(mdar.nodeMapping(vns.get(i))){
+			if(mdar.nodeMapping(vn)){
 				System.out.println("node mapping succes, virtual netwotk "+i);
 			}else{
 				System.out.println("node resource error, virtual network "+i);
@@ -60,7 +72,7 @@ public class SimpleMultiDomainTest {
 			}
 			Map<VirtualNode, SubstrateNode> nodeMapping = mdar.getNodeMapping();
 			System.out.println(nodeMapping);
-			
+		
 			System.out.println("link mapping, virtual network "+i+"\n");
 			
 			AbstractMultiDomainLinkMapping method = new MultiDomainRanking(multiDomain);
@@ -73,7 +85,7 @@ public class SimpleMultiDomainTest {
 			
 //			MultiDomainAsOneDomain method = new MultiDomainAsOneDomain(multiDomain);
 			
-			method.linkMapping(vns.get(i), nodeMapping);
+			method.linkMapping(vn, nodeMapping);
 			
 			System.out.println("virtual network "+i+" finished \n\n");
 			
@@ -82,18 +94,18 @@ public class SimpleMultiDomainTest {
 			
 			
 			//Multi domain free resource
-			NodeLinkDeletion.multiDomainFreeResource(vns.get(i), multiDomain);
+			NodeLinkDeletion.multiDomainFreeResource(vn, multiDomain);
 			
 //			System.out.println(multiDomain.get(0));
 //			System.out.println(multiDomain.get(1));
 			
 			 method = new MultiDomainAsOneDomain(multiDomain);
-			 method.linkMapping(vns.get(i), nodeMapping);
+			 method.linkMapping(vn, nodeMapping);
 		
-		}
+		}*/
 		
-//		System.out.println(multiDomain.get(0));
-//		System.out.println(multiDomain.get(1));
+		System.out.println(multiDomain.get(0));
+		System.out.println(multiDomain.get(1));
 		
 //		MultiDomainUtil.reset(multiDomain);
 //		

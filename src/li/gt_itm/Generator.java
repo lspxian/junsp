@@ -9,39 +9,41 @@ import java.util.Random;
 
 
 public class Generator {
-	public void runShellCmd(String cmd) throws IOException{
-		Runtime rt= Runtime.getRuntime();
-		Process p = rt.exec(cmd);
-		String s;
-		BufferedReader stdInput = new BufferedReader(new
-                InputStreamReader(p.getInputStream()));
-        while ((s = stdInput.readLine()) != null) {
-            System.out.println(s);
-        }
-	
-	}
 	
 	//create substrate network
-	public void createSubgb() throws IOException{
-		File dir = new File("data");
+	public static void createSubNet() throws IOException{
+		File dir = new File("gt-itm");
 		if(!dir.exists())
 			dir.mkdir();
-		/*
-		File file = new File("sub");
-		file.createNewFile();
-		*/
-		PrintWriter pw = new PrintWriter("data/subCmd2");
-		pw.println("geo 1");
-		pw.println("10 25 3 0.5");
+		
+		PrintWriter pw = new PrintWriter("gt-itm/subCmd");
+		pw.println("geo 1 "+new Random().nextInt(100));
+		//node number, scale, method, proba connect
+		pw.println("10 100 3 0.5");		
 		pw.close();
-		this.runShellCmd("./itm data/subCmd2");
-		
-		this.runShellCmd("./sgb2alt data/subCmd2-0.gb data/sub2");
-		
+		runShellCmd("./gt-itm/itm gt-itm/subCmd");
+		runShellCmd("./gt-itm/sgb2alt gt-itm/subCmd-0.gb gt-itm/sub");
 	}
 	
 	//create virtual networks
-	public void createVgb() throws IOException{
+	public static void createVirNet() throws IOException{
+		File dir = new File("gt-itm");
+		if(!dir.exists())
+			dir.mkdir();
+		
+		PrintWriter pw = new PrintWriter("gt-itm/subCmd");
+		pw.println("geo 1 "+new Random().nextInt(100));
+		//node number, scale, method, proba connect
+		int number = new Random().nextInt(6)+2;
+		pw.println(number+" 100 3 0.5");
+		pw.close();
+		runShellCmd("./gt-itm/itm gt-itm/subCmd");
+		runShellCmd("./gt-itm/sgb2alt gt-itm/subCmd-0.gb gt-itm/sub");
+	}
+	
+	
+	//
+	public static void createVgb() throws IOException{
 		File dir = new File("data200");
 		if(!dir.exists())
 			dir.mkdir();
@@ -56,12 +58,22 @@ public class Generator {
 			pw.close();
 			//this.runShellCmd("ls ./gt-itm");
 			
-			this.runShellCmd("./gt-itm/itm gt-itm/data/vgb"+i+"Cmd");	//create graph, gb format, middle step
-			
-			this.runShellCmd("./gt-itm/sgb2alt gt-itm/data/vgb"+i+"Cmd-0.gb"+" data200/vir"+i); //result in ./data, name vir0, vir1...
+			runShellCmd("./gt-itm/itm gt-itm/data/vgb"+i+"Cmd");	//create graph, gb format, middle step
+			runShellCmd("./gt-itm/sgb2alt gt-itm/data/vgb"+i+"Cmd-0.gb"+" data200/vir"+i); //result in ./data, name vir0, vir1...
 			
 		}
 
+	}
+	private static void runShellCmd(String cmd) throws IOException{
+		Runtime rt= Runtime.getRuntime();
+		Process p = rt.exec(cmd);
+		String s;
+		BufferedReader stdInput = new BufferedReader(new
+                InputStreamReader(p.getInputStream()));
+        while ((s = stdInput.readLine()) != null) {
+            System.out.println(s);
+        }
+	
 	}
 	
 }

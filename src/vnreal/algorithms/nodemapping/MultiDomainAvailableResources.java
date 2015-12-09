@@ -19,7 +19,7 @@ public class MultiDomainAvailableResources extends AbstractMultiDomainNodeMappin
 	public boolean nodeMapping(VirtualNetwork vNet) {
 		for(Domain domain : multiDomain){
 			VirtualNetwork tmpvl = new VirtualNetwork(1);
-			//divide virtual network request to 4 sub virtual networks
+			//
 			for(VirtualNode vnode : vNet.getVertices()){
 				if(domain.getCoordinateX()<=vnode.getCoordinateX()/100.0&&
 						vnode.getCoordinateX()/100.0<domain.getCoordinateX()+1&&

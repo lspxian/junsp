@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import li.evaluation.metrics.Metric;
+import li.gt_itm.Generator;
 import li.multiDomain.Domain;
 import li.multiDomain.MultiDomainUtil;
 import li.multiDomain.metrics.AcceptedRatioMD;
@@ -35,14 +36,14 @@ public class MultiDomainSimulation {
 	private List<Domain> multiDomain;
 	private ArrayList<VirtualNetwork> vns;
 	private ArrayList<VirtualNetwork> mappedVNs;
-	private ArrayList<VirtualNetwork> vnEvent;
+	//private ArrayList<VirtualNetwork> vnEvent;
 	private ArrayList<VnEvent> events;
 	private ArrayList<MetricMD> metrics;
 	private double simulationTime = 50000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
-	private double lambda = 2.0/100.0;
+	private double lambda = 3.0/100.0;
 	
 	public List<Domain> getMultiDomain() {
 		return multiDomain;
@@ -68,27 +69,46 @@ public class MultiDomainSimulation {
 		
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-		multiDomain.add(new Domain(0,0,"data/cost239", true));
-		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
+//		multiDomain.add(new Domain(0,0,"data/cost239", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
+		//use gt-itm to create net
+		multiDomain.add(new Domain(0,0, true));
+		multiDomain.add(new Domain(1,0, true));
 
-		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
-		
+//		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+		MultiDomainUtil.randomInterLinks(multiDomain);
+		/*
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<100;i++){
+		for(int i=0;i<1000;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
 			vn.scale(2, 1);
 			//System.out.println(vn);		//print vn
 			vns.add(vn);
-		}
-		
+		}	
 		events = new ArrayList<VnEvent>();
 		for(int i=0;(time <=simulationTime)	&& (i <vns.size());i++){
 			events.add(new VnEvent(vns.get(i),time,0)); //arrival event
 			double departure = time+vns.get(i).getLifetime();
 			if(departure<=simulationTime)
 				events.add(new VnEvent(vns.get(i),departure,1)); // departure event
+			time+=MiscelFunctions.negExponential(lambda); //generate next vn arrival event
+		}
+		Collections.sort(events);*/
+		
+		events = new ArrayList<VnEvent>();
+		while(time<simulationTime){
+			VirtualNetwork vn = new VirtualNetwork();
+			Generator.createVirNet();
+			vn.alt2network("./gt-itm/sub");
+			vn.addAllResource(true);
+			vn.scale(2, 1);
+			
+			double departureTime = time+vn.getLifetime();
+			events.add(new VnEvent(vn,time,0)); //arrival event
+			if(departureTime<=simulationTime)
+				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda); //generate next vn arrival event
 		}
 		Collections.sort(events);
@@ -108,7 +128,6 @@ public class MultiDomainSimulation {
 		metrics.add(new TotalRevenueL(this,false));*/
 		
 		mappedVNs = new ArrayList<VirtualNetwork>();
-		vnEvent = new ArrayList<VirtualNetwork>();
 		
 	}
 	
@@ -123,8 +142,8 @@ public class MultiDomainSimulation {
 			if(currentEvent.getFlag()==0){
 				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,80);
 				
-				vnEvent.add(currentEvent.getConcernedVn());
-				
+				System.out.println("--------------------------------------");
+				System.out.println("New event at time :	"+currentEvent.getAoDTime());
 				System.out.println("accepted : "+this.accepted);
 				System.out.println("rejected : "+this.rejected);
 				System.out.println(currentEvent.getConcernedVn());
@@ -189,7 +208,7 @@ public class MultiDomainSimulation {
 			
 			for(MetricMD metric : metrics){ //write data to file
 				double value = metric.calculate();
-				System.out.println(value+" ");
+				System.out.println(metric.name()+" "+value);
 				metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
 			}
 			
@@ -210,7 +229,6 @@ public class MultiDomainSimulation {
 		this.accepted = 0;
 		this.rejected = 0;
 		mappedVNs = new ArrayList<VirtualNetwork>();
-		vnEvent = new ArrayList<VirtualNetwork>();
 		metrics = new ArrayList<MetricMD>();
 	}
 }

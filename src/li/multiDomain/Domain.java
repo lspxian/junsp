@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
+import li.gt_itm.Generator;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
@@ -39,6 +40,15 @@ public class Domain extends SubstrateNetwork{
 		this.coordinateX = x;
 		this.coordinateY = y;
 		this.alt2network(filePath);
+		this.addAllResource(randomResource);
+	}
+	
+	public Domain(int x, int y, boolean randomResource) throws IOException{
+		this();
+		this.coordinateX = x;
+		this.coordinateY = y;
+		Generator.createSubNet();
+		this.alt2network("./gt-itm/sub");
 		this.addAllResource(randomResource);
 	}
 	
