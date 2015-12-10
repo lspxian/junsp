@@ -76,8 +76,8 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		
 		//initialize the links to map, delete the link once it's mapped
 		this.linkToMap.addAll(vNet.getEdges());
-		Collections.sort(this.domains,new LinkStressComparator());
-//		sortDomain();
+//		Collections.sort(this.domains,new LinkStressComparator());
+		sortDomain();
 		
 		for(Domain domain : this.domains){
 			this.createLocalVNet(domain, vNet, nodeMapping);
@@ -85,7 +85,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			//if there is no virtual links in this domain
 			if(this.localVNets.get(domain).getEdgeCount()!=0){
 				this.fulfillAugmentedNet(domain, vNet, nodeMapping);
-				
+			//	this.localPath="tmp/MultiDomainRanking-"+vNet.getId()+"-"+domain.getId()+".lp";	// print mcf to file TODO
 				Map<String, String> solution = this.linkMappingWithoutUpdate(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
 				
 				if(solution.size()==0){
@@ -105,7 +105,10 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 	
 	private void sortDomain(){
 		Collections.sort(this.domains, new Comparator<Domain>(){
-
+			public int compare(Domain arg0, Domain arg1) {
+				return -1;
+			}
+			/*
 			@Override
 			public int compare(Domain arg0, Domain arg1) {
 				Random random = new Random();
@@ -114,7 +117,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					return 1;
 				}
 				else return -1;
-			}
+			}*/
 			
 		});
 	}
@@ -165,8 +168,9 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 						dijkSource = ilink.getNode1();
 					
 					if(exterDomain.containsVertex(dijkSource)&&
-							(!dijkSource.equals(dijkDest))&&			//mapped substrate node is the border node
-							(!an.existLink(dijkSource, dijkDest))){		//augmented link does not exist in the augmented network
+							(!dijkSource.equals(dijkDest))			//mapped substrate node is the border node
+							&&(!an.existLink(dijkSource, dijkDest,vnode2))  //augmented link does not exist in the augmented network TODO
+							){		
 						
 						AugmentedLink al = new AugmentedLink(vnode2);
 						CostResource cost = new CostResource(al);	//cost = sum(1/Rbw)
@@ -202,6 +206,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 	}
 	
 	private void generateFile(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping, AugmentedNetwork an) throws IOException{
+		
 		Domain tmpDomain = (Domain) an.getRoot(); 
 		BandwidthDemand bwDem = null;
 		BandwidthResource bwResource=null;

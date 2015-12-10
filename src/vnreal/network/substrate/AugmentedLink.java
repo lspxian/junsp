@@ -15,7 +15,7 @@ public class AugmentedLink extends SubstrateLink {
 	}
 
 	public String toString(){
-		return "Augmented Link("+ getId() + ")";
+		return "Augmented Link("+ getId() + ")"+" dest:"+destNode.getId();
 	}
 
 	

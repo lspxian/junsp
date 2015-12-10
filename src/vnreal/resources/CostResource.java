@@ -55,7 +55,8 @@ public final class CostResource extends AbstractResource implements	ILinkConstra
 
     @ExchangeParameter
     public void setCost(Double cost) {
-        this.cost = MiscelFunctions.roundThreeDecimals(cost);
+        //this.cost = MiscelFunctions.roundThreeDecimals(cost);
+    	this.cost = cost;
     }
 
     @ExchangeParameter

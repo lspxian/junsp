@@ -13,6 +13,7 @@ public class SimulationTest {
 		PrintStream shen = new PrintStream(new FileOutputStream("shen.txt"));
 		PrintStream as = new PrintStream(new FileOutputStream("AS_MCF.txt"));
 		PrintStream md = new PrintStream(new FileOutputStream("MultiDomainAsOneDomain.txt"));
+		PrintStream mo = new PrintStream(new FileOutputStream("MDasOD2.txt"));
 		PrintStream tdmcf = new PrintStream(new FileOutputStream("TwoDomainMCF.txt"));
 		PrintStream mdrk = new PrintStream(new FileOutputStream("MultiDomainRanking"));
 		
@@ -25,12 +26,16 @@ public class SimulationTest {
 		simulation.runSimulation("MultiDomainRanking");
 		simulation.reset();
 
-		System.setOut(shen);
-		simulation.runSimulation("Shen2014");
-		simulation.reset();
-				
-		System.setOut(md);
-		simulation.runSimulation("MultiDomainAsOneDomain");
+//		System.setOut(shen);
+//		simulation.runSimulation("Shen2014");
+//		simulation.reset();
+//				
+//		System.setOut(md);
+//		simulation.runSimulation("MultiDomainAsOneDomain");
+//		simulation.reset();
+		
+		System.setOut(mo);
+		simulation.runSimulation("MDasOD2");
 		simulation.reset();
 
 //		System.setOut(tdmcf);

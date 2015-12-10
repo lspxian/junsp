@@ -146,13 +146,19 @@ public class MultiDomainUtil {
 	
 	public static void staticInterLinks(Domain d1, Domain d2){
 		InterLink il;
-		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(47),false);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(47),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
-		il= new InterLink(d1.getNodeFromID(9),d2.getNodeFromID(46),false);
+		il= new InterLink(d1.getNodeFromID(9),d2.getNodeFromID(46),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
-		il= new InterLink(d1.getNodeFromID(6),d2.getNodeFromID(44),false);
+		il= new InterLink(d1.getNodeFromID(6),d2.getNodeFromID(44),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(9),d2.getNodeFromID(44),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(46),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
 		

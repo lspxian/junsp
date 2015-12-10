@@ -18,6 +18,7 @@ import main.MultiDomainAlgoTest;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
 import vnreal.algorithms.linkmapping.AS_MCF;
+import vnreal.algorithms.linkmapping.MDasOD2;
 import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
 import vnreal.algorithms.linkmapping.MultiDomainRanking;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
@@ -39,11 +40,11 @@ public class MultiDomainSimulation {
 	//private ArrayList<VirtualNetwork> vnEvent;
 	private ArrayList<VnEvent> events;
 	private ArrayList<MetricMD> metrics;
-	private double simulationTime = 50000.0;
+	private double simulationTime = 20000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
-	private double lambda = 3.0/100.0;
+	private double lambda = 2.0/100.0;
 	
 	public List<Domain> getMultiDomain() {
 		return multiDomain;
@@ -69,17 +70,17 @@ public class MultiDomainSimulation {
 		
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-//		multiDomain.add(new Domain(0,0,"data/cost239", true));
-//		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
+		multiDomain.add(new Domain(0,0,"data/cost239", true));
+		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
 		//use gt-itm to create net
-		multiDomain.add(new Domain(0,0, true));
-		multiDomain.add(new Domain(1,0, true));
+//		multiDomain.add(new Domain(0,0, true));
+//		multiDomain.add(new Domain(1,0, true));
 
-//		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
-		MultiDomainUtil.randomInterLinks(multiDomain);
-		/*
+		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+//		MultiDomainUtil.randomInterLinks(multiDomain);
+		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<1000;i++){
+		for(int i=0;i<50;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
@@ -95,8 +96,8 @@ public class MultiDomainSimulation {
 				events.add(new VnEvent(vns.get(i),departure,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda); //generate next vn arrival event
 		}
-		Collections.sort(events);*/
-		
+		Collections.sort(events);
+		/*
 		events = new ArrayList<VnEvent>();
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
@@ -111,7 +112,7 @@ public class MultiDomainSimulation {
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda); //generate next vn arrival event
 		}
-		Collections.sort(events);
+		Collections.sort(events);*/
 		
 		//add metric
 		metrics = new ArrayList<MetricMD>();
@@ -142,10 +143,9 @@ public class MultiDomainSimulation {
 			if(currentEvent.getFlag()==0){
 				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,80);
 				
-				System.out.println("--------------------------------------");
-				System.out.println("New event at time :	"+currentEvent.getAoDTime());
-				System.out.println("accepted : "+this.accepted);
-				System.out.println("rejected : "+this.rejected);
+				System.out.println("/------------------------------------/");
+				System.out.println("New event at time :	"+currentEvent.getAoDTime()+" for vn:"+currentEvent.getConcernedVn().getId());
+				System.out.println("At this moment, accepted:"+this.accepted+" rejected:"+this.rejected);
 				System.out.println(currentEvent.getConcernedVn());
 				
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
@@ -166,6 +166,9 @@ public class MultiDomainSimulation {
 					case "MultiDomainAsOneDomain" : 
 						method = new MultiDomainAsOneDomain(multiDomain);
 						break;
+					case "MDasOD2" : 
+						method = new MDasOD2(multiDomain);
+						break;
 					case "TwoDomainMCF" :
 						method = new TwoDomainMCF(multiDomain);
 						break;
@@ -180,7 +183,8 @@ public class MultiDomainSimulation {
 					if(method.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
-						
+						System.out.println(multiDomain.get(0));
+						System.out.println(multiDomain.get(1));
 					}
 					else{
 						this.rejected++;
@@ -200,11 +204,11 @@ public class MultiDomainSimulation {
 			}
 			else{
 				System.out.println("Liberation Ressources");
-				System.out.println(currentEvent.getConcernedVn());
+//				System.out.println(currentEvent.getConcernedVn());
 				NodeLinkDeletion.multiDomainFreeResource(currentEvent.getConcernedVn(), multiDomain);
 			}
-			System.out.println(multiDomain.get(0));
-			System.out.println(multiDomain.get(1));
+//			System.out.println(multiDomain.get(0));
+//			System.out.println(multiDomain.get(1));
 			
 			for(MetricMD metric : metrics){ //write data to file
 				double value = metric.calculate();
@@ -218,7 +222,7 @@ public class MultiDomainSimulation {
 			metric.getFout().close();
 		}
 		
-		System.out.println(methodStr);
+		System.out.println("*-----"+methodStr+" resume------------*");
 		System.out.println("accepted : "+this.accepted);
 		System.out.println("rejected : "+this.rejected);
 		
