@@ -76,8 +76,8 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		
 		//initialize the links to map, delete the link once it's mapped
 		this.linkToMap.addAll(vNet.getEdges());
-//		Collections.sort(this.domains,new LinkStressComparator());
-		sortDomain();
+		Collections.sort(this.domains,new LinkStressComparator());
+//		sortDomain();
 		
 		for(Domain domain : this.domains){
 			this.createLocalVNet(domain, vNet, nodeMapping);
@@ -85,7 +85,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			//if there is no virtual links in this domain
 			if(this.localVNets.get(domain).getEdgeCount()!=0){
 				this.fulfillAugmentedNet(domain, vNet, nodeMapping);
-			//	this.localPath="tmp/MultiDomainRanking-"+vNet.getId()+"-"+domain.getId()+".lp";	// print mcf to file TODO
+				this.localPath="tmp/MultiDomainRanking-"+vNet.getId()+"-"+domain.getId()+".lp";	// print mcf to file TODO
 				Map<String, String> solution = this.linkMappingWithoutUpdate(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
 				
 				if(solution.size()==0){
@@ -333,12 +333,10 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					for(Iterator<SubstrateNode> it=nextHop.iterator();it.hasNext();){
 						//TODO
 						SubstrateNode tmmpsn = it.next();
-						SubstrateLink tmpsl = an.findEdge(snode, tmmpsn);
-						if((tmpsl instanceof AugmentedLink)){
-							AugmentedLink tmpal = (AugmentedLink)tmpsl;
-							if(!tmpal.getDestNode().equals(vlDestination))
-								continue;
-						}
+						if((!tmpDomain.containsVertex(snode))&&
+								(!tmpDomain.containsVertex(tmmpsn))&&
+								(!an.existLink(snode, tmmpsn, vlDestination)))
+									continue;
 						
 						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
 						constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();

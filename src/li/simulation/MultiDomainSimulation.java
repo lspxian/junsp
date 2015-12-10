@@ -80,7 +80,7 @@ public class MultiDomainSimulation {
 //		MultiDomainUtil.randomInterLinks(multiDomain);
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<50;i++){
+		for(int i=50;i<150;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
