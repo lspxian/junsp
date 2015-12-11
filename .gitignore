@@ -2,5 +2,6 @@
 .DS_Store
 bin/*
 /bin/
+/tmp/
 output.txt
 ILP-LP-Models/vne-mcf.lp

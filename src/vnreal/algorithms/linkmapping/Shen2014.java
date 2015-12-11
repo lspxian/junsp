@@ -2,6 +2,7 @@ package vnreal.algorithms.linkmapping;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -20,6 +21,7 @@ import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
+import vnreal.network.substrate.AugmentedNetwork;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNode;
@@ -31,9 +33,18 @@ import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
 public class Shen2014 extends AbstractMultiDomainLinkMapping {
+	Map<Domain, VirtualNetwork> localVNets;
 
 	public Shen2014(List<Domain> domains) {
 		super(domains);
+		initialize();
+	}
+	
+	private void initialize(){
+		this.localVNets = new HashMap<Domain, VirtualNetwork>();
+		for(Domain d : domains){
+			this.localVNets.put(d, new VirtualNetwork());	//initialize the local mcf
+		}
 	}
 
 	@Override
@@ -128,9 +139,6 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 						//update resource on the inter link
 						//vl.getSolution().get(newDomain).put(sl, bwd.getDemandedBandwidth());
 						
-						//BandwidthDemand newBwDem = new BandwidthDemand(vl);
-						//newBwDem.setDemandedBandwidth(MiscelFunctions
-							//	.roundThreeDecimals(bwd.getDemandedBandwidth()));
 						if(!NodeLinkAssignation.vlmSingleLinkSimple(bwd, sl)){
 							throw new AssertionError("But we checked before!");
 						}
@@ -246,21 +254,6 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 
 	private List<SubstrateLink> constraintShortestPath(Domain newDomain, SubstrateNode substrateNode,
 			SubstrateNode substrateNode2, VirtualLink vl) {
-/*
-		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
-			public Double transform(SubstrateLink link){
-				if(link instanceof InterLink){
-					for(AbstractResource ares : link){
-						if(ares instanceof BandwidthResource){
-							BandwidthResource bwres = (BandwidthResource)ares;
-							return 100/(bwres.getAvailableBandwidth()+0.001);
-						}
-					}
-				}
-				return 1.;
-			}
-		};*/
-		
 		//block the links without enough available capacities
 		//TODO!!!!
 		EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(

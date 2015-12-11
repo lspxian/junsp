@@ -50,14 +50,14 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 	
 	public MultiDomainRanking(List<Domain> domains) {
 		super(domains);
-		this.intialize();
+		this.initialize();
 	}
 	public MultiDomainRanking(List<Domain> domains,String localPath, String remotePath){
 		super(domains,localPath, remotePath);
-		this.intialize();
+		this.initialize();
 	}
 	
-	private void intialize(){
+	private void initialize(){
 		this.localVNets =  new LinkedHashMap<Domain, VirtualNetwork>();
 		this.augmentedNets = new LinkedHashMap<Domain, AugmentedNetwork>();
 		for(Domain d : domains){
@@ -92,6 +92,10 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					System.out.println("link no solution");
 					for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 						NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+					}
+					//delete resources already distributed !!!
+					for(Map.Entry<BandwidthDemand, BandwidthResource>e : mapping.entrySet()){
+						e.getKey().free(e.getValue());
 					}
 					return false;
 				}

@@ -44,7 +44,7 @@ public class MultiDomainSimulation {
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
-	private double lambda = 2.0/100.0;
+	private double lambda = 3.0/100.0;
 	
 	public List<Domain> getMultiDomain() {
 		return multiDomain;
@@ -70,15 +70,15 @@ public class MultiDomainSimulation {
 		
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-		multiDomain.add(new Domain(0,0,"data/cost239", true));
-		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
+//		multiDomain.add(new Domain(0,0,"data/cost239", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
 		//use gt-itm to create net
-//		multiDomain.add(new Domain(0,0, true));
-//		multiDomain.add(new Domain(1,0, true));
+		multiDomain.add(new Domain(0,0, true));
+		multiDomain.add(new Domain(1,0, true));
 
-		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
-//		MultiDomainUtil.randomInterLinks(multiDomain);
-		
+//		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+		MultiDomainUtil.randomInterLinks(multiDomain);
+		/*
 		vns = new ArrayList<VirtualNetwork>();
 		for(int i=50;i<150;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
@@ -87,7 +87,7 @@ public class MultiDomainSimulation {
 			vn.scale(2, 1);
 			//System.out.println(vn);		//print vn
 			vns.add(vn);
-		}	
+		}
 		events = new ArrayList<VnEvent>();
 		for(int i=0;(time <=simulationTime)	&& (i <vns.size());i++){
 			events.add(new VnEvent(vns.get(i),time,0)); //arrival event
@@ -96,8 +96,8 @@ public class MultiDomainSimulation {
 				events.add(new VnEvent(vns.get(i),departure,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda); //generate next vn arrival event
 		}
-		Collections.sort(events);
-		/*
+		Collections.sort(events);*/	
+		
 		events = new ArrayList<VnEvent>();
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
@@ -112,7 +112,7 @@ public class MultiDomainSimulation {
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda); //generate next vn arrival event
 		}
-		Collections.sort(events);*/
+		Collections.sort(events);
 		
 		//add metric
 		metrics = new ArrayList<MetricMD>();
