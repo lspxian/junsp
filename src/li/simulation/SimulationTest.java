@@ -10,37 +10,37 @@ public class SimulationTest {
 		
 		//print to a file instead of console
 		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));
-		PrintStream shen = new PrintStream(new FileOutputStream("shen.txt"));
-		PrintStream as = new PrintStream(new FileOutputStream("AS_MCF.txt"));
-		PrintStream md = new PrintStream(new FileOutputStream("MultiDomainAsOneDomain.txt"));
-		PrintStream mo = new PrintStream(new FileOutputStream("MDasOD2.txt"));
-		PrintStream tdmcf = new PrintStream(new FileOutputStream("TwoDomainMCF.txt"));
-		PrintStream mdrk = new PrintStream(new FileOutputStream("MultiDomainRanking"));
 		
 		//Simulation simulation = new Simulation();
 		MultiDomainSimulation simulation = new MultiDomainSimulation();
 //		System.setOut(tmp);
 		
+		PrintStream mdrk = new PrintStream(new FileOutputStream("MultiDomainRanking"));
 		System.setOut(mdrk);
 		simulation.runSimulation("MultiDomainRanking");
 		simulation.reset();
 
-		System.setOut(shen);
-		simulation.runSimulation("Shen2014");
-		simulation.reset();
-				
+		PrintStream md = new PrintStream(new FileOutputStream("MultiDomainAsOneDomain.txt"));
 		System.setOut(md);
 		simulation.runSimulation("MultiDomainAsOneDomain");
 		simulation.reset();
 		
-		System.setOut(mo);
-		simulation.runSimulation("MDasOD2");
+		PrintStream shen = new PrintStream(new FileOutputStream("shen.txt"));
+		System.setOut(shen);
+		simulation.runSimulation("Shen2014");
 		simulation.reset();
+		
+//		PrintStream mo = new PrintStream(new FileOutputStream("MDasOD2.txt"));
+//		System.setOut(mo);
+//		simulation.runSimulation("MDasOD2");
+//		simulation.reset();
 
+//		PrintStream tdmcf = new PrintStream(new FileOutputStream("TwoDomainMCF.txt"));
 //		System.setOut(tdmcf);
 //		simulation.runSimulation("TwoDomainMCF");
 //		simulation.reset();
 //		
+//		PrintStream as = new PrintStream(new FileOutputStream("AS_MCF.txt"));
 //		System.setOut(as);
 //		simulation.runSimulation("AS_MCF");
 //		simulation.reset();

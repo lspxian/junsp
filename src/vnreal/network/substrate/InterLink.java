@@ -62,7 +62,7 @@ public class InterLink extends SubstrateLink{
 	
 	@Override
 	public String toString() {
-		return "Inter Link(" + getId() +") ";
+		return "Inter Link(" + getId() +") "+"("+node1.getId()+"<->"+node2.getId()+")";
 		
 	}
 	
@@ -82,7 +82,7 @@ public class InterLink extends SubstrateLink{
 	@Override
 	public boolean addResource(double random){
 		BandwidthResource bw=new BandwidthResource(this);
-		bw.setBandwidth(MiscelFunctions.roundThreeDecimals(300+random*100));
+		bw.setBandwidth(MiscelFunctions.roundThreeDecimals(100+random*50));
 		this.add(bw);
 		return true;
 	}

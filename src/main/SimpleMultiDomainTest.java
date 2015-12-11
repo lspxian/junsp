@@ -28,8 +28,8 @@ public class SimpleMultiDomainTest {
 	public static void main(String[] args) throws IOException {
 		
 		//print to a file instead of console
-//		PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
-//		System.setOut(out);
+		PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
+		System.setOut(out);
 		
 		List<Domain> multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
@@ -54,7 +54,7 @@ public class SimpleMultiDomainTest {
 		}
 
 			
-		for(int i=18;i<19;i++){
+		for(int i=0;i<19;i++){
 			VirtualNetwork vn = vns.get(i);
 			
 			/*
@@ -78,13 +78,13 @@ public class SimpleMultiDomainTest {
 		
 			System.out.println("link mapping, virtual network "+i+"\n");
 			
-			AbstractMultiDomainLinkMapping method = new MultiDomainRanking(multiDomain);
+//			AbstractMultiDomainLinkMapping method = new MultiDomainRanking(multiDomain);
 			
 //			TwoDomainMCF method = new TwoDomainMCF(multiDomain);
 			
 //			AS_MCF method = new AS_MCF(multiDomain);
 		
-//			Shen2014 method = new Shen2014(multiDomain);
+			Shen2014 method = new Shen2014(multiDomain);
 			
 //			MultiDomainAsOneDomain method = new MultiDomainAsOneDomain(multiDomain);
 			
@@ -101,14 +101,14 @@ public class SimpleMultiDomainTest {
 			//Multi domain free resource
 //			NodeLinkDeletion.multiDomainFreeResource(vn, multiDomain);
 			
-//			System.out.println(multiDomain.get(0));
-//			System.out.println(multiDomain.get(1));
+			System.out.println(multiDomain.get(0));
+			System.out.println(multiDomain.get(1));
 
 		
 		}
 		
-		System.out.println(multiDomain.get(0));
-		System.out.println(multiDomain.get(1));
+//		System.out.println(multiDomain.get(0));
+//		System.out.println(multiDomain.get(1));
 		
 //		MultiDomainUtil.reset(multiDomain);
 //		

@@ -91,8 +91,7 @@ public class Domain extends SubstrateNetwork{
 		String result= "Domain("+this.getCoordinateX()+","+this.getCoordinateY()+") : \n";
 		result+=super.toString();
 		for (InterLink l : interLink) {			
-			result += l + "  (" + l.getNode1().getId() + "<->"
-					+ l.getNode2().getId() + ") \n";
+			result += l.toString();
 			for (AbstractResource r : l.get()) {
 				result += "  " + r.toString() + "\n";
 			}
