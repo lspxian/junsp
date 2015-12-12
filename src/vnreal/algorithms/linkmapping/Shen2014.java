@@ -181,6 +181,9 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 					for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 						NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 					}
+					for(Map.Entry<BandwidthDemand, BandwidthResource> entry : mapping.entrySet()){
+						entry.getKey().free(entry.getValue());
+					}
 					//restore node coordinate to [0,100]
 					for(Domain d : domains){
 						for(SubstrateNode snode : d.getVertices()){
