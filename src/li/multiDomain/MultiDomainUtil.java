@@ -115,7 +115,7 @@ public class MultiDomainUtil {
 		//generate inter links
 		double alpha = 1.1;	//alpha increases the probability of edges between any nodes in the graph
 		double beta = 0.1;	//beta yields a larger ratio of long edges to short edges.
-		int n=0;
+		
 		for(int i=0;i<multiDomain.size();i++){
 			Domain startDomain = multiDomain.get(i);
 			for(int j=i+1;j<multiDomain.size();j++){
@@ -129,9 +129,9 @@ public class MultiDomainUtil {
 						by = end.getCoordinateY()+endDomain.getCoordinateY()*100;
 						distance = Math.sqrt(Math.pow(ax-bx, 2) + Math.pow(ay-by, 2));
 						double proba = alpha * Math.exp(-distance/beta/maxDistance);
-					//	if(distance==minDistance)	proba = 1;
-						if(distance<=minDistance+10) proba=1;
-						if(proba>(new Random().nextDouble())*0.5+0.01){
+						if(distance==minDistance)	proba = 1;
+//						if(distance<=minDistance+3) proba=1;
+						if(proba>(new Random().nextDouble())+0.01){
 							//source, destination, destination domain, random resource 
 							InterLink il = new InterLink(start, end, true);
 							startDomain.addInterLink(il);

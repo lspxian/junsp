@@ -37,17 +37,23 @@ public class MultiDomainSimulation {
 	private List<Domain> multiDomain;
 	private ArrayList<VirtualNetwork> vns;
 	private ArrayList<VirtualNetwork> mappedVNs;
-	//private ArrayList<VirtualNetwork> vnEvent;
 	private ArrayList<VnEvent> events;
 	private ArrayList<MetricMD> metrics;
-	private double simulationTime = 20000.0;
+	private double simulationTime = 7000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
-	private double lambda = 3.0/100.0;
+	private int lambda = 4;
 	
 	public List<Domain> getMultiDomain() {
 		return multiDomain;
+	}
+
+	public int setLambda() {
+		return lambda;
+	}
+	public int getLambda() {
+		return lambda;
 	}
 
 	public int getAccepted() {
@@ -78,6 +84,15 @@ public class MultiDomainSimulation {
 
 //		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
 		MultiDomainUtil.randomInterLinks(multiDomain);
+		
+		
+	}
+	
+	public void initialize(int lambda) throws IOException{
+		this.time=0.0;
+		this.accepted=0;
+		this.rejected=0;
+		this.lambda=lambda;
 		/*
 		vns = new ArrayList<VirtualNetwork>();
 		for(int i=50;i<150;i++){
@@ -110,38 +125,25 @@ public class MultiDomainSimulation {
 			events.add(new VnEvent(vn,time,0)); //arrival event
 			if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
-			time+=MiscelFunctions.negExponential(lambda); //generate next vn arrival event
+			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
 		Collections.sort(events);
 		
 		//add metric
 		metrics = new ArrayList<MetricMD>();
-		/*metrics.add(new LinkUtilizationL(this));
-		metrics.add(new AcceptedRatioL(this));
-		metrics.add(new NodeUtilizationL(this));
-		metrics.add(new CostL(this));
-		metrics.add(new LinkCostPerVnrL(this));
-		metrics.add(new CostPerMappedNetworkL(this));
-		metrics.add(new CostRevenueL(this,false));*/
-		//metrics.add(new MappedRevenueL(this,false));
-		/*metrics.add(new RevenueCostL(this,false));
-		metrics.add(new tempCostRevenueL(this,false));
-		metrics.add(new TotalRevenueL(this,false));*/
-		
 		mappedVNs = new ArrayList<VirtualNetwork>();
-		
 	}
 	
 	public void runSimulation(String methodStr) throws IOException{
 		//add metrics
-		metrics.add(new AcceptedRatioMD(this, methodStr));
-		metrics.add(new LinkUtilizationMD(this, methodStr));
-		metrics.add(new MappedRevenueMD(this, methodStr));
+		metrics.add(new AcceptedRatioMD(this, methodStr,lambda));
+		metrics.add(new LinkUtilizationMD(this, methodStr,lambda));
+		metrics.add(new MappedRevenueMD(this, methodStr,lambda));
 		
 		for(VnEvent currentEvent : events){
 			
 			if(currentEvent.getFlag()==0){
-				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,80);
+				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,50);
 				
 				System.out.println("/------------------------------------/");
 				System.out.println("New event at time :	"+currentEvent.getAoDTime()+" for vn:"+currentEvent.getConcernedVn().getId());
@@ -183,12 +185,12 @@ public class MultiDomainSimulation {
 					if(method.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
-						System.out.println(multiDomain.get(0));
-						System.out.println(multiDomain.get(1));
+//						System.out.println(multiDomain.get(0));
+//						System.out.println(multiDomain.get(1));
 					}
 					else{
 						this.rejected++;
-						System.out.println("link resource error, virtual network"); //TODO print vn id 
+						System.out.println("link resource error, virtual network"); 
 					}
 					
 					//reset virtual node domain value
@@ -210,7 +212,7 @@ public class MultiDomainSimulation {
 //			System.out.println(multiDomain.get(0));
 //			System.out.println(multiDomain.get(1));
 			
-			for(MetricMD metric : metrics){ //write data to file
+			for(MetricMD metric : metrics){ //write data to file TODO
 				double value = metric.calculate();
 				System.out.println(metric.name()+" "+value);
 				metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");

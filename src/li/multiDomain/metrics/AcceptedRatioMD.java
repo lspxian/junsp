@@ -1,5 +1,7 @@
 package li.multiDomain.metrics;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import li.simulation.MultiDomainSimulation;
@@ -12,6 +14,9 @@ public class AcceptedRatioMD extends MetricMD {
 	
 	public AcceptedRatioMD(MultiDomainSimulation simulation, String method) throws IOException {
 		super(simulation, method);
+	}
+	public AcceptedRatioMD(MultiDomainSimulation simulation, String method, int lambda) throws IOException{
+		super(simulation, method, lambda);
 	}
 
 	@Override

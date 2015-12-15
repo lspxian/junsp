@@ -19,7 +19,7 @@ public class Generator {
 		PrintWriter pw = new PrintWriter("gt-itm/subCmd");
 		pw.println("geo 1 "+new Random().nextInt(100));
 		//node number, scale, method, proba connect
-		pw.println("10 100 3 0.5");		
+		pw.println("30 100 3 0.2");		
 		pw.close();
 		runShellCmd("./gt-itm/itm gt-itm/subCmd");
 		runShellCmd("./gt-itm/sgb2alt gt-itm/subCmd-0.gb gt-itm/sub");
@@ -34,7 +34,7 @@ public class Generator {
 		PrintWriter pw = new PrintWriter("gt-itm/subCmd");
 		pw.println("geo 1 "+new Random().nextInt(100));
 		//node number, scale, method, proba connect
-		int number = new Random().nextInt(6)+2;
+		int number = new Random().nextInt(5)+5;
 		pw.println(number+" 100 3 0.5");
 		pw.close();
 		runShellCmd("./gt-itm/itm gt-itm/subCmd");
@@ -53,7 +53,7 @@ public class Generator {
 			Random random2 = new Random();
 			PrintWriter pw = new PrintWriter("gt-itm/data/vgb"+i+"Cmd");	//create file
 			pw.println("geo 1 "+random.nextInt(100));	//write in file, initial random number seed
-			int node=random2.nextInt(8)+2;
+			int node=random2.nextInt(5)+10;
 			pw.println(node+" 200 3 0.5"); //100*100 plane, connectivity probability 0.5
 			pw.close();
 			//this.runShellCmd("ls ./gt-itm");

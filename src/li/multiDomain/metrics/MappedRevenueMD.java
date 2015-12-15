@@ -16,6 +16,9 @@ public class MappedRevenueMD extends MetricMD {
 	public MappedRevenueMD(MultiDomainSimulation simulation, String method) throws IOException {
 		super(simulation, method);
 	}
+	public MappedRevenueMD(MultiDomainSimulation simulation, String method, int lambda) throws IOException{
+		super(simulation, method, lambda);
+	}
 
 	@Override
 	public String name() {

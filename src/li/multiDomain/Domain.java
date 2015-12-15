@@ -66,6 +66,10 @@ public class Domain extends SubstrateNetwork{
 	public void setInterLink(ArrayList<InterLink> interLink) {
 		this.interLink = interLink;
 	}
+	
+	public int  getInterLinkCount(){
+		return this.interLink.size();
+	}
 
 	public int getCoordinateX() {
 		return coordinateX;

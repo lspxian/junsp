@@ -24,6 +24,9 @@ public class LinkUtilizationMD extends MetricMD {
 		capacity = 0.0;
 		sum = 0.0;
 	}
+	public LinkUtilizationMD(MultiDomainSimulation simulation, String method, int lambda) throws IOException{
+		super(simulation, method, lambda);
+	}
 
 	@Override
 	public String name() {

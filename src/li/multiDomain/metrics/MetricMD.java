@@ -28,6 +28,11 @@ public abstract class MetricMD {
 		this.fout = new BufferedWriter(new FileWriter("evaluationData/"+method+"_"+this.name()+".txt"));
 	}
 	
+	public MetricMD(MultiDomainSimulation simulation, String method, int lambda) throws IOException{
+		this.simulation = simulation;
+		this.fout = new BufferedWriter(new FileWriter("evaluationData/"+method+"_"+this.name()+"_l"+lambda+".txt"));
+	}
+	
 	public abstract String name();
 	public abstract double calculate();
 }
