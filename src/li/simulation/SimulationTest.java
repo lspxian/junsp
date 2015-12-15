@@ -25,7 +25,7 @@ public class SimulationTest {
 //		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));
 //		System.setOut(tmp);
 		
-		for(int i=1;i<2;i++){
+		for(int i=3;i<4;i++){
 			simulation.initialize(i);
 			
 //			PrintStream mdrk = new PrintStream(new FileOutputStream("MultiDomainRanking_l"+i+".txt"));

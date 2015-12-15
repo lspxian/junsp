@@ -43,7 +43,7 @@ public class MultiDomainSimulation {
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
-	private int lambda = 4;
+	private int lambda = 3;
 	
 	public List<Domain> getMultiDomain() {
 		return multiDomain;
@@ -76,14 +76,14 @@ public class MultiDomainSimulation {
 		
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-//		multiDomain.add(new Domain(0,0,"data/cost239", true));
-//		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
+		multiDomain.add(new Domain(0,0,"data/cost239", true));
+		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
 		//use gt-itm to create net
-		multiDomain.add(new Domain(0,0, true));
-		multiDomain.add(new Domain(1,0, true));
+//		multiDomain.add(new Domain(0,0, true));
+//		multiDomain.add(new Domain(1,0, true));
 
-//		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
-		MultiDomainUtil.randomInterLinks(multiDomain);
+		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+//		MultiDomainUtil.randomInterLinks(multiDomain);
 		
 		
 	}
@@ -93,11 +93,12 @@ public class MultiDomainSimulation {
 		this.accepted=0;
 		this.rejected=0;
 		this.lambda=lambda;
-		/*
+		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=50;i<150;i++){
+		for(int i=50;i<450;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
-			vn.alt2network("data/vir"+i);
+			//vn.alt2network("data/vir"+i);
+			vn.alt2network("data/vhr");
 			vn.addAllResource(true);
 			vn.scale(2, 1);
 			//System.out.println(vn);		//print vn
@@ -109,10 +110,10 @@ public class MultiDomainSimulation {
 			double departure = time+vns.get(i).getLifetime();
 			if(departure<=simulationTime)
 				events.add(new VnEvent(vns.get(i),departure,1)); // departure event
-			time+=MiscelFunctions.negExponential(lambda); //generate next vn arrival event
+			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
-		Collections.sort(events);*/	
-		
+		Collections.sort(events);
+		/*
 		events = new ArrayList<VnEvent>();
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
@@ -128,7 +129,7 @@ public class MultiDomainSimulation {
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
 		Collections.sort(events);
-		
+		*/
 		//add metric
 		metrics = new ArrayList<MetricMD>();
 		mappedVNs = new ArrayList<VirtualNetwork>();
@@ -143,7 +144,7 @@ public class MultiDomainSimulation {
 		for(VnEvent currentEvent : events){
 			
 			if(currentEvent.getFlag()==0){
-				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,50);
+				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,5);
 				
 				System.out.println("/------------------------------------/");
 				System.out.println("New event at time :	"+currentEvent.getAoDTime()+" for vn:"+currentEvent.getConcernedVn().getId());
@@ -185,8 +186,8 @@ public class MultiDomainSimulation {
 					if(method.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
-//						System.out.println(multiDomain.get(0));
-//						System.out.println(multiDomain.get(1));
+						System.out.println(multiDomain.get(0));
+						System.out.println(multiDomain.get(1));
 					}
 					else{
 						this.rejected++;
