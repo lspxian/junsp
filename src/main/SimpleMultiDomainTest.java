@@ -34,7 +34,7 @@ public class SimpleMultiDomainTest {
 		List<Domain> multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
 		multiDomain.add(new Domain(0,0,"data/cost239", true));
-		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
+		multiDomain.add(new Domain(1,0,"data/abilene", true));
 		
 		//use gt-itm to create random net
 //		multiDomain.add(new Domain(0,0, true));
@@ -66,7 +66,7 @@ public class SimpleMultiDomainTest {
 			
 			System.out.println("virtual network "+i+": \n"+vn);
 			
-			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,80);
+			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,50);
 			if(mdar.nodeMapping(vn)){
 				System.out.println("node mapping succes, virtual netwotk "+i);
 			}else{
