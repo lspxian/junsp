@@ -113,8 +113,8 @@ public class MultiDomainUtil {
 		}
 		
 		//generate inter links
-		double alpha = 1.1;	//alpha increases the probability of edges between any nodes in the graph
-		double beta = 0.1;	//beta yields a larger ratio of long edges to short edges.
+		double alpha = 0.6;	//alpha increases the probability of edges between any nodes in the graph
+		double beta = 0.07;	//beta yields a larger ratio of long edges to short edges.
 		
 		for(int i=0;i<multiDomain.size();i++){
 			Domain startDomain = multiDomain.get(i);
@@ -146,6 +146,24 @@ public class MultiDomainUtil {
 	
 	public static void staticInterLinks(Domain d1, Domain d2){
 		InterLink il;
+		
+		il= new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(139),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(151),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(131),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(12),d2.getNodeFromID(125),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(33),d2.getNodeFromID(128),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		
+		/*
 		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(47),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
@@ -160,30 +178,9 @@ public class MultiDomainUtil {
 		d2.addInterLink(il);
 		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(46),true);
 		d1.addInterLink(il);
-		d2.addInterLink(il);
-		
-		
-		/*il= new InterLink(d1.getNodeFromID(0),d2.getNodeFromID(40),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(2),d2.getNodeFromID(47),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(3),d2.getNodeFromID(45),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(4),d2.getNodeFromID(47),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(47),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(8),d2.getNodeFromID(39),false);
-		d1.addInterLink(il);
-		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(9),d2.getNodeFromID(46),false);
-		d1.addInterLink(il);
 		d2.addInterLink(il);*/
+		
+
 	}
 	
 	//delete all resource

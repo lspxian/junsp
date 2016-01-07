@@ -25,7 +25,7 @@ public class SimulationTest {
 //		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));
 //		System.setOut(tmp);
 		
-		for(int i=3;i<4;i++){
+		for(int i=2;i<3;i++){
 			simulation.initialize(i);
 			
 //			PrintStream mdrk = new PrintStream(new FileOutputStream("MultiDomainRanking_l"+i+".txt"));
@@ -38,15 +38,15 @@ public class SimulationTest {
 			System.setOut(shen);
 			System.out.println(new SimpleDateFormat().format(new Date()));
 			simulation.runSimulation("Shen2014");
+			System.out.println(new SimpleDateFormat().format(new Date()));
 			simulation.reset();
 			
 			PrintStream md = new PrintStream(new FileOutputStream("MultiDomainAsOneDomain_l"+i+".txt"));
 			System.setOut(md);
 			System.out.println(new SimpleDateFormat().format(new Date()));
 			simulation.runSimulation("MultiDomainAsOneDomain");
+			System.out.println(new SimpleDateFormat().format(new Date()));
 			simulation.reset();
-		
-
 	//		
 	//		PrintStream mo = new PrintStream(new FileOutputStream("MDasOD2.txt"));
 	//		System.setOut(mo);
@@ -65,7 +65,6 @@ public class SimulationTest {
 			
 			PrintStream original = System.out;
 			System.setOut(original);
-			System.out.println(new SimpleDateFormat().format(new Date()));
 			System.out.println("job done");
 		}
 	}

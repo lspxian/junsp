@@ -1,8 +1,11 @@
 package vnreal.algorithms.linkmapping;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -86,7 +90,8 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			if(this.localVNets.get(domain).getEdgeCount()!=0){
 				this.fulfillAugmentedNet(domain, vNet, nodeMapping);
 				this.localPath="tmp/MultiDomainRanking-"+vNet.getId()+"-"+domain.getId()+".lp";	// print mcf to file TODO
-				Map<String, String> solution = this.linkMappingWithoutUpdate(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
+//				Map<String, String> solution = this.linkMappingWithoutUpdate(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
+				Map<String, String> solution = this.linkMappingWithoutUpdateLocal(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
 				
 				if(solution.size()==0){
 					System.out.println("link no solution");
@@ -206,6 +211,32 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			e.printStackTrace();
 		}
 		remote.disconnect();
+		return solution;
+	}
+	
+	public Map<String,String> linkMappingWithoutUpdateLocal(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping, AugmentedNetwork an) {
+		Map<String, String> solution = new HashMap<String, String>();
+		//generate .lp file
+		try {
+			this.generateFile(vNet, nodeMapping,an);
+			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+localPath+" o");
+			InputStream in = p.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String readLine;
+			boolean solBegin=false;
+			while (((readLine = br.readLine()) != null)) {
+				if(solBegin==true){
+					System.out.println(readLine);
+					StringTokenizer st = new StringTokenizer(readLine, " ");
+					solution.put(st.nextToken(), st.nextToken());
+				}
+				if(solBegin==false&&readLine.equals("The solutions begin here : "))
+					solBegin=true;
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return solution;
 	}
 	
