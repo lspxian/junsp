@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import li.evaluation.metrics.Metric;
 import li.gt_itm.Generator;
@@ -76,8 +77,8 @@ public class MultiDomainSimulation {
 		
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-		multiDomain.add(new Domain(0,0,"data/cost239", true));
-		multiDomain.add(new Domain(1,0,"sndlib/abilene", true));
+		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
+		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
 		//use gt-itm to create net
 //		multiDomain.add(new Domain(0,0, true));
 //		multiDomain.add(new Domain(1,0, true));
@@ -95,12 +96,14 @@ public class MultiDomainSimulation {
 		this.lambda=lambda;
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=50;i<450;i++){
-			VirtualNetwork vn = new VirtualNetwork(1,false);
-			//vn.alt2network("data/vir"+i);
-			vn.alt2network("data/vhr");
+		for(int i=100;i<400;i++){
+			VirtualNetwork vn = new VirtualNetwork();
+//			vn.alt2network("data/vir"+i);
+			vn.alt2network("data/vir"+new Random().nextInt(500));
+//			vn.alt2network("data/vhr2");
 			vn.addAllResource(true);
-			vn.scale(2, 1);
+//			vn.scale(2, 1);
+			vn.myExtend();
 			//System.out.println(vn);		//print vn
 			vns.add(vn);
 		}
@@ -144,7 +147,7 @@ public class MultiDomainSimulation {
 		for(VnEvent currentEvent : events){
 			
 			if(currentEvent.getFlag()==0){
-				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,5);
+				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,30);
 				
 				System.out.println("/------------------------------------/");
 				System.out.println("New event at time :	"+currentEvent.getAoDTime()+" for vn:"+currentEvent.getConcernedVn().getId());

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.linkmapping.SOD_BK;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
@@ -29,7 +31,7 @@ public class AlgoTest {
 			vns.add(vn);
 		}
 		
-		for(int i=0;i<5;i++){
+		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
@@ -45,10 +47,13 @@ public class AlgoTest {
 			
 			//link mapping
 			
-			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
-			ulpc.linkMapping(vns.get(i), nodeMapping);
-			//SOD_BK sod_bk = new SOD_BK(sn);
-			//sod_bk.linkMapping(vns.get(i), nodeMapping);
+			MultiCommodityFlow mcf = new MultiCommodityFlow(sn);
+			mcf.linkMapping(vns.get(i), nodeMapping);
+			
+//			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
+//			ulpc.linkMapping(vns.get(i), nodeMapping);
+//			SOD_BK sod_bk = new SOD_BK(sn);
+//			sod_bk.linkMapping(vns.get(i), nodeMapping);
 			
 		}
 		

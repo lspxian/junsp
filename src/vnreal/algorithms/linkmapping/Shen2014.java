@@ -1,11 +1,9 @@
 package vnreal.algorithms.linkmapping;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
@@ -16,12 +14,10 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import li.multiDomain.Domain;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
-import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
-import vnreal.network.substrate.AugmentedNetwork;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNode;
@@ -62,9 +58,9 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			VirtualNetwork tmpvn = e.getValue();
 			if(tmpvn.getEdgeCount()==0)		continue;	//if there is no virtual links in this domain
 			//System.out.println(tmpvn);
-			this.localPath="tmp/Shen2014-"+vNet.getId()+"-"+domain.getId()+".lp";	//TODO
+			//this.localPath="tmp/Shen2014-"+vNet.getId()+"-"+domain.getId()+".lp";	//TODO
 			MultiCommodityFlow mcf = new MultiCommodityFlow(domain,this.localPath,this.remotePath);
-			Map<String, String> solution = mcf.linkMappingWithoutUpdate(tmpvn, nodeMapping);
+			Map<String, String> solution = mcf.linkMappingWithoutUpdateLocal(tmpvn, nodeMapping);
 			if(solution.size()==0){
 				System.out.println("link no solution");
 				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
