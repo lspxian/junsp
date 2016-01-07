@@ -94,7 +94,7 @@ public class MultiDomainSimulation {
 		this.accepted=0;
 		this.rejected=0;
 		this.lambda=lambda;
-		
+/*		
 		vns = new ArrayList<VirtualNetwork>();
 		for(int i=100;i<400;i++){
 			VirtualNetwork vn = new VirtualNetwork();
@@ -115,15 +115,16 @@ public class MultiDomainSimulation {
 				events.add(new VnEvent(vns.get(i),departure,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
-		Collections.sort(events);
-		/*
+		Collections.sort(events);*/
+		
 		events = new ArrayList<VnEvent>();
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/sub");
 			vn.addAllResource(true);
-			vn.scale(2, 1);
+//			vn.scale(2, 1);
+			vn.myExtend();
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
@@ -132,7 +133,7 @@ public class MultiDomainSimulation {
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
 		Collections.sort(events);
-		*/
+		
 		//add metric
 		metrics = new ArrayList<MetricMD>();
 		mappedVNs = new ArrayList<VirtualNetwork>();
@@ -189,8 +190,8 @@ public class MultiDomainSimulation {
 					if(method.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
-						System.out.println(multiDomain.get(0));
-						System.out.println(multiDomain.get(1));
+//						System.out.println(multiDomain.get(0));
+//						System.out.println(multiDomain.get(1));
 					}
 					else{
 						this.rejected++;
@@ -224,14 +225,19 @@ public class MultiDomainSimulation {
 			
 		}
 		
-		for(MetricMD metric : metrics){
-			metric.getFout().close();
-		}
+//		System.out.println(multiDomain.get(0));
+//		System.out.println(multiDomain.get(1));
 		
 		System.out.println("*-----"+methodStr+" resume------------*");
 		System.out.println("accepted : "+this.accepted);
 		System.out.println("rejected : "+this.rejected);
+//		for(MetricMD metric : metrics){ 
+//			System.out.println(metric.name()+" "+metric.calculate());
+//		}
 		
+		for(MetricMD metric : metrics){
+			metric.getFout().close();
+		}
 	}
 	
 	public void reset(){
