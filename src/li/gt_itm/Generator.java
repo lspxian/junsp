@@ -2,11 +2,12 @@ package li.gt_itm;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Random;
-
 
 public class Generator {
 	
@@ -19,10 +20,12 @@ public class Generator {
 		PrintWriter pw = new PrintWriter("gt-itm/subCmd");
 		pw.println("geo 1 "+new Random().nextInt(100));
 		//node number, scale, method, proba connect
-		pw.println("30 100 3 0.2");		
+//		pw.println("40 100 3 0.15");
+		pw.println("40 100 2 1 0.12 0.5");
 		pw.close();
 		runShellCmd("./gt-itm/itm gt-itm/subCmd");
 		runShellCmd("./gt-itm/sgb2alt gt-itm/subCmd-0.gb gt-itm/sub");
+		cutFile();
 	}
 	
 	//create virtual networks
@@ -39,6 +42,37 @@ public class Generator {
 		pw.close();
 		runShellCmd("./gt-itm/itm gt-itm/subCmd");
 		runShellCmd("./gt-itm/sgb2alt gt-itm/subCmd-0.gb gt-itm/sub");
+	}
+	
+	private static void cutFile(){
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("gt-itm/sub"));
+			FileWriter nodes = new FileWriter("graphTMP/s-node.txt");
+			FileWriter links = new FileWriter("graphTMP/s-link.txt");
+			
+			String line;
+			boolean node=false, edge=false;
+			while((line=br.readLine())!=null){
+				if(line.contains("VERTICES"))
+					node=true;
+				else if(line.contains("EDGES")){
+					node=false;
+					edge=true;
+				}
+				if((node==true)&&(!line.contains("VERTICES"))&&(!line.isEmpty())){
+					nodes.write(line+"\n");
+				}
+				if((edge==true)&&(!line.contains("EDGES"))&&(!line.isEmpty())){
+					links.write(line+"\n");
+				}
+			}
+			br.close();
+			nodes.close();
+			links.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	

@@ -131,7 +131,7 @@ public class MultiDomainUtil {
 						double proba = alpha * Math.exp(-distance/beta/maxDistance);
 						if(distance==minDistance)	proba = 1;
 //						if(distance<=minDistance+3) proba=1;
-						if(proba>(new Random().nextDouble())+0.01){
+						if(proba>(new Random().nextDouble())*0.97+0.03){
 							//source, destination, destination domain, random resource 
 							InterLink il = new InterLink(start, end, true);
 							startDomain.addInterLink(il);
@@ -146,7 +146,18 @@ public class MultiDomainUtil {
 	
 	public static void staticInterLinks(Domain d1, Domain d2){
 		InterLink il;
-	/*	
+		/*
+		il= new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(139),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(131),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(33),d2.getNodeFromID(128),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);*/
+		
+		/*
 		il= new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(139),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
