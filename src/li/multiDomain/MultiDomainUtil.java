@@ -146,7 +146,7 @@ public class MultiDomainUtil {
 	
 	public static void staticInterLinks(Domain d1, Domain d2){
 		InterLink il;
-		
+	/*	
 		il= new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(139),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
@@ -157,6 +157,37 @@ public class MultiDomainUtil {
 		d1.addInterLink(il);
 		d2.addInterLink(il);
 		il= new InterLink(d1.getNodeFromID(12),d2.getNodeFromID(125),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(33),d2.getNodeFromID(128),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);*/
+		
+		il= new InterLink(d1.getNodeFromID(3),d2.getNodeFromID(131),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(151),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(118),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(127),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(131),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(12),d2.getNodeFromID(131),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(27),d2.getNodeFromID(116),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(27),d2.getNodeFromID(128),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(27),d2.getNodeFromID(151),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
 		il= new InterLink(d1.getNodeFromID(33),d2.getNodeFromID(128),true);

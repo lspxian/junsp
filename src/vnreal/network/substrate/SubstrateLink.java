@@ -73,7 +73,7 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 	
 	public boolean addResource(double random){
 		BandwidthResource bw=new BandwidthResource(this);
-		bw.setBandwidth(MiscelFunctions.roundThreeDecimals(80+random*50));
+		bw.setBandwidth(MiscelFunctions.roundThreeDecimals(100+random*50));
 		this.add(bw);
 		return true;
 	}
