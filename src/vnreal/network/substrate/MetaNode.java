@@ -37,12 +37,9 @@ public class MetaNode extends Node<AbstractResource> {
  * @param random 
  * @return
  */
-	public boolean addResource(boolean random){
+	public boolean addResource(double cycle){
 		CpuResource cpu = new CpuResource(this);
-		double quantity = 100;
-		if(random)
-			quantity = 50+ new Random().nextDouble()*(100-50);
-		cpu.setCycles(quantity);
+		cpu.setCycles(cycle);
 		if(this.preAddCheck(cpu)){
 			this.add(cpu);
 			return true;

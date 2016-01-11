@@ -76,9 +76,9 @@ public class MetaLink  extends Link<AbstractResource> implements Comparable<Meta
 		return "ML(" + getId() + ")";
 	}
 	
-	public boolean addResource(double random){
+	public boolean addResource(double bandwith){
 		BandwidthResource bw=new BandwidthResource(this);
-		bw.setBandwidth(MiscelFunctions.roundThreeDecimals(50+random*(100-50)));
+		bw.setBandwidth(bandwith);
 		this.add(bw);
 		return true;
 	}
