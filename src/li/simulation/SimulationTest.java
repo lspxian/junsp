@@ -28,12 +28,6 @@ public class SimulationTest {
 		for(int i=3;i<4;i++){
 			simulation.initialize(i);
 			
-//			PrintStream mdrk = new PrintStream(new FileOutputStream("MultiDomainRanking_l"+i+".txt"));
-//			System.setOut(mdrk);
-//			System.out.println(new SimpleDateFormat().format(new Date()));
-//			simulation.runSimulation("MultiDomainRanking");
-//			simulation.reset();
-			
 			PrintStream md = new PrintStream(new FileOutputStream("MultiDomainAsOneDomain_l"+i+".txt"));
 			System.setOut(md);
 			System.out.println(new SimpleDateFormat().format(new Date()));
@@ -47,17 +41,26 @@ public class SimulationTest {
 			simulation.runSimulation("Shen2014");
 			System.out.println(new SimpleDateFormat().format(new Date()));
 			simulation.reset();
+			
+			PrintStream mdrk = new PrintStream(new FileOutputStream("MultiDomainRanking_l"+i+".txt"));
+			System.setOut(mdrk);
+			System.out.println(new SimpleDateFormat().format(new Date()));
+			simulation.runSimulation("MultiDomainRanking");
+			System.out.println(new SimpleDateFormat().format(new Date()));
+			simulation.reset();
+			
+			PrintStream mdrk2 = new PrintStream(new FileOutputStream("MultiDomainRanking2_l"+i+".txt"));
+			System.setOut(mdrk2);
+			System.out.println(new SimpleDateFormat().format(new Date()));
+			simulation.runSimulation("MultiDomainRanking2");
+			System.out.println(new SimpleDateFormat().format(new Date()));
+			simulation.reset();
 	//		
 	//		PrintStream mo = new PrintStream(new FileOutputStream("MDasOD2.txt"));
 	//		System.setOut(mo);
 	//		simulation.runSimulation("MDasOD2");
 	//		simulation.reset();
-	
-	//		PrintStream tdmcf = new PrintStream(new FileOutputStream("TwoDomainMCF.txt"));
-	//		System.setOut(tdmcf);
-	//		simulation.runSimulation("TwoDomainMCF");
-	//		simulation.reset();
-	//		
+		
 	//		PrintStream as = new PrintStream(new FileOutputStream("AS_MCF.txt"));
 	//		System.setOut(as);
 	//		simulation.runSimulation("AS_MCF");

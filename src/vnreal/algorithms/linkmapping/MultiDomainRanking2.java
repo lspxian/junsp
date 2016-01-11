@@ -45,18 +45,18 @@ import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 import vnreal.resources.CostResource;
 
-public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
+public class MultiDomainRanking2 extends AbstractMultiDomainLinkMapping {
 	
 	Map<Domain, VirtualNetwork> localVNets;
 	Map<Domain, AugmentedNetwork> augmentedNets;
 	Map<BandwidthDemand, BandwidthResource> mapping;
 	List<VirtualLink> linkToMap;
 	
-	public MultiDomainRanking(List<Domain> domains) {
+	public MultiDomainRanking2(List<Domain> domains) {
 		super(domains);
 		this.initialize();
 	}
-	public MultiDomainRanking(List<Domain> domains,String localPath, String remotePath){
+	public MultiDomainRanking2(List<Domain> domains,String localPath, String remotePath){
 		super(domains,localPath, remotePath);
 		this.initialize();
 	}
@@ -89,7 +89,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			//if there is no virtual links in this domain
 			if(this.localVNets.get(domain).getEdgeCount()!=0){
 				this.fulfillAugmentedNet(domain, vNet, nodeMapping);
-				this.localPath="tmp/MultiDomainRanking-"+vNet.getId()+"-"+domain.getId()+".lp";	// print mcf to file TODO
+				this.localPath="tmp/MultiDomainRanking2-"+vNet.getId()+"-"+domain.getId()+".lp";	// print mcf to file TODO
 //				Map<String, String> solution = this.linkMappingWithoutUpdate(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
 				Map<String, String> solution = this.linkMappingWithoutUpdateLocal(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
 				
@@ -183,7 +183,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 						
 						AugmentedLink al = new AugmentedLink(vnode2);
 						CostResource cost = new CostResource(al);	//cost = sum(1/Rbw)
-						cost.setCost(exterDomain.cumulatedBWCost(dijkSource, dijkDest));
+						cost.setCost(exterDomain.cumulatedBWCost2(dijkSource, dijkDest));
 						al.add(cost);
 						an.addEdge(al, dijkSource, dijkDest, EdgeType.UNDIRECTED);	//augmented links
 						

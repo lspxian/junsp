@@ -13,7 +13,6 @@ import vnreal.algorithms.linkmapping.MDasOD2;
 import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
 import vnreal.algorithms.linkmapping.MultiDomainRanking;
 import vnreal.algorithms.linkmapping.Shen2014;
-import vnreal.algorithms.linkmapping.TwoDomainMCF;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.network.substrate.SubstrateNode;

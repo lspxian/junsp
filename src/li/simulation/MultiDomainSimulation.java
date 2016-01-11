@@ -12,6 +12,7 @@ import li.gt_itm.Generator;
 import li.multiDomain.Domain;
 import li.multiDomain.MultiDomainUtil;
 import li.multiDomain.metrics.AcceptedRatioMD;
+import li.multiDomain.metrics.CurrentLinkUtilisationMD;
 import li.multiDomain.metrics.LinkUtilizationMD;
 import li.multiDomain.metrics.MappedRevenueMD;
 import li.multiDomain.metrics.MetricMD;
@@ -22,9 +23,9 @@ import vnreal.algorithms.linkmapping.AS_MCF;
 import vnreal.algorithms.linkmapping.MDasOD2;
 import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
 import vnreal.algorithms.linkmapping.MultiDomainRanking;
+import vnreal.algorithms.linkmapping.MultiDomainRanking2;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.linkmapping.Shen2014;
-import vnreal.algorithms.linkmapping.TwoDomainMCF;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -40,7 +41,7 @@ public class MultiDomainSimulation {
 	private ArrayList<VirtualNetwork> mappedVNs;
 	private ArrayList<VnEvent> events;
 	private ArrayList<MetricMD> metrics;
-	private double simulationTime = 14000.0;
+	private double simulationTime = 7000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
@@ -77,14 +78,14 @@ public class MultiDomainSimulation {
 		
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-//		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
-//		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
+		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
+		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
 		//use gt-itm to create net
-		multiDomain.add(new Domain(0,0, true));
-		multiDomain.add(new Domain(1,0, true));
+//		multiDomain.add(new Domain(0,0, true));
+//		multiDomain.add(new Domain(1,0, true));
 
-//		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
-		MultiDomainUtil.randomInterLinks(multiDomain);
+		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+//		MultiDomainUtil.randomInterLinks(multiDomain);
 		
 		
 	}
@@ -143,6 +144,7 @@ public class MultiDomainSimulation {
 		//add metrics
 		metrics.add(new AcceptedRatioMD(this, methodStr,lambda));
 		metrics.add(new LinkUtilizationMD(this, methodStr,lambda));
+		metrics.add(new CurrentLinkUtilisationMD(this, methodStr,lambda));
 		metrics.add(new MappedRevenueMD(this, methodStr,lambda));
 		
 		for(VnEvent currentEvent : events){
@@ -176,8 +178,8 @@ public class MultiDomainSimulation {
 					case "MDasOD2" : 
 						method = new MDasOD2(multiDomain);
 						break;
-					case "TwoDomainMCF" :
-						method = new TwoDomainMCF(multiDomain);
+					case "MultiDomainRanking2" : 
+						method = new MultiDomainRanking2(multiDomain);
 						break;
 					case "AS_MCF" : 
 						method = new AS_MCF(multiDomain);

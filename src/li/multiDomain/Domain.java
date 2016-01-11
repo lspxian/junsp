@@ -129,15 +129,35 @@ public class Domain extends SubstrateNetwork{
 				for(AbstractResource ares : link){
 					if(ares instanceof BandwidthResource){
 						BandwidthResource bwres = (BandwidthResource)ares;
-						return 1/(bwres.getAvailableBandwidth()+0.001);
+						//return 1/(bwres.getAvailableBandwidth()+0.001);
+						return 1/bwres.getBandwidth();
 					}
 				}
 				return 0.;
 			}
 		};
 		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(this, weightTrans);
+//		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(this);
 		return (double) dijkstra.getDistance(sn1, sn2);
-		 
+		
+	}
+	
+	public double cumulatedBWCost2(SubstrateNode sn1, SubstrateNode sn2){
+		Transformer<SubstrateLink, Double> weightTrans = new Transformer<SubstrateLink,Double>(){
+			public Double transform(SubstrateLink link){
+				for(AbstractResource ares : link){
+					if(ares instanceof BandwidthResource){
+						BandwidthResource bwres = (BandwidthResource)ares;
+						return 1/(bwres.getAvailableBandwidth()+0.001);
+//						return 1/bwres.getBandwidth();
+					}
+				}
+				return 0.;
+			}
+		};
+		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(this, weightTrans);
+//		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(this);
+		return (double) dijkstra.getDistance(sn1, sn2);
 		
 	}
 }

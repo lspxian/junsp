@@ -28,7 +28,8 @@ import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
-// multi-domains, autonomous system multi-commodity flow algorithm 
+// multi-domains, autonomous system multi-commodity flow algorithm using defautl mcf
+//问题在于默认的mcf不能区分augmented link属于哪一个virtual link,所以可能乱用
 public class AS_MCF extends AbstractMultiDomainLinkMapping {
 
 	public AS_MCF(List<Domain> domains){
