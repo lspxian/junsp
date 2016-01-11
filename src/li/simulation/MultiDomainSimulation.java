@@ -41,7 +41,7 @@ public class MultiDomainSimulation {
 	private ArrayList<VirtualNetwork> mappedVNs;
 	private ArrayList<VnEvent> events;
 	private ArrayList<MetricMD> metrics;
-	private double simulationTime = 7000.0;
+	private double simulationTime = 14000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
@@ -80,6 +80,9 @@ public class MultiDomainSimulation {
 		//int x,int y, file path, resource
 		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
 		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
+//		multiDomain.add(new Domain(0,0,"sndlib/pioro40", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/janos-us-ca", true));
+		
 		//use gt-itm to create net
 //		multiDomain.add(new Domain(0,0, true));
 //		multiDomain.add(new Domain(1,0, true));

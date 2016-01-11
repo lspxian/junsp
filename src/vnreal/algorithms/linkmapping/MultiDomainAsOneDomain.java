@@ -44,7 +44,7 @@ public class MultiDomainAsOneDomain extends AbstractMultiDomainLinkMapping {
 	public boolean linkMapping(VirtualNetwork vNet,
 			Map<VirtualNode, SubstrateNode> nodeMapping) {
 		
-		this.localPath="tmp/MultiDomainAsOneDomain-"+vNet.getId()+".lp";	// print mcf to file TODO
+//		this.localPath="tmp/MultiDomainAsOneDomain-"+vNet.getId()+".lp";	// print mcf to file TODO
 		Domain newDomain = merge(domains);
 		
 		Map<String, String> solution = this.linkMappingWithoutUpdateLocal(vNet, nodeMapping, newDomain);

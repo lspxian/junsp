@@ -89,7 +89,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			//if there is no virtual links in this domain
 			if(this.localVNets.get(domain).getEdgeCount()!=0){
 				this.fulfillAugmentedNet(domain, vNet, nodeMapping);
-				this.localPath="tmp/MultiDomainRanking-"+vNet.getId()+"-"+domain.getId()+".lp";	// print mcf to file TODO
+//				this.localPath="tmp/MultiDomainRanking-"+vNet.getId()+"-"+domain.getId()+".lp";	// print mcf to file TODO
 //				Map<String, String> solution = this.linkMappingWithoutUpdate(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
 				Map<String, String> solution = this.linkMappingWithoutUpdateLocal(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
 				

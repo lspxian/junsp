@@ -25,7 +25,7 @@ public class SimulationTest {
 //		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));
 //		System.setOut(tmp);
 		
-		for(int i=3;i<4;i++){
+		for(int i=2;i<5;i++){
 			simulation.initialize(i);
 			
 			PrintStream md = new PrintStream(new FileOutputStream("MultiDomainAsOneDomain_l"+i+".txt"));
