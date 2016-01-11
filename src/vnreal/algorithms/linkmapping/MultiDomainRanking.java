@@ -1,8 +1,11 @@
 package vnreal.algorithms.linkmapping;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -50,14 +54,14 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 	
 	public MultiDomainRanking(List<Domain> domains) {
 		super(domains);
-		this.intialize();
+		this.initialize();
 	}
 	public MultiDomainRanking(List<Domain> domains,String localPath, String remotePath){
 		super(domains,localPath, remotePath);
-		this.intialize();
+		this.initialize();
 	}
 	
-	private void intialize(){
+	private void initialize(){
 		this.localVNets =  new LinkedHashMap<Domain, VirtualNetwork>();
 		this.augmentedNets = new LinkedHashMap<Domain, AugmentedNetwork>();
 		for(Domain d : domains){
@@ -85,13 +89,18 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			//if there is no virtual links in this domain
 			if(this.localVNets.get(domain).getEdgeCount()!=0){
 				this.fulfillAugmentedNet(domain, vNet, nodeMapping);
-				
-				Map<String, String> solution = this.linkMappingWithoutUpdate(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
+				this.localPath="tmp/MultiDomainRanking-"+vNet.getId()+"-"+domain.getId()+".lp";	// print mcf to file TODO
+//				Map<String, String> solution = this.linkMappingWithoutUpdate(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
+				Map<String, String> solution = this.linkMappingWithoutUpdateLocal(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
 				
 				if(solution.size()==0){
 					System.out.println("link no solution");
 					for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 						NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+					}
+					//delete resources already distributed !!!
+					for(Map.Entry<BandwidthDemand, BandwidthResource>e : mapping.entrySet()){
+						e.getKey().free(e.getValue());
 					}
 					return false;
 				}
@@ -105,7 +114,10 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 	
 	private void sortDomain(){
 		Collections.sort(this.domains, new Comparator<Domain>(){
-
+			public int compare(Domain arg0, Domain arg1) {
+				return -1;
+			}
+			/*
 			@Override
 			public int compare(Domain arg0, Domain arg1) {
 				Random random = new Random();
@@ -114,7 +126,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					return 1;
 				}
 				else return -1;
-			}
+			}*/
 			
 		});
 	}
@@ -142,22 +154,22 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		AugmentedNetwork an = this.augmentedNets.get(domain);
 		for(VirtualLink vl : tmpvn.getEdges()){
 			if(vl instanceof VirtualInterLink){
+				SubstrateNode dijkDest = null, dijkSource = null;
 				VirtualInterLink vil = (VirtualInterLink) vl;
 				VirtualNode vnode1 = vil.getNode1();
 				VirtualNode vnode2 = vil.getNode2();
-				SubstrateNode snode1 = nodeMapping.get(vnode1);
-				SubstrateNode snode2 = nodeMapping.get(vnode2);
-				SubstrateNode dijkDest = null, dijkSource = null;
-				Domain exterDomain = null;
-				if(vnode1.getDomain().equals(domain)){
-					exterDomain = vnode2.getDomain();
-					dijkDest = snode2;
-				}
+				
+				if(vnode1.getDomain().equals(domain)){}
 				else if(vnode2.getDomain().equals(domain)){
-					exterDomain = vnode1.getDomain();
-					dijkDest = snode1;
+					VirtualNode tmpnode = vnode2;
+					vnode2 = vnode1;
+					vnode1 = tmpnode;
 				}
 				else	continue;
+				
+				Domain exterDomain = vnode2.getDomain();
+				dijkDest = nodeMapping.get(vnode2);;
+				
 				for(InterLink ilink : domain.getInterLink()){
 					if(domain.containsVertex(ilink.getNode1()))
 						dijkSource = ilink.getNode2();
@@ -165,20 +177,14 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 						dijkSource = ilink.getNode1();
 					
 					if(exterDomain.containsVertex(dijkSource)&&
-							(!dijkSource.equals(dijkDest))&&			//mapped substrate node is the border node
-							(!an.existLink(dijkSource, dijkDest))){		//augmented link does not exist in the augmented network
+							(!dijkSource.equals(dijkDest))			//mapped substrate node is the border node
+							&&(!an.existLink(dijkSource, dijkDest,vnode2))  //augmented link does not exist in the augmented network TODO
+							){		
 						
-						AugmentedLink al = new AugmentedLink();
+						AugmentedLink al = new AugmentedLink(vnode2);
 						CostResource cost = new CostResource(al);	//cost = sum(1/Rbw)
 						cost.setCost(exterDomain.cumulatedBWCost(dijkSource, dijkDest));
 						al.add(cost);
-
-						/*
-						DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain);
-						double cost = (double) dijkstra.getDistance(dijkSource, dijkDest);
-						//System.out.println(cost); //TODO
-						al.addResource(100/(cost));	//normally random(0,1), here random = 100 means that it has infinite bw
-						*/
 						an.addEdge(al, dijkSource, dijkDest, EdgeType.UNDIRECTED);	//augmented links
 						
 					}
@@ -208,13 +214,40 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		return solution;
 	}
 	
+	public Map<String,String> linkMappingWithoutUpdateLocal(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping, AugmentedNetwork an) {
+		Map<String, String> solution = new HashMap<String, String>();
+		//generate .lp file
+		try {
+			this.generateFile(vNet, nodeMapping,an);
+			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+localPath+" o");
+			InputStream in = p.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String readLine;
+			boolean solBegin=false;
+			while (((readLine = br.readLine()) != null)) {
+				if(solBegin==true){
+					System.out.println(readLine);
+					StringTokenizer st = new StringTokenizer(readLine, " ");
+					solution.put(st.nextToken(), st.nextToken());
+				}
+				if(solBegin==false&&readLine.equals("The solutions begin here : "))
+					solBegin=true;
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return solution;
+	}
+	
 	private void generateFile(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping, AugmentedNetwork an) throws IOException{
+		
 		Domain tmpDomain = (Domain) an.getRoot(); 
 		BandwidthDemand bwDem = null;
 		BandwidthResource bwResource=null;
 		CostResource cost = null;
 		SubstrateNode ssnode=null, dsnode=null;
-		VirtualNode srcVnode = null, dstVnode = null;
+		VirtualNode srcVnode = null, dstVnode = null, vlDestination=null;
 
 		String preambule = "\\Problem : vne\n";
 		String obj = "Minimize\n"+"obj : ";
@@ -236,91 +269,142 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					break;
 				}
 			}
-		
-			for (Iterator<SubstrateLink> slink = an.getEdges().iterator();slink.hasNext();){
-				SubstrateLink tmpsl = slink.next();
-				ssnode = an.getEndpoints(tmpsl).getFirst();
-				dsnode = an.getEndpoints(tmpsl).getSecond();
-				
-				//intra virtual link, objective contains just intra substrate links
-				if((tmpl instanceof VirtualInterLink)||tmpDomain.containsEdge(tmpsl)){	//for multi domain
-					if(tmpsl instanceof AugmentedLink){
-						for(AbstractResource asrc : tmpsl){
-							if(asrc instanceof CostResource){
-								cost = (CostResource) asrc;
-								break;
-							}
+			
+			//virtual intra link and augmented virtual link
+			if(!(tmpl instanceof VirtualInterLink)){
+				//substrate links contains domain intra links
+				for (Iterator<SubstrateLink> slink = tmpDomain.getEdges().iterator();slink.hasNext();){
+					SubstrateLink tmpsl = slink.next();
+					ssnode = an.getEndpoints(tmpsl).getFirst();
+					dsnode = an.getEndpoints(tmpsl).getSecond();
+					for(AbstractResource asrc : tmpsl){
+						if(asrc instanceof BandwidthResource){
+							bwResource = (BandwidthResource) asrc;
+							break;
 						}
-						
-						//objective
-						obj = obj + " + "+bwDem.getDemandedBandwidth()*cost.getCost();
-						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-						obj = obj + " + "+bwDem.getDemandedBandwidth()*cost.getCost();
-						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
-						
 					}
-					else{	//iner substrate links and inter substrate links
+					//objective
+					//obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+					obj = obj + " + "+bwDem.getDemandedBandwidth();
+					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+					//obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+					obj = obj + " + "+bwDem.getDemandedBandwidth();
+					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+					//bounds
+					bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+					bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
+				}
+				
+				//flow constraints
+				Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
+				for(Iterator<SubstrateNode> iterator = tmpDomain.getVertices().iterator();iterator.hasNext();){
+					SubstrateNode snode = iterator.next();
+					nextHop = tmpDomain.getNeighbors(snode);
+					for(Iterator<SubstrateNode> it=nextHop.iterator();it.hasNext();){
+						SubstrateNode tmmpsn = it.next();
+						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
+						constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
+					}
+					if(snode.equals(nodeMapping.get(srcVnode)))	constraint =constraint+" = 1\n";
+					else if(snode.equals(nodeMapping.get(dstVnode))) constraint =constraint+" = -1\n";
+					else	constraint =constraint+" = 0\n";
+				}
+				
+			}
+			else{	//inter virtual links
+				if(tmpDomain.containsVertex(nodeMapping.get(srcVnode))){
+					vlDestination = dstVnode;
+				}else if(tmpDomain.containsVertex(nodeMapping.get(dstVnode))){
+					vlDestination = srcVnode;
+				}
+				
+				for (Iterator<SubstrateLink> slink = an.getEdges().iterator();slink.hasNext();){
+					SubstrateLink tmpsl = slink.next();
+					ssnode = an.getEndpoints(tmpsl).getFirst();
+					dsnode = an.getEndpoints(tmpsl).getSecond();
+					//intra substrate links and inter substrate links
+					if(!(tmpsl instanceof AugmentedLink)){
 						for(AbstractResource asrc : tmpsl){
 							if(asrc instanceof BandwidthResource){
 								bwResource = (BandwidthResource) asrc;
 								break;
 							}
 						}
-						
 						//objective
-						obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+						//obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+						obj = obj + " + "+bwDem.getDemandedBandwidth();
 						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-						obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+						//obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+						obj = obj + " + "+bwDem.getDemandedBandwidth();
 						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+						//bounds
+						bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+						bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
 					}
-
-					//bounds
-					bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
-					bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
+					else{
+						AugmentedLink tmpal = (AugmentedLink)tmpsl;
+						//augmented substrate links correspond to virtual inter links which means node mapping of srcVnode and dstVnode 
+						if(tmpal.getDestNode().equals(vlDestination)){
+							for(AbstractResource asrc : tmpsl){
+								if(asrc instanceof CostResource){
+									cost = (CostResource) asrc;
+									break;
+								}
+							}
+							//objective
+							obj = obj + " + "+bwDem.getDemandedBandwidth()*cost.getCost();
+							obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+							obj = obj + " + "+bwDem.getDemandedBandwidth()*cost.getCost();
+							obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+							//bounds
+							bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+							bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
+						}
+					}
+				}
+				
+				//flow constraints
+				Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
+				for(Iterator<SubstrateNode> iterator = an.getVertices().iterator();iterator.hasNext();){
+					SubstrateNode snode = iterator.next();
+					nextHop = an.getNeighbors(snode);
+					boolean flag = false;
+					for(Iterator<SubstrateNode> it=nextHop.iterator();it.hasNext();){
+						//TODO
+						SubstrateNode tmmpsn = it.next();
+						if((!tmpDomain.containsVertex(snode))&&
+								(!tmpDomain.containsVertex(tmmpsn))&&
+								(!an.existLink(snode, tmmpsn, vlDestination)))
+									continue;
+						
+						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
+						constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
+						flag = true;
+					}
+					if(snode.equals(nodeMapping.get(srcVnode)))	constraint =constraint+" = 1\n";
+					else if(snode.equals(nodeMapping.get(dstVnode))) constraint =constraint+" = -1\n";
+					else if(flag)	constraint =constraint+" = 0\n";
 				}
 				
 			}
 			
-			//flow constraints
-			Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
-			for(Iterator<SubstrateNode> iterator = an.getVertices().iterator();iterator.hasNext();){
-				SubstrateNode snode = iterator.next();
-				if(!(tmpl instanceof VirtualInterLink)&&(!tmpDomain.containsVertex(snode)))	continue;	//multi domain
-				nextHop = an.getNeighbors(snode);
-				for(Iterator<SubstrateNode> it=nextHop.iterator();it.hasNext();){
-					SubstrateNode tmmpsn = it.next();
-					if((tmpl instanceof VirtualInterLink)||(tmpDomain.containsVertex(snode)&&tmpDomain.containsVertex(tmmpsn))){	//for multi domain
-						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
-						constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
-					}
-				}
-
-				if(snode.equals(nodeMapping.get(srcVnode)))	constraint =constraint+" = 1\n";
-				else if(snode.equals(nodeMapping.get(dstVnode))) constraint =constraint+" = -1\n";
-				else	constraint =constraint+" = 0\n";
-				
-			}
 			
 		}
 
 		
 		//capacity constraint are only for the links of original domain, but not augmented network
-		for (Iterator<SubstrateLink> slink = tmpDomain.getAllLinks().iterator();slink.hasNext();){
+		//intra link
+		for (Iterator<SubstrateLink> slink = tmpDomain.getEdges().iterator();slink.hasNext();){
 			SubstrateLink tmpsl = slink.next();
-			if(tmpsl instanceof InterLink){
-				ssnode = ((InterLink) tmpsl).getNode1();
-				dsnode = ((InterLink) tmpsl).getNode2();
-			}else{
-				ssnode = tmpDomain.getEndpoints(tmpsl).getFirst();
-				dsnode = tmpDomain.getEndpoints(tmpsl).getSecond();
-			}
+			ssnode = tmpDomain.getEndpoints(tmpsl).getFirst();
+			dsnode = tmpDomain.getEndpoints(tmpsl).getSecond();
 			
 			for(AbstractResource asrc : tmpsl){
 				if(asrc instanceof BandwidthResource){
 					bwResource = (BandwidthResource) asrc;
+					break;
 				}
 			}
-			
 			
 			for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links.hasNext();) {
 				VirtualLink tmpl = links.next();
@@ -343,6 +427,42 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			}
 			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
 		}
+		//inter link
+		for (Iterator<InterLink> slink = tmpDomain.getInterLink().iterator();slink.hasNext();){
+			InterLink tmpsl = slink.next();
+			ssnode = ((InterLink) tmpsl).getNode1();
+			dsnode = ((InterLink) tmpsl).getNode2();
+			
+			for(AbstractResource asrc : tmpsl){
+				if(asrc instanceof BandwidthResource){
+					bwResource = (BandwidthResource) asrc;
+					break;
+				}
+			}
+			boolean flag = false;
+			for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links.hasNext();) {
+				VirtualLink tmpl = links.next();
+				if(tmpl instanceof VirtualInterLink){
+					flag = true;
+					srcVnode = vNet.getEndpoints(tmpl).getFirst();
+					dstVnode = vNet.getEndpoints(tmpl).getSecond();
+					
+					for (AbstractDemand dem : tmpl) {
+						if (dem instanceof BandwidthDemand) {
+							bwDem = (BandwidthDemand) dem;
+							break;
+						}
+					}
+					
+					//capacity constraint
+					constraint=constraint+" + "+bwDem.getDemandedBandwidth() +
+							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+
+							" + "+bwDem.getDemandedBandwidth() +
+							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
+				}
+			}
+			if(flag) constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
+		}
 		
 		obj = obj+ "\n";
 		BufferedWriter writer = new BufferedWriter(new FileWriter(localPath));
@@ -354,6 +474,8 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 	private void updateResource(Map<String, String> solution, Domain domain, Map<VirtualNode, SubstrateNode> nodeMapping){
 		VirtualNetwork tmpvn = this.localVNets.get(domain);
 		AugmentedNetwork an = this.augmentedNets.get(domain);
+		LinkedHashMap<BandwidthDemand, SubstrateLink> assignation = new LinkedHashMap<BandwidthDemand, SubstrateLink>();
+		
 		//update in the first domain and create virtual links for second domain
 		VirtualNode srcVnode = null, dstVnode = null;
 		SubstrateNode srcSnode = null,dstSnode = null;
@@ -374,7 +496,6 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			VirtualLink tmpvl = tmpvn.findEdge(srcVnode, dstVnode);
 			SubstrateLink tmpsl = an.findEdge(srcSnode, dstSnode);
 			BandwidthDemand bwDem=null,newBwDem;
-			BandwidthResource tmpbd=null;
 			Domain exterDomain = null;
 			for(AbstractDemand dem : tmpvl){
 				if (dem instanceof BandwidthDemand) {
@@ -411,34 +532,49 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			}
 			else {
 				//update
-				VirtualLink linkRemove = tmpvl ; 
+				boolean flag=true;
+				VirtualLink originalLink = tmpvl ; 
 				if((tmpvl instanceof VirtualInterLink)){
-					VirtualInterLink tmpvil = (VirtualInterLink) tmpvl;
-					linkRemove = tmpvil.getOrigLink();
-					newBwDem = new BandwidthDemand(tmpvil.getOrigLink());
+					originalLink = ((VirtualInterLink) tmpvl).getOrigLink();
 				}
 				else if((tmpvl instanceof AugmentedVirtualLink)){
-					AugmentedVirtualLink tmpvil = (AugmentedVirtualLink) tmpvl;
-					linkRemove = tmpvil.getOriginalVL();
-					newBwDem = new BandwidthDemand(tmpvil.getOriginalVL());
+					originalLink = ((AugmentedVirtualLink) tmpvl).getOriginalVL();
 				}
-				else{
-					newBwDem = new BandwidthDemand(tmpvl);						
-				}
-				newBwDem.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
-				for(AbstractResource absRes : tmpsl){
-					if(absRes instanceof BandwidthResource){
-						tmpbd = (BandwidthResource) absRes;
+				
+				for(Map.Entry<BandwidthDemand, SubstrateLink> e : assignation.entrySet()){
+					if(e.getValue().equals(tmpsl)&&e.getKey().getOwner().equals(originalLink)){	//this virtual link demand already exists
+						e.getKey().setDemandedBandwidth(e.getKey().getDemandedBandwidth()+bwDem.getDemandedBandwidth()*flow);
+						flag = false;
+						break;
 					}
 				}
-				if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
-					throw new AssertionError("But we checked before!");
+				if(flag){
+					newBwDem = new BandwidthDemand(originalLink);
+					newBwDem.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
+					assignation.put(newBwDem, tmpsl);
 				}
-				else{
-					mapping.put(newBwDem, tmpbd);
-					this.linkToMap.remove(linkRemove);
-				}
+				
 			}
 		}
+		//update
+		for(Map.Entry<BandwidthDemand, SubstrateLink> entry : assignation.entrySet()){
+			BandwidthDemand newBwDem = entry.getKey();
+			SubstrateLink tmpsl = entry.getValue();
+			BandwidthResource tmpbd = null;
+			
+			for(AbstractResource absRes : tmpsl){
+				if(absRes instanceof BandwidthResource){
+					tmpbd = (BandwidthResource) absRes;
+				}
+			}
+			if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
+				throw new AssertionError("But we checked before!");
+			}
+			else{
+				mapping.put(newBwDem, tmpbd);
+				this.linkToMap.remove(newBwDem.getOwner());
+			}
+		}
+		
 	}
 }

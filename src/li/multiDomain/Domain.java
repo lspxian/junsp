@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
+import li.gt_itm.Generator;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
@@ -42,6 +43,15 @@ public class Domain extends SubstrateNetwork{
 		this.addAllResource(randomResource);
 	}
 	
+	public Domain(int x, int y, boolean randomResource) throws IOException{
+		this();
+		this.coordinateX = x;
+		this.coordinateY = y;
+		Generator.createSubNet();
+		this.alt2network("./gt-itm/sub");
+		this.addAllResource(randomResource);
+	}
+	
 	public Domain(SubstrateNetwork sn, int x, int y){
 		this();
 		sn.getCopy(this);
@@ -55,6 +65,10 @@ public class Domain extends SubstrateNetwork{
 
 	public void setInterLink(ArrayList<InterLink> interLink) {
 		this.interLink = interLink;
+	}
+	
+	public int  getInterLinkCount(){
+		return this.interLink.size();
 	}
 
 	public int getCoordinateX() {
@@ -81,8 +95,7 @@ public class Domain extends SubstrateNetwork{
 		String result= "Domain("+this.getCoordinateX()+","+this.getCoordinateY()+") : \n";
 		result+=super.toString();
 		for (InterLink l : interLink) {			
-			result += l + "  (" + l.getNode1().getId() + "<->"
-					+ l.getNode2().getId() + ") \n";
+			result += l.toString();
 			for (AbstractResource r : l.get()) {
 				result += "  " + r.toString() + "\n";
 			}

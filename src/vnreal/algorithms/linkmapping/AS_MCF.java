@@ -90,19 +90,17 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 					VirtualInterLink vil = (VirtualInterLink) vl;
 					VirtualNode vnode1 = vil.getNode1();
 					VirtualNode vnode2 = vil.getNode2();
-					SubstrateNode snode1 = nodeMapping.get(vnode1);
-					SubstrateNode snode2 = nodeMapping.get(vnode2);
 					SubstrateNode dijkDest = null, dijkSource = null;
-					Domain exterDomain = null;
-					if(vnode1.getDomain().equals(domain)){
-						exterDomain = vnode2.getDomain();
-						dijkDest = snode2;
-					}
+					if(vnode1.getDomain().equals(domain)){}
 					else if(vnode2.getDomain().equals(domain)){
-						exterDomain = vnode1.getDomain();
-						dijkDest = snode1;
+						VirtualNode tmpnode = vnode2;
+						vnode2 = vnode1;
+						vnode1 = tmpnode;
 					}
 					else	continue;
+					
+					Domain exterDomain = vnode2.getDomain();
+					dijkDest = nodeMapping.get(vnode2);;
 					for(InterLink ilink : domain.getInterLink()){
 						if(domain.containsVertex(ilink.getNode1()))
 							dijkSource = ilink.getNode2();
@@ -111,10 +109,10 @@ public class AS_MCF extends AbstractMultiDomainLinkMapping {
 						
 						if(exterDomain.containsVertex(dijkSource)&&
 								(!dijkSource.equals(dijkDest))&&			//mapped substrate node is the border node
-								(!an.existLink(dijkSource, dijkDest))){		//augmented link does not exist in the augmented network
+								(!an.existLink(dijkSource, dijkDest,vnode2))){		//augmented link does not exist in the augmented network
 							
 							DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(exterDomain,weightTrans);
-							AugmentedLink al = new AugmentedLink();
+							AugmentedLink al = new AugmentedLink(vnode2);	//TODO
 							double cost = (double) dijkstra.getDistance(dijkSource, dijkDest);
 							//System.out.println(cost);
 							al.addResource(100/(cost));	//normally random(0,1), here random = 100 means that it has infinite bw

@@ -1,31 +1,21 @@
 package vnreal.network.substrate;
 
+import vnreal.network.virtual.VirtualNode;
+
 public class AugmentedLink extends SubstrateLink {
-	protected SubstrateNode source;
-	protected SubstrateNode destination;
+	protected VirtualNode destNode;
 	
-	public AugmentedLink() {
+	public AugmentedLink(VirtualNode node) {
 		super();
+		this.destNode = node;
 	}
 
-	public SubstrateNode getSource() {
-		return source;
-	}
-
-	public void setSource(SubstrateNode source) {
-		this.source = source;
-	}
-
-	public SubstrateNode getDestination() {
-		return destination;
-	}
-
-	public void setDestination(SubstrateNode destination) {
-		this.destination = destination;
+	public VirtualNode getDestNode() {
+		return destNode;
 	}
 
 	public String toString(){
-		return "Augmented Link("+ getId() + ")";
+		return "Augmented Link("+ getId() + ")"+" dest:"+destNode.getId();
 	}
 
 	

@@ -7,13 +7,12 @@ public class Example {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		Generator ge = new Generator();
 		
 		//substrat network
-		//ge.createSubgb();
+		Generator.createSubNet();
 		
 		//virtual networks
-		ge.createVgb();
+		//createVgb();
 	}
 
 }

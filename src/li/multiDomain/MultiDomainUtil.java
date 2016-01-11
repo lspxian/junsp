@@ -87,12 +87,14 @@ public class MultiDomainUtil {
 		return result;
 	}
 	
+	//TODO we can take 7 min distance as inter links instead of random
 	public static void randomInterLinks(List<Domain> multiDomain){
-		//max distance for all the domains
-		double maxDistance=0, distance=0, ax,ay,bx,by;
+		
+		//max and min distance for all the domains
+		double maxDistance=0, minDistance=10000, distance=0, ax,ay,bx,by;
 		for(int i=0;i<multiDomain.size();i++){
 			Domain startDomain = multiDomain.get(i);
-			for(int j=i;j<multiDomain.size();j++){
+			for(int j=i+1;j<multiDomain.size();j++){
 				Domain endDomain = multiDomain.get(j);
 				for(SubstrateNode start : startDomain.getVertices()){
 					for(SubstrateNode end : endDomain.getVertices()){
@@ -100,8 +102,9 @@ public class MultiDomainUtil {
 						ay = start.getCoordinateY()+startDomain.getCoordinateY()*100;
 						bx = end.getCoordinateX()+endDomain.getCoordinateX()*100;
 						by = end.getCoordinateY()+endDomain.getCoordinateY()*100;
-						distance = Math.sqrt(Math.pow(ax-ay, 2) + Math.pow(bx-by, 2));
+						distance = Math.sqrt(Math.pow(ax-bx, 2) + Math.pow(ay-by, 2));
 						if(distance>maxDistance)	maxDistance = distance;
+						if(distance<minDistance)	minDistance = distance;
 						
 					}
 				}
@@ -110,8 +113,9 @@ public class MultiDomainUtil {
 		}
 		
 		//generate inter links
-		double alpha = 0.5;	//alpha increases the probability of edges between any nodes in the graph
-		double beta = 0.2;	//beta yields a larger ratio of long edges to short edges.
+		double alpha = 0.6;	//alpha increases the probability of edges between any nodes in the graph
+		double beta = 0.07;	//beta yields a larger ratio of long edges to short edges.
+		
 		for(int i=0;i<multiDomain.size();i++){
 			Domain startDomain = multiDomain.get(i);
 			for(int j=i+1;j<multiDomain.size();j++){
@@ -123,11 +127,13 @@ public class MultiDomainUtil {
 						ay = start.getCoordinateY()+startDomain.getCoordinateY()*100;
 						bx = end.getCoordinateX()+endDomain.getCoordinateX()*100;
 						by = end.getCoordinateY()+endDomain.getCoordinateY()*100;
-						distance = Math.sqrt(Math.pow(ax-ay, 2) + Math.pow(bx-by, 2));
+						distance = Math.sqrt(Math.pow(ax-bx, 2) + Math.pow(ay-by, 2));
 						double proba = alpha * Math.exp(-distance/beta/maxDistance);
-						if(proba>new Random().nextDouble()){
+						if(distance==minDistance)	proba = 1;
+//						if(distance<=minDistance+3) proba=1;
+						if(proba>(new Random().nextDouble())*0.97+0.03){
 							//source, destination, destination domain, random resource 
-							InterLink il = new InterLink(start, end, false);
+							InterLink il = new InterLink(start, end, true);
 							startDomain.addInterLink(il);
 							endDomain.addInterLink(il);
 						}
@@ -139,27 +145,84 @@ public class MultiDomainUtil {
 	
 	
 	public static void staticInterLinks(Domain d1, Domain d2){
-		InterLink il = new InterLink(d1.getNodeFromID(0),d2.getNodeFromID(40),false);
+		InterLink il;
+		/*
+		il= new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(139),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(2),d2.getNodeFromID(47),false);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(131),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(3),d2.getNodeFromID(45),false);
+		il= new InterLink(d1.getNodeFromID(33),d2.getNodeFromID(128),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);*/
+		
+		/*
+		il= new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(139),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(4),d2.getNodeFromID(47),false);
+		il= new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(151),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(47),false);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(131),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(8),d2.getNodeFromID(39),false);
+		il= new InterLink(d1.getNodeFromID(12),d2.getNodeFromID(125),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
-		il = new InterLink(d1.getNodeFromID(9),d2.getNodeFromID(46),false);
+		il= new InterLink(d1.getNodeFromID(33),d2.getNodeFromID(128),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);*/
+		
+		il= new InterLink(d1.getNodeFromID(3),d2.getNodeFromID(131),true);
 		d1.addInterLink(il);
 		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(151),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(118),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(127),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(131),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(12),d2.getNodeFromID(131),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(27),d2.getNodeFromID(116),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(27),d2.getNodeFromID(128),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(27),d2.getNodeFromID(151),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(33),d2.getNodeFromID(128),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		
+		/*
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(47),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(9),d2.getNodeFromID(46),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(6),d2.getNodeFromID(44),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(9),d2.getNodeFromID(44),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);
+		il= new InterLink(d1.getNodeFromID(10),d2.getNodeFromID(46),true);
+		d1.addInterLink(il);
+		d2.addInterLink(il);*/
+		
+
 	}
 	
 	//delete all resource

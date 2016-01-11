@@ -280,4 +280,12 @@ public final class VirtualNetwork extends
 			vnode.setCoordinateY(vnode.getCoordinateY()*y);
 		}
 	}
+	
+	public void myExtend(){
+		for(VirtualNode vnode : this.getVertices()){
+			if(vnode.getCoordinateX()>50)
+				vnode.setCoordinateX(vnode.getCoordinateX()+100);
+		}
+	}
+	
 }

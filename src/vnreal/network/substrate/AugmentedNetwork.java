@@ -2,6 +2,7 @@ package vnreal.network.substrate;
 
 import edu.uci.ics.jung.graph.util.Pair;
 import li.multiDomain.Domain;
+import vnreal.network.virtual.VirtualNode;
 
 public class AugmentedNetwork extends SubstrateNetwork {
 	protected SubstrateNetwork root;
@@ -25,11 +26,13 @@ public class AugmentedNetwork extends SubstrateNetwork {
 		this.root = root;
 	}
 	
-	public boolean existLink(SubstrateNode src, SubstrateNode dest){
+	//in the augmented network, there exists an augmented link from src to dest for the virtual destination vnode
+	public boolean existLink(SubstrateNode src, SubstrateNode dest,VirtualNode vnode){
 		for(SubstrateLink slink : this.getEdges()){
 			if(slink instanceof AugmentedLink){
+				AugmentedLink al=(AugmentedLink)slink;
 				Pair<SubstrateNode> p = this.getEndpoints(slink);
-				if(p.contains(src)&&p.contains(dest)){
+				if(p.contains(src)&&p.contains(dest)&&(al.getDestNode().equals(vnode))){
 					return true;
 				}
 			}

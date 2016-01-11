@@ -1,13 +1,17 @@
 package vnreal.algorithms.linkmapping;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -42,9 +46,9 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 	}
 
 	@Override
-	public boolean linkMapping(VirtualNetwork vNet,
-			Map<VirtualNode, SubstrateNode> nodeMapping) {
-		Map<String, String> solution = linkMappingWithoutUpdate(vNet, nodeMapping);
+	public boolean linkMapping(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping) {
+		//Map<String, String> solution = linkMappingWithoutUpdate(vNet, nodeMapping);
+		Map<String, String> solution = linkMappingWithoutUpdateLocal(vNet, nodeMapping);		
 		if(solution.size()==0){
 			System.out.println("link no solution");
 			for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
@@ -52,7 +56,6 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			}
 			return false;
 		}
-		System.out.println(solution);
 		//update
 		updateResource(vNet, nodeMapping, solution);
 		
@@ -76,6 +79,32 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			e.printStackTrace();
 		}
 		remote.disconnect();
+		return solution;
+	}
+	
+	public Map<String,String> linkMappingWithoutUpdateLocal(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
+		Map<String, String> solution = new HashMap<String, String>();
+		//generate .lp file
+		try {
+			this.generateFile(vNet, nodeMapping);
+			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+localPath+" o");
+			InputStream in = p.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String readLine;
+			boolean solBegin=false;
+			while (((readLine = br.readLine()) != null)) {
+				if(solBegin==true){
+					System.out.println(readLine);
+					StringTokenizer st = new StringTokenizer(readLine, " ");
+					solution.put(st.nextToken(), st.nextToken());
+				}
+				if(solBegin==false&&readLine.equals("The solutions begin here : "))
+					solBegin=true;
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return solution;
 	}
 	
@@ -167,9 +196,11 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 				}
 				
 				//objective
-				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+				//obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+				obj = obj + " + "+bwDem.getDemandedBandwidth();
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+				//obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+				obj = obj + " + "+bwDem.getDemandedBandwidth();
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//integer in the <general>

@@ -32,6 +32,7 @@
 package vnreal.resources;
 
 import vnreal.ExchangeParameter;
+import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.constraints.AbstractConstraint;
 import vnreal.constraints.ILinkConstraint;
 import vnreal.demands.AbstractDemand;
@@ -54,7 +55,8 @@ public final class CostResource extends AbstractResource implements	ILinkConstra
 
     @ExchangeParameter
     public void setCost(Double cost) {
-        this.cost = cost;
+        //this.cost = MiscelFunctions.roundThreeDecimals(cost);
+    	this.cost = cost;
     }
 
     @ExchangeParameter

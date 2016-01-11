@@ -16,7 +16,7 @@ public abstract class AbstractMultiDomainLinkMapping {
 	public AbstractMultiDomainLinkMapping(List<Domain> domains){
 		this.domains = new ArrayList<Domain>();
 		this.domains.addAll(domains);
-		this.localPath = "ILP-LP-Models/vne-mcf.lp";
+		this.localPath = "cplex/vne-mcf.lp";
 		this.remotePath = "pytest/vne-mcf.lp";
 	}
 	public AbstractMultiDomainLinkMapping(List<Domain> domains,String localPath, String remotePath){

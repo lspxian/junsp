@@ -78,7 +78,7 @@ public class Simulation {
 		sn.addAllResource(false);
 		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<10;i++){
+		for(int i=0;i<100;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(false);
