@@ -17,7 +17,7 @@ public class SimulationTest {
 		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
 		writer.close();
 		
-		for(int c=0;c<3;c++){
+		for(int c=0;c<10;c++){
 			writer = new FileWriter("resultat.txt",true);
 			writer.write("Number:"+c+"\n");
 			writer.close();
@@ -35,7 +35,7 @@ public class SimulationTest {
 	//		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));
 	//		System.setOut(tmp);
 		
-			for(int i=3;i<4;i++){
+			for(int i=1;i<7;i++){
 				simulation.initialize(i);
 				
 				PrintStream md = new PrintStream(new FileOutputStream("res/MultiDomainAsOneDomain_l"+i+"_c"+c+".txt"));

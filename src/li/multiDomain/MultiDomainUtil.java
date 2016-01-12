@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
+import edu.uci.ics.jung.graph.util.Pair;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNode;
@@ -143,6 +146,42 @@ public class MultiDomainUtil {
 		}
 	}
 	
+	public static void staticInterLinksMinN(List<Domain> multiDomain,int n){
+			
+		TreeMap<Double,Pair<SubstrateNode>> distances = new TreeMap<Double,Pair<SubstrateNode>>();
+		for(int i=0;i<multiDomain.size();i++){
+			Domain startDomain = multiDomain.get(i);
+			for(int j=i+1;j<multiDomain.size();j++){
+				Domain endDomain = multiDomain.get(j);
+				
+				double distance=0, ax,ay,bx,by;
+				for(SubstrateNode start : startDomain.getVertices()){
+					for(SubstrateNode end : endDomain.getVertices()){
+						ax = start.getCoordinateX()+startDomain.getCoordinateX()*100;
+						ay = start.getCoordinateY()+startDomain.getCoordinateY()*100;
+						bx = end.getCoordinateX()+endDomain.getCoordinateX()*100;
+						by = end.getCoordinateY()+endDomain.getCoordinateY()*100;
+						distance = Math.sqrt(Math.pow(ax-bx, 2) + Math.pow(ay-by, 2));
+						distances.put(distance, new Pair<SubstrateNode>(start,end));
+						
+					}
+				}
+				
+				int count = 0;
+				for(Map.Entry<Double, Pair<SubstrateNode>> entry : distances.entrySet()){
+					if(count<n){
+						InterLink il = new InterLink(entry.getValue().getFirst(),entry.getValue().getSecond(),true);
+						startDomain.addInterLink(il);
+						endDomain.addInterLink(il);
+						count++;
+					}
+				}
+				
+			}
+		}
+	}
+
+
 	
 	public static void staticInterLinks(Domain d1, Domain d2){
 		InterLink il;

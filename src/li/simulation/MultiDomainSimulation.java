@@ -88,7 +88,8 @@ public class MultiDomainSimulation {
 //		multiDomain.add(new Domain(0,0, true));
 //		multiDomain.add(new Domain(1,0, true));
 
-		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+//		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+		MultiDomainUtil.staticInterLinksMinN(multiDomain,3);
 //		MultiDomainUtil.randomInterLinks(multiDomain);
 		
 		
