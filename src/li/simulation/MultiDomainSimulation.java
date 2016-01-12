@@ -1,5 +1,6 @@
 package li.simulation;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +42,7 @@ public class MultiDomainSimulation {
 	private ArrayList<VirtualNetwork> mappedVNs;
 	private ArrayList<VnEvent> events;
 	private ArrayList<MetricMD> metrics;
-	private double simulationTime = 14000.0;
+	private double simulationTime = 30000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
@@ -80,8 +81,8 @@ public class MultiDomainSimulation {
 		//int x,int y, file path, resource
 		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
 		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
-//		multiDomain.add(new Domain(0,0,"sndlib/pioro40", true));
-//		multiDomain.add(new Domain(1,0,"sndlib/janos-us-ca", true));
+//		multiDomain.add(new Domain(0,0,"sndlib/germany50", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/zib54", true));
 		
 		//use gt-itm to create net
 //		multiDomain.add(new Domain(0,0, true));
@@ -127,8 +128,8 @@ public class MultiDomainSimulation {
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/sub");
 			vn.addAllResource(true);
-//			vn.scale(2, 1);
-			vn.myExtend();
+			vn.scale(2, 1);
+//			vn.myExtend();
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
@@ -236,9 +237,16 @@ public class MultiDomainSimulation {
 		System.out.println("*-----"+methodStr+" resume------------*");
 		System.out.println("accepted : "+this.accepted);
 		System.out.println("rejected : "+this.rejected);
-//		for(MetricMD metric : metrics){ 
-//			System.out.println(metric.name()+" "+metric.calculate());
-//		}
+		
+		FileWriter writer = new FileWriter("resultat.txt",true);
+		writer.write("*----lambda="+this.lambda+"--"+methodStr+"----*\n");
+		writer.write("accepted : "+this.accepted+"\n");
+		writer.write("rejected : "+this.rejected+"\n");
+		for(MetricMD metric : metrics){ 
+			writer.write(metric.name()+" "+metric.calculate()+"\n");
+		}
+		writer.write("\n");
+		writer.close();
 		
 		for(MetricMD metric : metrics){
 			metric.getFout().close();
