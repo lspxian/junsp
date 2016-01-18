@@ -44,6 +44,7 @@ public class MultiDomainAsOneDomain extends AbstractMultiDomainLinkMapping {
 	public boolean linkMapping(VirtualNetwork vNet,
 			Map<VirtualNode, SubstrateNode> nodeMapping) {
 		
+//		this.localPath="tmp/MultiDomainAsOneDomain-"+vNet.getId()+".lp";	// print mcf to file TODO
 		Domain newDomain = merge(domains);
 		
 		Map<String, String> solution = this.linkMappingWithoutUpdateLocal(vNet, nodeMapping, newDomain);
@@ -213,11 +214,11 @@ public class MultiDomainAsOneDomain extends AbstractMultiDomainLinkMapping {
 					if(tmpsl instanceof InterLink)	k=10;
 					else k=1;
 					//objective
-//					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k;
-					obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
+					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k;
+//					obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-//					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k;
-					obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
+					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k;
+//					obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 					
 					//integer in the <general>
