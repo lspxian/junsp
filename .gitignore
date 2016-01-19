@@ -3,5 +3,7 @@
 bin/*
 /bin/
 /tmp/
+/res/
+/graphTMP/
 output.txt
 ILP-LP-Models/vne-mcf.lp

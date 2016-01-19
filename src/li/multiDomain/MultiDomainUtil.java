@@ -93,12 +93,18 @@ public class MultiDomainUtil {
 	//TODO we can take 7 min distance as inter links instead of random
 	public static void randomInterLinks(List<Domain> multiDomain){
 		
+		//generate inter links
+		double alpha = 0.9;	//alpha increases the probability of edges between any nodes in the graph
+		double beta = 0.06;	//beta yields a larger ratio of long edges to short edges.
+				
 		//max and min distance for all the domains
-		double maxDistance=0, minDistance=10000, distance=0, ax,ay,bx,by;
 		for(int i=0;i<multiDomain.size();i++){
 			Domain startDomain = multiDomain.get(i);
 			for(int j=i+1;j<multiDomain.size();j++){
 				Domain endDomain = multiDomain.get(j);
+				
+				double maxDistance=0, minDistance=10000, distance=0, ax,ay,bx,by;
+				
 				for(SubstrateNode start : startDomain.getVertices()){
 					for(SubstrateNode end : endDomain.getVertices()){
 						ax = start.getCoordinateX()+startDomain.getCoordinateX()*100;
@@ -112,17 +118,6 @@ public class MultiDomainUtil {
 					}
 				}
 				
-			}
-		}
-		
-		//generate inter links
-		double alpha = 0.6;	//alpha increases the probability of edges between any nodes in the graph
-		double beta = 0.07;	//beta yields a larger ratio of long edges to short edges.
-		
-		for(int i=0;i<multiDomain.size();i++){
-			Domain startDomain = multiDomain.get(i);
-			for(int j=i+1;j<multiDomain.size();j++){
-				Domain endDomain = multiDomain.get(j);
 				//for each pair of domain, generate inter links by Waxman
 				for(SubstrateNode start : startDomain.getVertices()){
 					for(SubstrateNode end : endDomain.getVertices()){
@@ -142,18 +137,21 @@ public class MultiDomainUtil {
 						}
 					}
 				}
+				
 			}
 		}
+		
+		
 	}
 	
 	public static void staticInterLinksMinN(List<Domain> multiDomain,int n){
 			
-		TreeMap<Double,Pair<SubstrateNode>> distances = new TreeMap<Double,Pair<SubstrateNode>>();
 		for(int i=0;i<multiDomain.size();i++){
 			Domain startDomain = multiDomain.get(i);
 			for(int j=i+1;j<multiDomain.size();j++){
 				Domain endDomain = multiDomain.get(j);
 				
+				TreeMap<Double,Pair<SubstrateNode>> distances = new TreeMap<Double,Pair<SubstrateNode>>();
 				double distance=0, ax,ay,bx,by;
 				for(SubstrateNode start : startDomain.getVertices()){
 					for(SubstrateNode end : endDomain.getVertices()){
@@ -194,8 +192,8 @@ public class MultiDomainUtil {
 		d2.addInterLink(il);
 		il= new InterLink(d1.getNodeFromID(33),d2.getNodeFromID(128),true);
 		d1.addInterLink(il);
-		d2.addInterLink(il);*/
-		
+		d2.addInterLink(il);
+		*/
 		
 		il= new InterLink(d1.getNodeFromID(5),d2.getNodeFromID(139),true);
 		d1.addInterLink(il);

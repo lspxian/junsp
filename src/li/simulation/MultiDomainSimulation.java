@@ -25,6 +25,7 @@ import vnreal.algorithms.linkmapping.MDasOD2;
 import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
 import vnreal.algorithms.linkmapping.MultiDomainRanking;
 import vnreal.algorithms.linkmapping.MultiDomainRanking2;
+import vnreal.algorithms.linkmapping.MultiDomainRanking3;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.linkmapping.Shen2014;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
@@ -42,7 +43,7 @@ public class MultiDomainSimulation {
 	private ArrayList<VirtualNetwork> mappedVNs;
 	private ArrayList<VnEvent> events;
 	private ArrayList<MetricMD> metrics;
-	private double simulationTime = 30000.0;
+	private double simulationTime = 5000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;
@@ -79,18 +80,26 @@ public class MultiDomainSimulation {
 		
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
+//		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
+//		multiDomain.add(new Domain(0,0,"sndlib/germany50", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/ta2", true));
+		
 		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
 		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
-//		multiDomain.add(new Domain(0,0,"sndlib/germany50", true));
-//		multiDomain.add(new Domain(1,0,"sndlib/zib54", true));
+		multiDomain.add(new Domain(1,1,"sndlib/germany50", true));
+		multiDomain.add(new Domain(0,1,"sndlib/zib54", true));
+		
+//		multiDomain.add(new Domain(1,1,"sndlib/cost266", true));
+//		multiDomain.add(new Domain(0,1,"sndlib/norway", true));
 		
 		//use gt-itm to create net
 //		multiDomain.add(new Domain(0,0, true));
 //		multiDomain.add(new Domain(1,0, true));
 
 //		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
-		MultiDomainUtil.staticInterLinksMinN(multiDomain,3);
-//		MultiDomainUtil.randomInterLinks(multiDomain);
+//		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
+		MultiDomainUtil.randomInterLinks(multiDomain);
 		
 		
 	}
@@ -100,16 +109,16 @@ public class MultiDomainSimulation {
 		this.accepted=0;
 		this.rejected=0;
 		this.lambda=lambda;
-/*		
+		/*
 		vns = new ArrayList<VirtualNetwork>();
 		for(int i=100;i<400;i++){
 			VirtualNetwork vn = new VirtualNetwork();
-//			vn.alt2network("data/vir"+i);
-			vn.alt2network("data/vir"+new Random().nextInt(500));
+			vn.alt2network("data/vir"+i);
+//			vn.alt2network("data/vir"+new Random().nextInt(500));
 //			vn.alt2network("data/vhr2");
 			vn.addAllResource(true);
-//			vn.scale(2, 1);
-			vn.myExtend();
+			vn.scale(2, 2);
+//			vn.myExtend();
 			//System.out.println(vn);		//print vn
 			vns.add(vn);
 		}
@@ -129,7 +138,7 @@ public class MultiDomainSimulation {
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/sub");
 			vn.addAllResource(true);
-			vn.scale(2, 1);
+			vn.scale(2, 2);
 //			vn.myExtend();
 			
 			double departureTime = time+vn.getLifetime();
@@ -154,13 +163,13 @@ public class MultiDomainSimulation {
 		
 		for(VnEvent currentEvent : events){
 			
+			System.out.println("/------------------------------------/");
+			System.out.println("New event at time :	"+currentEvent.getAoDTime()+" for vn:"+currentEvent.getConcernedVn().getId());
+			System.out.println("At this moment, accepted:"+this.accepted+" rejected:"+this.rejected);
+			System.out.println(currentEvent.getConcernedVn());
+
 			if(currentEvent.getFlag()==0){
-				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,30);
-				
-				System.out.println("/------------------------------------/");
-				System.out.println("New event at time :	"+currentEvent.getAoDTime()+" for vn:"+currentEvent.getConcernedVn().getId());
-				System.out.println("At this moment, accepted:"+this.accepted+" rejected:"+this.rejected);
-				System.out.println(currentEvent.getConcernedVn());
+				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,35);
 				
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
 					Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
@@ -185,6 +194,9 @@ public class MultiDomainSimulation {
 						break;
 					case "MultiDomainRanking2" : 
 						method = new MultiDomainRanking2(multiDomain);
+						break;
+					case "MultiDomainRanking3" : 
+						method = new MultiDomainRanking3(multiDomain);
 						break;
 					case "AS_MCF" : 
 						method = new AS_MCF(multiDomain);
@@ -221,8 +233,10 @@ public class MultiDomainSimulation {
 //				System.out.println(currentEvent.getConcernedVn());
 				NodeLinkDeletion.multiDomainFreeResource(currentEvent.getConcernedVn(), multiDomain);
 			}
-//			System.out.println(multiDomain.get(0));
-//			System.out.println(multiDomain.get(1));
+		/*	
+			for(int i=0;i<multiDomain.size();i++){
+				System.out.println(multiDomain.get(i));
+			}*/
 			
 			for(MetricMD metric : metrics){ //write data to file TODO
 				double value = metric.calculate();
