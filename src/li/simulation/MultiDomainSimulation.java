@@ -43,7 +43,7 @@ public class MultiDomainSimulation {
 	private ArrayList<VirtualNetwork> mappedVNs;
 	private ArrayList<VnEvent> events;
 	private ArrayList<MetricMD> metrics;
-	private double simulationTime = 5000.0;
+	private double simulationTime = 30000.0;
 	private double time = 0.0;
 	private int accepted = 0;
 	private int rejected = 0;

@@ -94,7 +94,7 @@ public class MultiDomainUtil {
 	public static void randomInterLinks(List<Domain> multiDomain){
 		
 		//generate inter links
-		double alpha = 0.9;	//alpha increases the probability of edges between any nodes in the graph
+		double alpha = 1.0;	//alpha increases the probability of edges between any nodes in the graph
 		double beta = 0.06;	//beta yields a larger ratio of long edges to short edges.
 				
 		//max and min distance for all the domains
