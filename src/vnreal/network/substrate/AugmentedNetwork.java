@@ -11,10 +11,10 @@ public class AugmentedNetwork extends SubstrateNetwork {
 		super();
 	}
 	
-	public AugmentedNetwork(Domain domain){
+	public AugmentedNetwork(SubstrateNetwork sNet){
 		super();
-		this.copy(domain);
-		this.root = domain;
+		this.copy(sNet);
+		this.root = sNet;
 	}
 
 
@@ -38,15 +38,6 @@ public class AugmentedNetwork extends SubstrateNetwork {
 			}
 		}
 		return false;
-	}
-	
-	public int getInterLinkCount(){
-		int nomber = 0;
-		for(SubstrateLink slink : this.getEdges()){
-			if(slink instanceof InterLink)
-				nomber++;
-		}
-		return nomber;
 	}
 	
 	public String toString(){
