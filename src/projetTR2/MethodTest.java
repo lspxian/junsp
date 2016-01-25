@@ -8,6 +8,7 @@ import java.util.Map;
 
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
+import vnreal.network.substrate.AugmentedNetwork;
 import vnreal.network.substrate.MetaNode;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
@@ -30,6 +31,8 @@ public class MethodTest {
 			vns.add(vn);
 		}
 	   List<MetaNode> mn = new ArrayList<MetaNode>();
+	   AugmentedNetwork an = new AugmentedNetwork();
+	   an.setRoot(sn);
 		
 		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
@@ -54,13 +57,16 @@ public class MethodTest {
 				mnode.setCoordinateY(currNode.getCoordinateY());
 				//mnode.addResource(currNode.get().)
 				mn.add(mnode);
+				an.addVertex(mnode);
+			
+				
 				
 			}
 			
 			//link mapping
 			// vous utilisez les fichiers tr2mcf. Vous n'aurez pas de collision avec moi.
-			MultiCommodityFlow mcf = new MultiCommodityFlow(sn, "ILP-LP-Models/tr2mcf.lp", "pytest/tr2mcf.lp");
-			mcf.linkMapping(vns.get(i), nodeMapping);
+			//MultiCommodityFlow mcf = new MultiCommodityFlow(sn, "ILP-LP-Models/tr2mcf.lp", "pytest/tr2mcf.lp");
+			//mcf.linkMapping(vns.get(i), nodeMapping);
 			
 		}
 		
