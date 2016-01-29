@@ -9,15 +9,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SimulationTest {
-
+	
+	public static int c;
+	
 	public static void main(String[] args) throws IOException {
+		
 		
 		FileWriter writer = new FileWriter("resultat.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
 		writer.close();
 		
-		for(int c=0;c<20;c++){
+		for(c=0;c<20;c++){
 			
 			MultiDomainSimulation simulation = new MultiDomainSimulation();
 			
@@ -34,7 +37,11 @@ public class SimulationTest {
 			}
 			
 			writer = new FileWriter("resultat.txt",true);
-			
+			for(int i=0;i<simulation.getMultiDomain().size();i++){
+				writer.write(" v:"+simulation.getMultiDomain().get(i).getVertexCount());
+				writer.write(" e:"+simulation.getMultiDomain().get(i).getEdgeCount());
+			}
+			writer.write("\n");
 			writer.write("Number:"+c);
 			for(int i=0;i<simulation.getMultiDomain().size();i++){
 				writer.write(" inter:"+simulation.getMultiDomain().get(i).getInterLinkCount());				

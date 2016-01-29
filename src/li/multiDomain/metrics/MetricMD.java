@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import li.simulation.MultiDomainSimulation;
+import li.simulation.SimulationTest;
 
 public abstract class MetricMD {
 	protected MultiDomainSimulation simulation;
@@ -30,7 +31,7 @@ public abstract class MetricMD {
 	
 	public MetricMD(MultiDomainSimulation simulation, String method, int lambda) throws IOException{
 		this.simulation = simulation;
-		this.fout = new BufferedWriter(new FileWriter("evaluationData/"+method+"_"+this.name()+"_l"+lambda+".txt"));
+		this.fout = new BufferedWriter(new FileWriter("evaluationData/"+method+"_"+this.name()+"_l"+lambda+"_c"+SimulationTest.c+".txt"));
 	}
 	
 	public abstract String name();
