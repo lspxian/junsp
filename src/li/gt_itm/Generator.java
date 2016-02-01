@@ -21,7 +21,7 @@ public class Generator {
 		pw.println("geo 1 "+new Random().nextInt(100));
 		//node number, scale, method, proba connect
 //		pw.println("40 100 3 0.15");
-		pw.println("40 100 2 1 0.12 0.5");
+		pw.println("30 100 4 0.3 0.01 1");
 		pw.close();
 		runShellCmd("./gt-itm/itm gt-itm/subCmd");
 		runShellCmd("./gt-itm/sgb2alt gt-itm/subCmd-0.gb gt-itm/sub");

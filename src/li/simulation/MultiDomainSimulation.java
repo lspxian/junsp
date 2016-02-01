@@ -94,12 +94,14 @@ public class MultiDomainSimulation {
 //		multiDomain.add(new Domain(0,1,"sndlib/norway", true));
 		
 		//use gt-itm to create net
-//		multiDomain.add(new Domain(0,0, true));
-//		multiDomain.add(new Domain(1,0, true));
+	/*	multiDomain.add(new Domain(0,0, true));
+		multiDomain.add(new Domain(1,0, true));
+		multiDomain.add(new Domain(1,1, true));
+		multiDomain.add(new Domain(0,1, true));*/
 
 //		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
-//		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
-		MultiDomainUtil.randomInterLinks(multiDomain);
+		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
+//		MultiDomainUtil.randomInterLinks(multiDomain);
 		
 		
 	}

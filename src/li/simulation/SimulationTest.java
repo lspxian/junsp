@@ -61,7 +61,7 @@ public class SimulationTest {
 				simulation.runSimulation("MultiDomainAsOneDomain");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();
-				
+				/*
 				PrintStream shen = new PrintStream(new FileOutputStream("res/Shen_l"+i+"_c"+c+".txt"));
 				System.setOut(shen);
 				System.out.println(new SimpleDateFormat().format(new Date()));
@@ -88,7 +88,7 @@ public class SimulationTest {
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("MultiDomainRanking3");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();
+				simulation.reset();*/
 				
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 				System.out.println("job done");
