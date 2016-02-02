@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.collections15.Factory;
@@ -46,6 +47,7 @@ import vnreal.demands.AbstractDemand;
 import vnreal.network.Network;
 import vnreal.network.substrate.SubstrateNode;
 import edu.uci.ics.jung.graph.util.Pair;
+import li.multiDomain.Domain;
 
 /**
  * A virtual network built upon the physical substrate.
@@ -254,6 +256,25 @@ public final class VirtualNetwork extends
 		}
 		lifetime = MiscelFunctions.negExponential(1.0/mu);
 		return true;
+	}
+	
+	public void reconfigResource(List<Domain> multiDomain){
+		for(Domain domain : multiDomain){
+			for(VirtualNode vnode : this.getVertices()){
+				if(domain.getCoordinateX()<=vnode.getCoordinateX()/100.0&&
+						vnode.getCoordinateX()/100.0<domain.getCoordinateX()+1&&
+						domain.getCoordinateY()<=vnode.getCoordinateY()/100.0&&
+						vnode.getCoordinateY()/100.0<domain.getCoordinateY()+1){
+					vnode.setDomain(domain); 	//the virtual node belong to a domain
+				}
+			}
+		}
+		for(VirtualLink vl : this.getEdges()){
+			VirtualNode vSource = this.getEndpoints(vl).getFirst();
+			VirtualNode vDest = this.getEndpoints(vl).getSecond();
+			if(vSource.getDomain().equals(vDest.getDomain()))
+				vl.setBW();
+		}
 	}
 	
 	public VirtualNode getNodeFromID(int id){

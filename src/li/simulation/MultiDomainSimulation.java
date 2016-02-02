@@ -100,8 +100,8 @@ public class MultiDomainSimulation {
 		multiDomain.add(new Domain(0,1, true));*/
 
 //		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
-		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
-//		MultiDomainUtil.randomInterLinks(multiDomain);
+//		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
+		MultiDomainUtil.randomInterLinks(multiDomain);
 		
 		
 	}
@@ -142,6 +142,7 @@ public class MultiDomainSimulation {
 			vn.addAllResource(true);
 			vn.scale(2, 2);
 //			vn.myExtend();
+			vn.reconfigResource(multiDomain);
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
@@ -168,12 +169,12 @@ public class MultiDomainSimulation {
 			System.out.println("/------------------------------------/");
 			System.out.println("New event at time :	"+currentEvent.getAoDTime()+" for vn:"+currentEvent.getConcernedVn().getId());
 			System.out.println("At this moment, accepted:"+this.accepted+" rejected:"+this.rejected);
-			System.out.println(currentEvent.getConcernedVn());
 
 			if(currentEvent.getFlag()==0){
 				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,35);
 				
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
+					System.out.println(currentEvent.getConcernedVn());
 					Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 					System.out.println(nodeMapping);
 					//System.out.println("node mapping succes, virtual netwotk "+j);
@@ -232,7 +233,7 @@ public class MultiDomainSimulation {
 			}
 			else{
 				System.out.println("Liberation Ressources");
-//				System.out.println(currentEvent.getConcernedVn());
+				System.out.println(currentEvent.getConcernedVn());
 				NodeLinkDeletion.multiDomainFreeResource(currentEvent.getConcernedVn(), multiDomain);
 			}
 		/*	

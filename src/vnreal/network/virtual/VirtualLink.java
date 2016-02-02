@@ -123,6 +123,13 @@ public class VirtualLink extends Link<AbstractDemand> {
 		return true;
 	}
 	
+	public void setBW(){
+		for(AbstractDemand d : this){
+			if(d instanceof BandwidthDemand)
+				((BandwidthDemand) d).setDemandedBandwidth(((BandwidthDemand) d).getDemandedBandwidth()/10);
+		}
+	}
+	
 	public double getCost(SubstrateNetwork d){
 		Double cost = 0.;
 		if(solution.get(d).isEmpty()){
