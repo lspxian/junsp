@@ -6,7 +6,7 @@ import vnreal.network.Node;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.CpuResource;
 
-public class MetaNode extends Node<AbstractResource> {
+public class MetaNode extends SubstrateNode {
 	public MetaNode() {
 		super();
 	}
