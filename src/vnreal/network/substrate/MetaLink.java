@@ -50,7 +50,7 @@ import vnreal.network.Link;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
-public class MetaLink  extends Link<AbstractResource> implements Comparable<MetaLink>{
+public class MetaLink  extends SubstrateLink implements Comparable<SubstrateLink>{
 	public MetaLink() {
 		super();
 	}
@@ -83,12 +83,12 @@ public class MetaLink  extends Link<AbstractResource> implements Comparable<Meta
 		return true;
 	}
 
-	@Override
+	/*@Override
 	public int compareTo(MetaLink o) {
 		if(this.getId()>o.getId())	return 1;
 		else if(this.getId()<o.getId())	return -1;
 		else return 0;
-	}
+	}*/
 
 
 }

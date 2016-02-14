@@ -3,6 +3,7 @@ package projetTR2;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,9 +31,8 @@ public class MethodTest {
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 		}
-	   List<MetaNode> mn = new ArrayList<MetaNode>();
-	   AugmentedNetwork an = new AugmentedNetwork();
-	   an.setRoot(sn);
+	   //List<MetaNode> mn = new ArrayList<MetaNode>();
+	   AugmentedNetwork an = new AugmentedNetwork(sn);
 		
 		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
@@ -55,13 +55,12 @@ public class MethodTest {
 				MetaNode mnode = new MetaNode();
 				mnode.setCoordinateX(currNode.getCoordinateX());
 				mnode.setCoordinateY(currNode.getCoordinateY());
-				//mnode.addResource(currNode.get().)
-				mn.add(mnode);
+				//mnode.addResource(currNode.)
+				//mn.add(mnode);
 				an.addVertex(mnode);
-			
-				
 				
 			}
+			System.out.println(an);
 			
 			//link mapping
 			// vous utilisez les fichiers tr2mcf. Vous n'aurez pas de collision avec moi.
