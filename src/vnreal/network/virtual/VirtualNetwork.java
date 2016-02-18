@@ -34,6 +34,7 @@ package vnreal.network.virtual;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -44,8 +45,15 @@ import org.apache.commons.collections15.Factory;
 
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.demands.AbstractDemand;
+import vnreal.demands.BandwidthDemand;
+import vnreal.demands.CpuDemand;
+import vnreal.mapping.Mapping;
 import vnreal.network.Network;
+import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNode;
+import vnreal.resources.AbstractResource;
+import vnreal.resources.BandwidthResource;
+import vnreal.resources.CpuResource;
 import edu.uci.ics.jung.graph.util.Pair;
 import li.multiDomain.Domain;
 
@@ -307,6 +315,54 @@ public final class VirtualNetwork extends
 			if(vnode.getCoordinateX()>50)
 				vnode.setCoordinateX(vnode.getCoordinateX()+100);
 		}
+	}
+	
+	public double getTotalCost(List<Domain> domains){
+		CpuDemand tmpCpuDem;
+		BandwidthDemand tmpBwDem;
+		double nodeCost=0.0, linkCost=0.0;
+		
+		ArrayList<SubstrateLink> allLinks = new ArrayList<SubstrateLink>();
+		for(Domain d : domains){
+			for(SubstrateLink link: d.getAllLinks()){
+				if(!allLinks.contains(link))
+					allLinks.add(link);
+			}
+		}
+		
+		for(VirtualNode vnode : this.getVertices()){
+			for(AbstractDemand ad : vnode){
+				if(ad instanceof CpuDemand){
+					tmpCpuDem = (CpuDemand)ad;
+					nodeCost += tmpCpuDem.getDemandedCycles();
+					break;
+				}
+			}
+		}
+		
+		for(VirtualLink vl : this.getEdges()){
+			for(AbstractDemand ad : vl){
+				if(ad instanceof BandwidthDemand){
+					tmpBwDem = (BandwidthDemand)ad;
+					for (SubstrateLink sl : allLinks) {
+						for (AbstractResource res : sl) {
+							if (res instanceof BandwidthResource) {
+								for (Mapping f : res.getMappings()) {
+									if(tmpBwDem.equals((BandwidthDemand) f.getDemand())){
+										linkCost += tmpBwDem.getDemandedBandwidth();
+										break;
+									}
+								}
+								break;
+							}
+						}
+					}
+					
+					break;
+				}
+			}
+		}
+		return (nodeCost + linkCost);
 	}
 	
 }

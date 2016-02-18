@@ -13,6 +13,9 @@ import vnreal.network.virtual.VirtualNode;
 
 public class MappedRevenueMD extends MetricMD {
 
+	public MappedRevenueMD(MultiDomainSimulation simulation) throws IOException {
+		super(simulation);
+	}
 	public MappedRevenueMD(MultiDomainSimulation simulation, String method) throws IOException {
 		super(simulation, method);
 	}

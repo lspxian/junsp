@@ -41,6 +41,7 @@ public class MultiDomainSimulation {
 	private List<Domain> multiDomain;
 	private ArrayList<VirtualNetwork> vns;
 	private ArrayList<VirtualNetwork> mappedVNs;
+	private double totalCost;
 	private ArrayList<VnEvent> events;
 	private ArrayList<MetricMD> metrics;
 	private double simulationTime = 30000.0;
@@ -74,6 +75,10 @@ public class MultiDomainSimulation {
 
 	public ArrayList<VirtualNetwork> getMappedVNs() {
 		return mappedVNs;
+	}
+
+	public double getTotalCost() {
+		return totalCost;
 	}
 
 	public MultiDomainSimulation() throws IOException{
@@ -111,6 +116,7 @@ public class MultiDomainSimulation {
 		this.accepted=0;
 		this.rejected=0;
 		this.lambda=lambda;
+		this.totalCost=0.0;
 		/*
 		vns = new ArrayList<VirtualNetwork>();
 		for(int i=100;i<400;i++){
@@ -212,6 +218,7 @@ public class MultiDomainSimulation {
 					if(method.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
+						this.totalCost=this.totalCost+currentEvent.getConcernedVn().getTotalCost(multiDomain);
 //						System.out.println(multiDomain.get(0));
 //						System.out.println(multiDomain.get(1));
 					}
@@ -275,6 +282,7 @@ public class MultiDomainSimulation {
 		MultiDomainUtil.reset(this.multiDomain);
 		this.accepted = 0;
 		this.rejected = 0;
+		this.totalCost=0.0;
 		mappedVNs = new ArrayList<VirtualNetwork>();
 		metrics = new ArrayList<MetricMD>();
 	}
