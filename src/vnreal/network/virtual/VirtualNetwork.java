@@ -319,7 +319,7 @@ public final class VirtualNetwork extends
 	
 	public double getTotalCost(List<Domain> domains){
 		CpuDemand tmpCpuDem;
-		BandwidthDemand tmpBwDem;
+		BandwidthDemand tmpBwDem,currentBW;
 		double nodeCost=0.0, linkCost=0.0;
 		
 		ArrayList<SubstrateLink> allLinks = new ArrayList<SubstrateLink>();
@@ -348,8 +348,9 @@ public final class VirtualNetwork extends
 						for (AbstractResource res : sl) {
 							if (res instanceof BandwidthResource) {
 								for (Mapping f : res.getMappings()) {
-									if(tmpBwDem.equals((BandwidthDemand) f.getDemand())){
-										linkCost += tmpBwDem.getDemandedBandwidth();
+									currentBW = (BandwidthDemand) f.getDemand();
+									if(tmpBwDem.getOwner().equals(currentBW.getOwner())){
+										linkCost += currentBW.getDemandedBandwidth();
 										break;
 									}
 								}
