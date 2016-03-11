@@ -10,6 +10,7 @@ import java.util.Map;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.network.substrate.AugmentedNetwork;
+import vnreal.network.substrate.MetaLink;
 import vnreal.network.substrate.MetaNode;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
@@ -31,15 +32,15 @@ public class MethodTest {
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 		}
-	   //List<MetaNode> mn = new ArrayList<MetaNode>();
 	   AugmentedNetwork an = new AugmentedNetwork(sn);
+	   List<SubstrateNode> candidates = new LinkedList<SubstrateNode>();
 		
 		for(int i=0;i<1;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
-			/*AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,80,true,false);
+			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,80,true,false);
 			
-			if(arnm.nodeMapping(vns.get(i))){
+			/*if(arnm.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
 			}else{
 				System.out.println("node resource error, virtual network "+i);
@@ -55,9 +56,16 @@ public class MethodTest {
 				MetaNode mnode = new MetaNode();
 				mnode.setCoordinateX(currNode.getCoordinateX());
 				mnode.setCoordinateY(currNode.getCoordinateY());
-				//mnode.addResource(currNode.)
-				//mn.add(mnode);
+				//mnode.addResource(currNode.);
 				an.addVertex(mnode);
+				candidates = arnm.SearchCandidates(currNode);
+				System.out.println(candidates);
+				for (SubstrateNode node : candidates ){
+					MetaLink mlink = new MetaLink();
+					mlink.addResource(1000);
+					an.addEdge(mlink, mnode, node);
+				}
+				
 				
 			}
 			System.out.println(an);

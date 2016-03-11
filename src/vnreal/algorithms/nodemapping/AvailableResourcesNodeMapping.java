@@ -304,5 +304,53 @@ public class AvailableResourcesNodeMapping extends AbstractNodeMapping {
 			return false;
 		}
 	}
+	
+	public List<SubstrateNode> SearchCandidates(VirtualNode vNode){
+		List<SubstrateNode> unmappedSnodes = super.getUnmappedsNodes();
+		List<SubstrateNode> allNodes = new LinkedList<SubstrateNode>(
+				sNet.getVertices());
+		//SubstrateNode mappedSnode = null;
 
+		//VirtualNode currVnode;
+		List<SubstrateNode> candidates = new LinkedList<SubstrateNode>();
+
+		// Move through the virtual nodes
+		//for (Iterator<VirtualNode> itt = vNet.getVertices().iterator(); itt
+				//.hasNext();) {
+			//currVnode = itt.next();
+			// Find the candidate substrate nodes accomplishing the virtual node
+			// demands
+			for (AbstractDemand dem : vNode) { //TODO
+				if (dem instanceof CpuDemand) {
+					//System.out.println(((CpuDemand)dem).getDemandedCycles());
+					if (!nodeOverload) {
+						if (!withDist) {
+							candidates = findFulfillingNodes(dem,
+									unmappedSnodes);
+						} else {
+							candidates = findFulfillingNodes(vNode, dem,
+									unmappedSnodes, distance);
+						}
+					} else {
+						if (!withDist) {
+							candidates = findFulfillingNodes(dem, allNodes);
+						} else {
+							candidates = findFulfillingNodes(vNode, dem,
+									allNodes, distance);
+						}
+					}
+
+				}
+				
+				if(candidates.isEmpty()){
+					System.out.println("not available resource : "+vNode.getId());
+					//TODO
+					for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+						NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+					}
+				}
+			}
+			return candidates;
+
+	}
 }
