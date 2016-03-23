@@ -1,0 +1,159 @@
+\Problem : vne
+Minimize
+obj :  + 0.11648225555282353 vs37vd39ss0sd1 + 0.11648225555282353 vs37vd39ss1sd0 + 0.11885129371623543 vs37vd39ss0sd2 + 0.11885129371623543 vs37vd39ss2sd0 + 0.12534617487784658 vs37vd39ss0sd3 + 0.12534617487784658 vs37vd39ss3sd0 + 0.11388915600859056 vs37vd39ss0sd7 + 0.11388915600859056 vs37vd39ss7sd0 + 0.1286072375505624 vs37vd39ss1sd2 + 0.1286072375505624 vs37vd39ss2sd1 + 0.11016114904930588 vs37vd39ss1sd5 + 0.11016114904930588 vs37vd39ss5sd1 + 0.11878870955608863 vs37vd39ss1sd6 + 0.11878870955608863 vs37vd39ss6sd1 + 0.10206617208764535 vs37vd39ss1sd8 + 0.10206617208764535 vs37vd39ss8sd1 + 0.1418023627075351 vs37vd39ss2sd3 + 0.1418023627075351 vs37vd39ss3sd2 + 0.11685962373371925 vs37vd39ss2sd4 + 0.11685962373371925 vs37vd39ss4sd2 + 0.11877282566001152 vs37vd39ss2sd6 + 0.11877282566001152 vs37vd39ss6sd2 + 0.14192414468034112 vs37vd39ss3sd4 + 0.14192414468034112 vs37vd39ss4sd3 + 0.10480980545435772 vs37vd39ss3sd7 + 0.10480980545435772 vs37vd39ss7sd3 + 0.12757172094359268 vs37vd39ss3sd8 + 0.12757172094359268 vs37vd39ss8sd3 + 0.12632664308190075 vs37vd39ss4sd5 + 0.12632664308190075 vs37vd39ss5sd4 + 0.11537774602607608 vs37vd39ss4sd7 + 0.11537774602607608 vs37vd39ss7sd4 + 0.13420334469636164 vs37vd39ss4sd9 + 0.13420334469636164 vs37vd39ss9sd4 + 0.10527797325826882 vs37vd39ss5sd6 + 0.10527797325826882 vs37vd39ss6sd5 + 0.13177683613199936 vs37vd39ss5sd9 + 0.13177683613199936 vs37vd39ss9sd5 + 0.10180734543005937 vs37vd39ss5sd10 + 0.10180734543005937 vs37vd39ss10sd5 + 0.10031197504199664 vs37vd39ss6sd10 + 0.10031197504199664 vs37vd39ss10sd6 + 0.1120078181646228 vs37vd39ss7sd8 + 0.1120078181646228 vs37vd39ss8sd7 + 0.10199585184334609 vs37vd39ss7sd9 + 0.10199585184334609 vs37vd39ss9sd7 + 0.12385293118022814 vs37vd39ss8sd9 + 0.12385293118022814 vs37vd39ss9sd8 + 0.11877977434183033 vs37vd39ss8sd10 + 0.11877977434183033 vs37vd39ss10sd8 + 0.1102141156581284 vs37vd39ss9sd10 + 0.1102141156581284 vs37vd39ss10sd9 + 0.08050159822965329 vs37vd38ss0sd1 + 0.08050159822965329 vs37vd38ss1sd0 + 0.08213885497332284 vs37vd38ss0sd2 + 0.08213885497332284 vs37vd38ss2sd0 + 0.08662750701169497 vs37vd38ss0sd3 + 0.08662750701169497 vs37vd38ss3sd0 + 0.0787094912972401 vs37vd38ss0sd7 + 0.0787094912972401 vs37vd38ss7sd0 + 0.08888124734179734 vs37vd38ss1sd2 + 0.08888124734179734 vs37vd38ss2sd1 + 0.07613304291882088 vs37vd38ss1sd5 + 0.07613304291882088 vs37vd38ss5sd1 + 0.0820956026780117 vs37vd38ss1sd6 + 0.0820956026780117 vs37vd38ss6sd1 + 0.07053855490042588 vs37vd38ss1sd8 + 0.07053855490042588 vs37vd38ss8sd1 + 0.09800047892720305 vs37vd38ss2sd3 + 0.09800047892720305 vs37vd38ss3sd2 + 0.08076239968425207 vs37vd38ss2sd4 + 0.08076239968425207 vs37vd38ss4sd2 + 0.08208462522042169 vs37vd38ss2sd6 + 0.08208462522042169 vs37vd38ss6sd2 + 0.09808464319239449 vs37vd38ss3sd4 + 0.09808464319239449 vs37vd38ss4sd3 + 0.07243469667694212 vs37vd38ss3sd7 + 0.07243469667694212 vs37vd38ss7sd3 + 0.08816559549028759 vs37vd38ss3sd8 + 0.08816559549028759 vs37vd38ss8sd3 + 0.08730511457574086 vs37vd38ss4sd5 + 0.08730511457574086 vs37vd38ss5sd4 + 0.07973826494990988 vs37vd38ss4sd7 + 0.07973826494990988 vs37vd38ss7sd4 + 0.09274875116856626 vs37vd38ss4sd9 + 0.09274875116856626 vs37vd38ss9sd4 + 0.07275825030556686 vs37vd38ss5sd6 + 0.07275825030556686 vs37vd38ss6sd5 + 0.0910717762797986 vs37vd38ss5sd9 + 0.0910717762797986 vs37vd38ss9sd5 + 0.07035967821658058 vs37vd38ss5sd10 + 0.07035967821658058 vs37vd38ss10sd5 + 0.06932621860839368 vs37vd38ss6sd10 + 0.06932621860839368 vs37vd38ss10sd6 + 0.07740928722297531 vs37vd38ss7sd8 + 0.07740928722297531 vs37vd38ss8sd7 + 0.07048995615010872 vs37vd38ss7sd9 + 0.07048995615010872 vs37vd38ss9sd7 + 0.08559551717226292 vs37vd38ss8sd9 + 0.08559551717226292 vs37vd38ss9sd8 + 0.08208942749686585 vs37vd38ss8sd10 + 0.08208942749686585 vs37vd38ss10sd8 + 0.07616964846567247 vs37vd38ss9sd10 + 0.07616964846567247 vs37vd38ss10sd9
+Subject To
+ + vs37vd39ss0sd1 - vs37vd39ss1sd0 + vs37vd39ss0sd2 - vs37vd39ss2sd0 + vs37vd39ss0sd3 - vs37vd39ss3sd0 + vs37vd39ss0sd7 - vs37vd39ss7sd0 = 0
+ + vs37vd39ss1sd0 - vs37vd39ss0sd1 + vs37vd39ss1sd2 - vs37vd39ss2sd1 + vs37vd39ss1sd5 - vs37vd39ss5sd1 + vs37vd39ss1sd6 - vs37vd39ss6sd1 + vs37vd39ss1sd8 - vs37vd39ss8sd1 = 0
+ + vs37vd39ss2sd0 - vs37vd39ss0sd2 + vs37vd39ss2sd1 - vs37vd39ss1sd2 + vs37vd39ss2sd3 - vs37vd39ss3sd2 + vs37vd39ss2sd4 - vs37vd39ss4sd2 + vs37vd39ss2sd6 - vs37vd39ss6sd2 = 0
+ + vs37vd39ss3sd0 - vs37vd39ss0sd3 + vs37vd39ss3sd2 - vs37vd39ss2sd3 + vs37vd39ss3sd4 - vs37vd39ss4sd3 + vs37vd39ss3sd7 - vs37vd39ss7sd3 + vs37vd39ss3sd8 - vs37vd39ss8sd3 = 0
+ + vs37vd39ss4sd2 - vs37vd39ss2sd4 + vs37vd39ss4sd3 - vs37vd39ss3sd4 + vs37vd39ss4sd5 - vs37vd39ss5sd4 + vs37vd39ss4sd7 - vs37vd39ss7sd4 + vs37vd39ss4sd9 - vs37vd39ss9sd4 = 0
+ + vs37vd39ss5sd1 - vs37vd39ss1sd5 + vs37vd39ss5sd4 - vs37vd39ss4sd5 + vs37vd39ss5sd6 - vs37vd39ss6sd5 + vs37vd39ss5sd9 - vs37vd39ss9sd5 + vs37vd39ss5sd10 - vs37vd39ss10sd5 = 0
+ + vs37vd39ss6sd1 - vs37vd39ss1sd6 + vs37vd39ss6sd2 - vs37vd39ss2sd6 + vs37vd39ss6sd5 - vs37vd39ss5sd6 + vs37vd39ss6sd10 - vs37vd39ss10sd6 = 0
+ + vs37vd39ss7sd0 - vs37vd39ss0sd7 + vs37vd39ss7sd3 - vs37vd39ss3sd7 + vs37vd39ss7sd4 - vs37vd39ss4sd7 + vs37vd39ss7sd8 - vs37vd39ss8sd7 + vs37vd39ss7sd9 - vs37vd39ss9sd7 = 0
+ + vs37vd39ss8sd1 - vs37vd39ss1sd8 + vs37vd39ss8sd3 - vs37vd39ss3sd8 + vs37vd39ss8sd7 - vs37vd39ss7sd8 + vs37vd39ss8sd9 - vs37vd39ss9sd8 + vs37vd39ss8sd10 - vs37vd39ss10sd8 = 0
+ + vs37vd39ss9sd4 - vs37vd39ss4sd9 + vs37vd39ss9sd5 - vs37vd39ss5sd9 + vs37vd39ss9sd7 - vs37vd39ss7sd9 + vs37vd39ss9sd8 - vs37vd39ss8sd9 + vs37vd39ss9sd10 - vs37vd39ss10sd9 = -1
+ + vs37vd39ss10sd5 - vs37vd39ss5sd10 + vs37vd39ss10sd6 - vs37vd39ss6sd10 + vs37vd39ss10sd8 - vs37vd39ss8sd10 + vs37vd39ss10sd9 - vs37vd39ss9sd10 = 1
+ + vs37vd38ss0sd1 - vs37vd38ss1sd0 + vs37vd38ss0sd2 - vs37vd38ss2sd0 + vs37vd38ss0sd3 - vs37vd38ss3sd0 + vs37vd38ss0sd7 - vs37vd38ss7sd0 = 0
+ + vs37vd38ss1sd0 - vs37vd38ss0sd1 + vs37vd38ss1sd2 - vs37vd38ss2sd1 + vs37vd38ss1sd5 - vs37vd38ss5sd1 + vs37vd38ss1sd6 - vs37vd38ss6sd1 + vs37vd38ss1sd8 - vs37vd38ss8sd1 = 0
+ + vs37vd38ss2sd0 - vs37vd38ss0sd2 + vs37vd38ss2sd1 - vs37vd38ss1sd2 + vs37vd38ss2sd3 - vs37vd38ss3sd2 + vs37vd38ss2sd4 - vs37vd38ss4sd2 + vs37vd38ss2sd6 - vs37vd38ss6sd2 = 0
+ + vs37vd38ss3sd0 - vs37vd38ss0sd3 + vs37vd38ss3sd2 - vs37vd38ss2sd3 + vs37vd38ss3sd4 - vs37vd38ss4sd3 + vs37vd38ss3sd7 - vs37vd38ss7sd3 + vs37vd38ss3sd8 - vs37vd38ss8sd3 = 0
+ + vs37vd38ss4sd2 - vs37vd38ss2sd4 + vs37vd38ss4sd3 - vs37vd38ss3sd4 + vs37vd38ss4sd5 - vs37vd38ss5sd4 + vs37vd38ss4sd7 - vs37vd38ss7sd4 + vs37vd38ss4sd9 - vs37vd38ss9sd4 = 0
+ + vs37vd38ss5sd1 - vs37vd38ss1sd5 + vs37vd38ss5sd4 - vs37vd38ss4sd5 + vs37vd38ss5sd6 - vs37vd38ss6sd5 + vs37vd38ss5sd9 - vs37vd38ss9sd5 + vs37vd38ss5sd10 - vs37vd38ss10sd5 = 0
+ + vs37vd38ss6sd1 - vs37vd38ss1sd6 + vs37vd38ss6sd2 - vs37vd38ss2sd6 + vs37vd38ss6sd5 - vs37vd38ss5sd6 + vs37vd38ss6sd10 - vs37vd38ss10sd6 = 0
+ + vs37vd38ss7sd0 - vs37vd38ss0sd7 + vs37vd38ss7sd3 - vs37vd38ss3sd7 + vs37vd38ss7sd4 - vs37vd38ss4sd7 + vs37vd38ss7sd8 - vs37vd38ss8sd7 + vs37vd38ss7sd9 - vs37vd38ss9sd7 = 0
+ + vs37vd38ss8sd1 - vs37vd38ss1sd8 + vs37vd38ss8sd3 - vs37vd38ss3sd8 + vs37vd38ss8sd7 - vs37vd38ss7sd8 + vs37vd38ss8sd9 - vs37vd38ss9sd8 + vs37vd38ss8sd10 - vs37vd38ss10sd8 = -1
+ + vs37vd38ss9sd4 - vs37vd38ss4sd9 + vs37vd38ss9sd5 - vs37vd38ss5sd9 + vs37vd38ss9sd7 - vs37vd38ss7sd9 + vs37vd38ss9sd8 - vs37vd38ss8sd9 + vs37vd38ss9sd10 - vs37vd38ss10sd9 = 0
+ + vs37vd38ss10sd5 - vs37vd38ss5sd10 + vs37vd38ss10sd6 - vs37vd38ss6sd10 + vs37vd38ss10sd8 - vs37vd38ss8sd10 + vs37vd38ss10sd9 - vs37vd38ss9sd10 = 1
+ + 14.212 vs37vd39ss0sd1 + 14.212 vs37vd39ss1sd0 + 9.822 vs37vd38ss0sd1 + 9.822 vs37vd38ss1sd0 <= 122.009
+ + 14.212 vs37vd39ss0sd2 + 14.212 vs37vd39ss2sd0 + 9.822 vs37vd38ss0sd2 + 9.822 vs37vd38ss2sd0 <= 119.577
+ + 14.212 vs37vd39ss0sd3 + 14.212 vs37vd39ss3sd0 + 9.822 vs37vd38ss0sd3 + 9.822 vs37vd38ss3sd0 <= 113.381
+ + 14.212 vs37vd39ss0sd7 + 14.212 vs37vd39ss7sd0 + 9.822 vs37vd38ss0sd7 + 9.822 vs37vd38ss7sd0 <= 124.787
+ + 14.212 vs37vd39ss1sd2 + 14.212 vs37vd39ss2sd1 + 9.822 vs37vd38ss1sd2 + 9.822 vs37vd38ss2sd1 <= 110.506
+ + 14.212 vs37vd39ss1sd5 + 14.212 vs37vd39ss5sd1 + 9.822 vs37vd38ss1sd5 + 9.822 vs37vd38ss5sd1 <= 129.01
+ + 14.212 vs37vd39ss1sd6 + 14.212 vs37vd39ss6sd1 + 9.822 vs37vd38ss1sd6 + 9.822 vs37vd38ss6sd1 <= 119.64
+ + 14.212 vs37vd39ss1sd8 + 14.212 vs37vd39ss8sd1 + 9.822 vs37vd38ss1sd8 + 9.822 vs37vd38ss8sd1 <= 139.242
+ + 14.212 vs37vd39ss2sd3 + 14.212 vs37vd39ss3sd2 + 9.822 vs37vd38ss2sd3 + 9.822 vs37vd38ss3sd2 <= 100.223
+ + 14.212 vs37vd39ss2sd4 + 14.212 vs37vd39ss4sd2 + 9.822 vs37vd38ss2sd4 + 9.822 vs37vd38ss4sd2 <= 121.615
+ + 14.212 vs37vd39ss2sd6 + 14.212 vs37vd39ss6sd2 + 9.822 vs37vd38ss2sd6 + 9.822 vs37vd38ss6sd2 <= 119.656
+ + 14.212 vs37vd39ss3sd4 + 14.212 vs37vd39ss4sd3 + 9.822 vs37vd38ss3sd4 + 9.822 vs37vd38ss4sd3 <= 100.137
+ + 14.212 vs37vd39ss3sd7 + 14.212 vs37vd39ss7sd3 + 9.822 vs37vd38ss3sd7 + 9.822 vs37vd38ss7sd3 <= 135.597
+ + 14.212 vs37vd39ss3sd8 + 14.212 vs37vd39ss8sd3 + 9.822 vs37vd38ss3sd8 + 9.822 vs37vd38ss8sd3 <= 111.403
+ + 14.212 vs37vd39ss4sd5 + 14.212 vs37vd39ss5sd4 + 9.822 vs37vd38ss4sd5 + 9.822 vs37vd38ss5sd4 <= 112.501
+ + 14.212 vs37vd39ss4sd7 + 14.212 vs37vd39ss7sd4 + 9.822 vs37vd38ss4sd7 + 9.822 vs37vd38ss7sd4 <= 123.177
+ + 14.212 vs37vd39ss4sd9 + 14.212 vs37vd39ss9sd4 + 9.822 vs37vd38ss4sd9 + 9.822 vs37vd38ss9sd4 <= 105.898
+ + 14.212 vs37vd39ss5sd6 + 14.212 vs37vd39ss6sd5 + 9.822 vs37vd38ss5sd6 + 9.822 vs37vd38ss6sd5 <= 134.994
+ + 14.212 vs37vd39ss5sd9 + 14.212 vs37vd39ss9sd5 + 9.822 vs37vd38ss5sd9 + 9.822 vs37vd38ss9sd5 <= 107.848
+ + 14.212 vs37vd39ss5sd10 + 14.212 vs37vd39ss10sd5 + 9.822 vs37vd38ss5sd10 + 9.822 vs37vd38ss10sd5 <= 139.596
+ + 14.212 vs37vd39ss6sd10 + 14.212 vs37vd39ss10sd6 + 9.822 vs37vd38ss6sd10 + 9.822 vs37vd38ss10sd6 <= 141.677
+ + 14.212 vs37vd39ss7sd8 + 14.212 vs37vd39ss8sd7 + 9.822 vs37vd38ss7sd8 + 9.822 vs37vd38ss8sd7 <= 126.883
+ + 14.212 vs37vd39ss7sd9 + 14.212 vs37vd39ss9sd7 + 9.822 vs37vd38ss7sd9 + 9.822 vs37vd38ss9sd7 <= 139.338
+ + 14.212 vs37vd39ss8sd9 + 14.212 vs37vd39ss9sd8 + 9.822 vs37vd38ss8sd9 + 9.822 vs37vd38ss9sd8 <= 114.748
+ + 14.212 vs37vd39ss8sd10 + 14.212 vs37vd39ss10sd8 + 9.822 vs37vd38ss8sd10 + 9.822 vs37vd38ss10sd8 <= 119.649
+ + 14.212 vs37vd39ss9sd10 + 14.212 vs37vd39ss10sd9 + 9.822 vs37vd38ss9sd10 + 9.822 vs37vd38ss10sd9 <= 128.948
+Bounds
+0 <= vs37vd39ss0sd1 <= 1
+0 <= vs37vd39ss1sd0 <= 1
+0 <= vs37vd39ss0sd2 <= 1
+0 <= vs37vd39ss2sd0 <= 1
+0 <= vs37vd39ss0sd3 <= 1
+0 <= vs37vd39ss3sd0 <= 1
+0 <= vs37vd39ss0sd7 <= 1
+0 <= vs37vd39ss7sd0 <= 1
+0 <= vs37vd39ss1sd2 <= 1
+0 <= vs37vd39ss2sd1 <= 1
+0 <= vs37vd39ss1sd5 <= 1
+0 <= vs37vd39ss5sd1 <= 1
+0 <= vs37vd39ss1sd6 <= 1
+0 <= vs37vd39ss6sd1 <= 1
+0 <= vs37vd39ss1sd8 <= 1
+0 <= vs37vd39ss8sd1 <= 1
+0 <= vs37vd39ss2sd3 <= 1
+0 <= vs37vd39ss3sd2 <= 1
+0 <= vs37vd39ss2sd4 <= 1
+0 <= vs37vd39ss4sd2 <= 1
+0 <= vs37vd39ss2sd6 <= 1
+0 <= vs37vd39ss6sd2 <= 1
+0 <= vs37vd39ss3sd4 <= 1
+0 <= vs37vd39ss4sd3 <= 1
+0 <= vs37vd39ss3sd7 <= 1
+0 <= vs37vd39ss7sd3 <= 1
+0 <= vs37vd39ss3sd8 <= 1
+0 <= vs37vd39ss8sd3 <= 1
+0 <= vs37vd39ss4sd5 <= 1
+0 <= vs37vd39ss5sd4 <= 1
+0 <= vs37vd39ss4sd7 <= 1
+0 <= vs37vd39ss7sd4 <= 1
+0 <= vs37vd39ss4sd9 <= 1
+0 <= vs37vd39ss9sd4 <= 1
+0 <= vs37vd39ss5sd6 <= 1
+0 <= vs37vd39ss6sd5 <= 1
+0 <= vs37vd39ss5sd9 <= 1
+0 <= vs37vd39ss9sd5 <= 1
+0 <= vs37vd39ss5sd10 <= 1
+0 <= vs37vd39ss10sd5 <= 1
+0 <= vs37vd39ss6sd10 <= 1
+0 <= vs37vd39ss10sd6 <= 1
+0 <= vs37vd39ss7sd8 <= 1
+0 <= vs37vd39ss8sd7 <= 1
+0 <= vs37vd39ss7sd9 <= 1
+0 <= vs37vd39ss9sd7 <= 1
+0 <= vs37vd39ss8sd9 <= 1
+0 <= vs37vd39ss9sd8 <= 1
+0 <= vs37vd39ss8sd10 <= 1
+0 <= vs37vd39ss10sd8 <= 1
+0 <= vs37vd39ss9sd10 <= 1
+0 <= vs37vd39ss10sd9 <= 1
+0 <= vs37vd38ss0sd1 <= 1
+0 <= vs37vd38ss1sd0 <= 1
+0 <= vs37vd38ss0sd2 <= 1
+0 <= vs37vd38ss2sd0 <= 1
+0 <= vs37vd38ss0sd3 <= 1
+0 <= vs37vd38ss3sd0 <= 1
+0 <= vs37vd38ss0sd7 <= 1
+0 <= vs37vd38ss7sd0 <= 1
+0 <= vs37vd38ss1sd2 <= 1
+0 <= vs37vd38ss2sd1 <= 1
+0 <= vs37vd38ss1sd5 <= 1
+0 <= vs37vd38ss5sd1 <= 1
+0 <= vs37vd38ss1sd6 <= 1
+0 <= vs37vd38ss6sd1 <= 1
+0 <= vs37vd38ss1sd8 <= 1
+0 <= vs37vd38ss8sd1 <= 1
+0 <= vs37vd38ss2sd3 <= 1
+0 <= vs37vd38ss3sd2 <= 1
+0 <= vs37vd38ss2sd4 <= 1
+0 <= vs37vd38ss4sd2 <= 1
+0 <= vs37vd38ss2sd6 <= 1
+0 <= vs37vd38ss6sd2 <= 1
+0 <= vs37vd38ss3sd4 <= 1
+0 <= vs37vd38ss4sd3 <= 1
+0 <= vs37vd38ss3sd7 <= 1
+0 <= vs37vd38ss7sd3 <= 1
+0 <= vs37vd38ss3sd8 <= 1
+0 <= vs37vd38ss8sd3 <= 1
+0 <= vs37vd38ss4sd5 <= 1
+0 <= vs37vd38ss5sd4 <= 1
+0 <= vs37vd38ss4sd7 <= 1
+0 <= vs37vd38ss7sd4 <= 1
+0 <= vs37vd38ss4sd9 <= 1
+0 <= vs37vd38ss9sd4 <= 1
+0 <= vs37vd38ss5sd6 <= 1
+0 <= vs37vd38ss6sd5 <= 1
+0 <= vs37vd38ss5sd9 <= 1
+0 <= vs37vd38ss9sd5 <= 1
+0 <= vs37vd38ss5sd10 <= 1
+0 <= vs37vd38ss10sd5 <= 1
+0 <= vs37vd38ss6sd10 <= 1
+0 <= vs37vd38ss10sd6 <= 1
+0 <= vs37vd38ss7sd8 <= 1
+0 <= vs37vd38ss8sd7 <= 1
+0 <= vs37vd38ss7sd9 <= 1
+0 <= vs37vd38ss9sd7 <= 1
+0 <= vs37vd38ss8sd9 <= 1
+0 <= vs37vd38ss9sd8 <= 1
+0 <= vs37vd38ss8sd10 <= 1
+0 <= vs37vd38ss10sd8 <= 1
+0 <= vs37vd38ss9sd10 <= 1
+0 <= vs37vd38ss10sd9 <= 1
+General
+END
