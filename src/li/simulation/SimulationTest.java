@@ -21,7 +21,7 @@ public class SimulationTest {
 		writer.close();
 		
 			
-		MultiDomainSimulation simulation = new MultiDomainSimulation();
+		Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation();
 		
 		for(int i=0;i<simulation.getMultiDomain().size();i++){
 			System.out.println(simulation.getMultiDomain().get(i));
@@ -48,7 +48,7 @@ public class SimulationTest {
 		writer.write("\n");
 		writer.close();
 			
-		for(c=0;c<20;c++){
+		for(c=0;c<10;c++){
 	//		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));
 	//		System.setOut(tmp);
 			writer = new FileWriter("resultat.txt",true);
@@ -57,13 +57,13 @@ public class SimulationTest {
 		
 			for(int i=2;i<7;i++){
 				simulation.initialize(i);
-				/*
+				
 				PrintStream md = new PrintStream(new FileOutputStream("res/MultiDomainAsOneDomain_l"+i+"_c"+c+".txt"));
 				System.setOut(md);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("MultiDomainAsOneDomain");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();*/
+				simulation.reset();
 				
 				PrintStream shen = new PrintStream(new FileOutputStream("res/Shen_l"+i+"_c"+c+".txt"));
 				System.setOut(shen);
@@ -71,13 +71,13 @@ public class SimulationTest {
 				simulation.runSimulation("Shen2014");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();
-				
+				/*
 				PrintStream mdrk = new PrintStream(new FileOutputStream("res/MultiDomainRanking_l"+i+"_c"+c+".txt"));
 				System.setOut(mdrk);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("MultiDomainRanking");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();
+				simulation.reset();*/
 				
 				PrintStream mdrk2 = new PrintStream(new FileOutputStream("res/MultiDomainRanking2_l"+i+"_c"+c+".txt"));
 				System.setOut(mdrk2);

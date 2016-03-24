@@ -2,14 +2,14 @@ package li.multiDomain.metrics;
 
 import java.io.IOException;
 
-import li.simulation.MultiDomainSimulation;
+import li.multiDomain.AbstractMultiDomain;
 
 public class CostRevenueMD extends MetricMD {
 
-	public CostRevenueMD(MultiDomainSimulation simulation, String method) throws IOException {
+	public CostRevenueMD(AbstractMultiDomain simulation, String method) throws IOException {
 		super(simulation, method);
 	}
-	public CostRevenueMD(MultiDomainSimulation simulation, String method, int lambda) throws IOException{
+	public CostRevenueMD(AbstractMultiDomain simulation, String method, int lambda) throws IOException{
 		super(simulation, method, lambda);
 	}
 	

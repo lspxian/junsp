@@ -2,14 +2,14 @@ package li.gt_itm;
 
 import java.io.IOException;
 
-import li.simulation.MultiDomainSimulation;
+import li.simulation.Centralized_MD_VNE_Simulation;
 
 
 public class Example {
 
 	public static void main(String[] args) throws IOException {
 
-		MultiDomainSimulation simulation = new MultiDomainSimulation();
+		Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation();
 		
 		for(int i=0;i<simulation.getMultiDomain().size();i++){
 			System.out.println(simulation.getMultiDomain().get(i));

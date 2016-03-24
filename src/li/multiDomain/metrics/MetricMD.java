@@ -4,32 +4,32 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import li.simulation.MultiDomainSimulation;
+import li.multiDomain.AbstractMultiDomain;
 import li.simulation.SimulationTest;
 
 public abstract class MetricMD {
-	protected MultiDomainSimulation simulation;
+	protected AbstractMultiDomain simulation;
 	protected BufferedWriter fout;
 	
 	public BufferedWriter getFout() {
 		return fout;
 	}
 
-	public void setSimulation(MultiDomainSimulation simulation) {
+	public void setSimulation(AbstractMultiDomain simulation) {
 		this.simulation = simulation;
 	}
 
-	public MetricMD(MultiDomainSimulation simulation) throws IOException{
+	public MetricMD(AbstractMultiDomain simulation) throws IOException{
 		this.simulation = simulation;
 		this.fout = new BufferedWriter(new FileWriter("evaluationData/"+this.name()+".txt"));
 	}
 	
-	public MetricMD(MultiDomainSimulation simulation, String method) throws IOException{
+	public MetricMD(AbstractMultiDomain simulation, String method) throws IOException{
 		this.simulation = simulation;
 		this.fout = new BufferedWriter(new FileWriter("evaluationData/"+method+"_"+this.name()+".txt"));
 	}
 	
-	public MetricMD(MultiDomainSimulation simulation, String method, int lambda) throws IOException{
+	public MetricMD(AbstractMultiDomain simulation, String method, int lambda) throws IOException{
 		this.simulation = simulation;
 		this.fout = new BufferedWriter(new FileWriter("evaluationData/"+method+"_"+this.name()+"_l"+lambda+"_c"+SimulationTest.c+".txt"));
 	}

@@ -1,21 +1,18 @@
 package li.multiDomain.metrics;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
-
-import li.simulation.MultiDomainSimulation;
+import li.multiDomain.AbstractMultiDomain;
 
 public class AcceptedRatioMD extends MetricMD {
 
-	public AcceptedRatioMD(MultiDomainSimulation simulation) throws IOException {
+	public AcceptedRatioMD(AbstractMultiDomain simulation) throws IOException {
 		super(simulation);
 	}
 	
-	public AcceptedRatioMD(MultiDomainSimulation simulation, String method) throws IOException {
+	public AcceptedRatioMD(AbstractMultiDomain simulation, String method) throws IOException {
 		super(simulation, method);
 	}
-	public AcceptedRatioMD(MultiDomainSimulation simulation, String method, int lambda) throws IOException{
+	public AcceptedRatioMD(AbstractMultiDomain simulation, String method, int lambda) throws IOException{
 		super(simulation, method, lambda);
 	}
 

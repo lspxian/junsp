@@ -310,12 +310,6 @@ public final class VirtualNetwork extends
 		}
 	}
 	
-	public void myExtend(){
-		for(VirtualNode vnode : this.getVertices()){
-			if(vnode.getCoordinateX()>50)
-				vnode.setCoordinateX(vnode.getCoordinateX()+100);
-		}
-	}
 	
 	public double getTotalCost(List<Domain> domains){
 		CpuDemand tmpCpuDem;

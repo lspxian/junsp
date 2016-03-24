@@ -11,8 +11,11 @@ import java.util.Random;
 import li.evaluation.metrics.Metric;
 import li.gt_itm.Generator;
 import li.multiDomain.Domain;
+import li.multiDomain.AbstractMultiDomain;
 import li.multiDomain.MultiDomainUtil;
 import li.multiDomain.metrics.AcceptedRatioMD;
+import li.multiDomain.metrics.CostMD;
+import li.multiDomain.metrics.CostRevenueMD;
 import li.multiDomain.metrics.CurrentLinkUtilisationMD;
 import li.multiDomain.metrics.LinkUtilizationMD;
 import li.multiDomain.metrics.MappedRevenueMD;
@@ -37,54 +40,14 @@ import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 
-public class MultiDomainSimulation {
-	private List<Domain> multiDomain;
-	private ArrayList<VirtualNetwork> vns;
-	private ArrayList<VirtualNetwork> mappedVNs;
-	private double totalCost;
-	private ArrayList<VnEvent> events;
-	private ArrayList<MetricMD> metrics;
-	private double simulationTime = 30000.0;
-	private double time = 0.0;
-	private int accepted = 0;
-	private int rejected = 0;
-	private int lambda = 3;
-	
-	public List<Domain> getMultiDomain() {
-		return multiDomain;
-	}
+public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 
-	public int setLambda() {
-		return lambda;
-	}
-	public int getLambda() {
-		return lambda;
-	}
 
-	public int getAccepted() {
-		return accepted;
-	}
-
-	public int getRejected() {
-		return rejected;
-	}
-
-	public ArrayList<VirtualNetwork> getVns() {
-		return vns;
-	}
-
-	public ArrayList<VirtualNetwork> getMappedVNs() {
-		return mappedVNs;
-	}
-
-	public double getTotalCost() {
-		return totalCost;
-	}
-
-	public MultiDomainSimulation() throws IOException{
+	public Centralized_MD_VNE_Simulation() throws IOException{
 		
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
+		/*-------4 domains example--------*/
 //		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
 //		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
 //		multiDomain.add(new Domain(0,0,"sndlib/germany50", true));
@@ -95,20 +58,19 @@ public class MultiDomainSimulation {
 		multiDomain.add(new Domain(1,1,"sndlib/germany50", true));
 		multiDomain.add(new Domain(0,1,"sndlib/zib54", true));
 		
+		/*-------2 domains example------*/
 //		multiDomain.add(new Domain(1,1,"sndlib/cost266", true));
 //		multiDomain.add(new Domain(0,1,"sndlib/norway", true));
 		
-		//use gt-itm to create net
+		/*------use gt-itm to create random substrate network-----*/
 	/*	multiDomain.add(new Domain(0,0, true));
 		multiDomain.add(new Domain(1,0, true));
 		multiDomain.add(new Domain(1,1, true));
 		multiDomain.add(new Domain(0,1, true));*/
 
-//		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+		/*--------static or random peering links--------*/
 //		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
 		MultiDomainUtil.randomInterLinks(multiDomain);
-		
-		
 	}
 	
 	public void initialize(int lambda) throws IOException{
@@ -117,6 +79,7 @@ public class MultiDomainSimulation {
 		this.rejected=0;
 		this.lambda=lambda;
 		this.totalCost=0.0;
+		/*-----------use pre-generated virtual network---------*/
 		/*
 		vns = new ArrayList<VirtualNetwork>();
 		for(int i=100;i<400;i++){
@@ -126,7 +89,6 @@ public class MultiDomainSimulation {
 //			vn.alt2network("data/vhr2");
 			vn.addAllResource(true);
 			vn.scale(2, 2);
-//			vn.myExtend();
 			//System.out.println(vn);		//print vn
 			vns.add(vn);
 		}
@@ -140,14 +102,14 @@ public class MultiDomainSimulation {
 		}
 		Collections.sort(events);*/
 		
+		/*---------random virtual network-----------*/
 		events = new ArrayList<VnEvent>();
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/sub");
 			vn.addAllResource(true);
-			vn.scale(2, 2);
-//			vn.myExtend();
+			vn.scale(2, 2);		//scale a [100,100] vn to [200,200]
 			vn.reconfigResource(multiDomain);
 			
 			double departureTime = time+vn.getLifetime();
@@ -156,7 +118,7 @@ public class MultiDomainSimulation {
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
-		Collections.sort(events);
+		Collections.sort(events);	//sort InPs by link utilization
 		
 		//add metric
 		metrics = new ArrayList<MetricMD>();
@@ -169,6 +131,8 @@ public class MultiDomainSimulation {
 		metrics.add(new LinkUtilizationMD(this, methodStr,lambda));
 		metrics.add(new CurrentLinkUtilisationMD(this, methodStr,lambda));
 		metrics.add(new MappedRevenueMD(this, methodStr,lambda));
+		metrics.add(new CostMD(this, methodStr,lambda));
+		metrics.add(new CostRevenueMD(this,methodStr,lambda));
 		
 		for(VnEvent currentEvent : events){
 			
@@ -255,9 +219,6 @@ public class MultiDomainSimulation {
 			}
 			
 		}
-		
-//		System.out.println(multiDomain.get(0));
-//		System.out.println(multiDomain.get(1));
 		
 		System.out.println("*-----"+methodStr+" resume------------*");
 		System.out.println("accepted : "+this.accepted);

@@ -3,7 +3,7 @@ package li.multiDomain.metrics;
 import java.io.IOException;
 import java.util.Iterator;
 
-import li.simulation.MultiDomainSimulation;
+import li.multiDomain.AbstractMultiDomain;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
@@ -13,7 +13,7 @@ import vnreal.network.virtual.VirtualNode;
 
 public class TotalRevenueMD extends MetricMD {
 
-	public TotalRevenueMD(MultiDomainSimulation simulation, String method) throws IOException {
+	public TotalRevenueMD(AbstractMultiDomain simulation, String method) throws IOException {
 		super(simulation, method);
 	}
 

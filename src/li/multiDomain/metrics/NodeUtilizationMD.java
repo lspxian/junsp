@@ -3,8 +3,8 @@ package li.multiDomain.metrics;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import li.multiDomain.AbstractMultiDomain;
 import li.multiDomain.Domain;
-import li.simulation.MultiDomainSimulation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.CpuDemand;
 import vnreal.mapping.Mapping;
@@ -15,7 +15,7 @@ import vnreal.resources.CpuResource;
 public class NodeUtilizationMD extends MetricMD {
 	public static double capacity = 0.0,sum=0.0;
 
-	public NodeUtilizationMD(MultiDomainSimulation simulation, String method) throws IOException {
+	public NodeUtilizationMD(AbstractMultiDomain simulation, String method) throws IOException {
 		super(simulation, method);
 	}
 

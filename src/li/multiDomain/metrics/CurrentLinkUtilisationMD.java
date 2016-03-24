@@ -3,8 +3,8 @@ package li.multiDomain.metrics;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import li.multiDomain.AbstractMultiDomain;
 import li.multiDomain.Domain;
-import li.simulation.MultiDomainSimulation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.mapping.Mapping;
@@ -15,16 +15,16 @@ import vnreal.resources.BandwidthResource;
 public class CurrentLinkUtilisationMD extends MetricMD {
 
 	private double capacity,sum;
-	public CurrentLinkUtilisationMD(MultiDomainSimulation simulation) throws IOException {
+	public CurrentLinkUtilisationMD(AbstractMultiDomain simulation) throws IOException {
 		super(simulation);
 	}
 	
-	public CurrentLinkUtilisationMD(MultiDomainSimulation simulation, String method) throws IOException {
+	public CurrentLinkUtilisationMD(AbstractMultiDomain simulation, String method) throws IOException {
 		super(simulation, method);
 		capacity = 0.0;
 		sum = 0.0;
 	}
-	public CurrentLinkUtilisationMD(MultiDomainSimulation simulation, String method, int lambda) throws IOException{
+	public CurrentLinkUtilisationMD(AbstractMultiDomain simulation, String method, int lambda) throws IOException{
 		super(simulation, method, lambda);
 	}
 
