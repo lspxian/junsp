@@ -88,6 +88,15 @@ public abstract class AbstractNodeMapping {
 		this.setInitialUnmappedsNodes();
 		nodeOverload = subsNodeOverload;
 	}
+	
+	protected AbstractNodeMapping(SubstrateNetwork sNet) {
+		nodeMapping = new LinkedHashMap<VirtualNode, SubstrateNode>();
+		this.sNet = sNet;
+		unmappedvNodes = null;
+		unmappedsNodes = null;
+		this.setInitialUnmappedsNodes();
+		nodeOverload = false;
+	}
 
 	/**
 	 * This method realizes the prenode mapping stage. This stage consists in

@@ -3,12 +3,24 @@ package vnreal.network.substrate;
 import java.util.Random;
 
 import vnreal.network.Node;
+import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.CpuResource;
 
 public class MetaNode extends SubstrateNode {
+	
+	VirtualNode root;
+	
 	public MetaNode() {
 		super();
+	}
+	
+	public MetaNode(VirtualNode vnode){
+		this.root = vnode;
+	}
+
+	public VirtualNode getRoot() {
+		return root;
 	}
 
 	public MetaNode getCopy() {

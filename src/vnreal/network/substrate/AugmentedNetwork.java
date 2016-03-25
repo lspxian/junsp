@@ -1,5 +1,8 @@
 package vnreal.network.substrate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.uci.ics.jung.graph.util.Pair;
 import li.multiDomain.Domain;
 import vnreal.network.virtual.VirtualNode;
@@ -24,6 +27,16 @@ public class AugmentedNetwork extends SubstrateNetwork {
 
 	public void setRoot(SubstrateNetwork root) {
 		this.root = root;
+	}
+
+	
+	public List<MetaNode> getMetaNodes(){
+		List<MetaNode> metaNodes = new ArrayList<MetaNode>();
+		for(SubstrateNode snode:this.getVertices()){
+			if(snode instanceof MetaNode)
+				metaNodes.add((MetaNode)snode);
+		}
+		return metaNodes;
 	}
 	
 	//in the augmented network, there exists an augmented link from src to dest for the virtual destination vnode
