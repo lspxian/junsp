@@ -88,11 +88,19 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 						//obj
 						obj = obj + " + "+cpuDem.getDemandedCycles()/(cpuResource.getAvailableCycles()+0.001);
 						obj = obj + " Xm"+metaNode.getId()+"w"+tmpNode.getId();
+						
+						//constraints
+						constraint = constraint + " +Xm"+metaNode.getId()+"w"+tmpNode.getId();
+						
+						//bounds
+						bounds = bounds + "";
 					}
+					constraint = constraint + "=1\n";
 				}
-					
-					
 			}
+			
+			
+			
 			
 			/*--------links-------*/
 			for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links.hasNext();) {
