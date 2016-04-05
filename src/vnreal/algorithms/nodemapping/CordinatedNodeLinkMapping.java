@@ -1,18 +1,26 @@
 package vnreal.algorithms.nodemapping;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import vnreal.algorithms.AbstractNodeMapping;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
 import vnreal.network.substrate.AugmentedNetwork;
+import vnreal.network.substrate.MetaLink;
 import vnreal.network.substrate.MetaNode;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -25,6 +33,7 @@ import vnreal.resources.BandwidthResource;
 import vnreal.resources.CpuResource;
 
 public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
+	protected String localPath;
 
 	protected CordinatedNodeLinkMapping(SubstrateNetwork sNet, boolean subsNodeOverload) {
 		super(sNet, subsNodeOverload);
@@ -34,16 +43,76 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 	protected CordinatedNodeLinkMapping(SubstrateNetwork sNet){
 		super(sNet);
 	}
+	
+	protected CordinatedNodeLinkMapping(SubstrateNetwork sNet,String localPath){
+		super(sNet);
+		this.localPath=localPath;
+	}
 
 	@Override
 	public boolean nodeMapping(VirtualNetwork vNet) {
+		AugmentedNetwork an = new AugmentedNetwork(this.sNet);
+		List<SubstrateNode> candidates;
+		Map<VirtualNode, MetaNode> virToMeta=new HashMap<VirtualNode, MetaNode>();
 		
+		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(this.sNet,80,true,false);
 		
+		for(Iterator<VirtualNode> itt = vNet.getVertices().iterator(); itt
+			.hasNext();)
+		{
+			VirtualNode currNode = itt.next();
+			MetaNode mnode = new MetaNode(currNode);
+			mnode.setCoordinateX(currNode.getCoordinateX());
+			mnode.setCoordinateY(currNode.getCoordinateY());
+			//mnode.addResource(currNode.);
+			an.addVertex(mnode);
+			virToMeta.put(currNode, mnode);
+			candidates = arnm.SearchCandidates(currNode);
+			System.out.println(candidates);
+			for (SubstrateNode node : candidates ){
+				MetaLink mlink = new MetaLink();
+				mlink.addResource(1000);
+				an.addEdge(mlink, mnode, node);
+			}
+			
+			
+		}
 		
+		try {
+			this.generateFile(vNet, an, virToMeta);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return false;
 	}
-	
+	/*
+	public Map<String,String> linkMappingWithoutUpdateLocal(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
+		Map<String, String> solution = new HashMap<String, String>();
+		//generate .lp file
+		try {
+			this.generateFile(vNet, nodeMapping);
+			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+localPath+" o");
+			InputStream in = p.getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String readLine;
+			boolean solBegin=false;
+			while (((readLine = br.readLine()) != null)) {
+				if(solBegin==true){
+					System.out.println(readLine);
+					StringTokenizer st = new StringTokenizer(readLine, " ");
+					solution.put(st.nextToken(), st.nextToken());
+				}
+				if(solBegin==false&&readLine.equals("The solutions begin here : "))
+					solBegin=true;
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return solution;
+	}*/
 	
 	//generate cplex file for undirected multi commodity flow
 	/**
@@ -84,25 +153,41 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 							cpuDem = (CpuDemand) asrc2;
 							break;
 						}
-						
-						//obj
-						obj = obj + " + "+cpuDem.getDemandedCycles()/(cpuResource.getAvailableCycles()+0.001);
-						obj = obj + " Xm"+metaNode.getId()+"w"+tmpNode.getId();
-						
-						//constraints
-						constraint = constraint + " +Xm"+metaNode.getId()+"w"+tmpNode.getId();
-						
-						//bounds
-						bounds = bounds + "";
 					}
-					constraint = constraint + "=1\n";
+						
+					//obj
+					obj = obj + " + "+cpuDem.getDemandedCycles()/(cpuResource.getAvailableCycles()+0.001);
+					obj = obj + " Xm"+metaNode.getId()+"w"+tmpNode.getId();
+					
+					//constraints : capacity
+					constraint = constraint + " + "+cpuDem.getDemandedCycles();
+					constraint = constraint + " Xm"+metaNode.getId()+"w"+tmpNode.getId();
+					
+					//bounds
+					bounds = bounds + "0<=Xm"+metaNode.getId()+"w"+tmpNode.getId()+"<=1\n";
 				}
+				constraint = constraint + "<="+cpuResource.getAvailableCycles()+"\n";
+			}
+			
+			for(SubstrateNode tmpNode : aNet.getRoot().getVertices()){
+				for(MetaNode metaNode : aNet.getMetaNodes()){
+					constraint = constraint + "+Xm"+metaNode.getId()+"w"+tmpNode.getId();
+				}
+				constraint = constraint + "<=1\n";
+			}
+			
+			for(MetaNode metaNode : aNet.getMetaNodes()){
+				for(SubstrateNode tmpNode : aNet.getRoot().getVertices()){
+					//constraints
+					constraint = constraint + " +Xm"+metaNode.getId()+"w"+tmpNode.getId();
+				}
+				constraint = constraint + "=1\n";
 			}
 			
 			
 			
-			
 			/*--------links-------*/
+			
 			for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links.hasNext();) {
 				VirtualLink tmpl = links.next();
 
@@ -118,9 +203,6 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 					}
 				}
 				
-
-			
-				//link
 				for (Iterator<SubstrateLink> slink = aNet.getEdges().iterator();slink.hasNext();){
 					SubstrateLink tmpsl = slink.next();
 					ssnode = aNet.getEndpoints(tmpsl).getFirst();
@@ -160,8 +242,8 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 						constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
 					}
 
-					if(snode.equals(nodeMapping.get(srcVnode)))	constraint =constraint+" = 1\n";
-					else if(snode.equals(nodeMapping.get(dstVnode))) constraint =constraint+" = -1\n";
+					if(snode.equals(virToMeta.get(srcVnode)))	constraint =constraint+" = 1\n";
+					else if(snode.equals(virToMeta.get(dstVnode))) constraint =constraint+" = -1\n";
 					else	constraint =constraint+" = 0\n";
 					
 				}
