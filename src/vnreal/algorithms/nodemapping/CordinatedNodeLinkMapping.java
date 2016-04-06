@@ -33,18 +33,18 @@ import vnreal.resources.BandwidthResource;
 import vnreal.resources.CpuResource;
 
 public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
-	protected String localPath;
+	protected String localPath="ILP-LP-Models/tr2mcf.lp";
 
-	protected CordinatedNodeLinkMapping(SubstrateNetwork sNet, boolean subsNodeOverload) {
+	public CordinatedNodeLinkMapping(SubstrateNetwork sNet, boolean subsNodeOverload) {
 		super(sNet, subsNodeOverload);
 	}
 	
 	//no overload by default
-	protected CordinatedNodeLinkMapping(SubstrateNetwork sNet){
+	public CordinatedNodeLinkMapping(SubstrateNetwork sNet){
 		super(sNet);
 	}
 	
-	protected CordinatedNodeLinkMapping(SubstrateNetwork sNet,String localPath){
+	public CordinatedNodeLinkMapping(SubstrateNetwork sNet,String localPath){
 		super(sNet);
 		this.localPath=localPath;
 	}
@@ -55,7 +55,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 		List<SubstrateNode> candidates;
 		Map<VirtualNode, MetaNode> virToMeta=new HashMap<VirtualNode, MetaNode>();
 		
-		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(this.sNet,80,true,false);
+		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(this.sNet,50,true,false);
 		
 		for(Iterator<VirtualNode> itt = vNet.getVertices().iterator(); itt
 			.hasNext();)
@@ -68,7 +68,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 			an.addVertex(mnode);
 			virToMeta.put(currNode, mnode);
 			candidates = arnm.SearchCandidates(currNode);
-			System.out.println(candidates);
+			System.out.println(mnode+" : "+candidates);
 			for (SubstrateNode node : candidates ){
 				MetaLink mlink = new MetaLink();
 				mlink.addResource(1000);
@@ -146,32 +146,38 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 						break;
 					}
 				}
-
+				
+				constraint = constraint + "0";
 				for(MetaNode metaNode : aNet.getMetaNodes()){
-					for(AbstractDemand asrc2 : metaNode.getRoot()){
-						if(asrc2 instanceof CpuDemand){
-							cpuDem = (CpuDemand) asrc2;
-							break;
+					if(aNet.findEdge(tmpNode, metaNode)!=null){
+						for(AbstractDemand asrc2 : metaNode.getRoot()){
+							if(asrc2 instanceof CpuDemand){
+								cpuDem = (CpuDemand) asrc2;
+								break;
+							}
 						}
-					}
 						
-					//obj
-					obj = obj + " + "+cpuDem.getDemandedCycles()/(cpuResource.getAvailableCycles()+0.001);
-					obj = obj + " Xm"+metaNode.getId()+"w"+tmpNode.getId();
-					
-					//constraints : capacity
-					constraint = constraint + " + "+cpuDem.getDemandedCycles();
-					constraint = constraint + " Xm"+metaNode.getId()+"w"+tmpNode.getId();
-					
-					//bounds
-					bounds = bounds + "0<=Xm"+metaNode.getId()+"w"+tmpNode.getId()+"<=1\n";
+						//obj
+						obj = obj + " + "+cpuDem.getDemandedCycles()/(cpuResource.getAvailableCycles()+0.001);
+						obj = obj + " Xm"+metaNode.getId()+"w"+tmpNode.getId();
+						
+						//constraints : capacity
+						constraint = constraint + " + "+cpuDem.getDemandedCycles();
+						constraint = constraint + " Xm"+metaNode.getId()+"w"+tmpNode.getId();
+						
+						//bounds
+						bounds = bounds + "0<=Xm"+metaNode.getId()+"w"+tmpNode.getId()+"<=1\n";						
+					}
 				}
 				constraint = constraint + "<="+cpuResource.getAvailableCycles()+"\n";
 			}
 			
 			for(SubstrateNode tmpNode : aNet.getRoot().getVertices()){
+				constraint = constraint + "0";
 				for(MetaNode metaNode : aNet.getMetaNodes()){
-					constraint = constraint + "+Xm"+metaNode.getId()+"w"+tmpNode.getId();
+					if(aNet.findEdge(tmpNode, metaNode)!=null){
+						constraint = constraint + "+Xm"+metaNode.getId()+"w"+tmpNode.getId();						
+					}
 				}
 				constraint = constraint + "<=1\n";
 			}
@@ -179,7 +185,9 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 			for(MetaNode metaNode : aNet.getMetaNodes()){
 				for(SubstrateNode tmpNode : aNet.getRoot().getVertices()){
 					//constraints
-					constraint = constraint + " +Xm"+metaNode.getId()+"w"+tmpNode.getId();
+					if(aNet.findEdge(tmpNode, metaNode)!=null){
+						constraint = constraint + " +Xm"+metaNode.getId()+"w"+tmpNode.getId();						
+					}
 				}
 				constraint = constraint + "=1\n";
 			}
@@ -233,9 +241,9 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 				
 				//flow constraints
 				Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
-				for(Iterator<SubstrateNode> iterator = sNet.getVertices().iterator();iterator.hasNext();){
+				for(Iterator<SubstrateNode> iterator = aNet.getVertices().iterator();iterator.hasNext();){
 					SubstrateNode snode = iterator.next();
-					nextHop = sNet.getNeighbors(snode);
+					nextHop = aNet.getNeighbors(snode);
 					for(Iterator<SubstrateNode> it=nextHop.iterator();it.hasNext();){
 						SubstrateNode tmmpsn = it.next();
 						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
@@ -252,10 +260,10 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 
 			
 			//capacity constraint
-			for (Iterator<SubstrateLink> slink = sNet.getEdges().iterator();slink.hasNext();){
+			for (Iterator<SubstrateLink> slink = aNet.getEdges().iterator();slink.hasNext();){
 				SubstrateLink tmpsl = slink.next();
-				ssnode = sNet.getEndpoints(tmpsl).getFirst();
-				dsnode = sNet.getEndpoints(tmpsl).getSecond();
+				ssnode = aNet.getEndpoints(tmpsl).getFirst();
+				dsnode = aNet.getEndpoints(tmpsl).getSecond();
 				
 				for(AbstractResource asrc : tmpsl){
 					if(asrc instanceof BandwidthResource){

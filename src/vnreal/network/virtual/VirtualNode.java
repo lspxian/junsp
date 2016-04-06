@@ -99,7 +99,7 @@ public class VirtualNode extends Node<AbstractDemand> {
 		CpuDemand cpu = new CpuDemand(this);
 		double quantity = 10;
 		if(random)
-			quantity = new Random().nextDouble()*2;
+			quantity = new Random().nextDouble()*20;
 		cpu.setDemandedCycles(quantity);;
 		if(this.preAddCheck(cpu)){
 			this.add(cpu);
