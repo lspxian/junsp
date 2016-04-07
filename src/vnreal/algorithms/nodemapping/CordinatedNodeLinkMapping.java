@@ -15,7 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
+
 import vnreal.algorithms.AbstractNodeMapping;
+import vnreal.algorithms.utils.Remote;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
@@ -34,6 +38,7 @@ import vnreal.resources.CpuResource;
 
 public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 	protected String localPath="ILP-LP-Models/tr2mcf.lp";
+	protected String remotePath = "pytest/vne-mcf.lp";
 
 	public CordinatedNodeLinkMapping(SubstrateNetwork sNet, boolean subsNodeOverload) {
 		super(sNet, subsNodeOverload);
@@ -51,10 +56,39 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 
 	@Override
 	public boolean nodeMapping(VirtualNetwork vNet) {
+		
 		AugmentedNetwork an = new AugmentedNetwork(this.sNet);
-		List<SubstrateNode> candidates;
 		Map<VirtualNode, MetaNode> virToMeta=new HashMap<VirtualNode, MetaNode>();
 		
+		this.createAugmentedNetwork(vNet, an, virToMeta);	
+		try {
+			this.generateFile(vNet, an, virToMeta);
+			
+//			Map<String, String> solution = this.cplexOptimizationLocal();
+			Map<String, String> solution = this.cplexOptimizationCloud();
+			System.out.println(solution);
+			
+			//TODO	cplex result analysis and rounding method
+
+			
+			
+			
+			
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @param vNet	virtual network demand
+	 * @param an	augmented network(with meta nodes and meta links)
+	 * @param virToMeta	virtual node and meta node correspondence
+	 */
+	public void createAugmentedNetwork(VirtualNetwork vNet, AugmentedNetwork an, Map<VirtualNode, MetaNode> virToMeta){
+		List<SubstrateNode> candidates;
 		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(this.sNet,50,true,false);
 		
 		for(Iterator<VirtualNode> itt = vNet.getVertices().iterator(); itt
@@ -75,48 +109,58 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 				an.addEdge(mlink, mnode, node);
 			}
 			
-			
 		}
-		
-		try {
-			this.generateFile(vNet, an, virToMeta);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return false;
 	}
-	/*
-	public Map<String,String> linkMappingWithoutUpdateLocal(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
+	
+	/**
+	 * perform cplex linear optimization using local installed ILOG cplex file
+	 * @return
+	 * @throws IOException
+	 */
+	public Map<String, String> cplexOptimizationLocal() throws IOException{
 		Map<String, String> solution = new HashMap<String, String>();
-		//generate .lp file
-		try {
-			this.generateFile(vNet, nodeMapping);
-			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+localPath+" o");
-			InputStream in = p.getInputStream();
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String readLine;
-			boolean solBegin=false;
-			while (((readLine = br.readLine()) != null)) {
-				if(solBegin==true){
-					System.out.println(readLine);
-					StringTokenizer st = new StringTokenizer(readLine, " ");
-					solution.put(st.nextToken(), st.nextToken());
-				}
-				if(solBegin==false&&readLine.equals("The solutions begin here : "))
-					solBegin=true;
+		Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+localPath+" o");
+		InputStream in = p.getInputStream();
+		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		String readLine;
+		boolean solBegin=false;
+		while (((readLine = br.readLine()) != null)) {
+			if(solBegin==true){
+				System.out.println(readLine);
+				StringTokenizer st = new StringTokenizer(readLine, " ");
+				solution.put(st.nextToken(), st.nextToken());
 			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
+			if(solBegin==false&&readLine.equals("The solutions begin here : "))
+				solBegin=true;
 		}
 		return solution;
-	}*/
+	}
 	
-	//generate cplex file for undirected multi commodity flow
 	/**
-	 * 
+	 * perform cplex linear optimization using cloud Paris 13
+	 * @return
+	 * @throws IOException
+	 */
+	public Map<String, String> cplexOptimizationCloud() throws IOException{
+		Remote remote = new Remote();
+		Map<String, String> solution = new HashMap<String, String>();
+		try {
+			
+			//upload file
+			remote.getSftp().put(localPath, remotePath);
+			
+			//solve the problem with python script, get output solution
+			solution = remote.executeCmd("python pytest/mysolver.py "+remotePath+" o");
+			
+		} catch (JSchException | IOException | SftpException e) {
+			e.printStackTrace();
+		}
+		remote.disconnect();
+		return solution;
+	}
+	
+	/**
+	 * generate cplex file for undirected multi commodity flow
 	 * @param vNet	virtual network demand
 	 * @param aNet	augmented network(with meta nodes and meta links)
 	 * @param virToMeta	virtual node and meta node correspondence
@@ -147,7 +191,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 					}
 				}
 				
-				constraint = constraint + "0";
+				//constraint = constraint + "0";
 				for(MetaNode metaNode : aNet.getMetaNodes()){
 					if(aNet.findEdge(tmpNode, metaNode)!=null){
 						for(AbstractDemand asrc2 : metaNode.getRoot()){
@@ -173,7 +217,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 			}
 			
 			for(SubstrateNode tmpNode : aNet.getRoot().getVertices()){
-				constraint = constraint + "0";
+				//constraint = constraint + "0";
 				for(MetaNode metaNode : aNet.getMetaNodes()){
 					if(aNet.findEdge(tmpNode, metaNode)!=null){
 						constraint = constraint + "+Xm"+metaNode.getId()+"w"+tmpNode.getId();						
