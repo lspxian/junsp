@@ -69,7 +69,16 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 			System.out.println(solution);
 			
 			//TODO	cplex result analysis and rounding method
-
+			for (VirtualNode vn : vNet.getVertices()){
+				for (SubstrateNode sn : sNet.getVertices()){
+					StringTokenizer st = new StringTokenizer(sn.toString());
+					st.nextToken("(");
+					String ind = st.nextToken(")");
+					ind = ind.substring(1,ind.length());
+					System.out.println(ind);
+				}
+			}
+			
 			
 			
 			
