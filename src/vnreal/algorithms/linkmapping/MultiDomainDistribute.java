@@ -56,5 +56,4 @@ public class MultiDomainDistribute extends AbstractMultiDomainLinkMapping {
 		return true;
 	}
 	
-	public void biDomainLinkMapping()
 }
