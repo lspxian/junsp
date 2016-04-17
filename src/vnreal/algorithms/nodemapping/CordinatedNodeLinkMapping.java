@@ -13,7 +13,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -59,6 +61,8 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 		
 		AugmentedNetwork an = new AugmentedNetwork(this.sNet);
 		Map<VirtualNode, MetaNode> virToMeta=new HashMap<VirtualNode, MetaNode>();
+		ArrayList<Double> max = new ArrayList<Double>();
+		Double res=0.0,xns=0.0;
 		
 		this.createAugmentedNetwork(vNet, an, virToMeta);	
 		try {
@@ -70,13 +74,28 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 			
 			//TODO	cplex result analysis and rounding method
 			for (VirtualNode vn : vNet.getVertices()){
+				String vind = String.valueOf(virToMeta.get(vn).getId()).trim();
+				//System.out.println(vind);
 				for (SubstrateNode sn : sNet.getVertices()){
-					StringTokenizer st = new StringTokenizer(sn.toString());
-					st.nextToken("(");
-					String ind = st.nextToken(")");
-					ind = ind.substring(1,ind.length());
-					System.out.println(ind);
+					String sind = String.valueOf(sn.getId()).trim();
+					//System.out.println(sind);
+					Set<String> keys = new TreeSet<String>();
+					keys = solution.keySet();
+					Iterator<String> it = keys.iterator();
+					while (it.hasNext()){
+						String key = it.next();
+						if (key.contains(sind) && key.contains(vind) && key.startsWith("v"))
+							res += Double.parseDouble(solution.get(key));
+						if (key.contains(sind) && key.contains(vind) && key.startsWith("X"))
+							xns = Double.parseDouble(solution.get(key));
+					}
+					res = res*xns;
+					max.add(res);
+					res = 0.0;
+					xns = 0.0;
 				}
+				System.out.println(max);
+				max.clear();
 			}
 			
 			
