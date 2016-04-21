@@ -32,6 +32,7 @@
 package vnreal.network.substrate;
 
 import java.util.Comparator;
+import java.util.Random;
 
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.network.Link;
@@ -46,8 +47,12 @@ import vnreal.resources.BandwidthResource;
  */
 public class SubstrateLink extends Link<AbstractResource> implements Comparable<SubstrateLink>{
 
+	protected double probability;	
+	
 	public SubstrateLink() {
 		super();
+		//failure probability [0,0.1]
+		probability = new Random().nextDouble()*0.1;		
 	}
 
 	public SubstrateLink getCopy() {
@@ -83,6 +88,10 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 		if(this.getId()>o.getId())	return 1;
 		else if(this.getId()<o.getId())	return -1;
 		else return 0;
+	}
+
+	public double getProbability() {
+		return probability;
 	}
 
 

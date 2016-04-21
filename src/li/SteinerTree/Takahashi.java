@@ -16,7 +16,7 @@ public class Takahashi {
 	private List<SubstrateNode> participant;
 	private SubstrateNetwork sNet;
 	private SubstrateNetwork steinerTree;
-	DijkstraShortestPath<SubstrateNode,SubstrateLink> Dijkstra;
+	private DijkstraShortestPath<SubstrateNode,SubstrateLink> Dijkstra;
 	
 	public SubstrateNetwork getSteinerTree() {
 		return steinerTree;
