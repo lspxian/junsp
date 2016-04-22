@@ -122,6 +122,14 @@ public class SteinerILPExact extends AbstractLinkMapping {
 				srcVnode = vNet.getEndpoints(vlink).getFirst();
 				dstVnode = vNet.getEndpoints(vlink).getSecond();
 				
+				//objective
+//				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+//				obj = obj + " + "+bwDem.getDemandedBandwidth();
+				obj = obj + " - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+//				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+//				obj = obj + " + "+bwDem.getDemandedBandwidth();
+				obj = obj + " - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+				
 				//f and x constraint
 				constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
 				constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
@@ -131,7 +139,7 @@ public class SteinerILPExact extends AbstractLinkMapping {
 				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
 				
 			}
-				constraint = constraint + " - 20 Xs"+ssnode.getId()+"d"+dsnode.getId()+"<=0\n";
+				constraint = constraint + " - 30 Xs"+ssnode.getId()+"d"+dsnode.getId()+"<=0\n";
 			
 		}
 		

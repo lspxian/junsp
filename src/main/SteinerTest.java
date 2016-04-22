@@ -20,11 +20,11 @@ public class SteinerTest {
 		sn.addAllResource(true);
 		
 		VirtualNetwork vn = new VirtualNetwork();
-		vn.alt2network("data/vir0");
+		vn.alt2network("data/vir");
 		vn.addAllResource(true);
 
 		//node mapping
-		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
+		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,10,true,false);
 		
 		if(arnm.nodeMapping(vn)){
 			System.out.println("node mapping succes, virtual netwotk ");
