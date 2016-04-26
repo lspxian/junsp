@@ -120,6 +120,28 @@ public class SubstrateNetwork extends
 
 		return result;
 	}
+	
+	public String probaToString(){
+		String result = "NODES:\n";
+		for (SubstrateNode n : getVertices()) {
+			result += n + "("+n.getCoordinateX()+","+n.getCoordinateY()+")"+"\n";
+//			for (AbstractResource r : n.get()) {
+//				result += "  " + r.toString() + "\n";
+//			}
+		}
+		result += "\nEDGES:\n";
+		for (SubstrateLink l : getEdges()) {
+			Pair<SubstrateNode> pair = getEndpoints(l);
+			result += l + "  (" + pair.getFirst().getId() + "<->"
+					+ pair.getSecond().getId() + ") \n";
+			result += " failure probability: " + l.getProbability()+"\n";
+//			for (AbstractResource r : l.get()) {
+//				result += "  " + r.toString() + "\n";
+//			}
+		}
+
+		return result;
+	}
 
 	@Override
 	public SubstrateNetwork getInstance(boolean autoUnregister) {

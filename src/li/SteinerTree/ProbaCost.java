@@ -9,7 +9,7 @@ public class ProbaCost implements Transformer<SubstrateLink, Double> {
 	@Override
 	public Double transform(SubstrateLink arg0) {
 		//availability : log(1-p)
-		return Math.log(1-arg0.getProbability());	
+		return -Math.log(1-arg0.getProbability());	
 	}
 
 }

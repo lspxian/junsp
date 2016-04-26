@@ -1,6 +1,7 @@
 package li.SteinerTree;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -22,15 +23,15 @@ public class Takahashi {
 		return steinerTree;
 	}
 
-	public Takahashi(List<SubstrateNode> participant,SubstrateNetwork sNet){
-		this.participant=participant;
+	public Takahashi(Collection<SubstrateNode> participant,SubstrateNetwork sNet){
+		this.participant=new ArrayList<SubstrateNode>(participant);
 		this.sNet=sNet;
 		this.steinerTree=new SubstrateNetwork();
 		Dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(sNet);
 	}
 	
-	public Takahashi(List<SubstrateNode> participant,SubstrateNetwork sNet,Transformer<SubstrateLink, Double> weightTrans){
-		this.participant=participant;
+	public Takahashi(Collection<SubstrateNode> participant,SubstrateNetwork sNet,Transformer<SubstrateLink, Double> weightTrans){
+		this.participant=new ArrayList<SubstrateNode>(participant);
 		this.sNet=sNet;
 		this.steinerTree=new SubstrateNetwork();
 		Dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(sNet,weightTrans);
@@ -43,7 +44,7 @@ public class Takahashi {
 		Double minCost;
 		
 		
-		int randomStart = new Random().nextInt(sNet.getVertexCount());
+		int randomStart = new Random().nextInt(participant.size()-1);
 		SubstrateNode startNode = participant.get(randomStart);
 		this.steinerTree.addVertex(startNode);
 		Pair<SubstrateNode> steinerLink=null;

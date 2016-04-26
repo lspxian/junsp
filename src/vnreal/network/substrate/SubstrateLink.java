@@ -54,6 +54,11 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 		//failure probability [0,0.1]
 		probability = new Random().nextDouble()*0.1;		
 	}
+	
+	public SubstrateLink(Double failure){
+		super();
+		this.probability=failure;
+	}
 
 	public SubstrateLink getCopy() {
 		SubstrateLink clone = new SubstrateLink();
@@ -92,6 +97,10 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 
 	public double getProbability() {
 		return probability;
+	}
+
+	public void setProbability(double probability) {
+		this.probability = probability;
 	}
 
 

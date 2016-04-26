@@ -20,7 +20,7 @@ public class KruskalMST {
 		tempo.addAll(this.sNet.getEdges());
 		tempo.sort(new LinkProbaComparator());
 		int count = 0;
-		Iterator<SubstrateLink> it = sNet.getEdges().iterator();
+		Iterator<SubstrateLink> it = tempo.iterator();
 		
 		while(it.hasNext()&&(count<sNet.getEdgeCount()-1)){
 			SubstrateLink sl = it.next();

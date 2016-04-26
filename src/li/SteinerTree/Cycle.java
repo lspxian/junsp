@@ -1,5 +1,6 @@
 package li.SteinerTree;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -14,8 +15,9 @@ public class Cycle {
 	
 	public Cycle(SubstrateNetwork sn){
 		this.sn=sn;
+		this.visited = new HashMap<SubstrateNode,Boolean>();
 		// Mark all the vertices as not visited and not part of
-		for(SubstrateNode snode : sn.getVertices())
+		for(SubstrateNode snode : this.sn.getVertices())
 			visited.put(snode, false);
 	}
 	

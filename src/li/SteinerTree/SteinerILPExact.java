@@ -79,7 +79,7 @@ public class SteinerILPExact extends AbstractLinkMapping {
 		Collection<SubstrateNode> nextHop;
 
 		String preambule = "\\Problem : vne\n";
-		String obj = "Maximize\n"+"obj : ";
+		String obj = "Minimize\n"+"obj : ";
 		String constraint = "Subject To\n";
 		String bounds = "Bounds\n";
 		String general = "General\n";
@@ -111,7 +111,8 @@ public class SteinerILPExact extends AbstractLinkMapping {
 			//objective
 			ssnode = sNet.getEndpoints(slink).getFirst();
 			dsnode = sNet.getEndpoints(slink).getSecond();
-			obj = obj + " "+Math.log(slink.getProbability());
+			double logp=-Math.log(1-slink.getProbability());
+			obj = obj + " +"+logp;
 			obj = obj + " Xs"+ssnode.getId()+"d"+dsnode.getId();
 			
 			//general
@@ -125,10 +126,10 @@ public class SteinerILPExact extends AbstractLinkMapping {
 				//objective
 //				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 //				obj = obj + " + "+bwDem.getDemandedBandwidth();
-				obj = obj + " - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+//				obj = obj + " + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
 //				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 //				obj = obj + " + "+bwDem.getDemandedBandwidth();
-				obj = obj + " - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+//				obj = obj + " + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//f and x constraint
 				constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
