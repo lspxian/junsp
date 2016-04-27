@@ -122,6 +122,30 @@ public class NodeLinkAssignation {
 
 		return true;
 	}
+	
+	/**
+	 * 
+	 * @param demands
+	 *            set of demands
+	 * @param e
+	 *            Network Entity (Node or link)
+	 * @return boolean value indicating if the demand could be fulfilled by the
+	 *         resource.
+	 */
+	public static boolean fulfills(
+			AbstractDemand demand,
+			AbstractResource resource) {
+
+		if (demand != null) {
+			if (resource.accepts(demand) && resource.fulfills(demand)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 	/**
 	 * 

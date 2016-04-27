@@ -42,7 +42,7 @@ public class KMB1981 {
 			for(SubstrateNode sn2: this.participant){
 				
 				Double cost = (Double) this.dijkstra.getDistance(sn1, sn2);
-				double proba = 1-Math.exp(-cost);
+				double proba = 1-Math.exp(-cost);	//re-build probability, it depends on cost
 				SubstrateLink sl = new SubstrateLink(proba);
 				complet.addEdge(sl, sn1, sn2);
 				

@@ -39,8 +39,8 @@ public class MethodTest {
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,80,true,false);
-			
-			/*if(arnm.nodeMapping(vns.get(i))){
+			/*
+			if(arnm.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
 			}else{
 				System.out.println("node resource error, virtual network "+i);
@@ -72,8 +72,8 @@ public class MethodTest {
 			
 			//link mapping
 			// vous utilisez les fichiers tr2mcf. Vous n'aurez pas de collision avec moi.
-			//MultiCommodityFlow mcf = new MultiCommodityFlow(sn, "ILP-LP-Models/tr2mcf.lp", "pytest/tr2mcf.lp");
-			//mcf.linkMapping(vns.get(i), nodeMapping);
+//			MultiCommodityFlow mcf = new MultiCommodityFlow(sn, "ILP-LP-Models/tr2mcf.lp", "pytest/tr2mcf.lp");
+//			mcf.linkMapping(vns.get(i), nodeMapping);
 			
 		}
 		

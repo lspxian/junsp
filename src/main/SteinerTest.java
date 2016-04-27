@@ -41,7 +41,7 @@ public class SteinerTest {
 		System.out.println(nodeMapping);
 		
 		//link mapping
-		
+		/*
 		SteinerILPExact stn = new SteinerILPExact(sn);
 		stn.linkMapping(vn, nodeMapping);
 		System.out.println("\n");
@@ -49,10 +49,11 @@ public class SteinerTest {
 		Takahashi ta = new Takahashi(nodeMapping.values(),sn,new ProbaCost());
 		ta.runSteinerTree();
 		System.out.println(ta.getSteinerTree().probaToString());
-		
+		*/
 		KMB1981 kmb = new KMB1981(nodeMapping.values(),sn,new ProbaCost());
 		kmb.runSteinerTree();
 		System.out.println(kmb.getSteinerTree().probaToString());
+		
 	}
 
 }

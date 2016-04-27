@@ -17,7 +17,7 @@ public class Takahashi {
 	private List<SubstrateNode> participant;
 	private SubstrateNetwork sNet;
 	private SubstrateNetwork steinerTree;
-	private DijkstraShortestPath<SubstrateNode,SubstrateLink> Dijkstra;
+	private DijkstraShortestPath<SubstrateNode,SubstrateLink> dijkstra;
 	
 	public SubstrateNetwork getSteinerTree() {
 		return steinerTree;
@@ -27,14 +27,14 @@ public class Takahashi {
 		this.participant=new ArrayList<SubstrateNode>(participant);
 		this.sNet=sNet;
 		this.steinerTree=new SubstrateNetwork();
-		Dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(sNet);
+		dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(sNet);
 	}
 	
 	public Takahashi(Collection<SubstrateNode> participant,SubstrateNetwork sNet,Transformer<SubstrateLink, Double> weightTrans){
 		this.participant=new ArrayList<SubstrateNode>(participant);
 		this.sNet=sNet;
 		this.steinerTree=new SubstrateNetwork();
-		Dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(sNet,weightTrans);
+		dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(sNet,weightTrans);
 	}
 	
 	public void runSteinerTree(){
@@ -54,7 +54,7 @@ public class Takahashi {
 			
 			for(SubstrateNode par : tempoPar){
 				for(SubstrateNode snode : this.steinerTree.getVertices()){
-					double tempCost = (Double) Dijkstra.getDistance(par, snode);
+					double tempCost = (Double) dijkstra.getDistance(par, snode);
 					if(tempCost<minCost){
 						minCost = tempCost;
 						steinerLink=new Pair<SubstrateNode>(par,snode);
@@ -64,7 +64,7 @@ public class Takahashi {
 			}
 			
 			tempoPar.remove(steinerLink.getFirst());
-			for(SubstrateLink slink : Dijkstra.getPath(steinerLink.getFirst(), steinerLink.getSecond())){
+			for(SubstrateLink slink : dijkstra.getPath(steinerLink.getFirst(), steinerLink.getSecond())){
 				this.steinerTree.addEdge(slink,sNet.getEndpoints(slink));
 			}
 			
