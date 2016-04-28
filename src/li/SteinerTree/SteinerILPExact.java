@@ -84,6 +84,7 @@ public class SteinerILPExact extends AbstractLinkMapping {
 		
 		for(Map.Entry<String, String> entry : solution.entrySet()){
 			String linklink = entry.getKey();
+			if(linklink.startsWith("X")) continue;
 			double flow = Double.parseDouble(entry.getValue());
 			srcVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vs")+2, linklink.indexOf("vd")));
 			dstVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vd")+2, linklink.indexOf("ss")));

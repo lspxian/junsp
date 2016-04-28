@@ -118,7 +118,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
-		Collections.sort(events);	//sort InPs by link utilization
+		Collections.sort(events);	
 		
 		//add metric
 		metrics = new ArrayList<MetricMD>();

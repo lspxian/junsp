@@ -25,7 +25,6 @@ public class CostRevenueMD extends MetricMD {
 			MappedRevenueMD rev = new MappedRevenueMD(simulation);
 			return cost.calculate() / rev.calculate();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

@@ -3,7 +3,7 @@ package li.evaluation.metrics;
 import java.io.IOException;
 import java.util.Iterator;
 
-import li.simulation.Simulation;
+import li.simulation.AbstractSimulation;
 import vnreal.demands.BandwidthDemand;
 import vnreal.mapping.Mapping;
 import vnreal.network.substrate.SubstrateLink;
@@ -12,7 +12,7 @@ import vnreal.resources.BandwidthResource;
 
 public class LinkCostPerVnrL extends Metric{
 	private static double linkCost = 0.0;
-	public LinkCostPerVnrL(Simulation simulation) throws IOException {
+	public LinkCostPerVnrL(AbstractSimulation simulation) throws IOException {
 		super(simulation);
 	}
 

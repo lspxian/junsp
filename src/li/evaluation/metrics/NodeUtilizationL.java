@@ -2,7 +2,7 @@ package li.evaluation.metrics;
 
 import java.io.IOException;
 
-import li.simulation.Simulation;
+import li.simulation.AbstractSimulation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.CpuDemand;
 import vnreal.mapping.Mapping;
@@ -13,7 +13,7 @@ import vnreal.resources.CpuResource;
 
 public class NodeUtilizationL extends Metric{
 	public static double capacity = 0.0,sum=0.0;
-	public NodeUtilizationL(Simulation simulation) throws IOException {
+	public NodeUtilizationL(AbstractSimulation simulation) throws IOException {
 		super(simulation);
 	}
 	

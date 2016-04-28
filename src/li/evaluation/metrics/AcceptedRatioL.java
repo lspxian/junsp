@@ -2,12 +2,20 @@ package li.evaluation.metrics;
 
 import java.io.IOException;
 
-import li.simulation.Simulation;
+import li.simulation.AbstractSimulation;
 
 public class AcceptedRatioL extends Metric {
 
-	public AcceptedRatioL(Simulation simulation) throws IOException {
+	public AcceptedRatioL(AbstractSimulation simulation) throws IOException {
 		super(simulation);
+	}
+	
+	public AcceptedRatioL(AbstractSimulation simulation, String method) throws IOException{
+		super(simulation, method);
+	}
+	
+	public AcceptedRatioL(AbstractSimulation simulation, String method, int lambda) throws IOException{
+		super(simulation, method, lambda);
 	}
 
 	@Override

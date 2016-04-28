@@ -50,6 +50,7 @@ import vnreal.demands.CpuDemand;
 import vnreal.mapping.Mapping;
 import vnreal.network.Network;
 import vnreal.network.substrate.SubstrateLink;
+import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
@@ -358,6 +359,48 @@ public final class VirtualNetwork extends
 			}
 		}
 		return (nodeCost + linkCost);
+	}
+	
+	public double getTotalCost(SubstrateNetwork sn){
+		CpuDemand tmpCpuDem;
+		BandwidthDemand tmpBwDem,currentBW;
+		double nodeCost=0.0, linkCost=0.0;
+		
+		for(VirtualNode vnode : this.getVertices()){
+			for(AbstractDemand ad : vnode){
+				if(ad instanceof CpuDemand){
+					tmpCpuDem = (CpuDemand)ad;
+					nodeCost += tmpCpuDem.getDemandedCycles();
+					break;
+				}
+			}
+		}
+		
+		for(VirtualLink vl : this.getEdges()){
+			for(AbstractDemand ad : vl){
+				if(ad instanceof BandwidthDemand){
+					tmpBwDem = (BandwidthDemand)ad;
+					for (SubstrateLink sl : sn.getEdges()) {
+						for (AbstractResource res : sl) {
+							if (res instanceof BandwidthResource) {
+								for (Mapping f : res.getMappings()) {
+									currentBW = (BandwidthDemand) f.getDemand();
+									if(tmpBwDem.getOwner().equals(currentBW.getOwner())){
+										linkCost += currentBW.getDemandedBandwidth();
+										break;
+									}
+								}
+								break;
+							}
+						}
+					}
+					
+					break;
+				}
+			}
+		}
+		return (nodeCost + linkCost);
+		
 	}
 	
 }

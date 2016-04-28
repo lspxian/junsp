@@ -1,5 +1,6 @@
 package vnreal.algorithms.linkmapping;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
@@ -16,6 +17,8 @@ import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
+import vnreal.resources.AbstractResource;
+import vnreal.resources.BandwidthResource;
 
 public class SteinerTreeHeuristic extends AbstractLinkMapping {
 	
@@ -27,7 +30,7 @@ public class SteinerTreeHeuristic extends AbstractLinkMapping {
 		this.method="Takahashi";
 	}
 	
-	protected SteinerTreeHeuristic(SubstrateNetwork sNet, String method){
+	public SteinerTreeHeuristic(SubstrateNetwork sNet, String method){
 		super(sNet);
 		this.method=method;
 	}
@@ -37,10 +40,12 @@ public class SteinerTreeHeuristic extends AbstractLinkMapping {
 		
 		if(this.method=="Takahashi"){
 			Takahashi ta = new Takahashi(nodeMapping.values(), this.sNet, new ProbaCost());
+			ta.runSteinerTree();
 			this.steinerTree = ta.getSteinerTree();
 		}
 		else if(this.method=="KMB1981"){
 			KMB1981 kmb = new KMB1981(nodeMapping.values(), this.sNet, new ProbaCost());
+			kmb.runSteinerTree();
 			this.steinerTree = kmb.getSteinerTree();
 		}
 		else{
@@ -48,8 +53,14 @@ public class SteinerTreeHeuristic extends AbstractLinkMapping {
 			return false;
 		}
 		
-		BandwidthDemand bwDem=null;
+		Map<SubstrateLink, BandwidthDemand> pre_allo = new HashMap<SubstrateLink,BandwidthDemand>();
+		for(SubstrateLink sl : this.steinerTree.getEdges()){
+			pre_allo.put(sl, new BandwidthDemand(sl));
+		}
 		DijkstraShortestPath<SubstrateNode,SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(this.steinerTree);
+		
+		//verify bw
+		BandwidthDemand bwDem=null;
 		for(VirtualLink vl : vNet.getEdges()){
 			
 			for (AbstractDemand dem : vl) {
@@ -61,9 +72,32 @@ public class SteinerTreeHeuristic extends AbstractLinkMapping {
 			SubstrateNode sn1 = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
 			SubstrateNode sn2 = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
 			for(SubstrateLink sl : dijkstra.getPath(sn1, sn2)){
-				if(!NodeLinkAssignation.vlmSingleLinkSimple(bwDem, sl)){
-					
+				BandwidthDemand newbwd = new BandwidthDemand(sl);
+				newbwd.setDemandedBandwidth(pre_allo.get(sl).getDemandedBandwidth()+bwDem.getDemandedBandwidth());
+				pre_allo.replace(sl, newbwd);
+			}
+		}
+		
+		BandwidthResource resource = null;
+		for(SubstrateLink sl : this.steinerTree.getEdges()){
+			for(AbstractResource res : sl){
+				if(res instanceof BandwidthResource){
+					resource = (BandwidthResource) res;
+					break;
 				}
+			}
+			if(!NodeLinkAssignation.fulfills(pre_allo.get(sl), resource)){
+				System.out.println("resource error, substrate link "+sl.getId());
+				return false;
+			}
+		}
+		
+		//perform link mapping
+		for(VirtualLink vl : vNet.getEdges()){
+			SubstrateNode sn1 = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
+			SubstrateNode sn2 = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
+			if(!NodeLinkAssignation.vlmSimple(vl, dijkstra.getPath(sn1, sn2))){
+				throw new AssertionError("But we checked before!");
 			}
 		}
 		

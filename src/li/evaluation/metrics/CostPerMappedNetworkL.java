@@ -2,11 +2,11 @@ package li.evaluation.metrics;
 
 import java.io.IOException;
 
-import li.simulation.Simulation;
+import li.simulation.AbstractSimulation;
 
 
 public class CostPerMappedNetworkL extends Metric{
-	public CostPerMappedNetworkL(Simulation simulation) throws IOException {
+	public CostPerMappedNetworkL(AbstractSimulation simulation) throws IOException {
 		super(simulation);
 	}
 

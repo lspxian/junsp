@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-import li.simulation.Simulation;
+import li.simulation.AbstractSimulation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
@@ -20,7 +20,7 @@ private boolean isPathSplitting;
 double costMapped = 0;
 private static double  mappedRevenue = 0;
 
-	public tempCostRevenueL(Simulation simulation, boolean isPsAlgorithm) throws IOException {
+	public tempCostRevenueL(AbstractSimulation simulation, boolean isPsAlgorithm) throws IOException {
 		super(simulation);
 		this.isPathSplitting = isPsAlgorithm;
 	}

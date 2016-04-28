@@ -2,7 +2,7 @@ package li.evaluation.metrics;
 
 import java.io.IOException;
 
-import li.simulation.Simulation;
+import li.simulation.AbstractSimulation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.mapping.Mapping;
@@ -12,9 +12,15 @@ import vnreal.resources.BandwidthResource;
 
 public class LinkUtilizationL extends Metric {
 
-	private static double capacity = 0.0,sum = 0.0;
-	public LinkUtilizationL(Simulation simulation) throws IOException {
+	private double capacity = 0.0,sum = 0.0;
+	public LinkUtilizationL(AbstractSimulation simulation) throws IOException {
 		super(simulation);
+	}
+	public LinkUtilizationL(AbstractSimulation simulation, String method) throws IOException {
+		super(simulation, method);
+	}
+	public LinkUtilizationL(AbstractSimulation simulation, String method, int lambda) throws IOException{
+		super(simulation,method,lambda);
 	}
 
 	@Override
@@ -28,7 +34,6 @@ public class LinkUtilizationL extends Metric {
 			for (AbstractResource res : sl.get()) {
 				if(res instanceof BandwidthResource){
 					capacity += ((BandwidthResource) res).getBandwidth();					
-					//System.out.println(capacity);
 				}
 			}
 		}

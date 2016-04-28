@@ -10,6 +10,7 @@ import li.SteinerTree.ProbaCost;
 import li.SteinerTree.SteinerILPExact;
 import li.SteinerTree.Takahashi;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
+import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.nodemapping.CordinatedNodeLinkMapping;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -23,36 +24,42 @@ public class SteinerTest {
 		SubstrateNetwork sn=new SubstrateNetwork(); //undirected by default 
 		sn.alt2network("data/cost239");
 		sn.addAllResource(true);
-		System.out.println(sn.probaToString());
+//		System.out.println(sn.probaToString());
 		
 		VirtualNetwork vn = new VirtualNetwork();
-		vn.alt2network("data/vir");
+		vn.alt2network("data/vir4");
 		vn.addAllResource(true);
+		System.out.println(vn);
 
 		//node mapping
-		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,10,true,false);
+		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
 		
 		if(arnm.nodeMapping(vn)){
 			System.out.println("node mapping succes, virtual netwotk ");
+		
+			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
+			System.out.println(nodeMapping);
+			
+			//link mapping
+			
+	//		SteinerILPExact stn = new SteinerILPExact(sn);
+	//		stn.linkMapping(vn, nodeMapping);
+	//		System.out.println("\n");
+			
+	//		Takahashi ta = new Takahashi(nodeMapping.values(),sn,new ProbaCost());
+	//		ta.runSteinerTree();
+	//		System.out.println(ta.getSteinerTree().probaToString());
+			
+	//		KMB1981 kmb = new KMB1981(nodeMapping.values(),sn,new ProbaCost());
+	//		kmb.runSteinerTree();
+	//		System.out.println(kmb.getSteinerTree().probaToString());
+			
+			SteinerTreeHeuristic st = new SteinerTreeHeuristic(sn,"Takahashi");
+			st.linkMapping(vn, nodeMapping);
 		}else{
 			System.out.println("node resource error, virtual network ");
 		}
-		Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
-		System.out.println(nodeMapping);
-		
-		//link mapping
-		/*
-		SteinerILPExact stn = new SteinerILPExact(sn);
-		stn.linkMapping(vn, nodeMapping);
-		System.out.println("\n");
-		
-		Takahashi ta = new Takahashi(nodeMapping.values(),sn,new ProbaCost());
-		ta.runSteinerTree();
-		System.out.println(ta.getSteinerTree().probaToString());
-		*/
-		KMB1981 kmb = new KMB1981(nodeMapping.values(),sn,new ProbaCost());
-		kmb.runSteinerTree();
-		System.out.println(kmb.getSteinerTree().probaToString());
+		System.out.println(sn);
 		
 	}
 

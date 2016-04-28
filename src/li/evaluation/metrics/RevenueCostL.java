@@ -2,12 +2,12 @@ package li.evaluation.metrics;
 
 import java.io.IOException;
 
-import li.simulation.Simulation;
+import li.simulation.AbstractSimulation;
 
 public class RevenueCostL extends Metric{
 	private boolean isPathSplitting;
 	private static double RevenueCost=0.0;
-	public RevenueCostL(Simulation simulation, boolean isPsAlgorithm) throws IOException {
+	public RevenueCostL(AbstractSimulation simulation, boolean isPsAlgorithm) throws IOException {
 		super(simulation);
 		this.isPathSplitting = isPsAlgorithm;
 	}
@@ -20,7 +20,7 @@ public class RevenueCostL extends Metric{
 	@Override
 	public double calculate() {
 		//double RevenueCost=0.0;
-		try {
+		/*try {
 			
 			CostL cost = new CostL(simulation);
 			MappedRevenueL rev = new MappedRevenueL(simulation,isPathSplitting);
@@ -28,7 +28,7 @@ public class RevenueCostL extends Metric{
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		}*/
 		return (RevenueCost);
 	}
 }

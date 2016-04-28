@@ -44,9 +44,10 @@ public class Takahashi {
 		Double minCost;
 		
 		
-		int randomStart = new Random().nextInt(participant.size()-1);
-		SubstrateNode startNode = participant.get(randomStart);
+		int randomStart = new Random().nextInt(tempoPar.size()-1);
+		SubstrateNode startNode = tempoPar.get(randomStart);
 		this.steinerTree.addVertex(startNode);
+		tempoPar.remove(startNode);
 		Pair<SubstrateNode> steinerLink=null;
 		
 		while(!tempoPar.isEmpty()){
