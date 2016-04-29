@@ -24,6 +24,7 @@ public class SteinerTreeHeuristic extends AbstractLinkMapping {
 	
 	String method;
 	SubstrateNetwork steinerTree;
+	double probability;
 	
 	protected SteinerTreeHeuristic(SubstrateNetwork sNet) {
 		super(sNet);
@@ -33,6 +34,10 @@ public class SteinerTreeHeuristic extends AbstractLinkMapping {
 	public SteinerTreeHeuristic(SubstrateNetwork sNet, String method){
 		super(sNet);
 		this.method=method;
+	}
+
+	public double getProbability() {
+		return probability;
 	}
 
 	@Override
@@ -53,6 +58,7 @@ public class SteinerTreeHeuristic extends AbstractLinkMapping {
 			return false;
 		}
 		
+		this.probability = computeProbability(this.steinerTree);
 		Map<SubstrateLink, BandwidthDemand> pre_allo = new HashMap<SubstrateLink,BandwidthDemand>();
 		for(SubstrateLink sl : this.steinerTree.getEdges()){
 			pre_allo.put(sl, new BandwidthDemand(sl));
@@ -104,4 +110,11 @@ public class SteinerTreeHeuristic extends AbstractLinkMapping {
 		return true;
 	}
 
+	public double computeProbability(SubstrateNetwork sn){
+		double temproba=1;
+		for(SubstrateLink sl: sn.getEdges()){
+			temproba = temproba * (1-sl.getProbability());
+		}
+		return 1-temproba;
+	}
 }

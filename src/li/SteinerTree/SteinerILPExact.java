@@ -27,12 +27,25 @@ import vnreal.network.virtual.VirtualNode;
 public class SteinerILPExact extends AbstractLinkMapping {
 	private String localPath ;
 	private String remotePath ;
+	double probability;
 	public SteinerILPExact(SubstrateNetwork sNet) {
 		super(sNet);
 		this.localPath = "ILP-LP-Models/vne-mcf.lp";
 		this.remotePath = "pytest/vne-mcf.lp";
 	}
-
+	
+	public double getProbability() {
+		return probability;
+	}
+	
+	public double computeProbability(SubstrateNetwork sn){
+		double temproba=1;
+		for(SubstrateLink sl: sn.getEdges()){
+			temproba = temproba * (1-sl.getProbability());
+		}
+		return 1-temproba;
+	}
+	
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
 		//Map<String, String> solution = linkMappingWithoutUpdate(vNet, nodeMapping);
@@ -81,48 +94,64 @@ public class SteinerILPExact extends AbstractLinkMapping {
 		VirtualNode srcVnode = null, dstVnode = null;
 		SubstrateNode srcSnode = null, dstSnode = null;
 		int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
+		double temproba=1;
 		
 		for(Map.Entry<String, String> entry : solution.entrySet()){
 			String linklink = entry.getKey();
-			if(linklink.startsWith("X")) continue;
-			double flow = Double.parseDouble(entry.getValue());
-			srcVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vs")+2, linklink.indexOf("vd")));
-			dstVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vd")+2, linklink.indexOf("ss")));
-			srcSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("ss")+2, linklink.indexOf("sd")));
-			dstSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("sd")+2));
 			
-			//for undirected network, flow 0->1 and 1->0 are added to 0<->1, so if we have a flow 1->0, 
-			//we have to change the s and d to meet the original link 0->1
-			
-			if(srcSnodeId>dstSnodeId){
-				int tmp = srcSnodeId;
-				srcSnodeId = dstSnodeId;
-				dstSnodeId = tmp;
+			if(linklink.startsWith("X")){
+				
+				srcSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("s")+1, linklink.indexOf("d")));
+				dstSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("d")+1));
+				srcSnode = sNet.getNodeFromID(srcSnodeId);
+				dstSnode = sNet.getNodeFromID(dstSnodeId);
+				SubstrateLink sl = this.sNet.findEdge(srcSnode, dstSnode);
+				temproba = temproba * (1-sl.getProbability());
 			}
-			
-			srcVnode = vNet.getNodeFromID(srcVnodeId);
-			dstVnode = vNet.getNodeFromID(dstVnodeId);
-			VirtualLink tmpvl = vNet.findEdge(srcVnode, dstVnode);
-			
-			for (AbstractDemand dem : tmpvl) {
-				if (dem instanceof BandwidthDemand) {
-					bwDem = (BandwidthDemand) dem;
-					break;
+			else{
+				double flow = Double.parseDouble(entry.getValue());
+				srcVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vs")+2, linklink.indexOf("vd")));
+				dstVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vd")+2, linklink.indexOf("ss")));
+				srcSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("ss")+2, linklink.indexOf("sd")));
+				dstSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("sd")+2));
+				
+				//for undirected network, flow 0->1 and 1->0 are added to 0<->1, so if we have a flow 1->0, 
+				//we have to change the s and d to meet the original link 0->1
+				
+				if(srcSnodeId>dstSnodeId){
+					int tmp = srcSnodeId;
+					srcSnodeId = dstSnodeId;
+					dstSnodeId = tmp;
 				}
+				
+				srcVnode = vNet.getNodeFromID(srcVnodeId);
+				dstVnode = vNet.getNodeFromID(dstVnodeId);
+				VirtualLink tmpvl = vNet.findEdge(srcVnode, dstVnode);
+				
+				for (AbstractDemand dem : tmpvl) {
+					if (dem instanceof BandwidthDemand) {
+						bwDem = (BandwidthDemand) dem;
+						break;
+					}
+				}
+				
+				srcSnode = sNet.getNodeFromID(srcSnodeId);
+				dstSnode = sNet.getNodeFromID(dstSnodeId);
+				SubstrateLink tmpsl = sNet.findEdge(srcSnode, dstSnode);
+				
+				newBwDem = new BandwidthDemand(tmpvl);
+				newBwDem.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
+				
+				if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
+					throw new AssertionError("But we checked before!");
+				}
+				
 			}
 			
-			srcSnode = sNet.getNodeFromID(srcSnodeId);
-			dstSnode = sNet.getNodeFromID(dstSnodeId);
-			SubstrateLink tmpsl = sNet.findEdge(srcSnode, dstSnode);
-			
-			newBwDem = new BandwidthDemand(tmpvl);
-			newBwDem.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
-			
-			if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
-				throw new AssertionError("But we checked before!");
-			}
 			
 		}
+		
+		this.probability=1-temproba;
 	}
 	
 	public void generateFile(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping) throws IOException{

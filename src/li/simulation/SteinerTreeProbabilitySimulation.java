@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import li.SteinerTree.SteinerILPExact;
@@ -15,26 +15,11 @@ import li.evaluation.metrics.CurrentLinkUtilisationL;
 import li.evaluation.metrics.LinkUtilizationL;
 import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.Metric;
+import li.evaluation.metrics.ProbabilityL;
 import li.gt_itm.Generator;
-import li.multiDomain.metrics.AcceptedRatioMD;
-import li.multiDomain.metrics.CostMD;
-import li.multiDomain.metrics.CostRevenueMD;
-import li.multiDomain.metrics.CurrentLinkUtilisationMD;
-import li.multiDomain.metrics.LinkUtilizationMD;
-import li.multiDomain.metrics.MappedRevenueMD;
-import li.multiDomain.metrics.MetricMD;
 import vnreal.algorithms.AbstractLinkMapping;
-import vnreal.algorithms.AbstractMultiDomainLinkMapping;
-import vnreal.algorithms.linkmapping.AS_MCF;
-import vnreal.algorithms.linkmapping.MDasOD2;
-import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
-import vnreal.algorithms.linkmapping.MultiDomainRanking;
-import vnreal.algorithms.linkmapping.MultiDomainRanking2;
-import vnreal.algorithms.linkmapping.MultiDomainRanking3;
-import vnreal.algorithms.linkmapping.Shen2014;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
-import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.evaluations.metrics.AcceptedRatio;
@@ -45,15 +30,22 @@ import vnreal.network.virtual.VirtualNode;
 
 public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 	
+	protected Map<VirtualNetwork, Double> probability; 
+	
+	public Map<VirtualNetwork, Double> getProbability() {
+		return probability;
+	}
+
 	public SteinerTreeProbabilitySimulation(){
+		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-			sn.alt2network("data/cost239");
+			sn.alt2network("sndlib/germany50");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		sn.addAllResource(true);
+		//sn.addAllResource(true);
+		sn.addInfiniteResource();
 	}
 	
 	public void initialize(int lambda) throws IOException{
@@ -63,15 +55,14 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 		this.lambda=lambda;
 		this.totalCost=0.0;
 		/*-----------use pre-generated virtual network---------*/
-		/*
+		
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=100;i<400;i++){
+		for(int i=0;i<40;i++){
 			VirtualNetwork vn = new VirtualNetwork();
 			vn.alt2network("data/vir"+i);
 //			vn.alt2network("data/vir"+new Random().nextInt(500));
 //			vn.alt2network("data/vhr2");
 			vn.addAllResource(true);
-			vn.scale(2, 2);
 			//System.out.println(vn);		//print vn
 			vns.add(vn);
 		}
@@ -83,10 +74,10 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 				events.add(new VnEvent(vns.get(i),departure,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
-		Collections.sort(events);*/
+		Collections.sort(events);
 		
 		/*---------random virtual network-----------*/
-		events = new ArrayList<VnEvent>();
+	/*	events = new ArrayList<VnEvent>();
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
 			Generator.createVirNet();
@@ -99,7 +90,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
-		Collections.sort(events);	
+		Collections.sort(events);	*/
 		
 		//add metric
 		metrics = new ArrayList<Metric>();
@@ -108,26 +99,27 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 	public void runSimulation(String methodStr) throws IOException{
 		//add metrics
 		metrics.add(new AcceptedRatioL(this, methodStr,lambda));
-		metrics.add(new LinkUtilizationL(this, methodStr,lambda));
-		metrics.add(new CurrentLinkUtilisationL(this, methodStr,lambda));
+	//	metrics.add(new LinkUtilizationL(this, methodStr,lambda));
+//		metrics.add(new CurrentLinkUtilisationL(this, methodStr,lambda));
 		metrics.add(new MappedRevenueL(this, methodStr,lambda));
-		metrics.add(new CostL(this, methodStr,lambda));
-		metrics.add(new CostRevenueL(this,methodStr,lambda));
+		//metrics.add(new CostL(this, methodStr,lambda));
+		//metrics.add(new CostRevenueL(this,methodStr,lambda));
+		metrics.add(new ProbabilityL(this,methodStr,lambda));
 		
-for(VnEvent currentEvent : events){
+		for(VnEvent currentEvent : events){
 			
 			System.out.println("/------------------------------------/");
 			System.out.println("New event at time :	"+currentEvent.getAoDTime()+" for vn:"+currentEvent.getConcernedVn().getId());
 			System.out.println("At this moment, accepted:"+this.accepted+" rejected:"+this.rejected);
+			System.out.print("Current vn : \n"+currentEvent.getConcernedVn()+"\n");
 
 			if(currentEvent.getFlag()==0){
-				AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,35,true,false);
+				AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,40,true,false);
+				System.out.println("Operation : Mapping");
 				
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
-					System.out.println(currentEvent.getConcernedVn());
 					Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
-					System.out.println(nodeMapping);
-					//System.out.println("node mapping succes, virtual netwotk "+j);
+					System.out.println("node mapping succes : "+nodeMapping);
 					
 					//link mapping method
 					AbstractLinkMapping method;
@@ -136,7 +128,7 @@ for(VnEvent currentEvent : events){
 					case "Takahashi" : 
 						method = new SteinerTreeHeuristic(sn,"Takahashi");
 						break;
-					case "KMB" : 
+					case "KMB1981" : 
 						method = new SteinerTreeHeuristic(sn,"KMB1981");
 						break;
 					case "Exact" : 
@@ -151,15 +143,22 @@ for(VnEvent currentEvent : events){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
 						this.totalCost=this.totalCost+currentEvent.getConcernedVn().getTotalCost(sn);
+						
+						if(method instanceof SteinerTreeHeuristic){
+							this.probability.put(currentEvent.getConcernedVn(), 
+									((SteinerTreeHeuristic) method).getProbability());
+						}
+						else if(method instanceof SteinerILPExact){
+							this.probability.put(currentEvent.getConcernedVn(), 
+									((SteinerTreeHeuristic) method).getProbability());
+						}
+						
+						System.out.println("link mapping done");
 					}
 					else{
 						this.rejected++;
-						System.out.println("link resource error, virtual network"); 
+						System.out.println("link mapping resource error"); 
 					}
-					
-					//reset virtual node domain value
-					for(VirtualNode viNode : currentEvent.getConcernedVn().getVertices())
-						viNode.setDomain(null);
 					
 				}
 				else{
@@ -169,8 +168,7 @@ for(VnEvent currentEvent : events){
 				//System.out.println("Duree d'execution :"+duree);
 			}
 			else{
-				System.out.println("Liberation Ressources");
-				System.out.println(currentEvent.getConcernedVn());
+				System.out.println("Operation : Liberation Ressources");
 				NodeLinkDeletion.freeResource(currentEvent.getConcernedVn(), sn);
 			}
 			

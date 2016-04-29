@@ -47,19 +47,4 @@ public class VnEvent  implements Comparable<VnEvent>{
 		else  return 1;
 	}
 
-	/*public void Mapping(SubstrateNetwork sn,int i)
-	{
-			System.out.println("virtual network "+i+": \n"+this);
-		//node mapping
-			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
-		
-			if(arnm.nodeMapping(this))
-			{
-				System.out.println("node mapping succes, virtual netwotk "+i);
-			}
-			else{
-				System.out.println("node resource error, virtual network "+i);
-	   }*/
-
-
 }

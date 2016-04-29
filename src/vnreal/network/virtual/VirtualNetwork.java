@@ -400,7 +400,7 @@ public final class VirtualNetwork extends
 			}
 		}
 		return (nodeCost + linkCost);
-		
 	}
+	
 	
 }

@@ -49,6 +49,7 @@ import org.apache.commons.collections15.Factory;
 import vnreal.network.Network;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
+import vnreal.resources.CpuResource;
 import edu.uci.ics.jung.graph.util.Pair;
 
 /**
@@ -303,19 +304,31 @@ public class SubstrateNetwork extends
 	}
 	
 	public boolean addAllResource(boolean random){
+		double value=1;
 		for(SubstrateNode sbnd : this.getVertices()){
-			sbnd.addResource(random);
+			if(random) value =  new Random().nextDouble();
+			sbnd.addResource(value);
 		}
-		Iterator<SubstrateLink> it=this.getEdges().iterator();
-		while(it.hasNext()){
-			double value = 1;
+		
+		for(SubstrateLink sl:this.getEdges()){
 			if(random)	value = new Random().nextDouble();
-			SubstrateLink sblk1 = (SubstrateLink)it.next();
-		//	SubstrateLink sblk2 = (SubstrateLink)it.next();
-			sblk1.addResource(value);
-		//	sblk2.addResource(value);
+			sl.addResource(value);
 		}
 		return true;
+	}
+	
+	public void addInfiniteResource(){
+		for(SubstrateNode sbnd : this.getVertices()){
+			CpuResource cpu = new CpuResource(sbnd);
+			cpu.setCycles(10000.);
+			sbnd.add(cpu);
+		}
+		for(SubstrateLink sl:this.getEdges()){
+			BandwidthResource bw = new BandwidthResource(sl);
+			bw.setBandwidth(10000.);
+			sl.add(bw);
+		}
+		
 	}
 	
 	public SubstrateNode getNodeFromID(int id){
