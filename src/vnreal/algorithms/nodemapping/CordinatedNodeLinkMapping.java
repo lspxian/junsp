@@ -61,8 +61,9 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 		
 		AugmentedNetwork an = new AugmentedNetwork(this.sNet);
 		Map<VirtualNode, MetaNode> virToMeta=new HashMap<VirtualNode, MetaNode>();
-		ArrayList<Double> max = new ArrayList<Double>();
-		Double res=0.0,xns=0.0;
+		Map<VirtualNode, SubstrateNode> virToSubstrate = new HashMap<VirtualNode,SubstrateNode>();
+		Double res=0.0,xns=0.0,max=0.0;
+		int indice=0;
 		
 		this.createAugmentedNetwork(vNet, an, virToMeta);	
 		try {
@@ -84,19 +85,38 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 					Iterator<String> it = keys.iterator();
 					while (it.hasNext()){
 						String key = it.next();
-						if (key.contains(sind) && key.contains(vind) && key.startsWith("v"))
+						String kind1="",kind2="";
+						if (key.startsWith("v")){
+							kind1=key.substring(key.indexOf("ss")+2, key.indexOf("sd"));
+							//System.out.println(kind1);
+							kind2=key.substring(key.indexOf("sd")+2);
+							//System.out.println(kind2);
+						}
+						if (key.startsWith("X")){
+							kind1=key.substring(key.indexOf("Xm")+2, key.indexOf("w"));
+							//System.out.println(kind1);
+							kind2=key.substring(key.indexOf("w")+1);
+							//System.out.println(kind2);
+						}
+						if ((kind1.equals(sind) || kind2.equals(sind)) && (kind1.equals(vind) || kind2.equals(vind)) && key.startsWith("v"))
 							res += Double.parseDouble(solution.get(key));
-						if (key.contains(sind) && key.contains(vind) && key.startsWith("X"))
+						if ((kind1.equals(sind) || kind2.equals(sind)) && (kind1.equals(vind) || kind2.equals(vind)) && key.startsWith("X"))
 							xns = Double.parseDouble(solution.get(key));
 					}
 					res = res*xns;
-					max.add(res);
+					if(res >= max){
+						max = res;
+						indice = Integer.parseInt(sind);
+					}
 					res = 0.0;
 					xns = 0.0;
 				}
 				System.out.println(max);
-				max.clear();
+				System.out.println(indice);
+				virToSubstrate.put(vn, sNet.getNodeFromID(indice));
+				max = 0.0;
 			}
+			System.out.println(virToSubstrate);
 			
 			
 			
