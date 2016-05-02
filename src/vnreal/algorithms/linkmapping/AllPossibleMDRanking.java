@@ -35,13 +35,13 @@ public class AllPossibleMDRanking extends AbstractMultiDomainLinkMapping{
 			MultiDomainRanking3 mdr = new MultiDomainRanking3(combination);	//3 without collection.sort
 			if(mdr.linkMapping(vNet, nodeMapping)){
 				flag = true;
-				Solution solution = new Solution(combination,mdr.getMapping());
-				this.solutions.add(solution);
 				//
 				for(Map.Entry<BandwidthDemand, BandwidthResource>e : mdr.getMapping().entrySet()){
 					e.getKey().free(e.getValue());
 				}
 				
+				Solution solution = new Solution(combination,mdr.getMapping());
+				this.solutions.add(solution);
 			}
 				
 		}
@@ -65,8 +65,9 @@ public class AllPossibleMDRanking extends AbstractMultiDomainLinkMapping{
 		}
 		
 		for(Map.Entry<BandwidthDemand, BandwidthResource> e : best.getMapping().entrySet()){
-			if(!NodeLinkAssignation.occupy(e.getKey(), e.getValue()))
+			if(!NodeLinkAssignation.occupy(e.getKey(), e.getValue())){
 				throw new AssertionError("But we checked before!");
+			}
 		}
 	}
 	
