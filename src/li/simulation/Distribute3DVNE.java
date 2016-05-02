@@ -4,14 +4,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
-import li.evaluation.metrics.Metric;
 import li.gt_itm.Generator;
-import li.multiDomain.Domain;
 import li.multiDomain.AbstractMultiDomain;
+import li.multiDomain.Domain;
 import li.multiDomain.MultiDomainUtil;
 import li.multiDomain.metrics.AcceptedRatioMD;
 import li.multiDomain.metrics.CostMD;
@@ -20,47 +17,33 @@ import li.multiDomain.metrics.CurrentLinkUtilisationMD;
 import li.multiDomain.metrics.LinkUtilizationMD;
 import li.multiDomain.metrics.MappedRevenueMD;
 import li.multiDomain.metrics.MetricMD;
-import main.MultiDomainAlgoTest;
-import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
 import vnreal.algorithms.linkmapping.AS_MCF;
+import vnreal.algorithms.linkmapping.AllPossibleMDRanking;
 import vnreal.algorithms.linkmapping.MDasOD2;
 import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
 import vnreal.algorithms.linkmapping.MultiDomainRanking;
 import vnreal.algorithms.linkmapping.MultiDomainRanking2;
 import vnreal.algorithms.linkmapping.MultiDomainRanking3;
-import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.linkmapping.Shen2014;
-import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkDeletion;
-import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 
-public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
+public class Distribute3DVNE extends AbstractMultiDomain {
 
-
-	public Centralized_MD_VNE_Simulation() throws IOException{
+public Distribute3DVNE() throws IOException{
 		this.simulationTime = 30000.0;
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-		/*-------4 domains example--------*/
-//		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
-//		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
-//		multiDomain.add(new Domain(0,0,"sndlib/germany50", true));
-//		multiDomain.add(new Domain(1,0,"sndlib/ta2", true));
+		/*-------3 domains example--------*/
 		
 		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
 		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
-		multiDomain.add(new Domain(1,1,"sndlib/germany50", true));
-		multiDomain.add(new Domain(0,1,"sndlib/zib54", true));
-		
-		/*-------2 domains example------*/
-//		multiDomain.add(new Domain(1,1,"sndlib/cost266", true));
-//		multiDomain.add(new Domain(0,1,"sndlib/norway", true));
+		multiDomain.add(new Domain(2,0,"sndlib/germany50", true));
 		
 		/*------use gt-itm to create random substrate network-----*/
 	/*	multiDomain.add(new Domain(0,0, true));
@@ -70,7 +53,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 
 		/*--------static or random peering links--------*/
 //		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
-		MultiDomainUtil.randomInterLinks(multiDomain);
+		MultiDomainUtil.random3DInterLinks(multiDomain);
 	}
 	
 	public void initialize(int lambda) throws IOException{
@@ -88,7 +71,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 //			vn.alt2network("data/vir"+new Random().nextInt(500));
 //			vn.alt2network("data/vhr2");
 			vn.addAllResource(true);
-			vn.scale(2, 2);
+			vn.scale(3, 1);
 			//System.out.println(vn);		//print vn
 			vns.add(vn);
 		}
@@ -109,7 +92,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/sub");
 			vn.addAllResource(true);
-			vn.scale(2, 2);		//scale a [100,100] vn to [200,200]
+			vn.scale(3, 1);		//scale a [100,100] vn to [300,100]
 			vn.reconfigResource(multiDomain);
 			
 			double departureTime = time+vn.getLifetime();
@@ -162,17 +145,14 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 					case "MultiDomainAsOneDomain" : 
 						method = new MultiDomainAsOneDomain(multiDomain);
 						break;
-					case "MDasOD2" : 
-						method = new MDasOD2(multiDomain);
-						break;
 					case "MultiDomainRanking2" : 
 						method = new MultiDomainRanking2(multiDomain);
 						break;
 					case "MultiDomainRanking3" : 
 						method = new MultiDomainRanking3(multiDomain);
 						break;
-					case "AS_MCF" : 
-						method = new AS_MCF(multiDomain);
+					case "AllPossible" : 
+						method = new AllPossibleMDRanking(multiDomain);
 						break;
 					default : 
 						System.out.println("The methode doesn't exist");

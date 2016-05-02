@@ -10,7 +10,9 @@ import java.util.Random;
 
 import li.multiDomain.Domain;
 import li.multiDomain.MultiDomainUtil;
+import li.simulation.Distribute3DVNE;
 import vnreal.algorithms.linkmapping.AS_MCF;
+import vnreal.algorithms.linkmapping.AllPossibleMDRanking;
 import vnreal.algorithms.linkmapping.Shen2014;
 import vnreal.algorithms.nodemapping.MultiDomainAvailableResources;
 import vnreal.network.substrate.InterLink;
@@ -38,18 +40,18 @@ public class MultiDomainAlgoTest {
 		for(int i=0;i<multiDomain.size();i++){
 			System.out.println("inter:"+multiDomain.get(i).getInterLinkCount());				
 		}
-	/*
+	
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
-			vn.scale(2, 1);
+			vn.scale(3, 1);
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 		}
 		
-		
+		/*
 		for(int i=0;i<2;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 		}
@@ -58,18 +60,18 @@ public class MultiDomainAlgoTest {
 		System.out.println(multiDomain.get(0));
 		System.out.println(multiDomain.get(1));
 		System.out.println(tmpDomains.get(0));
-		System.out.println(tmpDomains.get(1));*/
+		System.out.println(tmpDomains.get(1));
 		
 		
-		/*
+		
 		System.out.println("********as_mcf****************");
 		tmpDomains = new ArrayList<Domain>();
 		for(Domain domain : multiDomain){
 			tmpDomains.add(domain.deepCopy());
-		}
-		for(int i=1;i<2;i++){
-			System.out.println("virtual network "+i+": \n");
-			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(tmpDomains,50);
+		}*/
+		for(int i=3;i<4;i++){
+			System.out.println("virtual network "+i+": \n"+vns.get(i));
+			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(multiDomain,50);
 			if(mdar.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
 			}else{
@@ -80,42 +82,18 @@ public class MultiDomainAlgoTest {
 			System.out.println(nodeMapping);
 			
 			System.out.println("link mapping, virtual network "+i+"\n");
-			AS_MCF as_mcf = new AS_MCF(tmpDomains);
-			as_mcf.linkMapping(vns.get(i),nodeMapping);
+			AllPossibleMDRanking dis = new AllPossibleMDRanking(multiDomain);
+			dis.linkMapping(vns.get(i), nodeMapping);
 			System.out.println("virtual network "+i+" finished \n\n");
 			
 		}
 		
 		
-		System.out.println(tmpDomains.get(0));
-		System.out.println(tmpDomains.get(1));
+		System.out.println(multiDomain.get(0));
+		System.out.println(multiDomain.get(1));
+		System.out.println(multiDomain.get(2));
 		
-		
-		System.out.println("********shen2014****************");
-		tmpDomains = new ArrayList<Domain>();
-		for(Domain domain : multiDomain){
-			tmpDomains.add(domain.deepCopy());
-		}
-		for(int i=0;i<5;i++){
-			System.out.println("virtual network "+i+": \n");
-			MultiDomainAvailableResources mdar = new MultiDomainAvailableResources(tmpDomains,50);
-			if(mdar.nodeMapping(vns.get(i))){
-				System.out.println("node mapping succes, virtual netwotk "+i);
-			}else{
-				System.out.println("node resource error, virtual network "+i);
-				continue;
-			}
-			Map<VirtualNode, SubstrateNode> nodeMapping = mdar.getNodeMapping();
-			System.out.println(nodeMapping);
 
-			System.out.println("link mapping, virtual network "+i+"\n");
-			Shen2014 shen = new Shen2014(tmpDomains);
-			shen.linkMapping(vns.get(i), nodeMapping);
-			System.out.println("virtual network "+i+" finished \n\n");
-		}
-		System.out.println(tmpDomains.get(0));
-		System.out.println(tmpDomains.get(1));
-		*/
 		
 		
 	}

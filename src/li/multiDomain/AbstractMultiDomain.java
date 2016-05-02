@@ -15,7 +15,7 @@ public abstract class AbstractMultiDomain {
 	protected double totalCost;
 	protected ArrayList<VnEvent> events;
 	protected ArrayList<MetricMD> metrics;
-	protected double simulationTime = 30000.0;
+	protected double simulationTime;
 	protected double time = 0.0;
 	protected int accepted = 0;
 	protected int rejected = 0;

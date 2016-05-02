@@ -61,6 +61,10 @@ public class MultiDomainRanking2 extends AbstractMultiDomainLinkMapping {
 		this.initialize();
 	}
 	
+	public Map<BandwidthDemand, BandwidthResource> getMapping() {
+		return mapping;
+	}
+	
 	private void initialize(){
 		this.localVNets =  new LinkedHashMap<Domain, VirtualNetwork>();
 		this.augmentedNets = new LinkedHashMap<Domain, AugmentedNetwork>();

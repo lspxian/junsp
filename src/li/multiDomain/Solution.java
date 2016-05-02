@@ -17,6 +17,7 @@ public class Solution {
 	public Solution(List<Domain> domainsOrder,Map<BandwidthDemand, BandwidthResource> mapping){
 		this.domainsOrder=domainsOrder;
 		this.mapping=mapping;
+		this.cost = 0.0;
 		computeCost();
 	}
 	
@@ -30,7 +31,9 @@ public class Solution {
 		return cost;
 	}
 	public void computeCost(){
-		//TODO
+		for(Map.Entry<BandwidthDemand, BandwidthResource> en : mapping.entrySet()){
+			this.cost = this.cost + en.getKey().getDemandedBandwidth()/(en.getValue().getAvailableBandwidth()+0.001);
+		}
 	}
 	
 	
