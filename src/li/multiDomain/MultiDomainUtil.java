@@ -148,6 +148,58 @@ public class MultiDomainUtil {
 		
 	}
 	
+	public static void random3DInterLinks(List<Domain> domains){
+		random2DInterLinks(domains.get(0),domains.get(1),0.8,0.07);
+		random2DInterLinks(domains.get(1),domains.get(2),0.8,0.07);
+		random2DInterLinks(domains.get(0),domains.get(2),0.8,0.17);
+	}
+	
+	public static void random2DInterLinks(Domain startDomain,Domain endDomain, double alpha, double beta){
+		
+		//generate inter links
+		//0.9 0.08 for random sub
+//		double alpha = 0.9;	//alpha increases the probability of edges between any nodes in the graph
+//		double beta = 0.08;	//beta yields a larger ratio of long edges to short edges.	
+		
+		//max and min distance for all the domains
+				
+		double maxDistance=0, minDistance=10000, distance=0, ax,ay,bx,by;
+		
+		for(SubstrateNode start : startDomain.getVertices()){
+			for(SubstrateNode end : endDomain.getVertices()){
+				ax = start.getCoordinateX()+startDomain.getCoordinateX()*100;
+				ay = start.getCoordinateY()+startDomain.getCoordinateY()*100;
+				bx = end.getCoordinateX()+endDomain.getCoordinateX()*100;
+				by = end.getCoordinateY()+endDomain.getCoordinateY()*100;
+				distance = Math.sqrt(Math.pow(ax-bx, 2) + Math.pow(ay-by, 2));
+				if(distance>maxDistance)	maxDistance = distance;
+				if(distance<minDistance)	minDistance = distance;
+				
+			}
+		}
+		
+		//for each pair of domain, generate inter links by Waxman
+		for(SubstrateNode start : startDomain.getVertices()){
+			for(SubstrateNode end : endDomain.getVertices()){
+				ax = start.getCoordinateX()+startDomain.getCoordinateX()*100;
+				ay = start.getCoordinateY()+startDomain.getCoordinateY()*100;
+				bx = end.getCoordinateX()+endDomain.getCoordinateX()*100;
+				by = end.getCoordinateY()+endDomain.getCoordinateY()*100;
+				distance = Math.sqrt(Math.pow(ax-bx, 2) + Math.pow(ay-by, 2));
+				double proba = alpha * Math.exp(-distance/beta/maxDistance);
+				if(distance==minDistance)	proba = 1;
+//						if(distance<=minDistance+3) proba=1;
+				if(proba>(new Random().nextDouble())*0.97+0.03){
+					//source, destination, destination domain, random resource 
+					InterLink il = new InterLink(start, end, true);
+					startDomain.addInterLink(il);
+					endDomain.addInterLink(il);
+				}
+			}
+		}
+		
+	}
+	
 	public static void staticInterLinksMinN(List<Domain> multiDomain,int n){
 			
 		for(int i=0;i<multiDomain.size();i++){

@@ -37,7 +37,8 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 	}
 
 	public SteinerTreeProbabilitySimulation(){
-		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
+		
+		simulationTime = 30000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			sn.alt2network("sndlib/germany50");
@@ -55,7 +56,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 		this.lambda=lambda;
 		this.totalCost=0.0;
 		/*-----------use pre-generated virtual network---------*/
-		
+		/*
 		vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<40;i++){
 			VirtualNetwork vn = new VirtualNetwork();
@@ -74,10 +75,10 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 				events.add(new VnEvent(vns.get(i),departure,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
-		Collections.sort(events);
+		Collections.sort(events);*/
 		
 		/*---------random virtual network-----------*/
-	/*	events = new ArrayList<VnEvent>();
+		events = new ArrayList<VnEvent>();
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
 			Generator.createVirNet();
@@ -90,11 +91,12 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
-		Collections.sort(events);	*/
+		Collections.sort(events);	
 		
 		//add metric
 		metrics = new ArrayList<Metric>();
 		mappedVNs = new ArrayList<VirtualNetwork>();
+		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
 	}
 	public void runSimulation(String methodStr) throws IOException{
 		//add metrics
@@ -150,7 +152,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 						}
 						else if(method instanceof SteinerILPExact){
 							this.probability.put(currentEvent.getConcernedVn(), 
-									((SteinerTreeHeuristic) method).getProbability());
+									((SteinerILPExact) method).getProbability());
 						}
 						
 						System.out.println("link mapping done");
@@ -208,7 +210,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 		this.totalCost=0.0;
 		mappedVNs = new ArrayList<VirtualNetwork>();
 		metrics = new ArrayList<Metric>();
-		
+		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
 	}
 	
 }

@@ -13,7 +13,7 @@ public abstract class AbstractSimulation {
 	protected double totalCost;
 	protected ArrayList<VnEvent> events;
 	protected ArrayList<Metric> metrics;
-	protected double simulationTime = 20000.0;
+	protected double simulationTime = 30000.0;
 	protected double time = 0.0;
 	protected int accepted = 0;
 	protected int rejected = 0;

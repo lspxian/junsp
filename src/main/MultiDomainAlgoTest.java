@@ -28,17 +28,17 @@ public class MultiDomainAlgoTest {
 		
 		List<Domain> multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-		multiDomain.add(new Domain(0,0,"data/cost239", false));
-		multiDomain.add(new Domain(1,0,"sndlib/abilene", false));
-		//multiDomain.add(new Domain(1,1,"data/cost239", false));
-		//multiDomain.add(new Domain(0,1,"sndlib/abilene", false));
+		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
+		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
+		multiDomain.add(new Domain(2,0,"sndlib/germany50", true));
 		
-		MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
-		/*
-		System.out.println(multiDomain.get(0));
-		System.out.println(multiDomain.get(1));
-		*/
-	
+		//MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
+		MultiDomainUtil.random3DInterLinks(multiDomain);
+		
+		for(int i=0;i<multiDomain.size();i++){
+			System.out.println("inter:"+multiDomain.get(i).getInterLinkCount());				
+		}
+	/*
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork(1,false);
@@ -58,7 +58,7 @@ public class MultiDomainAlgoTest {
 		System.out.println(multiDomain.get(0));
 		System.out.println(multiDomain.get(1));
 		System.out.println(tmpDomains.get(0));
-		System.out.println(tmpDomains.get(1));
+		System.out.println(tmpDomains.get(1));*/
 		
 		
 		/*

@@ -1,35 +1,38 @@
 package li.multiDomain;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import vnreal.demands.BandwidthDemand;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
+import vnreal.resources.BandwidthResource;
 
 public class Solution {
-	private SubstrateNetwork domain;
-	private Map<SubstrateLink, Double> flow;
+	private List<Domain> domainsOrder;
+	private Map<BandwidthDemand, BandwidthResource> mapping;
+	private double cost;
 	
-	public Solution(){
-		this.domain = null;
-		flow = new HashMap<SubstrateLink, Double>();
+	public Solution(List<Domain> domainsOrder,Map<BandwidthDemand, BandwidthResource> mapping){
+		this.domainsOrder=domainsOrder;
+		this.mapping=mapping;
+		computeCost();
 	}
 	
-	public Solution(Domain domain){
-		this.domain = domain;
-		flow = new HashMap<SubstrateLink, Double>();
+	public List<Domain> getDomainsOrder() {
+		return domainsOrder;
 	}
-
-	public Map<SubstrateLink, Double> getFlow() {
-		return flow;
+	public Map<BandwidthDemand, BandwidthResource> getMapping() {
+		return mapping;
 	}
-
-	public void setFlow(Map<SubstrateLink, Double> flow) {
-		this.flow = flow;
+	public double getCost() {
+		return cost;
 	}
-
-	public SubstrateNetwork getDomain() {
-		return domain;
+	public void computeCost(){
+		//TODO
 	}
+	
+	
 	
 }

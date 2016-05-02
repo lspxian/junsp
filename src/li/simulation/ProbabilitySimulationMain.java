@@ -29,9 +29,9 @@ public class ProbabilitySimulationMain {
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=3;i<7;i++){
+			for(int i=2;i<7;i++){
 				simulation.initialize(i);
-				/*
+				
 				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));
 				System.setOut(exact);
 				System.out.println(new SimpleDateFormat().format(new Date()));
@@ -44,7 +44,7 @@ public class ProbabilitySimulationMain {
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("Takahashi");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();*/
+				simulation.reset();
 				
 				PrintStream kmb = new PrintStream(new FileOutputStream("res/KMB1981_l"+i+"_c"+c+".txt"));
 				System.setOut(kmb);
