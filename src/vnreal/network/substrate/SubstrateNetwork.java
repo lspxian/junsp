@@ -320,12 +320,12 @@ public class SubstrateNetwork extends
 	public void addInfiniteResource(){
 		for(SubstrateNode sbnd : this.getVertices()){
 			CpuResource cpu = new CpuResource(sbnd);
-			cpu.setCycles(10000.);
+			cpu.setCycles(100000.);
 			sbnd.add(cpu);
 		}
 		for(SubstrateLink sl:this.getEdges()){
 			BandwidthResource bw = new BandwidthResource(sl);
-			bw.setBandwidth(10000.);
+			bw.setBandwidth(100000.);
 			sl.add(bw);
 		}
 		
