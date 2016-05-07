@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import li.SteinerTree.KMB1981;
+import li.SteinerTree.KMB1981V2;
 import li.SteinerTree.ProbaCost;
 import li.SteinerTree.SteinerILPExact;
 import li.SteinerTree.Takahashi;
@@ -27,12 +28,12 @@ public class SteinerTest {
 //		System.out.println(sn.probaToString());
 		
 		VirtualNetwork vn = new VirtualNetwork();
-		vn.alt2network("data/vir4");
+		vn.alt2network("data/vir");
 		vn.addAllResource(true);
 		System.out.println(vn);
 
 		//node mapping
-		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
+		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,5,true,false);
 		
 		if(arnm.nodeMapping(vn)){
 			System.out.println("node mapping succes, virtual netwotk ");
@@ -46,20 +47,24 @@ public class SteinerTest {
 	//		stn.linkMapping(vn, nodeMapping);
 	//		System.out.println("\n");
 			
-	//		Takahashi ta = new Takahashi(nodeMapping.values(),sn,new ProbaCost());
-	//		ta.runSteinerTree();
-	//		System.out.println(ta.getSteinerTree().probaToString());
+			Takahashi ta = new Takahashi(nodeMapping.values(),sn,new ProbaCost());
+			ta.runSteinerTree();
+			System.out.println(ta.getSteinerTree().probaToString());
 			
-	//		KMB1981 kmb = new KMB1981(nodeMapping.values(),sn,new ProbaCost());
-	//		kmb.runSteinerTree();
-	//		System.out.println(kmb.getSteinerTree().probaToString());
+			KMB1981 kmb = new KMB1981(nodeMapping.values(),sn,new ProbaCost());
+			kmb.runSteinerTree();
+			System.out.println(kmb.getSteinerTree().probaToString());
 			
-			SteinerTreeHeuristic st = new SteinerTreeHeuristic(sn,"Takahashi");
-			st.linkMapping(vn, nodeMapping);
+			KMB1981V2 kmb2 = new KMB1981V2(nodeMapping.values(),sn,new ProbaCost());
+			kmb2.runSteinerTree();
+			System.out.println(kmb2.getSteinerTree().probaToString());
+			
+//			SteinerTreeHeuristic st = new SteinerTreeHeuristic(sn,"Takahashi");
+//			st.linkMapping(vn, nodeMapping);
 		}else{
 			System.out.println("node resource error, virtual network ");
 		}
-		System.out.println(sn);
+		//System.out.println(sn);
 		
 	}
 

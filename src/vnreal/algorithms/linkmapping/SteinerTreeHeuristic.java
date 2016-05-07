@@ -5,6 +5,7 @@ import java.util.Map;
 
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import li.SteinerTree.KMB1981;
+import li.SteinerTree.KMB1981V2;
 import li.SteinerTree.ProbaCost;
 import li.SteinerTree.Takahashi;
 import vnreal.algorithms.AbstractLinkMapping;
@@ -50,6 +51,11 @@ public class SteinerTreeHeuristic extends AbstractLinkMapping {
 		}
 		else if(this.method=="KMB1981"){
 			KMB1981 kmb = new KMB1981(nodeMapping.values(), this.sNet, new ProbaCost());
+			kmb.runSteinerTree();
+			this.steinerTree = kmb.getSteinerTree();
+		}
+		else if(this.method=="KMB1981V2"){
+			KMB1981V2 kmb = new KMB1981V2(nodeMapping.values(), this.sNet, new ProbaCost());
 			kmb.runSteinerTree();
 			this.steinerTree = kmb.getSteinerTree();
 		}

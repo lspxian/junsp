@@ -16,6 +16,7 @@ import li.evaluation.metrics.LinkUtilizationL;
 import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.Metric;
 import li.evaluation.metrics.ProbabilityL;
+import li.evaluation.metrics.RevenueProba;
 import li.gt_itm.Generator;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
@@ -38,7 +39,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 
 	public SteinerTreeProbabilitySimulation(){
 		
-		simulationTime = 30000.0;
+		simulationTime = 10000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			sn.alt2network("sndlib/germany50");
@@ -107,6 +108,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 		//metrics.add(new CostL(this, methodStr,lambda));
 		//metrics.add(new CostRevenueL(this,methodStr,lambda));
 		metrics.add(new ProbabilityL(this,methodStr,lambda));
+		metrics.add(new RevenueProba(this,methodStr,lambda));
 		
 		for(VnEvent currentEvent : events){
 			
@@ -132,6 +134,9 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 						break;
 					case "KMB1981" : 
 						method = new SteinerTreeHeuristic(sn,"KMB1981");
+						break;
+					case "KMB1981V2" : 
+						method = new SteinerTreeHeuristic(sn,"KMB1981V2");
 						break;
 					case "Exact" : 
 						method = new SteinerILPExact(sn);
