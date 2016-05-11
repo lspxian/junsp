@@ -29,9 +29,9 @@ public class ProbabilitySimulationMain {
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=2;i<5;i++){
+			for(int i=2;i<3;i++){
 				simulation.initialize(i);
-				
+				/*
 				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));
 				System.setOut(exact);
 				System.out.println(new SimpleDateFormat().format(new Date()));
@@ -57,6 +57,20 @@ public class ProbabilitySimulationMain {
 				System.setOut(kmb2);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("KMB1981V2");
+				System.out.println(new SimpleDateFormat().format(new Date()));
+				simulation.reset();*/
+				
+				PrintStream pbbwExact = new PrintStream(new FileOutputStream("res/PBBWExactILP_l"+i+"_c"+c+".txt"));
+				System.setOut(pbbwExact);
+				System.out.println(new SimpleDateFormat().format(new Date()));
+				simulation.runSimulation("PBBWExact");
+				System.out.println(new SimpleDateFormat().format(new Date()));
+				simulation.reset();
+				
+				PrintStream probaHeuristic1 = new PrintStream(new FileOutputStream("res/probaHeuristic1_l"+i+"_c"+c+".txt"));
+				System.setOut(probaHeuristic1);
+				System.out.println(new SimpleDateFormat().format(new Date()));
+				simulation.runSimulation("ProbaHeuristic1");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();
 				

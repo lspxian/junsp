@@ -18,6 +18,7 @@ public class ProbaBWCost implements Transformer<SubstrateLink, Double> {
 		for(AbstractDemand abd : vl){
 			if(abd instanceof BandwidthDemand){
 				bwDem = (BandwidthDemand)abd;
+				break;
 			}
 		}
 		this.bwDemand = bwDem.getDemandedBandwidth();
@@ -28,6 +29,7 @@ public class ProbaBWCost implements Transformer<SubstrateLink, Double> {
 		for(AbstractResource abr : arg0){
 			if(abr instanceof AbstractResource){
 				bwRes = (BandwidthResource) abr;
+				break;
 			}
 		}
 

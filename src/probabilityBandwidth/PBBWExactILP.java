@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.AbstractDemand;
@@ -26,19 +25,14 @@ import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
-public class PBBWExactILP extends AbstractLinkMapping {
+public class PBBWExactILP extends AbstractProbaLinkMapping {
 
 	private String localPath ;
 	//private String remotePath ;
-	double probability;
 	public PBBWExactILP(SubstrateNetwork sNet) {
 		super(sNet);
 		this.localPath = "ILP-LP-Models/vne-mcf.lp";
 	//	this.remotePath = "pytest/vne-mcf.lp";
-	}
-	
-	public double getProbability() {
-		return probability;
 	}
 	
 	public double computeProbability(SubstrateNetwork sn){
@@ -220,8 +214,8 @@ public class PBBWExactILP extends AbstractLinkMapping {
 				constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//bounds
-				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
-				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
+//				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+//				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
 				
 			}
 				constraint = constraint + " - 30 Xs"+ssnode.getId()+"d"+dsnode.getId()+"<=0\n";
@@ -257,6 +251,10 @@ public class PBBWExactILP extends AbstractLinkMapping {
 							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+
 							" + "+bwDem.getDemandedBandwidth() +
 							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
+					
+					//
+					general = general +  "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
+					general = general +  "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+"\n";
 				
 			}
 			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";

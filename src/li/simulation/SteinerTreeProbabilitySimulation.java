@@ -18,7 +18,9 @@ import li.evaluation.metrics.Metric;
 import li.evaluation.metrics.ProbabilityL;
 import li.evaluation.metrics.RevenueProba;
 import li.gt_itm.Generator;
-import vnreal.algorithms.AbstractLinkMapping;
+import probabilityBandwidth.AbstractProbaLinkMapping;
+import probabilityBandwidth.PBBWExactILP;
+import probabilityBandwidth.ProbaHeuristic1;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -39,15 +41,15 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 
 	public SteinerTreeProbabilitySimulation(){
 		
-		simulationTime = 10000.0;
+		simulationTime = 4000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			sn.alt2network("sndlib/germany50");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//sn.addAllResource(true);
-		sn.addInfiniteResource();
+		sn.addAllResource(true);
+//		sn.addInfiniteResource();
 	}
 	
 	public void initialize(int lambda) throws IOException{
@@ -102,7 +104,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 	public void runSimulation(String methodStr) throws IOException{
 		//add metrics
 		metrics.add(new AcceptedRatioL(this, methodStr,lambda));
-	//	metrics.add(new LinkUtilizationL(this, methodStr,lambda));
+		metrics.add(new LinkUtilizationL(this, methodStr,lambda));
 //		metrics.add(new CurrentLinkUtilisationL(this, methodStr,lambda));
 		metrics.add(new MappedRevenueL(this, methodStr,lambda));
 		//metrics.add(new CostL(this, methodStr,lambda));
@@ -126,7 +128,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 					System.out.println("node mapping succes : "+nodeMapping);
 					
 					//link mapping method
-					AbstractLinkMapping method;
+					AbstractProbaLinkMapping method;
 					switch (methodStr)
 					{
 					case "Takahashi" : 
@@ -141,24 +143,24 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 					case "Exact" : 
 						method = new SteinerILPExact(sn);
 						break;
+					// with bandwidth
+					case "PBBWExact" :
+						method = new PBBWExactILP(sn);
+						break;
+					case "ProbaHeuristic1" :
+						method = new ProbaHeuristic1(sn);
+						break;
 					default : 
 						System.out.println("The methode doesn't exist");
 						method = null;
 					}
+					System.out.println(this.sn.probaToString());
 					
 					if(method.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
 						this.totalCost=this.totalCost+currentEvent.getConcernedVn().getTotalCost(sn);
-						
-						if(method instanceof SteinerTreeHeuristic){
-							this.probability.put(currentEvent.getConcernedVn(), 
-									((SteinerTreeHeuristic) method).getProbability());
-						}
-						else if(method instanceof SteinerILPExact){
-							this.probability.put(currentEvent.getConcernedVn(), 
-									((SteinerILPExact) method).getProbability());
-						}
+						this.probability.put(currentEvent.getConcernedVn(), method.getProbability());
 						
 						System.out.println("link mapping done");
 					}
@@ -172,6 +174,13 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 					this.rejected++;
 					//System.out.println("node resource error, virtual network "+j);
 				}
+				
+				
+				for(Metric metric : metrics){ //write data to file TODO
+					double value = metric.calculate();
+					System.out.println(metric.name()+" "+value);
+					metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
+				}
 				//System.out.println("Duree d'execution :"+duree);
 			}
 			else{
@@ -179,11 +188,6 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 				NodeLinkDeletion.freeResource(currentEvent.getConcernedVn(), sn);
 			}
 			
-			for(Metric metric : metrics){ //write data to file TODO
-				double value = metric.calculate();
-				System.out.println(metric.name()+" "+value);
-				metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
-			}
 			
 		}
 		

@@ -5,11 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import probabilityBandwidth.AbstractProbaLinkMapping;
+import probabilityBandwidth.PBBWExactILP;
+import probabilityBandwidth.ProbaHeuristic1;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.linkmapping.SOD_BK;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
+import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
@@ -32,7 +36,7 @@ public class AlgoTest {
 			vns.add(vn);
 		}
 		
-		for(int i=0;i<10;i++){
+		for(int i=2;i<3;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
@@ -53,15 +57,28 @@ public class AlgoTest {
 	//			SOD_BK sod_bk = new SOD_BK(sn);
 	//			sod_bk.linkMapping(vns.get(i), nodeMapping);
 				
-				SteinerTreeHeuristic st = new SteinerTreeHeuristic(sn,"Takahashi");
-				System.out.println(st.linkMapping(vns.get(i), nodeMapping));
+//				SteinerTreeHeuristic st = new SteinerTreeHeuristic(sn,"Takahashi");
+//				System.out.println(st.linkMapping(vns.get(i), nodeMapping));
+			
+				AbstractProbaLinkMapping method; 
+				method= new PBBWExactILP(sn);
+//				method = new ProbaHeuristic1(sn);
+				System.out.println(method.linkMapping(vns.get(i), nodeMapping));
+				
+				
+				
+			
 			}else{
 				System.out.println("node resource error, virtual network "+i);
 				continue;
 			}
 		}
+		/*
+		for(int i=0;i<10;i++){
+			NodeLinkDeletion.freeResource(vns.get(i), sn);
+		}*/
 		
-		System.out.println(sn);
+//		System.out.println(sn);
 		
 		
 		

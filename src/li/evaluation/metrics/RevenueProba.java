@@ -34,7 +34,7 @@ public class RevenueProba extends Metric {
 		if(simulation instanceof SteinerTreeProbabilitySimulation){
 			SteinerTreeProbabilitySimulation sim = (SteinerTreeProbabilitySimulation)simulation; 
 			for (VirtualNetwork tmpvn : sim.getMappedVNs()) {
-				revenueProba += calculateVnetRevenue(tmpvn)*sim.getProbability().get(tmpvn);
+				revenueProba += calculateVnetRevenue(tmpvn)*(1-sim.getProbability().get(tmpvn));
 			}
 		}
 		return revenueProba;

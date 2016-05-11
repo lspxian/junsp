@@ -103,5 +103,15 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 		this.probability = probability;
 	}
 
+	public BandwidthResource getBandwidthResource(){
+		BandwidthResource bwres = null;
+		for(AbstractResource abs : this.get()){
+			if(abs instanceof BandwidthResource){
+				bwres = (BandwidthResource) abs;
+				break;
+			}
+		}
+		return bwres;
+	}
 
 }

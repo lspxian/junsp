@@ -8,7 +8,7 @@ import li.SteinerTree.KMB1981;
 import li.SteinerTree.KMB1981V2;
 import li.SteinerTree.ProbaCost;
 import li.SteinerTree.Takahashi;
-import vnreal.algorithms.AbstractLinkMapping;
+import probabilityBandwidth.AbstractProbaLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
@@ -21,11 +21,10 @@ import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
-public class SteinerTreeHeuristic extends AbstractLinkMapping {
+public class SteinerTreeHeuristic extends AbstractProbaLinkMapping {
 	
 	String method;
 	SubstrateNetwork steinerTree;
-	double probability;
 	
 	protected SteinerTreeHeuristic(SubstrateNetwork sNet) {
 		super(sNet);
@@ -35,10 +34,6 @@ public class SteinerTreeHeuristic extends AbstractLinkMapping {
 	public SteinerTreeHeuristic(SubstrateNetwork sNet, String method){
 		super(sNet);
 		this.method=method;
-	}
-
-	public double getProbability() {
-		return probability;
 	}
 
 	@Override

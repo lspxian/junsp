@@ -170,4 +170,15 @@ public class VirtualLink extends Link<AbstractDemand> {
 		}
 		return result;
 	}
+	
+	public BandwidthDemand getBandwidthDemand(){
+		BandwidthDemand bwdem = null;
+		for(AbstractDemand abd : this.get()){
+			if(abd instanceof BandwidthDemand){
+				bwdem = (BandwidthDemand) abd;
+				break;
+			} 
+		}
+		return bwdem;
+	}
 }
