@@ -159,8 +159,7 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 		String preambule = "\\Problem : vne\n";
 		String obj = "Minimize\n"+"obj : ";
 		String constraint = "Subject To\n";
-		String bounds = "Bounds\n";
-		String general = "General\n";
+		String binary = "Binary\n";
 		
 		//flow constraint
 		for(VirtualLink vlink : vNet.getEdges()){
@@ -193,8 +192,8 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 			obj = obj + " +"+logp;
 			obj = obj + " Xs"+ssnode.getId()+"d"+dsnode.getId();
 			
-			//general
-			general = general + "Xs"+ssnode.getId()+"d"+dsnode.getId()+"\n";
+			//binary
+			binary = binary + "Xs"+ssnode.getId()+"d"+dsnode.getId()+"\n";
 			
 			for(VirtualLink vlink : vNet.getEdges()){
 				// Find their mapped SubstrateNodes
@@ -204,18 +203,15 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 				//objective
 //				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 //				obj = obj + " + "+bwDem.getDemandedBandwidth();
-//				obj = obj + " + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+				obj = obj + " + 0.001 vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
 //				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 //				obj = obj + " + "+bwDem.getDemandedBandwidth();
-//				obj = obj + " + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+				obj = obj + " + 0.001 vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//f and x constraint
 				constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
 				constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
-				//bounds
-//				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
-//				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
 				
 			}
 				constraint = constraint + " - 30 Xs"+ssnode.getId()+"d"+dsnode.getId()+"<=0\n";
@@ -253,8 +249,8 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
 					
 					//
-					general = general +  "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
-					general = general +  "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+"\n";
+					binary = binary +  "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
+					binary = binary +  "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+"\n";
 				
 			}
 			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
@@ -263,7 +259,7 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 		
 		obj = obj+ "\n";
 		BufferedWriter writer = new BufferedWriter(new FileWriter(localPath));
-		writer.write(preambule+obj+constraint+bounds+general+"END");
+		writer.write(preambule+obj+constraint+binary+"END");
 		writer.close();
 		
 	}

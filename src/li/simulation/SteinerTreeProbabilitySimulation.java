@@ -9,6 +9,7 @@ import java.util.Map;
 
 import li.SteinerTree.SteinerILPExact;
 import li.evaluation.metrics.AcceptedRatioL;
+import li.evaluation.metrics.AverageProbability;
 import li.evaluation.metrics.CostL;
 import li.evaluation.metrics.CostRevenueL;
 import li.evaluation.metrics.CurrentLinkUtilisationL;
@@ -41,7 +42,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 
 	public SteinerTreeProbabilitySimulation(){
 		
-		simulationTime = 4000.0;
+		simulationTime = 30000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			sn.alt2network("sndlib/germany50");
@@ -61,7 +62,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 		/*-----------use pre-generated virtual network---------*/
 		/*
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<40;i++){
+		for(int i=100;i<140;i++){
 			VirtualNetwork vn = new VirtualNetwork();
 			vn.alt2network("data/vir"+i);
 //			vn.alt2network("data/vir"+new Random().nextInt(500));
@@ -94,7 +95,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
-		Collections.sort(events);	
+		Collections.sort(events);
 		
 		//add metric
 		metrics = new ArrayList<Metric>();
@@ -111,6 +112,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 		//metrics.add(new CostRevenueL(this,methodStr,lambda));
 		metrics.add(new ProbabilityL(this,methodStr,lambda));
 		metrics.add(new RevenueProba(this,methodStr,lambda));
+		metrics.add(new AverageProbability(this,methodStr,lambda));
 		
 		for(VnEvent currentEvent : events){
 			
@@ -154,7 +156,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 						System.out.println("The methode doesn't exist");
 						method = null;
 					}
-					System.out.println(this.sn.probaToString());
+//					System.out.println(this.sn.probaToString());
 					
 					if(method.linkMapping(currentEvent.getConcernedVn(), nodeMapping)){
 						this.accepted++;
@@ -190,6 +192,8 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 			
 			
 		}
+		
+//		System.out.println(this.sn.probaToString());
 		
 		System.out.println("*-----"+methodStr+" resume------------*");
 		System.out.println("accepted : "+this.accepted);
