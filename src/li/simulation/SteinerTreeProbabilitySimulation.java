@@ -22,6 +22,8 @@ import li.gt_itm.Generator;
 import probabilityBandwidth.AbstractProbaLinkMapping;
 import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic1;
+import probabilityBandwidth.ProbaHeuristic2;
+import probabilityBandwidth.ProbaHeuristic3;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -42,7 +44,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 
 	public SteinerTreeProbabilitySimulation(){
 		
-		simulationTime = 30000.0;
+		simulationTime = 10000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			sn.alt2network("sndlib/germany50");
@@ -151,6 +153,12 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 						break;
 					case "ProbaHeuristic1" :
 						method = new ProbaHeuristic1(sn);
+						break;
+					case "ProbaHeuristic2" :
+						method = new ProbaHeuristic2(sn);
+						break;
+					case "ProbaHeuristic3" :
+						method = new ProbaHeuristic3(sn);
 						break;
 					default : 
 						System.out.println("The methode doesn't exist");

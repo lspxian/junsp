@@ -29,7 +29,7 @@ public class ProbabilitySimulationMain {
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=2;i<7;i++){
+			for(int i=4;i<5;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));
@@ -71,6 +71,20 @@ public class ProbabilitySimulationMain {
 				System.setOut(probaHeuristic1);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("ProbaHeuristic1");
+				System.out.println(new SimpleDateFormat().format(new Date()));
+				simulation.reset();
+				
+				PrintStream probaHeuristic2 = new PrintStream(new FileOutputStream("res/probaHeuristic2_l"+i+"_c"+c+".txt"));
+				System.setOut(probaHeuristic2);
+				System.out.println(new SimpleDateFormat().format(new Date()));
+				simulation.runSimulation("ProbaHeuristic2");
+				System.out.println(new SimpleDateFormat().format(new Date()));
+				simulation.reset();
+				
+				PrintStream probaHeuristic3 = new PrintStream(new FileOutputStream("res/probaHeuristic3_l"+i+"_c"+c+".txt"));
+				System.setOut(probaHeuristic3);
+				System.out.println(new SimpleDateFormat().format(new Date()));
+				simulation.runSimulation("ProbaHeuristic3");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();
 				
