@@ -31,7 +31,6 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.network.substrate;
 
-import java.util.Comparator;
 import java.util.Random;
 
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -52,7 +51,7 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 	public SubstrateLink() {
 		super();
 		//failure probability [0,0.1]
-		probability = new Random().nextDouble()*0.1;		
+		probability = new Random().nextDouble()*0.00001;		
 	}
 	
 	public SubstrateLink(Double failure){

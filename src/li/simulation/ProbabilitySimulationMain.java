@@ -16,11 +16,13 @@ public class ProbabilitySimulationMain {
 		FileWriter writer = new FileWriter("resultat.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
-		writer.close();
 			
 		SteinerTreeProbabilitySimulation simulation = new SteinerTreeProbabilitySimulation();
 		
-		//System.out.println(simulation.getSubstrateNetwork());
+		writer.write("Substrate Network : v "+
+		simulation.getSubstrateNetwork().getVertexCount()+" e "+
+				simulation.getSubstrateNetwork().getEdgeCount()+"\n");
+		writer.close();
 			
 		for(c=0;c<1;c++){
 	//		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));

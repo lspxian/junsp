@@ -70,14 +70,14 @@ public class KMB1981V2 {
 			for(SubstrateLink slink : dijkstra.getPath(steinerLink.getFirst(), steinerLink.getSecond())){
 				if(!this.steinerTree.containsEdge(slink)){
 					this.steinerTree.addEdge(slink,sNet.getEndpoints(slink));
-					slink.setProbability(slink.getProbability()-0.00001);
+					slink.setProbability(slink.getProbability()-0.00000001);
 				}
 			}
 			
 		}
 		
 		for(SubstrateLink sl : this.steinerTree.getEdges()){
-			sl.setProbability(sl.getProbability()+0.00001);
+			sl.setProbability(sl.getProbability()+0.00000001);
 		}
 	}
 		

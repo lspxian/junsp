@@ -59,7 +59,7 @@ public class MappedRevenueL extends Metric{
 
 			}
 		}
-		for (Iterator<VirtualNode> tmpNode = vNet.getVertices().iterator(); tmpNode
+	/*	for (Iterator<VirtualNode> tmpNode = vNet.getVertices().iterator(); tmpNode
 				.hasNext();) {
 			VirtualNode tmps = tmpNode.next();
 			for (AbstractDemand dem : tmps) {
@@ -69,6 +69,7 @@ public class MappedRevenueL extends Metric{
 				}
 			}
 		}
-		return (total_demBW + total_demCPU);
+		return (total_demBW + total_demCPU);*/
+		return total_demBW ;
 	}
 }

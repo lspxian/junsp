@@ -47,12 +47,16 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 		simulationTime = 10000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-			sn.alt2network("sndlib/germany50");
+			Generator.createSubNet();
+			sn.alt2network("./gt-itm/sub");
+//			sn.alt2network("data/cost239");
+//			sn.alt2network("sndlib/germany50");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		sn.addAllResource(true);
 //		sn.addInfiniteResource();
+
 	}
 	
 	public void initialize(int lambda) throws IOException{
@@ -93,7 +97,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
-			if(departureTime<=simulationTime)
+			//if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
@@ -201,7 +205,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 			
 		}
 		
-//		System.out.println(this.sn.probaToString());
+		System.out.println(this.sn.probaToString());
 		
 		System.out.println("*-----"+methodStr+" resume------------*");
 		System.out.println("accepted : "+this.accepted);

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import li.gt_itm.Generator;
 import probabilityBandwidth.AbstractProbaLinkMapping;
 import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic1;
@@ -24,19 +25,23 @@ public class AlgoTest {
 	public static void main(String[] args) throws IOException {
 
 		SubstrateNetwork sn=new SubstrateNetwork(); //control the directed or undirected
-		sn.alt2network("data/cost239");
+		Generator.createSubNet();
+		sn.alt2network("./gt-itm/sub");
+//		sn.alt2network("data/cost239");
 		sn.addAllResource(true);
 		
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork();
-			vn.alt2network("data/vir"+i);
+			Generator.createVirNet();
+			vn.alt2network("./gt-itm/sub");
+		//	vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 		}
 		
-		for(int i=2;i<3;i++){
+		for(int i=2;i<8;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
@@ -73,12 +78,12 @@ public class AlgoTest {
 				continue;
 			}
 		}
-		/*
+		
 		for(int i=0;i<10;i++){
 			NodeLinkDeletion.freeResource(vns.get(i), sn);
-		}*/
+		}
 		
-//		System.out.println(sn);
+		System.out.println(sn.probaToString());
 		
 		
 		

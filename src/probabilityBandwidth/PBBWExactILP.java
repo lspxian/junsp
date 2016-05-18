@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 import vnreal.algorithms.utils.NodeLinkAssignation;
@@ -31,17 +32,18 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 	//private String remotePath ;
 	public PBBWExactILP(SubstrateNetwork sNet) {
 		super(sNet);
+//		this.localPath = "tmp/vne-mcf-"+new Random().nextDouble()+".lp";
 		this.localPath = "ILP-LP-Models/vne-mcf.lp";
 	//	this.remotePath = "pytest/vne-mcf.lp";
 	}
 	
-	public double computeProbability(SubstrateNetwork sn){
+	/*public double computeProbability(SubstrateNetwork sn){
 		double temproba=1;
 		for(SubstrateLink sl: sn.getEdges()){
 			temproba = temproba * (1-sl.getProbability());
 		}
 		return 1-temproba;
-	}
+	}*/
 	
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
@@ -188,7 +190,7 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 			//objective
 			ssnode = sNet.getEndpoints(slink).getFirst();
 			dsnode = sNet.getEndpoints(slink).getSecond();
-			double logp=-Math.log(1-slink.getProbability());
+			double logp=-Math.log(1-slink.getProbability())*1000000;
 			obj = obj + " +"+logp;
 			obj = obj + " Xs"+ssnode.getId()+"d"+dsnode.getId();
 			
@@ -203,10 +205,10 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 				//objective
 //				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 //				obj = obj + " + "+bwDem.getDemandedBandwidth();
-				obj = obj + " + 0.001 vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+				obj = obj + " + 1E-3 vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
 //				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 //				obj = obj + " + "+bwDem.getDemandedBandwidth();
-				obj = obj + " + 0.001 vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+				obj = obj + " + 1E-3 vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//f and x constraint
 				constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
