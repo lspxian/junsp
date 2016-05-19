@@ -3,6 +3,7 @@ package li.simulation;
 import java.io.IOException;
 import java.util.ArrayList;
 import li.evaluation.metrics.Metric;
+import li.event.VnEvent;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.virtual.VirtualNetwork;
 

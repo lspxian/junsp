@@ -13,6 +13,7 @@ import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.Metric;
 import li.evaluation.metrics.ProbabilityL;
 import li.evaluation.metrics.RevenueProba;
+import li.event.VnEvent;
 import li.gt_itm.Generator;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.AbstractNodeMapping;

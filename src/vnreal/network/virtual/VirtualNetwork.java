@@ -311,6 +311,34 @@ public final class VirtualNetwork extends
 		}
 	}
 	
+	public double calculateRevenue() {
+		double total_demBW = 0;
+		double total_demCPU = 0;
+		for (Iterator<VirtualLink> tmpLink = getEdges().iterator(); tmpLink
+				.hasNext();) {
+			VirtualLink tmpl = tmpLink.next();
+			for (AbstractDemand dem : tmpl) {
+				if (dem instanceof BandwidthDemand) {
+					total_demBW += ((BandwidthDemand) dem)
+							.getDemandedBandwidth();
+					break;
+				}
+
+			}
+		}
+	/*	for (Iterator<VirtualNode> tmpNode = getVertices().iterator(); tmpNode
+				.hasNext();) {
+			VirtualNode tmps = tmpNode.next();
+			for (AbstractDemand dem : tmps) {
+				if (dem instanceof CpuDemand) {
+					total_demCPU += ((CpuDemand) dem).getDemandedCycles();
+					break; // continue with next node
+				}
+			}
+		}
+		return (total_demBW + total_demCPU);*/
+		return total_demBW ;
+	}
 	
 	public double getTotalCost(List<Domain> domains){
 		CpuDemand tmpCpuDem;

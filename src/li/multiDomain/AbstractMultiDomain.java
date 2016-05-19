@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import li.event.VnEvent;
 import li.multiDomain.metrics.MetricMD;
-import li.simulation.VnEvent;
 import vnreal.network.virtual.VirtualNetwork;
 
 public abstract class AbstractMultiDomain {

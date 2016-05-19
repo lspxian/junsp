@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
+import li.event.VnEvent;
 import li.gt_itm.Generator;
 import li.multiDomain.AbstractMultiDomain;
 import li.multiDomain.Domain;

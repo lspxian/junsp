@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Random;
 
 import li.evaluation.metrics.Metric;
+import li.event.VnEvent;
 import li.gt_itm.Generator;
 import li.multiDomain.Domain;
 import li.multiDomain.AbstractMultiDomain;
