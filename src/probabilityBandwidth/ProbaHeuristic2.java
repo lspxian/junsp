@@ -77,7 +77,7 @@ public class ProbaHeuristic2 extends AbstractProbaLinkMapping {
 					System.out.println(str);
 					if(!this.initialProbability.containsKey(sl)){
 						this.initialProbability.put(sl, sl.getProbability());
-						sl.setProbability(sl.getProbability()-0.00000001);
+						sl.setProbability(0.00000001);
 					}
 					
 					BandwidthDemand newBw = new BandwidthDemand(minvl);
