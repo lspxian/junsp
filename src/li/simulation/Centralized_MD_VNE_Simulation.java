@@ -54,20 +54,20 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 //		multiDomain.add(new Domain(0,0,"sndlib/germany50", true));
 //		multiDomain.add(new Domain(1,0,"sndlib/ta2", true));
 		
-		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
-		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
-		multiDomain.add(new Domain(1,1,"sndlib/germany50", true));
-		multiDomain.add(new Domain(0,1,"sndlib/zib54", true));
+//		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
+//		multiDomain.add(new Domain(1,1,"sndlib/germany50", true));
+//		multiDomain.add(new Domain(0,1,"sndlib/zib54", true));
 		
 		/*-------2 domains example------*/
 //		multiDomain.add(new Domain(1,1,"sndlib/cost266", true));
 //		multiDomain.add(new Domain(0,1,"sndlib/norway", true));
 		
 		/*------use gt-itm to create random substrate network-----*/
-	/*	multiDomain.add(new Domain(0,0, true));
+		multiDomain.add(new Domain(0,0, true));
 		multiDomain.add(new Domain(1,0, true));
 		multiDomain.add(new Domain(1,1, true));
-		multiDomain.add(new Domain(0,1, true));*/
+		multiDomain.add(new Domain(0,1, true));
 
 		/*--------static or random peering links--------*/
 //		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
@@ -208,7 +208,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 				System.out.println(currentEvent.getConcernedVn());
 				NodeLinkDeletion.multiDomainFreeResource(currentEvent.getConcernedVn(), multiDomain);
 			}
-		/*	
+			/*
 			for(int i=0;i<multiDomain.size();i++){
 				System.out.println(multiDomain.get(i));
 			}*/
@@ -220,12 +220,16 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 			}
 			
 		}
+		/*
+		for(int i=0;i<multiDomain.size();i++){
+			System.out.println(multiDomain.get(i));
+		}*/
 		
 		System.out.println("*-----"+methodStr+" resume------------*");
 		System.out.println("accepted : "+this.accepted);
 		System.out.println("rejected : "+this.rejected);
 		
-		FileWriter writer = new FileWriter("resultat.txt",true);
+		FileWriter writer = new FileWriter("cenResult.txt",true);
 		writer.write("*----lambda="+this.lambda+"--"+methodStr+"----*\n");
 		writer.write("accepted : "+this.accepted+"\n");
 		writer.write("rejected : "+this.rejected+"\n");

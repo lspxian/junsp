@@ -83,7 +83,7 @@ public class MultiDomainRanking3 extends AbstractMultiDomainLinkMapping {
 		
 		//initialize the links to map, delete the link once it's mapped
 		this.linkToMap.addAll(vNet.getEdges());
-//		Collections.sort(this.domains,new LinkStressComparator());
+		Collections.sort(this.domains,new LinkStressComparator());
 //		sortDomain();
 		
 		for(Domain domain : this.domains){
@@ -186,7 +186,7 @@ public class MultiDomainRanking3 extends AbstractMultiDomainLinkMapping {
 						
 						AugmentedLink al = new AugmentedLink(vnode2);
 						CostResource cost = new CostResource(al);	//cost = sum(1/Rbw)
-						cost.setCost(exterDomain.cumulatedBWCost2(dijkSource, dijkDest));	//TODO
+						cost.setCost(exterDomain.cumulatedBWCost3(dijkSource, dijkDest));	//TODO
 						al.add(cost);
 						an.addEdge(al, dijkSource, dijkDest, EdgeType.UNDIRECTED);	//augmented links
 						

@@ -46,7 +46,7 @@ public class Distribute3DVNEMain {
 		writer.write("\n");
 		writer.close();
 			
-		for(c=0;c<1;c++){
+		for(c=0;c<10;c++){
 	//		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));
 	//		System.setOut(tmp);
 			writer = new FileWriter("resultat.txt",true);

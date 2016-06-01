@@ -15,17 +15,18 @@ public class SimulationTest {
 	public static void main(String[] args) throws IOException {
 		
 		
-		FileWriter writer = new FileWriter("resultat.txt",true);
+		FileWriter writer = new FileWriter("cenResult.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
 		writer.close();
 		
+		for(c=0;c<10;c++){
 			
 		Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation();
 		
-		for(int i=0;i<simulation.getMultiDomain().size();i++){
+	/*	for(int i=0;i<simulation.getMultiDomain().size();i++){
 			System.out.println(simulation.getMultiDomain().get(i));
-		}
+		}	*/
 		
 		for(int i=0;i<simulation.getMultiDomain().size();i++){
 			System.out.println("v:"+simulation.getMultiDomain().get(i).getVertexCount());
@@ -35,7 +36,7 @@ public class SimulationTest {
 			System.out.println("inter:"+simulation.getMultiDomain().get(i).getInterLinkCount());				
 		}
 		
-		writer = new FileWriter("resultat.txt",true);
+		writer = new FileWriter("cenResult.txt",true);
 		for(int i=0;i<simulation.getMultiDomain().size();i++){
 			writer.write(" v:"+simulation.getMultiDomain().get(i).getVertexCount());
 			writer.write(" e:"+simulation.getMultiDomain().get(i).getEdgeCount());
@@ -48,10 +49,9 @@ public class SimulationTest {
 		writer.write("\n");
 		writer.close();
 			
-		for(c=0;c<10;c++){
 	//		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));
 	//		System.setOut(tmp);
-			writer = new FileWriter("resultat.txt",true);
+			writer = new FileWriter("cenResult.txt",true);
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
@@ -97,7 +97,7 @@ public class SimulationTest {
 				System.out.println("job done");
 			}
 		}
-		writer = new FileWriter("resultat.txt",true);
+		writer = new FileWriter("cenResult.txt",true);
 		writer.write("/---------------Simulation finished!---------------/\n");
 		writer.write("Time : "+new SimpleDateFormat().format(new Date())+"\n\n");
 		writer.close();

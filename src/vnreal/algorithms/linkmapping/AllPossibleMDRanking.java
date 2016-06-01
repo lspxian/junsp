@@ -32,7 +32,7 @@ public class AllPossibleMDRanking extends AbstractMultiDomainLinkMapping{
 		this.generate3D();
 		boolean flag = false;
 		for(List<Domain> combination : this.combinations){
-			MultiDomainRanking3 mdr = new MultiDomainRanking3(combination);	//3 without collection.sort
+			MultiDomainRanking mdr = new MultiDomainRanking(combination);	//3 without collection.sort
 			if(mdr.linkMapping(vNet, nodeMapping)){
 				flag = true;
 				//
