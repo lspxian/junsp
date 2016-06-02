@@ -298,7 +298,7 @@ public final class VirtualNetwork extends
 	{
 		return lifetime;
 	}
-	public void setLifetim(double mean)
+	public void setLifetime(double mean)
 	{
 		this.lifetime = MiscelFunctions.negExponential(1.0/mean);
 	}

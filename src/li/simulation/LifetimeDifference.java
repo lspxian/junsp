@@ -20,7 +20,6 @@ import li.multiDomain.metrics.MappedRevenueMD;
 import li.multiDomain.metrics.MetricMD;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
 import vnreal.algorithms.linkmapping.AS_MCF;
-import vnreal.algorithms.linkmapping.AllPossibleMDRanking;
 import vnreal.algorithms.linkmapping.MDasOD2;
 import vnreal.algorithms.linkmapping.MultiDomainAsOneDomain;
 import vnreal.algorithms.linkmapping.MultiDomainRanking;
@@ -34,35 +33,42 @@ import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 
-public class Distribute3DVNE extends AbstractMultiDomain {
+public class LifetimeDifference extends AbstractMultiDomain {
 
-public Distribute3DVNE() throws IOException{
+	int liftTime;
+	public LifetimeDifference() throws IOException{
 		this.simulationTime = 30000.0;
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
-		/*-------3 domains example--------*/
+		/*-------4 domains example--------*/
+//		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
+//		multiDomain.add(new Domain(0,0,"sndlib/germany50", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/ta2", true));
 		
-	/*	multiDomain.add(new Domain(0,0,"sndlib/india35", true));
-		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
-		multiDomain.add(new Domain(2,0,"sndlib/germany50", true));*/
+//		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
+//		multiDomain.add(new Domain(1,1,"sndlib/germany50", true));
+//		multiDomain.add(new Domain(0,1,"sndlib/zib54", true));
 		
 		/*------use gt-itm to create random substrate network-----*/
 		multiDomain.add(new Domain(0,0, true));
 		multiDomain.add(new Domain(1,0, true));
-		multiDomain.add(new Domain(2,0, true));
-
+		multiDomain.add(new Domain(1,1, true));
+		multiDomain.add(new Domain(0,1, true));
 
 		/*--------static or random peering links--------*/
 //		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
-		MultiDomainUtil.random3DInterLinks(multiDomain);
+		MultiDomainUtil.randomInterLinks(multiDomain);
 	}
 	
-	public void initialize(int lambda) throws IOException{
+	public void initialize(int meanLifeTime) throws IOException{
 		this.time=0.0;
 		this.accepted=0;
 		this.rejected=0;
-		this.lambda=lambda;
+		this.lambda=3;
 		this.totalCost=0.0;
+		this.liftTime=meanLifeTime;
 		/*-----------use pre-generated virtual network---------*/
 		/*
 		vns = new ArrayList<VirtualNetwork>();
@@ -72,7 +78,7 @@ public Distribute3DVNE() throws IOException{
 //			vn.alt2network("data/vir"+new Random().nextInt(500));
 //			vn.alt2network("data/vhr2");
 			vn.addAllResource(true);
-			vn.scale(3, 1);
+			vn.scale(2, 2);
 			//System.out.println(vn);		//print vn
 			vns.add(vn);
 		}
@@ -93,7 +99,8 @@ public Distribute3DVNE() throws IOException{
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/sub");
 			vn.addAllResource(true);
-			vn.scale(3, 1);		//scale a [100,100] vn to [300,100]
+			vn.setLifetime(meanLifeTime);
+			vn.scale(2, 2);		//scale a [100,100] vn to [200,200]
 			vn.reconfigResource(multiDomain);
 			
 			double departureTime = time+vn.getLifetime();
@@ -146,14 +153,17 @@ public Distribute3DVNE() throws IOException{
 					case "MultiDomainAsOneDomain" : 
 						method = new MultiDomainAsOneDomain(multiDomain);
 						break;
+					case "MDasOD2" : 
+						method = new MDasOD2(multiDomain);
+						break;
 					case "MultiDomainRanking2" : 
 						method = new MultiDomainRanking2(multiDomain);
 						break;
 					case "MultiDomainRanking3" : 
 						method = new MultiDomainRanking3(multiDomain);
 						break;
-					case "AllPossible" : 
-						method = new AllPossibleMDRanking(multiDomain);
+					case "AS_MCF" : 
+						method = new AS_MCF(multiDomain);
 						break;
 					default : 
 						System.out.println("The methode doesn't exist");
@@ -188,7 +198,7 @@ public Distribute3DVNE() throws IOException{
 				System.out.println(currentEvent.getConcernedVn());
 				NodeLinkDeletion.multiDomainFreeResource(currentEvent.getConcernedVn(), multiDomain);
 			}
-		/*	
+			/*
 			for(int i=0;i<multiDomain.size();i++){
 				System.out.println(multiDomain.get(i));
 			}*/
@@ -200,13 +210,17 @@ public Distribute3DVNE() throws IOException{
 			}
 			
 		}
+		/*
+		for(int i=0;i<multiDomain.size();i++){
+			System.out.println(multiDomain.get(i));
+		}*/
 		
 		System.out.println("*-----"+methodStr+" resume------------*");
 		System.out.println("accepted : "+this.accepted);
 		System.out.println("rejected : "+this.rejected);
 		
-		FileWriter writer = new FileWriter("resultat.txt",true);
-		writer.write("*----lambda="+this.lambda+"--"+methodStr+"----*\n");
+		FileWriter writer = new FileWriter("cenResult.txt",true);
+		writer.write("*----Lifetime="+this.liftTime+"--"+methodStr+"----*\n");
 		writer.write("accepted : "+this.accepted+"\n");
 		writer.write("rejected : "+this.rejected+"\n");
 		for(MetricMD metric : metrics){ 
@@ -228,4 +242,5 @@ public Distribute3DVNE() throws IOException{
 		mappedVNs = new ArrayList<VirtualNetwork>();
 		metrics = new ArrayList<MetricMD>();
 	}
+
 }
