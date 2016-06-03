@@ -53,7 +53,7 @@ public Distribute3DVNE() throws IOException{
 
 
 		/*--------static or random peering links--------*/
-//		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
+//		MultiDomainUtil.random2DInterLinks(multiDomain.get(0),multiDomain.get(1),0.9,0.07);
 		MultiDomainUtil.random3DInterLinks(multiDomain);
 	}
 	
@@ -94,7 +94,7 @@ public Distribute3DVNE() throws IOException{
 			vn.alt2network("./gt-itm/sub");
 			vn.addAllResource(true);
 			vn.scale(3, 1);		//scale a [100,100] vn to [300,100]
-			vn.reconfigResource(multiDomain);
+//			vn.reconfigResource(multiDomain);
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event

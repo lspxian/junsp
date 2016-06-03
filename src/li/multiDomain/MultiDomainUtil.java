@@ -96,7 +96,7 @@ public class MultiDomainUtil {
 		//generate inter links
 		//0.9 0.08 for random sub
 		double alpha = 0.9;	//alpha increases the probability of edges between any nodes in the graph
-		double beta = 0.08;	//beta yields a larger ratio of long edges to short edges.
+		double beta = 0.07;	//beta yields a larger ratio of long edges to short edges.
 		
 //		double alpha = 0.8;
 //		double beta = 0.07;		
@@ -149,9 +149,9 @@ public class MultiDomainUtil {
 	}
 	
 	public static void random3DInterLinks(List<Domain> domains){
-		random2DInterLinks(domains.get(0),domains.get(1),0.8,0.07);
-		random2DInterLinks(domains.get(1),domains.get(2),0.8,0.07);
-		random2DInterLinks(domains.get(0),domains.get(2),0.8,0.17);
+		random2DInterLinks(domains.get(0),domains.get(1),0.7,0.07);
+		random2DInterLinks(domains.get(1),domains.get(2),0.7,0.07);
+		random2DInterLinks(domains.get(0),domains.get(2),0.7,0.17);
 	}
 	
 	public static void random2DInterLinks(Domain startDomain,Domain endDomain, double alpha, double beta){
