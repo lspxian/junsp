@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,6 +73,8 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 			System.out.println(solution);
 			
 			//TODO	cplex result analysis and rounding method
+			
+			//For match a virtualNode with a unique substrateNode
 			for (VirtualNode vn : vNet.getVertices()){
 				String vind = String.valueOf(virToMeta.get(vn).getId()).trim();
 				//System.out.println(vind);
@@ -83,9 +84,10 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 					Set<String> keys = new TreeSet<String>();
 					keys = solution.keySet();
 					Iterator<String> it = keys.iterator();
+					String kind1="",kind2="";
+					//Get the indice from the cplex result
 					while (it.hasNext()){
 						String key = it.next();
-						String kind1="",kind2="";
 						if (key.startsWith("v")){
 							kind1=key.substring(key.indexOf("ss")+2, key.indexOf("sd"));
 							//System.out.println(kind1);
@@ -98,6 +100,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 							kind2=key.substring(key.indexOf("w")+1);
 							//System.out.println(kind2);
 						}
+						//To calculate the best substrateNode
 						if ((kind1.equals(sind) || kind2.equals(sind)) && (kind1.equals(vind) || kind2.equals(vind)) && key.startsWith("v"))
 							res += Double.parseDouble(solution.get(key));
 						if ((kind1.equals(sind) || kind2.equals(sind)) && (kind1.equals(vind) || kind2.equals(vind)) && key.startsWith("X"))
@@ -113,9 +116,14 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 				}
 				System.out.println(max);
 				System.out.println(indice);
+				if (virToSubstrate.containsValue(sNet.getNodeFromID(indice)))
+					indice = (indice+1)%sNet.getVertexCount();
+				//Put the correspondence in a HashMap
 				virToSubstrate.put(vn, sNet.getNodeFromID(indice));
 				max = 0.0;
+				indice = 0;
 			}
+			//To show the Map
 			System.out.println(virToSubstrate);
 			
 			
