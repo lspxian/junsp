@@ -19,6 +19,7 @@ public class Test2 {
 
 		CordinatedNodeLinkMapping cnlm = new CordinatedNodeLinkMapping(sn);
 		cnlm.nodeMapping(vn);
+		System.out.println(sn);
 		
 	}
 

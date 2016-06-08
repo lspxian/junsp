@@ -20,6 +20,8 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
 import vnreal.algorithms.AbstractNodeMapping;
+import vnreal.algorithms.linkmapping.MultiCommodityFlow;
+import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.Remote;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
@@ -41,6 +43,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 	protected String localPath="ILP-LP-Models/tr2mcf.lp";
 	protected String remotePath = "pytest/vne-mcf.lp";
 
+	
 	public CordinatedNodeLinkMapping(SubstrateNetwork sNet, boolean subsNodeOverload) {
 		super(sNet, subsNodeOverload);
 	}
@@ -60,7 +63,6 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 		
 		AugmentedNetwork an = new AugmentedNetwork(this.sNet);
 		Map<VirtualNode, MetaNode> virToMeta=new HashMap<VirtualNode, MetaNode>();
-		Map<VirtualNode, SubstrateNode> virToSubstrate = new HashMap<VirtualNode,SubstrateNode>();
 		Double res=0.0,xns=0.0,max=0.0;
 		int indice=0;
 		
@@ -116,15 +118,16 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 				}
 				System.out.println(max);
 				System.out.println(indice);
-				if (virToSubstrate.containsValue(sNet.getNodeFromID(indice)))
+				if (nodeMapping.containsValue(sNet.getNodeFromID(indice)))
 					indice = (indice+1)%sNet.getVertexCount();
 				//Put the correspondence in a HashMap
-				virToSubstrate.put(vn, sNet.getNodeFromID(indice));
+				nodeMapping.put(vn, sNet.getNodeFromID(indice));
 				max = 0.0;
 				indice = 0;
 			}
 			//To show the Map
-			System.out.println(virToSubstrate);
+			System.out.println(nodeMapping);
+			
 			
 			
 			
@@ -399,5 +402,57 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 			writer.close();
 			
 		}
+		
+		public void updateResource(VirtualNetwork vNet,  Map<VirtualNode, SubstrateNode> nodeMapping, Map<String,String> solution){
+			BandwidthDemand bwDem = null,newBwDem;
+			VirtualNode srcVnode = null, dstVnode = null;
+			SubstrateNode srcSnode = null, dstSnode = null;
+			int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
+			
+			for(Map.Entry<String, String> entry : solution.entrySet()){
+				String linklink = entry.getKey();
+				double flow = Double.parseDouble(entry.getValue());
+				
+				srcVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vs")+2, linklink.indexOf("vd")));
+				dstVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vd")+2, linklink.indexOf("ss")));
+				srcSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("ss")+2, linklink.indexOf("sd")));
+				dstSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("sd")+2));
+				
+				//for undirected network, flow 0->1 and 1->0 are added to 0<->1, so if we have a flow 1->0, 
+				//we have to change the s and d to meet the original link 0->1
+				
+				if(srcSnodeId>dstSnodeId){
+					int tmp = srcSnodeId;
+					srcSnodeId = dstSnodeId;
+					dstSnodeId = tmp;
+				}
+				
+				srcVnode = vNet.getNodeFromID(srcVnodeId);
+				dstVnode = vNet.getNodeFromID(dstVnodeId);
+				VirtualLink tmpvl = vNet.findEdge(srcVnode, dstVnode);
+				
+				for (AbstractDemand dem : tmpvl) {
+					if (dem instanceof BandwidthDemand) {
+						bwDem = (BandwidthDemand) dem;
+						break;
+					}
+				}
+				
+				srcSnode = sNet.getNodeFromID(srcSnodeId);
+				dstSnode = sNet.getNodeFromID(dstSnodeId);
+				SubstrateLink tmpsl = sNet.findEdge(srcSnode, dstSnode);
+				
+				newBwDem = new BandwidthDemand(tmpvl);
+				newBwDem.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
+				
+				if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
+					throw new AssertionError("But we checked before!");
+				}
+				
+				
+			}
+		}
+		
+		
 
 }
