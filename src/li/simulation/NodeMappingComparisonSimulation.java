@@ -48,7 +48,9 @@ protected Map<VirtualNetwork, Double> probability;
 		simulationTime = 10000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-			sn.alt2network("sndlib/germany50");
+//			sn.alt2network("sndlib/germany50");
+			Generator.createSubNet();
+			sn.alt2network("./gt-itm/sub");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -94,7 +96,7 @@ protected Map<VirtualNetwork, Double> probability;
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
-			if(departureTime<=simulationTime)
+//			if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
@@ -184,11 +186,13 @@ protected Map<VirtualNetwork, Double> probability;
 			
 		}
 		
+		System.out.println(this.sn);
+		
 		System.out.println("*-----"+methodStr+" resume------------*");
 		System.out.println("accepted : "+this.accepted);
 		System.out.println("rejected : "+this.rejected);
 		
-		FileWriter writer = new FileWriter("resultat.txt",true);
+		FileWriter writer = new FileWriter("nodecomparison.txt",true);
 		writer.write("*----lambda="+this.lambda+"--"+methodStr+"----*\n");
 		writer.write("accepted : "+this.accepted+"\n");
 		writer.write("rejected : "+this.rejected+"\n");

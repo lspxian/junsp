@@ -29,7 +29,7 @@ public static int c;
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=4;i<5;i++){
+			for(int i=2;i<5;i++){
 				simulation.initialize(i);
 				PrintStream AvailableResourcesNodeMapping = new PrintStream(new FileOutputStream("res/ARMN"+i+"_c"+c+".txt"));
 				System.setOut(AvailableResourcesNodeMapping);
