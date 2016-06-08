@@ -12,14 +12,16 @@ public class Test2 {
 		SubstrateNetwork sn=new SubstrateNetwork(); //undirected by default 
 		sn.alt2network("data/cost239");
 		sn.addAllResource(true);
-		
-		VirtualNetwork vn = new VirtualNetwork();
-		vn.alt2network("data/vir0");
-		vn.addAllResource(true);
+		for(int i=0;i<10;i++){
+			VirtualNetwork vn = new VirtualNetwork();
+			vn.alt2network("data/vir"+i);
+			vn.addAllResource(true);
+			CordinatedNodeLinkMapping cnlm = new CordinatedNodeLinkMapping(sn);
+			cnlm.nodeMapping(vn);
+			
+		}
 
-		CordinatedNodeLinkMapping cnlm = new CordinatedNodeLinkMapping(sn);
-		cnlm.nodeMapping(vn);
-		System.out.println(sn);
+		//System.out.println(sn);
 		
 	}
 
