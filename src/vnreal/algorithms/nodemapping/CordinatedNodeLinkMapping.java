@@ -64,7 +64,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 		AugmentedNetwork an = new AugmentedNetwork(this.sNet);
 		Map<VirtualNode, MetaNode> virToMeta=new HashMap<VirtualNode, MetaNode>();
 		Double res=0.0,xns=0.0,max=0.0;
-		int indice=0;
+		int indice=0,cpt=1;
 		
 		this.createAugmentedNetwork(vNet, an, virToMeta);	
 		try {
@@ -119,7 +119,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 				System.out.println(max);
 				System.out.println(indice);
 				if (nodeMapping.containsValue(sNet.getNodeFromID(indice)))
-					indice = (indice+1)%sNet.getVertexCount();
+					indice = (indice+cpt++)%sNet.getVertexCount();
 				//Put the correspondence in a HashMap
 				nodeMapping.put(vn, sNet.getNodeFromID(indice));
 				max = 0.0;
@@ -403,7 +403,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 			
 		}
 		
-		public void updateResource(VirtualNetwork vNet,  Map<VirtualNode, SubstrateNode> nodeMapping, Map<String,String> solution){
+		public void updateResource(VirtualNetwork vNet,  Map<VirtualNode, SubstrateNode> nodeMapping, Map<String,String> solution,Map<VirtualNode, MetaNode> virToMeta){
 			BandwidthDemand bwDem = null,newBwDem;
 			VirtualNode srcVnode = null, dstVnode = null;
 			SubstrateNode srcSnode = null, dstSnode = null;
