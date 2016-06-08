@@ -144,9 +144,13 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 			}
 			//To show the Map
 			System.out.println(nodeMapping);
-			MultiCommodityFlow mcf = new MultiCommodityFlow(sNet, "ILP-LP-Models/tr2mcf.lp", "pytest/tr2mcf.lp");
-			mcf.linkMapping(vNet, nodeMapping);
-			
+		
+			for(Entry<VirtualNode, SubstrateNode> e :nodeMapping.entrySet()){
+				if (NodeLinkAssignation.vnm(e.getKey(), e.getValue())) {
+				} else {
+					throw new AssertionError("But we checked before!");
+				}
+			}
 			
 			
 			
