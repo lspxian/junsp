@@ -54,7 +54,7 @@ public class FreeResourceTest {
 			
 			//link mapping
 			
-			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
+			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn);
 			ulpc.linkMapping(vns.get(i), nodeMapping);
 			//SOD_BK sod_bk = new SOD_BK(sn);
 			//sod_bk.linkMapping(vns.get(i), nodeMapping);

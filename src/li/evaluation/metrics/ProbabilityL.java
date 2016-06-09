@@ -24,7 +24,9 @@ public class ProbabilityL extends Metric {
 	public double calculate() {
 		if(this.simulation instanceof SteinerTreeProbabilitySimulation){
 			SteinerTreeProbabilitySimulation tempSim = (SteinerTreeProbabilitySimulation)this.simulation;
-			return tempSim.getProbability().get(tempSim.getMappedVNs().get(tempSim.getMappedVNs().size()-1));
+			if(tempSim.getMappedVNs().isEmpty())
+				return 0.0;
+			else return tempSim.getProbability().get(tempSim.getMappedVNs().get(tempSim.getMappedVNs().size()-1));
 			
 		}
 		return 0;

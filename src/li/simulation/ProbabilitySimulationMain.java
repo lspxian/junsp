@@ -15,23 +15,20 @@ public class ProbabilitySimulationMain {
 	public static void main(String[] args) throws IOException {
 		FileWriter writer = new FileWriter("resultat.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
-		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
-			
-		SteinerTreeProbabilitySimulation simulation = new SteinerTreeProbabilitySimulation();
-		
-		writer.write("Substrate Network : v "+
-		simulation.getSubstrateNetwork().getVertexCount()+" e "+
-				simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 		writer.close();
-			
-		for(c=0;c<1;c++){
-	//		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));
-	//		System.setOut(tmp);
+		for(c=0;c<10;c++){
 			writer = new FileWriter("resultat.txt",true);
 			writer.write("Number:"+c+"\n");
+			SteinerTreeProbabilitySimulation simulation = new SteinerTreeProbabilitySimulation();
+			System.out.println("Substrate Network : v "+
+							simulation.getSubstrateNetwork().getVertexCount()+" e "+
+							simulation.getSubstrateNetwork().getEdgeCount()+"\n");
+			writer.write("Substrate Network : v "+
+					simulation.getSubstrateNetwork().getVertexCount()+" e "+
+					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
-		
-			for(int i=4;i<5;i++){
+			
+			for(int i=2;i<7;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));
@@ -62,32 +59,39 @@ public class ProbabilitySimulationMain {
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();*/
 				
-				PrintStream pbbwExact = new PrintStream(new FileOutputStream("res/PBBWExactILP_l"+i+"_c"+c+".txt"));
-				System.setOut(pbbwExact);
-				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.runSimulation("PBBWExact");
-				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();
-				
 				PrintStream probaHeuristic1 = new PrintStream(new FileOutputStream("res/probaHeuristic1_l"+i+"_c"+c+".txt"));
 				System.setOut(probaHeuristic1);
-				System.out.println(new SimpleDateFormat().format(new Date()));
+				writeCurrentTime();
 				simulation.runSimulation("ProbaHeuristic1");
-				System.out.println(new SimpleDateFormat().format(new Date()));
+//				writeCurrentTime();
 				simulation.reset();
 				
 				PrintStream probaHeuristic2 = new PrintStream(new FileOutputStream("res/probaHeuristic2_l"+i+"_c"+c+".txt"));
 				System.setOut(probaHeuristic2);
-				System.out.println(new SimpleDateFormat().format(new Date()));
+				writeCurrentTime();
 				simulation.runSimulation("ProbaHeuristic2");
-				System.out.println(new SimpleDateFormat().format(new Date()));
+//				writeCurrentTime();
 				simulation.reset();
 				
 				PrintStream probaHeuristic3 = new PrintStream(new FileOutputStream("res/probaHeuristic3_l"+i+"_c"+c+".txt"));
 				System.setOut(probaHeuristic3);
-				System.out.println(new SimpleDateFormat().format(new Date()));
+				writeCurrentTime();
 				simulation.runSimulation("ProbaHeuristic3");
-				System.out.println(new SimpleDateFormat().format(new Date()));
+//				writeCurrentTime();
+				simulation.reset();
+
+				PrintStream pbbwExact = new PrintStream(new FileOutputStream("res/PBBWExactILP_l"+i+"_c"+c+".txt"));
+				System.setOut(pbbwExact);
+				writeCurrentTime();
+				simulation.runSimulation("PBBWExact");
+//				writeCurrentTime();
+				simulation.reset();
+				
+				PrintStream UnsplittableBandwidth = new PrintStream(new FileOutputStream("res/UnsplittableBandwidth_l"+i+"_c"+c+".txt"));
+				System.setOut(UnsplittableBandwidth);
+				writeCurrentTime();
+				simulation.runSimulation("UnsplittableBandwidth");
+//				writeCurrentTime();
 				simulation.reset();
 				
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
@@ -96,8 +100,18 @@ public class ProbabilitySimulationMain {
 		}
 		writer = new FileWriter("resultat.txt",true);
 		writer.write("/---------------Simulation finished!---------------/\n");
-		writer.write("Time : "+new SimpleDateFormat().format(new Date())+"\n\n");
 		writer.close();
+	}
+	
+	public static void writeCurrentTime(){
+		FileWriter writer;
+		try {
+			writer = new FileWriter("resultat.txt",true);
+			writer.write("Time : "+new SimpleDateFormat().format(new Date())+"\n");
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

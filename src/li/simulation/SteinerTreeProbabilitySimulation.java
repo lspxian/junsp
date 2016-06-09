@@ -29,6 +29,7 @@ import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic1;
 import probabilityBandwidth.ProbaHeuristic2;
 import probabilityBandwidth.ProbaHeuristic3;
+import probabilityBandwidth.UnsplittableBandwidth;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -56,7 +57,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 
 	public SteinerTreeProbabilitySimulation(){
 		
-		simulationTime = 5000.0;
+		simulationTime = 100000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			Generator.createSubNet();
@@ -112,7 +113,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
-			//if(departureTime<=simulationTime)
+			if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
@@ -143,7 +144,7 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 		//metrics.add(new CostL(this, methodStr,lambda));
 		//metrics.add(new CostRevenueL(this,methodStr,lambda));
 		metrics.add(new ProbabilityL(this,methodStr,lambda));
-		metrics.add(new RevenueProba(this,methodStr,lambda));
+//		metrics.add(new RevenueProba(this,methodStr,lambda));
 		metrics.add(new AverageProbability(this,methodStr,lambda));
 		
 		for(NetEvent currentEvent : this.netEvents){
@@ -191,6 +192,9 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 							break;
 						case "ProbaHeuristic3" :
 							method = new ProbaHeuristic3(sn);
+							break;
+						case "UnsplittableBandwidth" :
+							method = new UnsplittableBandwidth(sn);
 							break;
 						default : 
 							System.out.println("The methode doesn't exist");

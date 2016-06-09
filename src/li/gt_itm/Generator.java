@@ -22,7 +22,7 @@ public class Generator {
 		//node number, scale, method, proba connect
 //		pw.println("40 100 3 0.15");
 		//0.1 for multi domain
-		pw.println("50 100 4 0.15 0.01 1");
+		pw.println("50 100 4 0.2 0.01 1");
 		pw.close();
 		runShellCmd("./gt-itm/itm gt-itm/subCmd");
 		runShellCmd("./gt-itm/sgb2alt gt-itm/subCmd-0.gb gt-itm/sub");
@@ -38,7 +38,7 @@ public class Generator {
 		PrintWriter pw = new PrintWriter("gt-itm/subCmd");
 		pw.println("geo 1 "+new Random().nextInt(100));
 		//node number, scale, method, proba connect
-		int number = new Random().nextInt(4)+3;
+		int number = new Random().nextInt(3)+3;
 		pw.println(number+" 100 3 0.4");
 		pw.close();
 		runShellCmd("./gt-itm/itm gt-itm/subCmd");
