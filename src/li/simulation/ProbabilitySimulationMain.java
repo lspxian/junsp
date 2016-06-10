@@ -28,7 +28,7 @@ public class ProbabilitySimulationMain {
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=2;i<7;i++){
+			for(int i=3;i<9;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));

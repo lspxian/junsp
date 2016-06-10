@@ -204,10 +204,10 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 				//objective
 //				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 //				obj = obj + " + "+bwDem.getDemandedBandwidth();
-				obj = obj + " + 1E-3 vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+				obj = obj + " + 0.001 vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
 //				obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
 //				obj = obj + " + "+bwDem.getDemandedBandwidth();
-				obj = obj + " + 1E-3 vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+				obj = obj + " + 0.001 vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//f and x constraint
 				constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();

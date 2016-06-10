@@ -19,7 +19,7 @@ public class Distribute3DVNEMain {
 		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
 		writer.close();
 		
-		for(c=0;c<10;c++){
+		for(c=0;c<1;c++){
 			
 			Distribute3DVNE simulation = new Distribute3DVNE();
 			/*
@@ -54,7 +54,7 @@ public class Distribute3DVNEMain {
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=2;i<7;i++){
+			for(int i=3;i<8;i++){
 				simulation.initialize(i);
 				
 				/*
@@ -78,13 +78,13 @@ public class Distribute3DVNEMain {
 				simulation.runSimulation("MultiDomainRanking2");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();
-
+/*
 				PrintStream mdrk3 = new PrintStream(new FileOutputStream("res/AllPossibleMDRanking_l"+i+"_c"+c+".txt"));
 				System.setOut(mdrk3);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("AllPossible");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();
+				simulation.reset();*/
 				
 				
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));

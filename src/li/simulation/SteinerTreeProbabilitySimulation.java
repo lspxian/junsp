@@ -23,6 +23,7 @@ import li.evaluation.metrics.RevenueProba;
 import li.event.FailureEvent;
 import li.event.NetEvent;
 import li.event.VnEvent;
+import li.gt_itm.DrawGraph;
 import li.gt_itm.Generator;
 import probabilityBandwidth.AbstractProbaLinkMapping;
 import probabilityBandwidth.PBBWExactILP;
@@ -64,6 +65,9 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 			sn.alt2network("./gt-itm/sub");
 //			sn.alt2network("data/cost239");
 //			sn.alt2network("sndlib/germany50");
+			
+//			DrawGraph dg = new DrawGraph(sn);
+//			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

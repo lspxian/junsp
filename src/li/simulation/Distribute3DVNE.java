@@ -37,7 +37,7 @@ import vnreal.network.virtual.VirtualNode;
 public class Distribute3DVNE extends AbstractMultiDomain {
 
 public Distribute3DVNE() throws IOException{
-		this.simulationTime = 30000.0;
+		this.simulationTime = 10000.0;
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
 		/*-------3 domains example--------*/

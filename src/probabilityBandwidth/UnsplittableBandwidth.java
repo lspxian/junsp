@@ -9,7 +9,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.jcraft.jsch.JSchException;
@@ -111,6 +113,8 @@ public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
 		VirtualNode srcVnode = null, dstVnode = null;
 		SubstrateNode srcSnode = null, dstSnode = null;
 		int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
+		double temproba=1;
+		Set<SubstrateLink> usedLinksForProba=new HashSet<SubstrateLink>();
 		
 		for(Map.Entry<String, String> entry : solution.entrySet()){
 			String linklink = entry.getKey();
@@ -144,6 +148,8 @@ public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
 			dstSnode = sNet.getNodeFromID(dstSnodeId);
 			SubstrateLink tmpsl = sNet.findEdge(srcSnode, dstSnode);
 			
+			usedLinksForProba.add(tmpsl);
+			
 			newBwDem = new BandwidthDemand(tmpvl);
 			newBwDem.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
 			
@@ -152,6 +158,11 @@ public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
 			}
 			
 		}
+		
+		for(SubstrateLink sl : usedLinksForProba){
+			temproba = temproba * (1-sl.getProbability());			
+		}
+		this.probability=1-temproba;
 	}
 	
 	//generate cplex file for undirected multi commodity flow
