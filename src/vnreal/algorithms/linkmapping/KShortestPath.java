@@ -17,22 +17,31 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 
 public class KShortestPath extends AbstractLinkMapping{
+	int k=5;
 
 	public KShortestPath(SubstrateNetwork sNet) {
 		super(sNet);
-		
 	}
 	
+	public KShortestPath(SubstrateNetwork sNet, int k){
+		super(sNet);
+		this.k=k;
+	}
+	
+	/**
+	 * find the k shortest paths without considering the bandwidth constraint, the bandwidth here is just the link weight.
+	 * After finding the K shortest paths, adopt the first one that follows the bandwidth constraint.
+	 */
 	public boolean linkMapping(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping){
 		Map<VirtualLink,List<SubstrateLink>> result = new HashMap<VirtualLink,List<SubstrateLink>>();
 		LinkWeight linkWeight = new LinkWeight();
 		Yen<SubstrateNode, SubstrateLink> yen = new Yen(sNet,linkWeight);
 		
 		for(VirtualLink vLink:vNet.getEdges()){
-			SubstrateNode srcNode = nodeMapping.get(vNet.getSource(vLink));
-			SubstrateNode dstNode = nodeMapping.get(vNet.getDest(vLink));
+			SubstrateNode srcNode = nodeMapping.get(vNet.getEndpoints(vLink).getFirst());
+			SubstrateNode dstNode = nodeMapping.get(vNet.getEndpoints(vLink).getSecond());
 			if(!srcNode.equals(dstNode)){
-				List<List<SubstrateLink>> ksp = yen.getShortestPaths(srcNode, dstNode, 5);
+				List<List<SubstrateLink>> ksp = yen.getShortestPaths(srcNode, dstNode, k);
 				
 				for (List<SubstrateLink> path : ksp) {
 					if (NodeLinkAssignation.verifyPathSimple(vLink, path)){

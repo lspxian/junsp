@@ -13,7 +13,6 @@ import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPath;
-import vnreal.algorithms.linkmapping.KShortestPathLinkMapping;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
 import vnreal.algorithms.linkmapping.SOD_BK;

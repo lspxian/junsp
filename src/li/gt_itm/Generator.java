@@ -2,8 +2,6 @@ package li.gt_itm;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -44,38 +42,6 @@ public class Generator {
 		runShellCmd("./gt-itm/itm gt-itm/subCmd");
 		runShellCmd("./gt-itm/sgb2alt gt-itm/subCmd-0.gb gt-itm/sub");
 	}
-	
-	private static void cutFile(){
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("gt-itm/sub"));
-			FileWriter nodes = new FileWriter("graphTMP/s-node.txt");
-			FileWriter links = new FileWriter("graphTMP/s-link.txt");
-			
-			String line;
-			boolean node=false, edge=false;
-			while((line=br.readLine())!=null){
-				if(line.contains("VERTICES"))
-					node=true;
-				else if(line.contains("EDGES")){
-					node=false;
-					edge=true;
-				}
-				if((node==true)&&(!line.contains("VERTICES"))&&(!line.isEmpty())){
-					nodes.write(line+"\n");
-				}
-				if((edge==true)&&(!line.contains("EDGES"))&&(!line.isEmpty())){
-					links.write(line+"\n");
-				}
-			}
-			br.close();
-			nodes.close();
-			links.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	
 	//
 	public static void createVgb() throws IOException{
