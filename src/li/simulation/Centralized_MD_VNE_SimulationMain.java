@@ -8,7 +8,7 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class SimulationTest {
+public class Centralized_MD_VNE_SimulationMain {
 	
 	public static int c;
 	

@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import li.multiDomain.AbstractMultiDomain;
 import li.simulation.AbstractSimulation;
-import li.simulation.SimulationTest;
+import li.simulation.Centralized_MD_VNE_SimulationMain;
 
 public abstract class Metric{
 	
@@ -33,7 +33,7 @@ public abstract class Metric{
 	
 	public Metric(AbstractSimulation simulation, String method, int lambda) throws IOException{
 		this.simulation = simulation;
-		this.fout = new BufferedWriter(new FileWriter("evaluationData/"+method+"_"+this.name()+"_l"+lambda+"_c"+SimulationTest.c+".txt"));
+		this.fout = new BufferedWriter(new FileWriter("evaluationData/"+method+"_"+this.name()+"_l"+lambda+"_c"+Centralized_MD_VNE_SimulationMain.c+".txt"));
 	}
 	
 	public abstract String name();

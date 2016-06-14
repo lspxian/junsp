@@ -45,7 +45,7 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
 
-public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
+public class ProbabilitySimulation extends AbstractSimulation{
 	
 	protected Map<VirtualNetwork, Double> probability; 
 	protected ArrayList<NetEvent> netEvents;
@@ -56,9 +56,9 @@ public class SteinerTreeProbabilitySimulation extends AbstractSimulation{
 		return probability;
 	}
 
-	public SteinerTreeProbabilitySimulation(){
+	public ProbabilitySimulation(){
 		
-		simulationTime = 100000.0;
+		simulationTime = 50000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			Generator.createSubNet();

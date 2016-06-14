@@ -45,7 +45,7 @@ protected Map<VirtualNetwork, Double> probability;
 
 	public NodeMappingComparisonSimulation(){
 		
-		simulationTime = 10000.0;
+		simulationTime = 20000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 //			sn.alt2network("sndlib/germany50");
@@ -96,7 +96,7 @@ protected Map<VirtualNetwork, Double> probability;
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
-//			if(departureTime<=simulationTime)
+			if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}

@@ -19,7 +19,7 @@ public class ProbabilitySimulationMain {
 		for(c=0;c<10;c++){
 			writer = new FileWriter("resultat.txt",true);
 			writer.write("Number:"+c+"\n");
-			SteinerTreeProbabilitySimulation simulation = new SteinerTreeProbabilitySimulation();
+			ProbabilitySimulation simulation = new ProbabilitySimulation();
 			System.out.println("Substrate Network : v "+
 							simulation.getSubstrateNetwork().getVertexCount()+" e "+
 							simulation.getSubstrateNetwork().getEdgeCount()+"\n");
@@ -28,7 +28,7 @@ public class ProbabilitySimulationMain {
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=3;i<9;i++){
+			for(int i=2;i<8;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));

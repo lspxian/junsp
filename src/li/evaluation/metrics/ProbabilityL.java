@@ -3,7 +3,7 @@ package li.evaluation.metrics;
 import java.io.IOException;
 
 import li.simulation.AbstractSimulation;
-import li.simulation.SteinerTreeProbabilitySimulation;
+import li.simulation.ProbabilitySimulation;
 
 public class ProbabilityL extends Metric {
 
@@ -22,8 +22,8 @@ public class ProbabilityL extends Metric {
 
 	@Override
 	public double calculate() {
-		if(this.simulation instanceof SteinerTreeProbabilitySimulation){
-			SteinerTreeProbabilitySimulation tempSim = (SteinerTreeProbabilitySimulation)this.simulation;
+		if(this.simulation instanceof ProbabilitySimulation){
+			ProbabilitySimulation tempSim = (ProbabilitySimulation)this.simulation;
 			if(tempSim.getMappedVNs().isEmpty())
 				return 0.0;
 			else return tempSim.getProbability().get(tempSim.getMappedVNs().get(tempSim.getMappedVNs().size()-1));

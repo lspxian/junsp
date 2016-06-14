@@ -3,12 +3,12 @@ package li.evaluation.metrics;
 import java.io.IOException;
 import java.util.Map;
 
-import li.simulation.SteinerTreeProbabilitySimulation;
+import li.simulation.ProbabilitySimulation;
 import vnreal.network.virtual.VirtualNetwork;
 
 public class AverageProbability extends Metric {
 
-	public AverageProbability(SteinerTreeProbabilitySimulation simulation, String method, int lambda) throws IOException {
+	public AverageProbability(ProbabilitySimulation simulation, String method, int lambda) throws IOException {
 		super(simulation, method, lambda);
 	}
 
@@ -19,7 +19,7 @@ public class AverageProbability extends Metric {
 
 	@Override
 	public double calculate() {
-		SteinerTreeProbabilitySimulation sim = (SteinerTreeProbabilitySimulation) this.simulation;
+		ProbabilitySimulation sim = (ProbabilitySimulation) this.simulation;
 		double average=0.0;
 		for(Map.Entry<VirtualNetwork, Double> e : sim.getProbability().entrySet()){
 			average = average + e.getValue();

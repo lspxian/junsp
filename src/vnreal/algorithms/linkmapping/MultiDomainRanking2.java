@@ -26,6 +26,7 @@ import edu.uci.ics.jung.graph.util.EdgeType;
 import li.multiDomain.Domain;
 import li.multiDomain.LinkStressComparator;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
+import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.algorithms.utils.Remote;
@@ -292,10 +293,10 @@ public class MultiDomainRanking2 extends AbstractMultiDomainLinkMapping {
 					//objective
 					if(tmpsl instanceof InterLink)	k=10;
 					else k=1;
-					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k;
+					obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k);
 //					obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k;
+					obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k);
 //					obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 					//bounds
@@ -341,10 +342,10 @@ public class MultiDomainRanking2 extends AbstractMultiDomainLinkMapping {
 						//objective
 						if(tmpsl instanceof InterLink)	k=10;
 						else k=1;
-						obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k;
+						obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k);
 //						obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
 						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-						obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k;
+						obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k);
 //						obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
 						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 						//bounds

@@ -3,7 +3,7 @@ package li.evaluation.metrics;
 import java.io.IOException;
 
 import li.simulation.AbstractSimulation;
-import li.simulation.SteinerTreeProbabilitySimulation;
+import li.simulation.ProbabilitySimulation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.network.virtual.VirtualLink;
@@ -31,8 +31,8 @@ public class RevenueProba extends Metric {
 	@Override
 	public double calculate() {
 		double revenueProba = 0;
-		if(simulation instanceof SteinerTreeProbabilitySimulation){
-			SteinerTreeProbabilitySimulation sim = (SteinerTreeProbabilitySimulation)simulation; 
+		if(simulation instanceof ProbabilitySimulation){
+			ProbabilitySimulation sim = (ProbabilitySimulation)simulation; 
 			for (VirtualNetwork tmpvn : sim.getMappedVNs()) {
 				revenueProba += calculateVnetRevenue(tmpvn)*(1-sim.getProbability().get(tmpvn));
 			}
