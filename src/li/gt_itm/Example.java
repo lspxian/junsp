@@ -1,5 +1,7 @@
 package li.gt_itm;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 
 public class Example {
@@ -24,7 +26,16 @@ public class Example {
 		//Generator.createSubNet();
 		
 		//virtual networks
-		//createVgb();
+		for(int i=0;i<400;i++){
+			Generator.createVirNet();
+			BufferedReader br = new BufferedReader(new FileReader("gt-itm/sub"));
+			String line=null;
+			System.out.println("new vn");
+			while((line=br.readLine())!=null){
+				System.out.println(line);
+			}
+		br.close();	
+		}
 		
 		
 		

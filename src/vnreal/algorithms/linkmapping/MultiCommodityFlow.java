@@ -37,7 +37,7 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 	private String remotePath ;
 	public MultiCommodityFlow(SubstrateNetwork sNet) {
 		super(sNet);
-		this.localPath = "ILP-LP-Models/vne-mcf.lp";
+		this.localPath = "cplex/vne-mcf.lp";
 		this.remotePath = "pytest/vne-mcf.lp";
 	}
 	public MultiCommodityFlow(SubstrateNetwork sNet, String localPath, String remotePath) {
@@ -197,11 +197,11 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 				}
 				
 				//objective
-				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001));
-//				obj = obj + " + "+bwDem.getDemandedBandwidth();
+				obj = obj + " + "+MiscelFunctions.roundToDecimals(100*bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001),4);
+//				obj = obj + " + "+MiscelFunctions.roundToDecimals(1000/(bwResource.getAvailableBandwidth()+0.001),4);
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001));
-//				obj = obj + " + "+bwDem.getDemandedBandwidth();
+				obj = obj + " + "+MiscelFunctions.roundToDecimals(100*bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001),4);
+//				obj = obj + " + "+MiscelFunctions.roundToDecimals(1000/(bwResource.getAvailableBandwidth()+0.001),4);
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//integer in the <general>

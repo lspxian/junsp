@@ -28,7 +28,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=4;i<5;i++){
+			for(int i=2;i<3;i++){
 				simulation.initialize(i);
 				
 				PrintStream ConstraintShortestPath = new PrintStream(new FileOutputStream("res/ConstraintShortestPath_l"+i+"_c"+c+".txt"));
@@ -48,18 +48,18 @@ public static int c;
 				writeCurrentTime();
 				simulation.runSimulation("UnsplittingLPCplex");
 				simulation.reset();
-				
+				/*
 				PrintStream MultiCommdityFlow = new PrintStream(new FileOutputStream("res/MultiCommdityFlow_l"+i+"_c"+c+".txt"));
 				System.setOut(MultiCommdityFlow);
 				writeCurrentTime();
 				simulation.runSimulation("MultiCommdityFlow");
-				simulation.reset();
+				simulation.reset();*/
 
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 				System.out.println("job done");
 			}
 		}
-		writer = new FileWriter("resultat.txt",true);
+		writer = new FileWriter("result.txt",true);
 		writer.write("/---------------Simulation finished!---------------/\n");
 		writer.close();
 	}

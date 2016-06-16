@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.naming.NamingException;
+
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
@@ -47,7 +49,7 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 	private String remotePath ;
 	public UnsplittingLPCplex(SubstrateNetwork sNet) {
 		super(sNet);
-		this.localPath = "ILP-LP-Models/vne-mcf.lp";
+		this.localPath = "cplex/vne-mcf.lp";
 		this.remotePath = "pytest/vne-mcf.lp";
 	}
 	public UnsplittingLPCplex(SubstrateNetwork sNet, String localPath, String remotePath) {
@@ -62,6 +64,12 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 		Map<String, String> solution = linkMappingWithoutUpdateLocal(vNet, nodeMapping);		
 		if(solution.size()==0){
 			System.out.println("link no solution");
+			ConstraintShortestPath csp = new ConstraintShortestPath(sNet);
+			//TODO 
+			if(csp.linkMapping(vNet, nodeMapping)){
+				System.out.println("error important !!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				throw new ArithmeticException("mcf fails but dijkstra succed !!!!!!!!!!!");
+			}
 			for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 				NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 			}
@@ -203,11 +211,11 @@ public class UnsplittingLPCplex extends AbstractLinkMapping{
 				}
 				
 				//objective
-				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001));
-//				obj = obj + " + "+bwDem.getDemandedBandwidth();
+				obj = obj + " + "+MiscelFunctions.roundToDecimals(100*bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001),4);
+//				obj = obj + " + "+MiscelFunctions.roundToDecimals(1000/(bwResource.getAvailableBandwidth()+0.001),4);
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001));
-//				obj = obj + " + "+bwDem.getDemandedBandwidth();
+				obj = obj + " + "+MiscelFunctions.roundToDecimals(100*bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001),4);
+//				obj = obj + " + "+MiscelFunctions.roundToDecimals(1000/(bwResource.getAvailableBandwidth()+0.001),4);
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//binary

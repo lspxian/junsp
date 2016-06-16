@@ -14,6 +14,7 @@ import li.evaluation.metrics.LinkUtilizationL;
 import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.Metric;
 import li.event.VnEvent;
+import li.gt_itm.DrawGraph;
 import li.gt_itm.Generator;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.linkmapping.ConstraintShortestPath;
@@ -31,13 +32,13 @@ import vnreal.network.virtual.VirtualNode;
 public class Single_Domain_VNE_Simulation extends AbstractSimulation {
 
 	public Single_Domain_VNE_Simulation(){
-		simulationTime = 5000.0;
+		simulationTime = 10000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-			Generator.createSubNet();
-			sn.alt2network("./gt-itm/sub");
+//			Generator.createSubNet();
+//			sn.alt2network("./gt-itm/sub");
 //			sn.alt2network("data/cost239");
-//			sn.alt2network("sndlib/germany50");
+			sn.alt2network("sndlib/germany50");
 			
 //			DrawGraph dg = new DrawGraph(sn);
 //			dg.draw();
@@ -115,9 +116,9 @@ public class Single_Domain_VNE_Simulation extends AbstractSimulation {
 			if(currentEvent.getFlag()==0){
 				AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,40,true,false);
 				System.out.println("Operation : Mapping");
+				System.out.println(currentEvent.getConcernedVn());
 				
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
-					System.out.println(currentEvent.getConcernedVn());
 					Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 					System.out.println(nodeMapping);
 					//System.out.println("node mapping succes, virtual netwotk "+j);
