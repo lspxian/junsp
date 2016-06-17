@@ -11,7 +11,7 @@ import vnreal.network.virtual.VirtualNode;
 public abstract class AbstractProbaLinkMapping extends AbstractLinkMapping {
 
 	protected double probability;
-	protected AbstractProbaLinkMapping(SubstrateNetwork sNet) {
+	public AbstractProbaLinkMapping(SubstrateNetwork sNet) {
 		super(sNet);
 	}
 	public double getProbability() {

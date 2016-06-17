@@ -7,10 +7,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import li.SteinerTree.SteinerILPExact;
 import li.evaluation.metrics.AcceptedRatioL;
+import li.evaluation.metrics.AffectedRevenue;
+import li.evaluation.metrics.AffectedVNNumber;
+import li.evaluation.metrics.AffectedVNRatio;
 import li.evaluation.metrics.AverageProbability;
 import li.evaluation.metrics.CostL;
 import li.evaluation.metrics.CostRevenueL;
@@ -30,6 +34,7 @@ import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic1;
 import probabilityBandwidth.ProbaHeuristic2;
 import probabilityBandwidth.ProbaHeuristic3;
+import probabilityBandwidth.ShortestPathBW;
 import probabilityBandwidth.UnsplittableBandwidth;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
@@ -46,19 +51,28 @@ import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
 
 public class ProbabilitySimulation extends AbstractSimulation{
-	
-	protected Map<VirtualNetwork, Double> probability; 
 	protected ArrayList<NetEvent> netEvents;
 	protected int affected;
 	protected double affectedRevenue;
+	protected ArrayList<Double> affectedRatio;
+	protected int failures;
 	
-	public Map<VirtualNetwork, Double> getProbability() {
-		return probability;
+	public ArrayList<Double> getAffectedRatio() {
+		return affectedRatio;
 	}
-
+	public int getFailures() {
+		return failures;
+	}
+	public int getAffected() {
+		return affected;
+	}
+	public double getAffectedRevenue() {
+		return affectedRevenue;
+	}
+	
 	public ProbabilitySimulation(){
 		
-		simulationTime = 50000.0;
+		simulationTime = 30000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			Generator.createSubNet();
@@ -84,6 +98,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		this.totalCost=0.0;
 		this.affected=0;
 		this.affectedRevenue=0.0;
+		this.failures = 0;
 		/*-----------use pre-generated virtual network---------*/
 		/*
 		vns = new ArrayList<VirtualNetwork>();
@@ -125,19 +140,31 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		
 		this.netEvents = new ArrayList<NetEvent>();
 		this.netEvents.addAll(events);
+		
+		//deterministic failure event
+		for(int t=300;t<simulationTime;t=t+300){
+			int slindex = new Random().nextInt(this.sn.getEdgeCount());
+			SubstrateLink fsl= (SubstrateLink)this.sn.getEdges().toArray()[slindex];
+			netEvents.add(new FailureEvent(t,fsl));
+		}
+		
+		//random failure event
+		/*
 		for(SubstrateLink sl : sn.getEdges()){
 			time=MiscelFunctions.negExponential(sl.getProbability());
 			while(time<simulationTime){
 				netEvents.add(new FailureEvent(time,sl));
 				time+=MiscelFunctions.negExponential(sl.getProbability());
 			}
-		}
+		}*/
 		Collections.sort(this.netEvents);
 		
 		//add metric
 		metrics = new ArrayList<Metric>();
+		metricsProba = new ArrayList<Metric>();
 		mappedVNs = new ArrayList<VirtualNetwork>();
 		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
+		this.affectedRatio = new ArrayList<Double>();
 	}
 	public void runSimulation(String methodStr) throws IOException{
 		//add metrics
@@ -147,9 +174,11 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		metrics.add(new MappedRevenueL(this, methodStr,lambda));
 		//metrics.add(new CostL(this, methodStr,lambda));
 		//metrics.add(new CostRevenueL(this,methodStr,lambda));
-		metrics.add(new ProbabilityL(this,methodStr,lambda));
-//		metrics.add(new RevenueProba(this,methodStr,lambda));
-		metrics.add(new AverageProbability(this,methodStr,lambda));
+		metricsProba.add(new ProbabilityL(this,methodStr,lambda));
+		metricsProba.add(new AverageProbability(this,methodStr,lambda));
+		metricsProba.add(new AffectedVNRatio(this,methodStr,lambda));
+		metricsProba.add(new AffectedVNNumber(this,methodStr,lambda));
+		metricsProba.add(new AffectedRevenue(this,methodStr,lambda));
 		
 		for(NetEvent currentEvent : this.netEvents){
 			
@@ -200,6 +229,9 @@ public class ProbabilitySimulation extends AbstractSimulation{
 						case "UnsplittableBandwidth" :
 							method = new UnsplittableBandwidth(sn);
 							break;
+						case "ShortestPathBW" :
+							method = new ShortestPathBW(sn);
+							break;
 						default : 
 							System.out.println("The methode doesn't exist");
 							method = null;
@@ -208,6 +240,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							this.accepted++;
+							this.currentVNNumber++;
 							mappedVNs.add(cEvent.getConcernedVn());
 							this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
 							this.probability.put(cEvent.getConcernedVn(), method.getProbability());
@@ -226,7 +259,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 					}
 					
 					
-					for(Metric metric : metrics){ //write data to file TODO
+					for(Metric metric : metrics){ //write data to file
 						double value = metric.calculate();
 						System.out.println(metric.name()+" "+value);
 						metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
@@ -236,9 +269,11 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				else{
 					System.out.println("Operation : Liberation Ressources");
 					NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);
+					this.currentVNNumber--;
 				}
 			}
 			else if(currentEvent instanceof FailureEvent){
+				failures++;
 				Set<VirtualNetwork> affectedNet = new HashSet<VirtualNetwork>();
 				FailureEvent fEvent = (FailureEvent) currentEvent;
 				BandwidthResource bw = (BandwidthResource)fEvent.getFailureLink().get().get(0);
@@ -254,34 +289,46 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				for(VirtualNetwork vn : affectedNet){
 					this.affectedRevenue+=vn.calculateRevenue();					
 				}
+				double ratio = affectedNet.size()/this.currentVNNumber;
+				this.affectedRatio.add(ratio);
+				
+				System.out.println("Failure Event: "+fEvent.getFailureLink());
+				for(Metric metric : metricsProba){ //write data to file
+					double value = metric.calculate();
+					System.out.println(metric.name()+" "+value);
+					metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
+				}
 				
 			}
 			
-			
 		}
-		
-		System.out.println(this.sn.probaToString());
+		//TODO
+//		System.out.println(this.sn.probaToString());
 		
 		System.out.println("*-----"+methodStr+" resume------------*");
 		System.out.println("accepted : "+this.accepted);
 		System.out.println("rejected : "+this.rejected);
 		
-		FileWriter writer = new FileWriter("resultat.txt",true);
+		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("*----lambda="+this.lambda+"--"+methodStr+"----*\n");
 		writer.write("accepted : "+this.accepted+"\n");
 		writer.write("rejected : "+this.rejected+"\n");
 		for(Metric metric : metrics){ 
 			writer.write(metric.name()+" "+metric.calculate()+"\n");
 		}
+		
 		writer.write("affected vn : "+this.affected+"\n");
 		writer.write("affected vn revenue : "+this.affectedRevenue+"\n");
+		for(Metric metric : metricsProba){ 
+			writer.write(metric.name()+" "+metric.calculate()+"\n");
+		}
+		
 		writer.write("\n");
 		writer.close();
 		
 		for(Metric metric : metrics){
 			metric.getFout().close();
 		}
-		
 		
 	}
 	@Override
@@ -292,6 +339,8 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		this.totalCost=0.0;
 		this.affected=0;
 		this.affectedRevenue=0.0;
+		this.failures=0;
+		this.affectedRatio=new ArrayList<Double>();
 		mappedVNs = new ArrayList<VirtualNetwork>();
 		metrics = new ArrayList<Metric>();
 		this.probability = new LinkedHashMap<VirtualNetwork,Double>();

@@ -1,4 +1,4 @@
-package probabilityBandwidth;
+package vnreal.algorithms.linkmapping;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,14 +9,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
+import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
@@ -32,16 +31,16 @@ import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
-public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
+public class LogMax extends AbstractLinkMapping {
 
 	private String localPath ;
 	private String remotePath ;
-	public UnsplittableBandwidth(SubstrateNetwork sNet) {
+	public LogMax(SubstrateNetwork sNet) {
 		super(sNet);
 		this.localPath = "cplex/vne-mcf.lp";
 		this.remotePath = "pytest/vne-mcf.lp";
 	}
-	public UnsplittableBandwidth(SubstrateNetwork sNet, String localPath, String remotePath) {
+	public LogMax(SubstrateNetwork sNet, String localPath, String remotePath) {
 		super(sNet);
 		this.localPath = localPath;
 		this.remotePath = remotePath;
@@ -53,6 +52,12 @@ public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
 		Map<String, String> solution = linkMappingWithoutUpdateLocal(vNet, nodeMapping);		
 		if(solution.size()==0){
 			System.out.println("link no solution");
+			ConstraintShortestPath csp = new ConstraintShortestPath(sNet);
+			//TODO 
+			if(csp.linkMapping(vNet, nodeMapping)){
+				System.out.println("error important !!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				throw new ArithmeticException("mcf fails but dijkstra succed !!!!!!!!!!!");
+			}
 			for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 				NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 			}
@@ -114,8 +119,6 @@ public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
 		VirtualNode srcVnode = null, dstVnode = null;
 		SubstrateNode srcSnode = null, dstSnode = null;
 		int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
-		double temproba=1;
-		Set<SubstrateLink> usedLinksForProba=new HashSet<SubstrateLink>();
 		
 		for(Map.Entry<String, String> entry : solution.entrySet()){
 			String linklink = entry.getKey();
@@ -149,8 +152,6 @@ public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
 			dstSnode = sNet.getNodeFromID(dstSnodeId);
 			SubstrateLink tmpsl = sNet.findEdge(srcSnode, dstSnode);
 			
-			usedLinksForProba.add(tmpsl);
-			
 			newBwDem = new BandwidthDemand(tmpvl);
 			newBwDem.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
 			
@@ -159,11 +160,6 @@ public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
 			}
 			
 		}
-		
-		for(SubstrateLink sl : usedLinksForProba){
-			temproba = temproba * (1-sl.getProbability());			
-		}
-		this.probability=1-temproba;
 	}
 	
 	//generate cplex file for undirected multi commodity flow
@@ -203,13 +199,12 @@ public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
 				}
 				
 				//objective
-				
-				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001));
-//				obj = obj + " + "+bwDem.getDemandedBandwidth();
-				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001));
-//				obj = obj + " + "+bwDem.getDemandedBandwidth();
-				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+//				obj = obj + " + "+MiscelFunctions.roundToDecimals(100*bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001),4);
+//				obj = obj + " + "+MiscelFunctions.roundToDecimals(1000/(bwResource.getAvailableBandwidth()+0.001),4);
+//				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+//				obj = obj + " + "+MiscelFunctions.roundToDecimals(100*bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001),4);
+//				obj = obj + " + "+MiscelFunctions.roundToDecimals(1000/(bwResource.getAvailableBandwidth()+0.001),4);
+//				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//binary
 				binary = binary + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
@@ -245,6 +240,8 @@ public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
 				}
 			}
 			
+			obj = obj + "log(";	//TODO
+			
 			for (VirtualLink tmpl : vNet.getEdges()) {
 				srcVnode = vNet.getEndpoints(tmpl).getFirst();
 				dstVnode = vNet.getEndpoints(tmpl).getSecond();
@@ -255,6 +252,8 @@ public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
 							break;
 						}
 					}
+					
+					
 					
 					//capacity constraint
 					constraint=constraint+" + "+bwDem.getDemandedBandwidth() +
@@ -270,6 +269,7 @@ public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(localPath));
 		writer.write(preambule+obj+constraint+binary+"END");
 		writer.close();
+		
 	}
 
 }

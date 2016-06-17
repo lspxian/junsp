@@ -13,11 +13,11 @@ public class ProbabilitySimulationMain {
 	public static int c;
 	
 	public static void main(String[] args) throws IOException {
-		FileWriter writer = new FileWriter("resultat.txt",true);
+		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.close();
 		for(c=0;c<10;c++){
-			writer = new FileWriter("resultat.txt",true);
+			writer = new FileWriter("result.txt",true);
 			writer.write("Number:"+c+"\n");
 			ProbabilitySimulation simulation = new ProbabilitySimulation();
 			System.out.println("Substrate Network : v "+
@@ -58,7 +58,7 @@ public class ProbabilitySimulationMain {
 				simulation.runSimulation("KMB1981V2");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();*/
-				
+	/*			
 				PrintStream probaHeuristic1 = new PrintStream(new FileOutputStream("res/probaHeuristic1_l"+i+"_c"+c+".txt"));
 				System.setOut(probaHeuristic1);
 				writeCurrentTime();
@@ -85,12 +85,12 @@ public class ProbabilitySimulationMain {
 				writeCurrentTime();
 				simulation.runSimulation("PBBWExact");
 //				writeCurrentTime();
-				simulation.reset();
+				simulation.reset();*/
 				
-				PrintStream UnsplittableBandwidth = new PrintStream(new FileOutputStream("res/UnsplittableBandwidth_l"+i+"_c"+c+".txt"));
-				System.setOut(UnsplittableBandwidth);
+				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
+				System.setOut(ShortestPathBW);
 				writeCurrentTime();
-				simulation.runSimulation("UnsplittableBandwidth");
+				simulation.runSimulation("ShortestPathBW");
 //				writeCurrentTime();
 				simulation.reset();
 				
@@ -98,7 +98,7 @@ public class ProbabilitySimulationMain {
 				System.out.println("job done");
 			}
 		}
-		writer = new FileWriter("resultat.txt",true);
+		writer = new FileWriter("result.txt",true);
 		writer.write("/---------------Simulation finished!---------------/\n");
 		writer.close();
 	}
@@ -106,7 +106,7 @@ public class ProbabilitySimulationMain {
 	public static void writeCurrentTime(){
 		FileWriter writer;
 		try {
-			writer = new FileWriter("resultat.txt",true);
+			writer = new FileWriter("result.txt",true);
 			writer.write("Time : "+new SimpleDateFormat().format(new Date())+"\n");
 			writer.close();
 		} catch (IOException e) {

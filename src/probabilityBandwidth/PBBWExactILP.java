@@ -32,17 +32,10 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 	public PBBWExactILP(SubstrateNetwork sNet) {
 		super(sNet);
 //		this.localPath = "tmp/vne-mcf-"+new Random().nextDouble()+".lp";
-		this.localPath = "ILP-LP-Models/vne-mcf.lp";
-	//	this.remotePath = "pytest/vne-mcf.lp";
+		this.localPath = "cplex/vne-mcf.lp";
+//		this.remotePath = "pytest/vne-mcf.lp";
 	}
-	
-	/*public double computeProbability(SubstrateNetwork sn){
-		double temproba=1;
-		for(SubstrateLink sl: sn.getEdges()){
-			temproba = temproba * (1-sl.getProbability());
-		}
-		return 1-temproba;
-	}*/
+
 	
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
