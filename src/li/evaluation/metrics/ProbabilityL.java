@@ -17,7 +17,7 @@ public class ProbabilityL extends Metric {
 
 	@Override
 	public String name() {
-		return "failure probability";
+		return "Failure_Probability";
 	}
 
 	@Override

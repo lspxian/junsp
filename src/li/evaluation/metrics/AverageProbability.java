@@ -14,7 +14,7 @@ public class AverageProbability extends Metric {
 
 	@Override
 	public String name() {
-		return "Average probability";
+		return "Average_Probability";
 	}
 
 	@Override

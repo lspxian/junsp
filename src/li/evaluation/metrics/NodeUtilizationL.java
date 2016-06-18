@@ -42,6 +42,6 @@ public class NodeUtilizationL extends Metric{
 		
 	@Override
 	public String name() {
-		return "NodeUtilization";
+		return "Node_Utilization";
 	}
 }

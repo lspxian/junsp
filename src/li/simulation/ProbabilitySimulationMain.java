@@ -28,7 +28,7 @@ public class ProbabilitySimulationMain {
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=2;i<8;i++){
+			for(int i=1;i<9;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));
@@ -58,7 +58,7 @@ public class ProbabilitySimulationMain {
 				simulation.runSimulation("KMB1981V2");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();*/
-	/*			
+				
 				PrintStream probaHeuristic1 = new PrintStream(new FileOutputStream("res/probaHeuristic1_l"+i+"_c"+c+".txt"));
 				System.setOut(probaHeuristic1);
 				writeCurrentTime();
@@ -85,7 +85,7 @@ public class ProbabilitySimulationMain {
 				writeCurrentTime();
 				simulation.runSimulation("PBBWExact");
 //				writeCurrentTime();
-				simulation.reset();*/
+				simulation.reset();
 				
 				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
 				System.setOut(ShortestPathBW);

@@ -25,7 +25,7 @@ public class LinkUtilizationL extends Metric {
 
 	@Override
 	public String name() {
-		return "linkUtilization";
+		return "Link_Utilization";
 	}
 
 	@Override

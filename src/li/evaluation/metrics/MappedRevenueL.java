@@ -30,7 +30,7 @@ public class MappedRevenueL extends Metric{
 
 	@Override
 	public String name() {
-		return "MappedRevenue";
+		return "Mapped_Revenue";
 	}
 
 	@Override

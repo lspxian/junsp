@@ -22,7 +22,7 @@ public abstract class AbstractSimulation {
 	protected int accepted = 0;
 	protected int rejected = 0;
 	protected int lambda = 4;
-	protected int currentVNNumber = 0;
+	protected ArrayList<VirtualNetwork> currentVNs ;
 	protected Map<VirtualNetwork, Double> probability; 
 	public Map<VirtualNetwork, Double> getProbability() {
 		return probability;

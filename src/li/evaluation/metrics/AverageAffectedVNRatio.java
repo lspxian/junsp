@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import li.simulation.AbstractSimulation;
 import li.simulation.ProbabilitySimulation;
 
-public class AffectedVNRatio extends Metric {
+public class AverageAffectedVNRatio extends Metric {
 
-	public AffectedVNRatio(AbstractSimulation simulation, String method, int lambda) throws IOException {
+	public AverageAffectedVNRatio(AbstractSimulation simulation, String method, int lambda) throws IOException {
 		super(simulation, method, lambda);
 	}
 
 	@Override
 	public String name() {
-		return "Affected VN Ratio ";
+		return "Average_Affected_VN_Ratio ";
 	}
 
 	@Override

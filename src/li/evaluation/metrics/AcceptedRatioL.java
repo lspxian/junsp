@@ -25,7 +25,7 @@ public class AcceptedRatioL extends Metric {
 
 	@Override
 	public String name() {
-		return "AcceptedRatio";
+		return "Accepted_Ratio";
 	}
 
 }

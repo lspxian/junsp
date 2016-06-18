@@ -13,8 +13,8 @@ import java.util.Set;
 import li.SteinerTree.SteinerILPExact;
 import li.evaluation.metrics.AcceptedRatioL;
 import li.evaluation.metrics.AffectedRevenue;
-import li.evaluation.metrics.AffectedVNNumber;
-import li.evaluation.metrics.AffectedVNRatio;
+import li.evaluation.metrics.Affected_VN_Number;
+import li.evaluation.metrics.AverageAffectedVNRatio;
 import li.evaluation.metrics.AverageProbability;
 import li.evaluation.metrics.CostL;
 import li.evaluation.metrics.CostRevenueL;
@@ -72,7 +72,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	
 	public ProbabilitySimulation(){
 		
-		simulationTime = 30000.0;
+		simulationTime = 30001.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			Generator.createSubNet();
@@ -163,6 +163,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		metrics = new ArrayList<Metric>();
 		metricsProba = new ArrayList<Metric>();
 		mappedVNs = new ArrayList<VirtualNetwork>();
+		this.currentVNs = new ArrayList<VirtualNetwork>();
 		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
 		this.affectedRatio = new ArrayList<Double>();
 	}
@@ -176,8 +177,8 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		//metrics.add(new CostRevenueL(this,methodStr,lambda));
 		metricsProba.add(new ProbabilityL(this,methodStr,lambda));
 		metricsProba.add(new AverageProbability(this,methodStr,lambda));
-		metricsProba.add(new AffectedVNRatio(this,methodStr,lambda));
-		metricsProba.add(new AffectedVNNumber(this,methodStr,lambda));
+		metricsProba.add(new AverageAffectedVNRatio(this,methodStr,lambda));
+		metricsProba.add(new Affected_VN_Number(this,methodStr,lambda));
 		metricsProba.add(new AffectedRevenue(this,methodStr,lambda));
 		
 		for(NetEvent currentEvent : this.netEvents){
@@ -240,7 +241,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							this.accepted++;
-							this.currentVNNumber++;
+							this.currentVNs.add(cEvent.getConcernedVn());
 							mappedVNs.add(cEvent.getConcernedVn());
 							this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
 							this.probability.put(cEvent.getConcernedVn(), method.getProbability());
@@ -268,8 +269,10 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				}
 				else{
 					System.out.println("Operation : Liberation Ressources");
-					NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);
-					this.currentVNNumber--;
+					if(this.currentVNs.contains(cEvent.getConcernedVn())){
+						NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);
+						this.currentVNs.remove(cEvent.getConcernedVn());						
+					}
 				}
 			}
 			else if(currentEvent instanceof FailureEvent){
@@ -279,7 +282,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				BandwidthResource bw = (BandwidthResource)fEvent.getFailureLink().get().get(0);
 				for(Mapping m :bw.getMappings()){
 					VirtualLink vl=(VirtualLink)m.getDemand().getOwner();
-					for(VirtualNetwork vn : this.mappedVNs){
+					for(VirtualNetwork vn : this.currentVNs){
 						if(vn.containsEdge(vl))
 							affectedNet.add(vn);
 					}
@@ -289,7 +292,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				for(VirtualNetwork vn : affectedNet){
 					this.affectedRevenue+=vn.calculateRevenue();					
 				}
-				double ratio = affectedNet.size()/this.currentVNNumber;
+				double ratio = (double)affectedNet.size()/this.currentVNs.size();
 				this.affectedRatio.add(ratio);
 				
 				System.out.println("Failure Event: "+fEvent.getFailureLink());
@@ -329,6 +332,9 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		for(Metric metric : metrics){
 			metric.getFout().close();
 		}
+		for(Metric metric : metricsProba){
+			metric.getFout().close();
+		}
 		
 	}
 	@Override
@@ -340,9 +346,11 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		this.affected=0;
 		this.affectedRevenue=0.0;
 		this.failures=0;
+		this.currentVNs = new ArrayList<VirtualNetwork>();
 		this.affectedRatio=new ArrayList<Double>();
 		mappedVNs = new ArrayList<VirtualNetwork>();
 		metrics = new ArrayList<Metric>();
+		metricsProba = new ArrayList<Metric>();
 		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
 	}
 	

@@ -13,7 +13,7 @@ public class AffectedRevenue extends Metric{
 
 	@Override
 	public String name() {
-		return "Affected revenue";
+		return "Affected_Revenue";
 	}
 
 	@Override
