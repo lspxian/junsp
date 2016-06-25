@@ -16,7 +16,7 @@ public class ProbabilitySimulationMain {
 		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.close();
-		for(c=0;c<10;c++){
+		for(c=0;c<1;c++){
 			writer = new FileWriter("result.txt",true);
 			writer.write("Number:"+c+"\n");
 			ProbabilitySimulation simulation = new ProbabilitySimulation();
@@ -28,7 +28,7 @@ public class ProbabilitySimulationMain {
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=1;i<9;i++){
+			for(int i=2;i<9;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));
@@ -65,7 +65,7 @@ public class ProbabilitySimulationMain {
 				simulation.runSimulation("ProbaHeuristic1");
 //				writeCurrentTime();
 				simulation.reset();
-				
+				/*
 				PrintStream probaHeuristic2 = new PrintStream(new FileOutputStream("res/probaHeuristic2_l"+i+"_c"+c+".txt"));
 				System.setOut(probaHeuristic2);
 				writeCurrentTime();
@@ -92,7 +92,7 @@ public class ProbabilitySimulationMain {
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW");
 //				writeCurrentTime();
-				simulation.reset();
+				simulation.reset();*/
 				
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 				System.out.println("job done");

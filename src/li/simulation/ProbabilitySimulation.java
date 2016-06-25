@@ -72,7 +72,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	
 	public ProbabilitySimulation(){
 		
-		simulationTime = 30001.0;
+		simulationTime = 100000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			Generator.createSubNet();
@@ -142,7 +142,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		this.netEvents.addAll(events);
 		
 		//deterministic failure event
-		for(int t=300;t<simulationTime;t=t+300){
+		for(int t=10000;t<simulationTime;t=t+100){
 			int slindex = new Random().nextInt(this.sn.getEdgeCount());
 			SubstrateLink fsl= (SubstrateLink)this.sn.getEdges().toArray()[slindex];
 			netEvents.add(new FailureEvent(t,fsl));
@@ -173,9 +173,9 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		metrics.add(new LinkUtilizationL(this, methodStr,lambda));
 //		metrics.add(new CurrentLinkUtilisationL(this, methodStr,lambda));
 		metrics.add(new MappedRevenueL(this, methodStr,lambda));
-		//metrics.add(new CostL(this, methodStr,lambda));
-		//metrics.add(new CostRevenueL(this,methodStr,lambda));
-		metricsProba.add(new ProbabilityL(this,methodStr,lambda));
+//		metrics.add(new CostL(this, methodStr,lambda));
+//		metrics.add(new CostRevenueL(this,methodStr,lambda));
+//		metricsProba.add(new ProbabilityL(this,methodStr,lambda));
 		metricsProba.add(new AverageProbability(this,methodStr,lambda));
 		metricsProba.add(new AverageAffectedVNRatio(this,methodStr,lambda));
 		metricsProba.add(new Affected_VN_Number(this,methodStr,lambda));
@@ -191,7 +191,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				System.out.print("Current vn : \n"+cEvent.getConcernedVn()+"\n");
 				
 				if(cEvent.getFlag()==0){
-					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,40,true,false);
+					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
 					System.out.println("Operation : Mapping");
 					
 					if(arnm.nodeMapping(cEvent.getConcernedVn())){
@@ -240,38 +240,43 @@ public class ProbabilitySimulation extends AbstractSimulation{
 //					System.out.println(this.sn.probaToString());
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
-							this.accepted++;
 							this.currentVNs.add(cEvent.getConcernedVn());
-							mappedVNs.add(cEvent.getConcernedVn());
-							this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
-							this.probability.put(cEvent.getConcernedVn(), method.getProbability());
+							if(currentEvent.getAoDTime()>=10000){
+								this.accepted++;
+								mappedVNs.add(cEvent.getConcernedVn());
+								this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
+								this.probability.put(cEvent.getConcernedVn(), method.getProbability());								
+							}
 							
 							System.out.println("link mapping done");
 						}
 						else{
-							this.rejected++;
+							if(currentEvent.getAoDTime()>=10000)
+								this.rejected++;
 							System.out.println("link mapping resource error"); 
 						}
 						
 					}
 					else{
-						this.rejected++;
+						if(currentEvent.getAoDTime()>=10000)
+							this.rejected++;
 						//System.out.println("node resource error, virtual network "+j);
 					}
 					
-					
-					for(Metric metric : metrics){ //write data to file
-						double value = metric.calculate();
-						System.out.println(metric.name()+" "+value);
-						metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
+					if(currentEvent.getAoDTime()>=10000){
+						for(Metric metric : metrics){ //write data to file
+							double value = metric.calculate();
+							System.out.println(metric.name()+" "+value);
+							metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
+						}						
 					}
-					//System.out.println("Duree d'execution :"+duree);
+					
 				}
 				else{
 					System.out.println("Operation : Liberation Ressources");
 					if(this.currentVNs.contains(cEvent.getConcernedVn())){
 						NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);
-						this.currentVNs.remove(cEvent.getConcernedVn());						
+						this.currentVNs.remove(cEvent.getConcernedVn());					
 					}
 				}
 			}
