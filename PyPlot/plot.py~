@@ -1,0 +1,73 @@
+"""
+Parameters : 
+1 f - file name
+2 metric - metric name
+"""
+import sys
+
+f = open(sys.argv[1],'r')
+#metric = sys.argv[2]
+myLambda=8
+orig = f.read()
+temp = orig
+heu1=[0.0]*myLambda
+heu2=[0.0]*myLambda
+heu3=[0.0]*myLambda
+exact=[0.0]*myLambda
+bw=[0.0]*myLambda
+acceptedRatio = [heu1,heu2,heu3,exact,bw]
+
+
+while temp.find('Number:')!=-1:
+    index = temp.find('Number:')
+    temp = temp[index+6:]
+    if(temp[:temp.find('Number:')]) :
+        sim = temp[:temp.find('Number:')-1]
+    else:
+        sim = temp
+
+
+    for i in range(0,myLambda):
+        index  = sim.find('Accepted_Ratio')
+        heu1[i] = heu1[i]+float(sim[index+15:index+21])
+        sim = sim[index+25:]
+
+        index  = sim.find('Accepted_Ratio')
+        heu2[i] = heu2[i]+float(sim[index+15:index+21])
+        sim = sim[index+15:]
+
+        index  = sim.find('Accepted_Ratio')
+        heu3[i] = heu3[i]+float(sim[index+15:index+21])
+        sim = sim[index+15:]
+
+        index  = sim.find('Accepted_Ratio')
+        exact[i] = exact[i]+float(sim[index+15:index+21])
+        sim = sim[index+15:]
+
+	index  = sim.find('Accepted_Ratio')
+        bw[i] = bw[i]+float(sim[index+15:index+21])
+        sim = sim[index+15:]
+
+"""
+for i in range(0,myLambda):
+    heu1[i] = heu1[i]/10
+    heu2[i] = heu2[i]/10
+    heu3[i] = heu3[i]/10
+    exact[i] = exact[i]/10
+"""
+print heu1
+print heu2
+print heu3
+print exact
+
+import matplotlib.pyplot as plt
+import numpy as np
+x=range(myLambda+1)
+x=x[1:]
+plt.plot(x,heu1)
+plt.plot(x,heu2)
+plt.plot(x,heu3)
+plt.plot(x,exact)
+plt.plot(x,bw)
+
+plt.show()
