@@ -2,15 +2,11 @@ package li.evaluation.metrics;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
 
-import li.multiDomain.AbstractMultiDomain;
 import li.simulation.AbstractSimulation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
-import vnreal.evaluations.utils.VnrUtils;
-import vnreal.network.Network;
 import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
@@ -59,7 +55,7 @@ public class MappedRevenueL extends Metric{
 
 			}
 		}
-	/*	for (Iterator<VirtualNode> tmpNode = vNet.getVertices().iterator(); tmpNode
+		for (Iterator<VirtualNode> tmpNode = vNet.getVertices().iterator(); tmpNode
 				.hasNext();) {
 			VirtualNode tmps = tmpNode.next();
 			for (AbstractDemand dem : tmps) {
@@ -69,7 +65,7 @@ public class MappedRevenueL extends Metric{
 				}
 			}
 		}
-		return (total_demBW + total_demCPU);*/
-		return total_demBW ;
+		return (total_demBW + total_demCPU);
+		//return total_demBW ;
 	}
 }

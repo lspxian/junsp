@@ -72,7 +72,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	
 	public ProbabilitySimulation(){
 		
-		simulationTime = 100000.0;
+		simulationTime = 50000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			Generator.createSubNet();
@@ -142,7 +142,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		this.netEvents.addAll(events);
 		
 		//deterministic failure event
-		for(int t=10000;t<simulationTime;t=t+100){
+		for(int t=10000;t<simulationTime;t=t+200){
 			int slindex = new Random().nextInt(this.sn.getEdgeCount());
 			SubstrateLink fsl= (SubstrateLink)this.sn.getEdges().toArray()[slindex];
 			netEvents.add(new FailureEvent(t,fsl));

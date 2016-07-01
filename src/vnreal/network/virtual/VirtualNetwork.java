@@ -326,7 +326,7 @@ public final class VirtualNetwork extends
 
 			}
 		}
-	/*	for (Iterator<VirtualNode> tmpNode = getVertices().iterator(); tmpNode
+		for (Iterator<VirtualNode> tmpNode = getVertices().iterator(); tmpNode
 				.hasNext();) {
 			VirtualNode tmps = tmpNode.next();
 			for (AbstractDemand dem : tmps) {
@@ -336,8 +336,8 @@ public final class VirtualNetwork extends
 				}
 			}
 		}
-		return (total_demBW + total_demCPU);*/
-		return total_demBW ;
+		return (total_demBW + total_demCPU);
+//		return total_demBW ;
 	}
 	
 	public double getTotalCost(List<Domain> domains){
