@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -357,6 +358,25 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		metrics = new ArrayList<Metric>();
 		metricsProba = new ArrayList<Metric>();
 		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
+	}
+	
+	private SubstrateLink randomFailure(SubstrateNetwork sn){
+		double max=0.0;
+		SubstrateLink[] edges = (SubstrateLink[]) sn.getEdges().toArray();
+		ArrayList<Double> num = new ArrayList<Double>();
+		for(SubstrateLink sl : sn.getEdges()){
+			max= sl.getProbability()+max;
+			num.add(max);
+		}
+		
+		double f = new Random().nextFloat()*max;
+		for(int i=0;i<num.size();i++){
+			if(f<num.get(i))
+				return edges[i];
+			
+		}
+		
+		return null;
 	}
 	
 }
