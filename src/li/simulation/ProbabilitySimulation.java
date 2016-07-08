@@ -146,9 +146,11 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		for(int t=10000;t<simulationTime;t=t+200){
 			int slindex = new Random().nextInt(this.sn.getEdgeCount());
 			SubstrateLink fsl= (SubstrateLink)this.sn.getEdges().toArray()[slindex];
+			
+//			SubstrateLink fsl=randomFailure(this.sn);
 			netEvents.add(new FailureEvent(t,fsl));
 		}
-		
+				
 		//random failure event
 		/*
 		for(SubstrateLink sl : sn.getEdges()){
@@ -362,7 +364,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	
 	private SubstrateLink randomFailure(SubstrateNetwork sn){
 		double max=0.0;
-		SubstrateLink[] edges = (SubstrateLink[]) sn.getEdges().toArray();
+		SubstrateLink[] edges =  sn.getEdges().toArray(new SubstrateLink[sn.getEdgeCount()]);
 		ArrayList<Double> num = new ArrayList<Double>();
 		for(SubstrateLink sl : sn.getEdges()){
 			max= sl.getProbability()+max;

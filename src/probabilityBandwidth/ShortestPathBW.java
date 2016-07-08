@@ -54,6 +54,9 @@ public class ShortestPathBW extends AbstractProbaLinkMapping {
 					throw new AssertionError("But we checked before!");
 			}
 			else{
+				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+				}
 				for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: result.entrySet()){
 					NodeLinkDeletion.linkFree(entry.getKey(), entry.getValue());
 				}
