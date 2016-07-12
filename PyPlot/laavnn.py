@@ -46,15 +46,15 @@ while temp.find('Number:')!=-1:
 	m = re.search('[0-9]*\.[0-9]*',sim)
       	baseline[i] = baseline[i]+float(m.group(0))
 
-        index  = sim.find(metric)
-	sim = sim[index+len(metric):]
-	m = re.search('[0-9]*\.[0-9]*',sim)
-      	exact[i] = exact[i]+float(m.group(0))
-
 	index  = sim.find(metric)
 	sim = sim[index+len(metric):]
 	m = re.search('[0-9]*\.[0-9]*',sim)
       	bw[i] = bw[i]+float(m.group(0))
+
+        index  = sim.find(metric)
+	sim = sim[index+len(metric):]
+	m = re.search('[0-9]*\.[0-9]*',sim)
+      	exact[i] = exact[i]+float(m.group(0))
 
 for i in range(0,myLambda):
     heu1[i] = heu1[i]/number

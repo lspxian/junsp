@@ -16,7 +16,7 @@ public class ProbabilitySimulationMain {
 		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.close();
-		for(c=0;c<10;c++){
+		for(c=0;c<1;c++){
 			writer = new FileWriter("result.txt",true);
 			writer.write("Number:"+c+"\n");
 			ProbabilitySimulation simulation = new ProbabilitySimulation();
@@ -28,6 +28,7 @@ public class ProbabilitySimulationMain {
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
+//			int i= Integer.valueOf(args[0]);
 			for(int i=1;i<9;i++){
 				simulation.initialize(i);
 				/*
@@ -80,17 +81,17 @@ public class ProbabilitySimulationMain {
 //				writeCurrentTime();
 				simulation.reset();
 
-				PrintStream pbbwExact = new PrintStream(new FileOutputStream("res/PBBWExactILP_l"+i+"_c"+c+".txt"));
-				System.setOut(pbbwExact);
-				writeCurrentTime();
-				simulation.runSimulation("PBBWExact");
-//				writeCurrentTime();
-				simulation.reset();
-				
 				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
 				System.setOut(ShortestPathBW);
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW");
+//				writeCurrentTime();
+				simulation.reset();
+				
+				PrintStream pbbwExact = new PrintStream(new FileOutputStream("res/PBBWExactILP_l"+i+"_c"+c+".txt"));
+				System.setOut(pbbwExact);
+				writeCurrentTime();
+				simulation.runSimulation("PBBWExact");
 //				writeCurrentTime();
 				simulation.reset();
 				

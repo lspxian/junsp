@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import vnreal.network.substrate.SubstrateNetwork;
+
 public class Example {
 
 	public static void main(String[] args) throws IOException {
@@ -23,9 +25,15 @@ public class Example {
 		}*/
 		
 		//substrat network
-		//Generator.createSubNet();
+		Generator.createSubNet();
+		SubstrateNetwork sn=new SubstrateNetwork();
+		sn.alt2network("./gt-itm/sub");
+		System.out.println("substrate network : v "+sn.getVertexCount()+" e "+sn.getEdgeCount());
+//		DrawGraph dg = new DrawGraph(sn);
+//		dg.draw();
 		
 		//virtual networks
+		/*
 		for(int i=0;i<400;i++){
 			Generator.createVirNet();
 			BufferedReader br = new BufferedReader(new FileReader("gt-itm/sub"));
@@ -36,7 +44,7 @@ public class Example {
 			}
 		br.close();	
 		}
-		
+		*/
 		
 		
 		

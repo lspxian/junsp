@@ -235,12 +235,13 @@ public class AvailableResourcesNodeMapping extends AbstractNodeMapping {
 		SubstrateNode srcSnode = null;
 		double resBW = 0;
 		double total_resBW = 0;
-
+		
 		for (SubstrateLink sl : sNet.getEdges()) {
 			srcSnode = sNet.getSource(sl);
+			
 			// If the processing SubstrateNode is equals to the source of a
 			// SubstrateLink then add the link
-			if (sn.equals(srcSnode)) {
+			if (sn.equals(sNet.getEndpoints(sl).getFirst())||sn.equals(sNet.getEndpoints(sl).getSecond())) {
 				for (AbstractResource res : sl) {
 					if (res instanceof BandwidthResource) {
 						resBW = ((BandwidthResource) res)

@@ -1,10 +1,10 @@
 figure();
-aceptedratio = read("ShortestPathBW_Accepted_Ratio_l8_c2.txt",-1,2);
+aceptedratio = read("ShortestPathBW_Accepted_Ratio_l4_c0.txt",-1,2);
 time = aceptedratio(:,$-1);
 aceptedratio = aceptedratio(:,$);
 plot(time,aceptedratio, 'r-o');
 
-aceptedratio = read("ProbaHeuristic2_Accepted_Ratio_l8_c2.txt",-1,2);
+aceptedratio = read("ProbaHeuristic3_Accepted_Ratio_l4_c0.txt",-1,2);
 time = aceptedratio(:,$-1);
 aceptedratio = aceptedratio(:,$);
 plot(time,aceptedratio,'b-+');

@@ -76,7 +76,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		simulationTime = 50000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-			Generator.createSubNet();
+//			Generator.createSubNet();
 			sn.alt2network("./gt-itm/sub");
 //			sn.alt2network("data/cost239");
 //			sn.alt2network("sndlib/germany50");
@@ -128,7 +128,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
 			Generator.createVirNet();
-			vn.alt2network("./gt-itm/sub");
+			vn.alt2network("./gt-itm/vir");
 			vn.addAllResource(true);
 			
 			double departureTime = time+vn.getLifetime();
@@ -144,10 +144,10 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		
 		//deterministic failure event
 		for(int t=10000;t<simulationTime;t=t+200){
-			int slindex = new Random().nextInt(this.sn.getEdgeCount());
-			SubstrateLink fsl= (SubstrateLink)this.sn.getEdges().toArray()[slindex];
+//			int slindex = new Random().nextInt(this.sn.getEdgeCount());
+//			SubstrateLink fsl= (SubstrateLink)this.sn.getEdges().toArray()[slindex];
 			
-//			SubstrateLink fsl=randomFailure(this.sn);
+			SubstrateLink fsl=randomFailure(this.sn);
 			netEvents.add(new FailureEvent(t,fsl));
 		}
 				
@@ -240,7 +240,8 @@ public class ProbabilitySimulation extends AbstractSimulation{
 							System.out.println("The methode doesn't exist");
 							method = null;
 						}
-//					System.out.println(this.sn.probaToString());
+						//TODO
+//					System.out.println(this.sn);
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							this.currentVNs.add(cEvent.getConcernedVn());
