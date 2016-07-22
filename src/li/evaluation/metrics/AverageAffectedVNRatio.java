@@ -8,6 +8,10 @@ import li.simulation.ProbabilitySimulation;
 
 public class AverageAffectedVNRatio extends Metric {
 
+	public AverageAffectedVNRatio(ProbabilitySimulation simulation)throws IOException{
+		super(simulation);
+	}
+	
 	public AverageAffectedVNRatio(AbstractSimulation simulation, String method, int lambda) throws IOException {
 		super(simulation, method, lambda);
 	}

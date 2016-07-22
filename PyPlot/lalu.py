@@ -72,7 +72,7 @@ print bw
 
 #write to a file in latex format
 fwriter = open(metric+'.tex','w')
-latex = '\\begin{figure}\n\\begin{tikzpicture}[scale=1.0]\n\\begin{axis}[\nxlabel={arrival rate $\lambda$},\nylabel={'+metric2+' \%},\nxmin=1, xmax=9,\nymin=0.07, ymax=0.67,\nxtick={1,2,3,4,5,6,7,8},\nytick={0.1,0.2,0.3,0.4,0.5,0.6},\nlegend pos=south east,\nlegend style={font=\\tiny},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
+latex = '\\begin{figure}\n\\begin{tikzpicture}[scale=1.0]\n\\begin{axis}[\nxlabel={arrival rate $\lambda$},\nylabel={'+metric2+' \%},\nxmin=1, xmax=9,\nymin=0.1, ymax=0.85,\nxtick={1,2,3,4,5,6,7,8},\nytick={0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8},\nlegend pos=south east,\nlegend style={font=\\tiny},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
 
 latex = latex + '\\addplot[\n	color=violet,\n	mark=square,\n]\ncoordinates{\n'
 for i in range(start, myLambda):

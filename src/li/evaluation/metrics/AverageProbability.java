@@ -8,6 +8,10 @@ import vnreal.network.virtual.VirtualNetwork;
 
 public class AverageProbability extends Metric {
 
+	public AverageProbability(ProbabilitySimulation simulation)throws IOException{
+		super(simulation);
+	}
+	
 	public AverageProbability(ProbabilitySimulation simulation, String method, int lambda) throws IOException {
 		super(simulation, method, lambda);
 	}

@@ -212,11 +212,17 @@ public class AvailableResourcesNodeMapping extends AbstractNodeMapping {
 							greatAr = resCPU * resLink;
 							chosenNode = tmp;
 						}
+						
+						/*if (resCPU >= greatAr) {
+							greatAr = resCPU;
+							chosenNode = tmp;
+						}*/
 					} else {
 						if (resCPU * resLink >= greatAr) {
 							greatAr = resCPU * resLink;
 							chosenNode = tmp;
 						}
+
 					}
 
 				}
@@ -249,7 +255,9 @@ public class AvailableResourcesNodeMapping extends AbstractNodeMapping {
 						total_resBW += resBW;
 					}
 				}
-
+				
+				
+				
 			}
 		}
 		return total_resBW;

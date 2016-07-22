@@ -31,11 +31,12 @@ while temp.find('Number:')!=-1:
         sim = temp
 
     for i in range(start,myLambda):
-        index  = sim.find(metric)
+	'''        
+	index  = sim.find(metric)
 	sim = sim[index+len(metric):]
 	m = re.search('[0-9]*\.[0-9]*',sim)
       	heu1[i] = heu1[i]+float(m.group(0))
-
+	'''
         index  = sim.find(metric)
 	sim = sim[index+len(metric):]
 	m = re.search('[0-9]*\.[0-9]*',sim)
@@ -50,12 +51,12 @@ while temp.find('Number:')!=-1:
 	sim = sim[index+len(metric):]
 	m = re.search('[0-9]*\.[0-9]*',sim)
       	bw[i] = bw[i]+float(m.group(0))
-
+	'''
         index  = sim.find(metric)
 	sim = sim[index+len(metric):]
 	m = re.search('[0-9]*\.[0-9]*',sim)
       	exact[i] = exact[i]+float(m.group(0))
-
+	'''
 #calculate average
 for i in range(0,myLambda):
     heu1[i] = heu1[i]/number
@@ -72,7 +73,7 @@ print bw
 
 #write to a file in latex format
 fwriter = open(metric+'.tex','w')
-latex = '\\begin{figure}\n\\begin{tikzpicture}[scale=1.0]\n\\begin{axis}[\nxlabel={arrival rate $\lambda$},\nylabel={'+metric2+' \%},\nxmin=1, xmax=9,\nymin=70, ymax=100,\nxtick={1,2,3,4,5,6,7,8},\nytick={75,80,85,90,95},\nlegend pos=south west,\nlegend style={font=\\tiny},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
+latex = '\\begin{figure}\n\\begin{tikzpicture}[scale=1.0]\n\\begin{axis}[\nxlabel={arrival rate $\lambda$},\nylabel={'+metric2+' \%},\nxmin=1, xmax=9,\nymin=65, ymax=100,\nxtick={1,2,3,4,5,6,7,8},\nytick={65,70,75,80,85,90,95,100},\nlegend pos=south west,\nlegend style={font=\\tiny},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
 
 latex = latex + '\\addplot[\n	color=violet,\n	mark=square,\n]\ncoordinates{\n'
 for i in range(start, myLambda):

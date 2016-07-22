@@ -29,7 +29,7 @@ public class ProbabilitySimulationMain {
 			writer.close();
 			
 //			int i= Integer.valueOf(args[0]);
-			for(int i=1;i<9;i++){
+			for(int i=4;i<5;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));
@@ -60,12 +60,7 @@ public class ProbabilitySimulationMain {
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();*/
 				
-				PrintStream probaHeuristic1 = new PrintStream(new FileOutputStream("res/probaHeuristic1_l"+i+"_c"+c+".txt"));
-				System.setOut(probaHeuristic1);
-				writeCurrentTime();
-				simulation.runSimulation("ProbaHeuristic1");
-//				writeCurrentTime();
-				simulation.reset();
+
 				
 				PrintStream probaHeuristic2 = new PrintStream(new FileOutputStream("res/probaHeuristic2_l"+i+"_c"+c+".txt"));
 				System.setOut(probaHeuristic2);
@@ -80,21 +75,29 @@ public class ProbabilitySimulationMain {
 				simulation.runSimulation("ProbaHeuristic3");
 //				writeCurrentTime();
 				simulation.reset();
-
-				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
-				System.setOut(ShortestPathBW);
+				
+				PrintStream probaHeuristic1 = new PrintStream(new FileOutputStream("res/probaHeuristic1_l"+i+"_c"+c+".txt"));
+				System.setOut(probaHeuristic1);
+				writeCurrentTime();
+				simulation.runSimulation("ProbaHeuristic1");
+//				writeCurrentTime();
+				simulation.reset();
+/*
+//				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
+//				System.setOut(ShortestPathBW);
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW");
 //				writeCurrentTime();
-				simulation.reset();
-				
+				simulation.reset();*/
+				/*
 				PrintStream pbbwExact = new PrintStream(new FileOutputStream("res/PBBWExactILP_l"+i+"_c"+c+".txt"));
 				System.setOut(pbbwExact);
 				writeCurrentTime();
 				simulation.runSimulation("PBBWExact");
 //				writeCurrentTime();
-				simulation.reset();
+				simulation.reset();*/
 				
+				writeCurrentTime();
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 				System.out.println("job done");
 			}

@@ -7,6 +7,10 @@ import li.simulation.ProbabilitySimulation;
 
 public class AffectedRevenue extends Metric{
 
+	public AffectedRevenue(ProbabilitySimulation simulation)throws IOException{
+		super(simulation);
+	}
+	
 	public AffectedRevenue(AbstractSimulation simulation, String method, int lambda) throws IOException {
 		super(simulation, method, lambda);
 	}

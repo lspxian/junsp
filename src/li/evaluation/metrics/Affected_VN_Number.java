@@ -6,6 +6,10 @@ import li.simulation.ProbabilitySimulation;
 
 public class Affected_VN_Number extends Metric {
 
+	public Affected_VN_Number(ProbabilitySimulation simulation)throws IOException{
+		super(simulation);
+	}
+	
 	public Affected_VN_Number(AbstractSimulation simulation, String method, int lambda) throws IOException {
 		super(simulation, method, lambda);
 	}

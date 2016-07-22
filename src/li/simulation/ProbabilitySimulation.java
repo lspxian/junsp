@@ -143,13 +143,13 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		this.netEvents.addAll(events);
 		
 		//deterministic failure event
-		for(int t=10000;t<simulationTime;t=t+200){
+	/*	for(int t=200;t<=simulationTime;t=t+200){
 //			int slindex = new Random().nextInt(this.sn.getEdgeCount());
 //			SubstrateLink fsl= (SubstrateLink)this.sn.getEdges().toArray()[slindex];
 			
 			SubstrateLink fsl=randomFailure(this.sn);
 			netEvents.add(new FailureEvent(t,fsl));
-		}
+		}*/
 				
 		//random failure event
 		/*
@@ -172,6 +172,15 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	}
 	public void runSimulation(String methodStr) throws IOException{
 		//add metrics
+		metrics.add(new AcceptedRatioL(this));
+		metrics.add(new LinkUtilizationL(this));
+		metrics.add(new MappedRevenueL(this));
+		metrics.add(new AverageProbability(this));
+		metricsProba.add(new AverageAffectedVNRatio(this));
+		metricsProba.add(new Affected_VN_Number(this));
+		metricsProba.add(new AffectedRevenue(this));
+		
+		/*
 		metrics.add(new AcceptedRatioL(this, methodStr,lambda));
 		metrics.add(new LinkUtilizationL(this, methodStr,lambda));
 //		metrics.add(new CurrentLinkUtilisationL(this, methodStr,lambda));
@@ -179,10 +188,10 @@ public class ProbabilitySimulation extends AbstractSimulation{
 //		metrics.add(new CostL(this, methodStr,lambda));
 //		metrics.add(new CostRevenueL(this,methodStr,lambda));
 //		metricsProba.add(new ProbabilityL(this,methodStr,lambda));
-		metricsProba.add(new AverageProbability(this,methodStr,lambda));
+		metrics.add(new AverageProbability(this,methodStr,lambda));
 		metricsProba.add(new AverageAffectedVNRatio(this,methodStr,lambda));
 		metricsProba.add(new Affected_VN_Number(this,methodStr,lambda));
-		metricsProba.add(new AffectedRevenue(this,methodStr,lambda));
+		metricsProba.add(new AffectedRevenue(this,methodStr,lambda));*/
 		
 		for(NetEvent currentEvent : this.netEvents){
 			
@@ -195,7 +204,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				
 				if(cEvent.getFlag()==0){
 					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
-					System.out.println("Operation : Mapping");
+//					System.out.println("Operation : Mapping");
 					
 					if(arnm.nodeMapping(cEvent.getConcernedVn())){
 						Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
@@ -245,39 +254,39 @@ public class ProbabilitySimulation extends AbstractSimulation{
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							this.currentVNs.add(cEvent.getConcernedVn());
-							if(currentEvent.getAoDTime()>=10000){
+							if(currentEvent.getAoDTime()>=0){
 								this.accepted++;
 								mappedVNs.add(cEvent.getConcernedVn());
 								this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
 								this.probability.put(cEvent.getConcernedVn(), method.getProbability());								
 							}
 							
-							System.out.println("link mapping done");
+//							System.out.println("link mapping done");
 						}
 						else{
-							if(currentEvent.getAoDTime()>=10000)
+							if(currentEvent.getAoDTime()>=0)
 								this.rejected++;
-							System.out.println("link mapping resource error"); 
+//							System.out.println("link mapping resource error"); 
 						}
 						
 					}
 					else{
-						if(currentEvent.getAoDTime()>=10000)
+						if(currentEvent.getAoDTime()>=0)
 							this.rejected++;
 						//System.out.println("node resource error, virtual network "+j);
 					}
 					
-					if(currentEvent.getAoDTime()>=10000){
+					if(currentEvent.getAoDTime()>=0){
 						for(Metric metric : metrics){ //write data to file
 							double value = metric.calculate();
 							System.out.println(metric.name()+" "+value);
 							metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
-						}						
+						}					
 					}
 					
 				}
 				else{
-					System.out.println("Operation : Liberation Ressources");
+//					System.out.println("Operation : Liberation Ressources");
 					if(this.currentVNs.contains(cEvent.getConcernedVn())){
 						NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);
 						this.currentVNs.remove(cEvent.getConcernedVn());					
@@ -301,15 +310,18 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				for(VirtualNetwork vn : affectedNet){
 					this.affectedRevenue+=vn.calculateRevenue();					
 				}
-				double ratio = (double)affectedNet.size()/this.currentVNs.size();
+				double ratio;
+				if(this.currentVNs.isEmpty())
+					ratio=0.0;
+				else ratio = (double)affectedNet.size()/this.currentVNs.size();
 				this.affectedRatio.add(ratio);
 				
-				System.out.println("Failure Event: "+fEvent.getFailureLink());
+		/*		System.out.println("Failure Event: "+fEvent.getFailureLink());
 				for(Metric metric : metricsProba){ //write data to file
 					double value = metric.calculate();
 					System.out.println(metric.name()+" "+value);
 					metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
-				}
+				}*/
 				
 			}
 			
@@ -317,9 +329,9 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		//TODO
 //		System.out.println(this.sn.probaToString());
 		
-		System.out.println("*-----"+methodStr+" resume------------*");
-		System.out.println("accepted : "+this.accepted);
-		System.out.println("rejected : "+this.rejected);
+//		System.out.println("*-----"+methodStr+" resume------------*");
+//		System.out.println("accepted : "+this.accepted);
+//		System.out.println("rejected : "+this.rejected);
 		
 		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("*----lambda="+this.lambda+"--"+methodStr+"----*\n");
