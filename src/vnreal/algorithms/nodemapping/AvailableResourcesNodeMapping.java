@@ -212,8 +212,8 @@ public class AvailableResourcesNodeMapping extends AbstractNodeMapping {
 							greatAr = resCPU * resLink;
 							chosenNode = tmp;
 						}
-						
-						/*if (resCPU >= greatAr) {
+						/*
+						if (resCPU >= greatAr) {
 							greatAr = resCPU;
 							chosenNode = tmp;
 						}*/

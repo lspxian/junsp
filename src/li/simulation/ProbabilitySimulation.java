@@ -35,6 +35,7 @@ import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic1;
 import probabilityBandwidth.ProbaHeuristic2;
 import probabilityBandwidth.ProbaHeuristic3;
+import probabilityBandwidth.ProbaHeuristic4;
 import probabilityBandwidth.ShortestPathBW;
 import probabilityBandwidth.UnsplittableBandwidth;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
@@ -73,10 +74,10 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	
 	public ProbabilitySimulation(){
 		
-		simulationTime = 50000.0;
+		simulationTime = 100000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-//			Generator.createSubNet();
+			Generator.createSubNet();
 			sn.alt2network("./gt-itm/sub");
 //			sn.alt2network("data/cost239");
 //			sn.alt2network("sndlib/germany50");
@@ -88,7 +89,9 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		}
 		sn.addAllResource(true);
 //		sn.addInfiniteResource();
-
+		
+		
+		
 	}
 	
 	public void initialize(int lambda) throws IOException{
@@ -103,7 +106,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		/*-----------use pre-generated virtual network---------*/
 		/*
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=100;i<140;i++){
+		for(int i=0;i<100;i++){
 			VirtualNetwork vn = new VirtualNetwork();
 			vn.alt2network("data/vir"+i);
 //			vn.alt2network("data/vir"+new Random().nextInt(500));
@@ -143,13 +146,13 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		this.netEvents.addAll(events);
 		
 		//deterministic failure event
-	/*	for(int t=200;t<=simulationTime;t=t+200){
+		for(int t=200;t<=simulationTime;t=t+200){
 //			int slindex = new Random().nextInt(this.sn.getEdgeCount());
 //			SubstrateLink fsl= (SubstrateLink)this.sn.getEdges().toArray()[slindex];
 			
 			SubstrateLink fsl=randomFailure(this.sn);
 			netEvents.add(new FailureEvent(t,fsl));
-		}*/
+		}
 				
 		//random failure event
 		/*
@@ -204,7 +207,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				
 				if(cEvent.getFlag()==0){
 					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
-//					System.out.println("Operation : Mapping");
+					System.out.println("Operation : Mapping");
 					
 					if(arnm.nodeMapping(cEvent.getConcernedVn())){
 						Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
@@ -239,6 +242,9 @@ public class ProbabilitySimulation extends AbstractSimulation{
 						case "ProbaHeuristic3" :
 							method = new ProbaHeuristic3(sn);
 							break;
+						case "ProbaHeuristic4" :
+							method = new ProbaHeuristic4(sn);
+							break;
 						case "UnsplittableBandwidth" :
 							method = new UnsplittableBandwidth(sn);
 							break;
@@ -250,7 +256,8 @@ public class ProbabilitySimulation extends AbstractSimulation{
 							method = null;
 						}
 						//TODO
-//					System.out.println(this.sn);
+						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<100)
+							System.out.println(this.sn.probaToString());
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							this.currentVNs.add(cEvent.getConcernedVn());
@@ -258,22 +265,23 @@ public class ProbabilitySimulation extends AbstractSimulation{
 								this.accepted++;
 								mappedVNs.add(cEvent.getConcernedVn());
 								this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
+								System.out.println("current probability : "+method.getProbability());
 								this.probability.put(cEvent.getConcernedVn(), method.getProbability());								
 							}
 							
-//							System.out.println("link mapping done");
+							System.out.println("link mapping done");
 						}
 						else{
 							if(currentEvent.getAoDTime()>=0)
 								this.rejected++;
-//							System.out.println("link mapping resource error"); 
+							System.out.println("link mapping resource error"); 
 						}
 						
 					}
 					else{
 						if(currentEvent.getAoDTime()>=0)
 							this.rejected++;
-						//System.out.println("node resource error, virtual network "+j);
+//						System.out.println("node resource error, virtual network "+j);
 					}
 					
 					if(currentEvent.getAoDTime()>=0){
@@ -316,12 +324,12 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				else ratio = (double)affectedNet.size()/this.currentVNs.size();
 				this.affectedRatio.add(ratio);
 				
-		/*		System.out.println("Failure Event: "+fEvent.getFailureLink());
+				System.out.println("Failure Event: "+fEvent.getFailureLink());
 				for(Metric metric : metricsProba){ //write data to file
 					double value = metric.calculate();
 					System.out.println(metric.name()+" "+value);
 					metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
-				}*/
+				}
 				
 			}
 			
@@ -360,7 +368,10 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	}
 	@Override
 	public void reset() {
-		NodeLinkDeletion.resetNet(this.sn);
+//		NodeLinkDeletion.resetNet(this.sn);
+		for(VirtualNetwork vn : this.currentVNs){
+			NodeLinkDeletion.freeResource(vn,sn);
+		}
 		this.accepted = 0;
 		this.rejected = 0;
 		this.totalCost=0.0;

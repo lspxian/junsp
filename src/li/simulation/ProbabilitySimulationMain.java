@@ -29,7 +29,7 @@ public class ProbabilitySimulationMain {
 			writer.close();
 			
 //			int i= Integer.valueOf(args[0]);
-			for(int i=4;i<5;i++){
+			for(int i=1;i<2;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));
@@ -59,8 +59,7 @@ public class ProbabilitySimulationMain {
 				simulation.runSimulation("KMB1981V2");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();*/
-				
-
+			
 				
 				PrintStream probaHeuristic2 = new PrintStream(new FileOutputStream("res/probaHeuristic2_l"+i+"_c"+c+".txt"));
 				System.setOut(probaHeuristic2);
@@ -76,12 +75,19 @@ public class ProbabilitySimulationMain {
 //				writeCurrentTime();
 				simulation.reset();
 				
+				PrintStream probaHeuristic4 = new PrintStream(new FileOutputStream("res/probaHeuristic4_l"+i+"_c"+c+".txt"));
+				System.setOut(probaHeuristic4);
+				writeCurrentTime();
+				simulation.runSimulation("ProbaHeuristic4");
+//				writeCurrentTime();
+				simulation.reset();
+				/*
 				PrintStream probaHeuristic1 = new PrintStream(new FileOutputStream("res/probaHeuristic1_l"+i+"_c"+c+".txt"));
 				System.setOut(probaHeuristic1);
 				writeCurrentTime();
 				simulation.runSimulation("ProbaHeuristic1");
 //				writeCurrentTime();
-				simulation.reset();
+				simulation.reset();*/
 /*
 //				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
 //				System.setOut(ShortestPathBW);

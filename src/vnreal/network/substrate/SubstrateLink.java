@@ -46,14 +46,18 @@ import vnreal.resources.BandwidthResource;
  */
 public class SubstrateLink extends Link<AbstractResource> implements Comparable<SubstrateLink>{
 
-	protected double probability;	
+	protected double probability;
+	protected boolean used;
 	
 	public SubstrateLink() {
 		super();
 		//failure probability 
+//		double random = new Random().nextGaussian();
+//		probability = random*0.25e-5+1e-5;
 		double random = new Random().nextDouble();
 		probability = 0e-6+random*20e-6;
 //		probability = 0.00001;
+		used=false;
 	}
 	
 	public SubstrateLink(Double failure){
@@ -113,6 +117,14 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 			}
 		}
 		return bwres;
+	}
+
+	public boolean isUsed() {
+		return used;
+	}
+
+	public void setUsed(boolean used) {
+		this.used = used;
 	}
 
 }
