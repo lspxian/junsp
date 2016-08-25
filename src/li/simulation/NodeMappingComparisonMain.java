@@ -29,8 +29,9 @@ public static int c;
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=2;i<5;i++){
+			for(int i=2;i<3;i++){
 				simulation.initialize(i);
+				
 				PrintStream AvailableResourcesNodeMapping = new PrintStream(new FileOutputStream("res/ARMN"+i+"_c"+c+".txt"));
 				System.setOut(AvailableResourcesNodeMapping);
 				System.out.println(new SimpleDateFormat().format(new Date()));
@@ -48,7 +49,7 @@ public static int c;
 				System.out.println("job done");
 			}
 		}
-		writer = new FileWriter("resultat.txt",true);
+		writer = new FileWriter("nodecomparison.txt",true);
 		writer.write("/---------------Simulation finished!---------------/\n");
 		writer.write("Time : "+new SimpleDateFormat().format(new Date())+"\n\n");
 		writer.close();

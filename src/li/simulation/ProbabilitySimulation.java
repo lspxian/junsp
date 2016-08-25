@@ -40,6 +40,7 @@ import probabilityBandwidth.ShortestPathBW;
 import probabilityBandwidth.UnsplittableBandwidth;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
+import vnreal.algorithms.nodemapping.CordinatedNodeLinkMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.evaluations.metrics.AcceptedRatio;
@@ -74,7 +75,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	
 	public ProbabilitySimulation(){
 		
-		simulationTime = 100000.0;
+		simulationTime = 10000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			Generator.createSubNet();
@@ -206,7 +207,8 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				System.out.print("Current vn : \n"+cEvent.getConcernedVn()+"\n");
 				
 				if(cEvent.getFlag()==0){
-					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
+//					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,25,true,false);
+					CordinatedNodeLinkMapping arnm = new CordinatedNodeLinkMapping(sn);
 					System.out.println("Operation : Mapping");
 					
 					if(arnm.nodeMapping(cEvent.getConcernedVn())){
@@ -256,8 +258,8 @@ public class ProbabilitySimulation extends AbstractSimulation{
 							method = null;
 						}
 						//TODO
-						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<100)
-							System.out.println(this.sn.probaToString());
+//						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<100)
+//							System.out.println(this.sn.probaToString());
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							this.currentVNs.add(cEvent.getConcernedVn());

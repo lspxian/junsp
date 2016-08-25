@@ -71,8 +71,11 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 		try {
 			this.generateFile(vNet, an, virToMeta);
 			
-//			Map<String, String> solution = this.cplexOptimizationLocal();
-			Map<String, String> solution = this.cplexOptimizationCloud();
+			Map<String, String> solution = this.cplexOptimizationLocal();
+//			Map<String, String> solution = this.cplexOptimizationCloud();
+			if(solution.isEmpty()){
+				System.out.println("not good");
+			}
 			System.out.println(solution);
 			
 			//TODO	cplex result analysis and rounding method
@@ -170,7 +173,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 	 */
 	public void createAugmentedNetwork(VirtualNetwork vNet, AugmentedNetwork an, Map<VirtualNode, MetaNode> virToMeta){
 		List<SubstrateNode> candidates;
-		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(this.sNet,50,true,false);
+		AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(this.sNet,30,true,false);
 		
 		for(Iterator<VirtualNode> itt = vNet.getVertices().iterator(); itt
 			.hasNext();)

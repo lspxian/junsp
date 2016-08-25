@@ -45,7 +45,7 @@ protected Map<VirtualNetwork, Double> probability;
 
 	public NodeMappingComparisonSimulation(){
 		
-		simulationTime = 20000.0;
+		simulationTime = 5000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 //			sn.alt2network("sndlib/germany50");
@@ -91,7 +91,7 @@ protected Map<VirtualNetwork, Double> probability;
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
 			Generator.createVirNet();
-			vn.alt2network("./gt-itm/sub");
+			vn.alt2network("./gt-itm/vir");
 			vn.addAllResource(true);
 			
 			double departureTime = time+vn.getLifetime();
