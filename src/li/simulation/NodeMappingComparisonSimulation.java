@@ -9,11 +9,14 @@ import java.util.Map;
 
 import li.SteinerTree.SteinerILPExact;
 import li.evaluation.metrics.AcceptedRatioL;
+import li.evaluation.metrics.CurrentLinkUtilisationL;
+import li.evaluation.metrics.LinkUtilizationL;
 import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.Metric;
 import li.evaluation.metrics.ProbabilityL;
 import li.evaluation.metrics.RevenueProba;
 import li.event.VnEvent;
+import li.gt_itm.DrawGraph;
 import li.gt_itm.Generator;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.AbstractNodeMapping;
@@ -45,12 +48,15 @@ protected Map<VirtualNetwork, Double> probability;
 
 	public NodeMappingComparisonSimulation(){
 		
-		simulationTime = 5000.0;
+		simulationTime = 1000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-//			sn.alt2network("sndlib/germany50");
-			Generator.createSubNet();
-			sn.alt2network("./gt-itm/sub");
+			sn.alt2network("sndlib/germany50");
+//			Generator.createSubNet();
+//			sn.alt2network("./gt-itm/sub");
+			
+			DrawGraph dg = new DrawGraph(sn);
+			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -110,13 +116,13 @@ protected Map<VirtualNetwork, Double> probability;
 	public void runSimulation(String methodStr) throws IOException{
 		//add metrics
 		metrics.add(new AcceptedRatioL(this, methodStr,lambda));
-	//	metrics.add(new LinkUtilizationL(this, methodStr,lambda));
-//		metrics.add(new CurrentLinkUtilisationL(this, methodStr,lambda));
+		metrics.add(new LinkUtilizationL(this, methodStr,lambda));
+		metrics.add(new CurrentLinkUtilisationL(this, methodStr,lambda));
 		metrics.add(new MappedRevenueL(this, methodStr,lambda));
 		//metrics.add(new CostL(this, methodStr,lambda));
 		//metrics.add(new CostRevenueL(this,methodStr,lambda));
-		metrics.add(new ProbabilityL(this,methodStr,lambda));
-		metrics.add(new RevenueProba(this,methodStr,lambda));
+//		metrics.add(new ProbabilityL(this,methodStr,lambda));
+//		metrics.add(new RevenueProba(this,methodStr,lambda));
 		
 		for(VnEvent currentEvent : events){
 			
@@ -132,13 +138,12 @@ protected Map<VirtualNetwork, Double> probability;
 				 * then chose a method
 				 */
 				AbstractNodeMapping method;
-				AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,40,true,false);
 				System.out.println("Operation : Mapping");
 				switch(methodStr)
 				{
 				//AvailableResourcesNodeMapping
 				case "ARNM" : 
-					method = new AvailableResourcesNodeMapping(sn,40,true,false);
+					method = new AvailableResourcesNodeMapping(sn,30,true,false);
 					break;
 				//CordinatedNodeLinkMapping
 				case "CNLM" :

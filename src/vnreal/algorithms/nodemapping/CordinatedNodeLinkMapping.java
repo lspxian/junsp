@@ -81,8 +81,8 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 			//TODO	cplex result analysis and rounding method
 			
 			Set<String> keys = new TreeSet<String>();
-			keys = solution.keySet();
 			String kind1="",kind2="";
+		/*	keys = solution.keySet();
 			Iterator<String> it = keys.iterator();
 			while (it.hasNext()){
 				String key1 = it.next();
@@ -97,7 +97,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 					}
 				}
 			}
-			System.out.println(nodeMapping);	
+			System.out.println(nodeMapping);	*/
 			//For match a virtualNode with a unique substrateNode
 			for (VirtualNode vn : vNet.getVertices()){
 				String vind = String.valueOf(virToMeta.get(vn).getId()).trim();
@@ -130,13 +130,16 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 							xns = Double.parseDouble(solution.get(key));
 					};
 					res = res*xns;
-					if(res > max){
+					if((res > max)&&(
+							!nodeMapping.values().contains(sNet.getNodeFromID(Integer.parseInt(sind))))){
 						max = res;
 						indice = Integer.parseInt(sind);
 					}
 					res = 0.0;
 					xns = 0.0;
 				}
+				
+				
 				System.out.println(max);
 				System.out.println(indice);
 				//Put the correspondence in a HashMap
@@ -419,6 +422,23 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 					
 				}
 				constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
+			}
+			
+			//TODO
+			for(MetaNode metaNode : aNet.getMetaNodes()){
+				for(SubstrateNode tmpNode:aNet.getNeighbors(metaNode)){
+					for(VirtualLink vlink:vNet.getEdges()){
+						srcVnode = vNet.getEndpoints(vlink).getFirst();
+						dstVnode = vNet.getEndpoints(vlink).getSecond();
+						
+						//f and x constraint
+						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+metaNode.getId()+"sd"+tmpNode.getId();
+						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmpNode.getId()+"sd"+metaNode.getId();
+						
+					}
+					
+					constraint = constraint + " -Xm"+metaNode.getId()+"w"+tmpNode.getId()+"<=0\n";
+				}
 			}
 			
 			obj = obj+ "\n";
