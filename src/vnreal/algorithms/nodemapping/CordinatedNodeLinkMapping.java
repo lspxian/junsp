@@ -327,43 +327,28 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 			
 			/*--------links-------*/
 			
-			for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links.hasNext();) {
-				VirtualLink tmpl = links.next();
+			for (VirtualLink tmpl : vNet.getEdges()) {
 
 				// Find their mapped SubstrateNodes
 				srcVnode = vNet.getEndpoints(tmpl).getFirst();
 				dstVnode = vNet.getEndpoints(tmpl).getSecond();
 				
 				// Get current VirtualLink demand
-				for (AbstractDemand dem : tmpl) {
-					if (dem instanceof BandwidthDemand) {
-						bwDem = (BandwidthDemand) dem;
-						break;
-					}
-				}
+				bwDem = tmpl.getBandwidthDemand();
+				
+				
 				
 				for (Iterator<SubstrateLink> slink = aNet.getEdges().iterator();slink.hasNext();){
 					SubstrateLink tmpsl = slink.next();
 					ssnode = aNet.getEndpoints(tmpsl).getFirst();
 					dsnode = aNet.getEndpoints(tmpsl).getSecond();
-					
-					for(AbstractResource asrc : tmpsl){
-						if(asrc instanceof BandwidthResource){
-							bwResource = (BandwidthResource) asrc;
-							break;
-						}
-					}
+					bwResource = tmpsl.getBandwidthResource();
 					
 					//objective
 					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
-//					obj = obj + " + "+bwDem.getDemandedBandwidth();
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
 					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
-//					obj = obj + " + "+bwDem.getDemandedBandwidth();
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
-					
-					//integer in the <general>
-					//general = general +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
 					
 					//bounds
 					bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
@@ -371,24 +356,36 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 				}
 				
 				//flow constraints
-				Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
-				for(Iterator<SubstrateNode> iterator = aNet.getVertices().iterator();iterator.hasNext();){
-					SubstrateNode snode = iterator.next();
+				Collection<SubstrateNode> nextHop ;
+				for(SubstrateNode snode: sNet.getVertices()){
 					nextHop = aNet.getNeighbors(snode);
-					for(Iterator<SubstrateNode> it=nextHop.iterator();it.hasNext();){
-						SubstrateNode tmmpsn = it.next();
-						constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
-						constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
+					for(SubstrateNode tmmpsn : nextHop){
+						SubstrateLink thisSL = aNet.findEdge(snode, tmmpsn);
+						if((thisSL instanceof MetaLink)&&(!(tmmpsn.equals(virToMeta.get(srcVnode))||tmmpsn.equals(virToMeta.get(dstVnode)))))
+						{}
+						else{
+							constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
+							constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();							
+						}
 					}
-
-					if(snode.equals(virToMeta.get(srcVnode)))	constraint =constraint+" = 1\n";
-					else if(snode.equals(virToMeta.get(dstVnode))) constraint =constraint+" = -1\n";
-					else	constraint =constraint+" = 0\n";
-					
+					constraint =constraint+" = 0\n";
+		
 				}
 				
+				nextHop = aNet.getNeighbors(virToMeta.get(srcVnode));
+				for(SubstrateNode tmmpsn : nextHop){
+					constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+virToMeta.get(srcVnode).getId()+"sd"+tmmpsn.getId();
+					constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+virToMeta.get(srcVnode).getId();							
+				}
+				constraint =constraint+" = 1\n";
+				nextHop = aNet.getNeighbors(virToMeta.get(dstVnode));
+				for(SubstrateNode tmmpsn : nextHop){
+					constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+virToMeta.get(dstVnode).getId()+"sd"+tmmpsn.getId();
+					constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+virToMeta.get(dstVnode).getId();							
+				}
+				constraint =constraint+" = -1\n";
+				
 			}
-
 			
 			//capacity constraint
 			for (Iterator<SubstrateLink> slink = aNet.getEdges().iterator();slink.hasNext();){
@@ -424,7 +421,6 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 				constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
 			}
 			
-			//TODO
 			for(MetaNode metaNode : aNet.getMetaNodes()){
 				for(SubstrateNode tmpNode:aNet.getNeighbors(metaNode)){
 					for(VirtualLink vlink:vNet.getEdges()){
@@ -437,7 +433,7 @@ public class CordinatedNodeLinkMapping extends AbstractNodeMapping {
 						
 					}
 					
-					constraint = constraint + " -Xm"+metaNode.getId()+"w"+tmpNode.getId()+"<=0\n";
+					constraint = constraint + " -10 Xm"+metaNode.getId()+"w"+tmpNode.getId()+"<=0\n";
 				}
 			}
 			
