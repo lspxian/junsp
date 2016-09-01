@@ -48,12 +48,12 @@ protected Map<VirtualNetwork, Double> probability;
 
 	public NodeMappingComparisonSimulation(){
 		
-		simulationTime = 1000.0;
+		simulationTime = 30000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-			sn.alt2network("sndlib/germany50");
-//			Generator.createSubNet();
-//			sn.alt2network("./gt-itm/sub");
+//			sn.alt2network("sndlib/germany50");
+			Generator.createSubNet();
+			sn.alt2network("./gt-itm/sub");
 			
 			DrawGraph dg = new DrawGraph(sn);
 			dg.draw();

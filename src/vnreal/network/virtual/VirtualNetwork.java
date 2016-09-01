@@ -226,10 +226,13 @@ public final class VirtualNetwork extends
 				line = line.substring(line.indexOf(" ")+1);
 				line = line.substring(line.indexOf(" ")+1);
 
-				nd.setCoordinateX(Double.parseDouble(line.substring(0, line.indexOf(" "))));
-				nd.setCoordinateY(Double.parseDouble(line.substring(line.indexOf(" ")+1)));
+//				nd.setCoordinateX(Double.parseDouble(line.substring(0, line.indexOf(" "))));
+//				nd.setCoordinateY(Double.parseDouble(line.substring(line.indexOf(" ")+1)));
+				//set x and y to [0,90]
+				nd.setCoordinateX(Double.parseDouble(line.substring(0, line.indexOf(" ")))*0.8+10);
+				nd.setCoordinateY(Double.parseDouble(line.substring(line.indexOf(" ")+1))*0.8+10);
+				
 				this.addVertex(nd);
-			
 				
 			}
 			if((edge==true)&&(!line.contains("EDGES"))&&(!line.isEmpty())){

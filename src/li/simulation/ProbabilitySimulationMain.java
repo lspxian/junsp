@@ -29,10 +29,10 @@ public class ProbabilitySimulationMain {
 			writer.close();
 			
 //			int i= Integer.valueOf(args[0]);
-			for(int i=1;i<2;i++){
+			for(int i=2;i<3;i++){
 				simulation.initialize(i);
 				/*
-				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));
+				PrintStream exact = new PrintStream(new FileOutputStream("res/E xactILP_l"+i+"_c"+c+".txt"));
 				System.setOut(exact);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("Exact");
@@ -89,19 +89,19 @@ public class ProbabilitySimulationMain {
 //				writeCurrentTime();
 				simulation.reset();*/
 /*
-//				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
-//				System.setOut(ShortestPathBW);
+				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
+				System.setOut(ShortestPathBW);
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW");
 //				writeCurrentTime();
 				simulation.reset();*/
-				
+				/*
 				PrintStream pbbwExact = new PrintStream(new FileOutputStream("res/PBBWExactILP_l"+i+"_c"+c+".txt"));
 				System.setOut(pbbwExact);
 				writeCurrentTime();
 				simulation.runSimulation("PBBWExact");
 //				writeCurrentTime();
-				simulation.reset();
+				simulation.reset();*/
 				
 				writeCurrentTime();
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));

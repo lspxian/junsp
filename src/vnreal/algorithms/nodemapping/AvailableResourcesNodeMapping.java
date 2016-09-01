@@ -207,16 +207,16 @@ public class AvailableResourcesNodeMapping extends AbstractNodeMapping {
 					resCPU = ((CpuResource) res).getAvailableCycles();
 					resLink = calcLinksRes(tmp);
 					if (!nodeOverload) {
-						if ((resCPU * resLink >= greatAr)
+				/*		if ((resCPU * resLink >= greatAr)
 								&& !nodeMapping.containsValue(tmp)) {
 							greatAr = resCPU * resLink;
 							chosenNode = tmp;
-						}
-						/*
+						}*/
+						
 						if (resCPU >= greatAr) {
 							greatAr = resCPU;
 							chosenNode = tmp;
-						}*/
+						}
 					} else {
 						if (resCPU * resLink >= greatAr) {
 							greatAr = resCPU * resLink;

@@ -207,8 +207,8 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				System.out.print("Current vn : \n"+cEvent.getConcernedVn()+"\n");
 				
 				if(cEvent.getFlag()==0){
-//					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,25,true,false);
-					CordinatedNodeLinkMapping arnm = new CordinatedNodeLinkMapping(sn);
+					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,25,true,false);
+//					CordinatedNodeLinkMapping arnm = new CordinatedNodeLinkMapping(sn);
 					System.out.println("Operation : Mapping");
 					
 					if(arnm.nodeMapping(cEvent.getConcernedVn())){
@@ -258,7 +258,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 							method = null;
 						}
 						//TODO
-//						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<100)
+//						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<500)
 //							System.out.println(this.sn.probaToString());
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){

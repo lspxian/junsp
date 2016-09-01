@@ -29,7 +29,7 @@ public static int c;
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=2;i<3;i++){
+			for(int i=5;i<6;i++){
 				simulation.initialize(i);
 				
 				PrintStream AvailableResourcesNodeMapping = new PrintStream(new FileOutputStream("res/ARMN"+i+"_c"+c+".txt"));
@@ -38,13 +38,14 @@ public static int c;
 				simulation.runSimulation("ARNM");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();
-				
+				/*
 				PrintStream CordinatedNodeLinkMapping = new PrintStream(new FileOutputStream("res/CNLM"+i+"_c"+c+".txt"));
 				System.setOut(CordinatedNodeLinkMapping);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("CNLM");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();
+				simulation.reset();*/
+				
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 				System.out.println("job done");
 			}
