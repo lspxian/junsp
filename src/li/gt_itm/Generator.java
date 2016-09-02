@@ -38,7 +38,7 @@ public class Generator {
 		//node number, scale, method, proba connect
 		int number = new Random().nextInt(7)+3;
 //		int number = 3;
-		pw.println(number+" 100 3 0.5");
+		pw.println(number+" 100 3 0.3");
 		pw.close();
 		runShellCmd("./gt-itm/itm gt-itm/subCmd");
 		runShellCmd("./gt-itm/sgb2alt gt-itm/subCmd-0.gb gt-itm/vir");
