@@ -44,13 +44,13 @@ public class ProbaHeuristic3 extends AbstractProbaLinkMapping {
 		this.dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink> (this.sNet, new ProbaCost());
 		
 		Collections.sort(this.virtualLinks,new PbbwComparator(dijkstra,nodeMapping,vNet));
-		
+		/*
 		for(VirtualLink vl:this.virtualLinks){
 			SubstrateNode snode = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
 			SubstrateNode dnode = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
 			double cost = (double) this.dijkstra.getDistance(snode, dnode);
 			System.out.println(vl+" "+cost);
-		}
+		}*/
 			
 		for(VirtualLink minvl: this.virtualLinks){
 			

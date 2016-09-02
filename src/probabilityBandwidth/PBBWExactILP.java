@@ -33,25 +33,22 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 		super(sNet);
 //		this.localPath = "tmp/vne-mcf-"+new Random().nextDouble()+".lp";
 		this.localPath = "cplex/vne-mcf.lp";
-//		this.remotePath = "pytest/vne-mcf.lp";
 	}
-
 	
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
-		//Map<String, String> solution = linkMappingWithoutUpdate(vNet, nodeMapping);
-				Map<String, String> solution = linkMappingWithoutUpdateLocal(vNet, nodeMapping);	
-				if(solution.size()==0){
-					System.out.println("link no solution");
-					for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
-						NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
-					}
-					return false;
-				}
-				//update
-				updateResource(vNet, nodeMapping, solution);
-				
-				return true;
+		Map<String, String> solution = linkMappingWithoutUpdateLocal(vNet, nodeMapping);	
+		if(solution.size()==0){
+			System.out.println("link no solution");
+			for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+				NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
+			}
+			return false;
+		}
+		//update
+		updateResource(vNet, nodeMapping, solution);
+		
+		return true;
 	}
 	
 	public Map<String,String> linkMappingWithoutUpdateLocal(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
@@ -119,12 +116,7 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 				dstVnode = vNet.getNodeFromID(dstVnodeId);
 				VirtualLink tmpvl = vNet.findEdge(srcVnode, dstVnode);
 				
-				for (AbstractDemand dem : tmpvl) {
-					if (dem instanceof BandwidthDemand) {
-						bwDem = (BandwidthDemand) dem;
-						break;
-					}
-				}
+				bwDem = tmpvl.getBandwidthDemand();
 				
 				srcSnode = sNet.getNodeFromID(srcSnodeId);
 				dstSnode = sNet.getNodeFromID(dstSnodeId);

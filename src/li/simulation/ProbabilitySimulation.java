@@ -78,7 +78,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		simulationTime = 10000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-			Generator.createSubNet();
+//			Generator.createSubNet();
 			sn.alt2network("./gt-itm/sub");
 //			sn.alt2network("data/cost239");
 //			sn.alt2network("sndlib/germany50");
@@ -258,8 +258,8 @@ public class ProbabilitySimulation extends AbstractSimulation{
 							method = null;
 						}
 						//TODO
-//						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<500)
-//							System.out.println(this.sn.probaToString());
+						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<10000)
+							System.out.println(this.sn.probaToString());
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							this.currentVNs.add(cEvent.getConcernedVn());
