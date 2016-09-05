@@ -52,13 +52,14 @@ public class KMB1981 {
 		PrimMST prim = new PrimMST(complet);
 		SubstrateNetwork tempo=prim.getMST();
 		
-		for(SubstrateNode sn1:tempo.getVertices()){
-			for(SubstrateNode sn2: tempo.getVertices()){
-				for(SubstrateLink slink : this.dijkstra.getPath(sn1, sn2)){
-					this.steinerTree.addEdge(slink, this.sNet.getEndpoints(slink));
-				}
+		for(SubstrateLink sl:tempo.getEdges()){
+			SubstrateNode sn1 = tempo.getEndpoints(sl).getFirst();
+			SubstrateNode sn2 = tempo.getEndpoints(sl).getSecond();
+			for(SubstrateLink slink : this.dijkstra.getPath(sn1, sn2)){
+				this.steinerTree.addEdge(slink, this.sNet.getEndpoints(slink));
 			}
 		}
+		
 		
 		Cycle cycle = new Cycle(this.steinerTree);
 		if(cycle.isCyclic()){

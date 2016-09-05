@@ -98,7 +98,7 @@ public class ProbaHeuristic2 extends AbstractProbaLinkMapping {
 				System.out.println(str+" "+minCost);
 				if(!this.initialProbability.containsKey(sl)){
 					this.initialProbability.put(sl, sl.getProbability());
-//					sl.setProbability(0.00000001);
+//					sl.setProbability(1e-10);
 					sl.setProbability(0.0);
 				}
 				

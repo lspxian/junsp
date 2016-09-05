@@ -12,6 +12,8 @@ import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.Pair;
+import li.SteinerTree.KMB1981;
+import li.SteinerTree.KMB1981V2;
 import li.SteinerTree.ProbaCost;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
@@ -27,97 +29,56 @@ import vnreal.resources.BandwidthResource;
 
 public class ProbaHeuristic1 extends AbstractProbaLinkMapping {
 	private DijkstraShortestPath<SubstrateNode,SubstrateLink> dijkstra;
-	private Map<SubstrateLink, Double> initialProbability;
+	private List<SubstrateLink> mappingLinks;
 	private List<VirtualLink> virtualLinks;
 	private Map<BandwidthDemand, BandwidthResource> mapping;
 	
 	public ProbaHeuristic1(SubstrateNetwork sNet) {
 		super(sNet);
-		this.initialProbability = new HashMap<SubstrateLink, Double>();
+		this.mappingLinks = new ArrayList<SubstrateLink>();
 		this.mapping = new HashMap<BandwidthDemand, BandwidthResource>();
 	}
 
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
 		
-		this.virtualLinks=new ArrayList<VirtualLink>(vNet.getEdges());
-		this.dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink> (this.sNet, new ProbaCost());
+		KMB1981 kmb = new KMB1981(nodeMapping.values(),this.sNet,new ProbaCost());
+//		KMB1981V2 kmb = new KMB1981V2(nodeMapping.values(),this.sNet,new ProbaCost());
+		kmb.runSteinerTree();
+		SubstrateNetwork steiner = kmb.getSteinerTree();
+		this.dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink> (steiner, new ProbaCost());
 		
+		this.virtualLinks=new ArrayList<VirtualLink>(vNet.getEdges());
 		Collections.sort(this.virtualLinks,new PbbwComparator(dijkstra,nodeMapping,vNet));
-		/*
-		for(VirtualLink vl:this.virtualLinks){
+		for(VirtualLink vl: this.virtualLinks){
 			SubstrateNode snode = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
 			SubstrateNode dnode = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
-			double cost = (double) this.dijkstra.getDistance(snode, dnode);
-			System.out.println(vl+" "+cost);
-		}*/
-			
-		for(VirtualLink minvl: this.virtualLinks){
-			
-			EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(
-					new Predicate<SubstrateLink>() {
-						@Override
-						public boolean evaluate(SubstrateLink sl) {
-					
-							BandwidthResource bdsrc = sl.getBandwidthResource();
-							BandwidthDemand bwd = minvl.getBandwidthDemand();
-							if(bdsrc.getAvailableBandwidth()< bwd.getDemandedBandwidth())
-								return false;
-							return true;
-						}
-					});
-			Graph<SubstrateNode, SubstrateLink> tmpG = filter.transform(this.sNet);
-			
-			this.dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink> (tmpG, new ProbaCost());
-			SubstrateNode snode = nodeMapping.get(vNet.getEndpoints(minvl).getFirst());
-			SubstrateNode dnode = nodeMapping.get(vNet.getEndpoints(minvl).getSecond());
 			List<SubstrateLink> path = this.dijkstra.getPath(snode,dnode);
+			double tempCost = (double) this.dijkstra.getDistance(snode, dnode);
 			
-			if(path.isEmpty()){
-				for(Map.Entry<SubstrateLink, Double> entry : this.initialProbability.entrySet()){
-					entry.getKey().setProbability(entry.getValue());
+			for(SubstrateLink sl : path){
+				String str = "vs"+vNet.getEndpoints(vl).getFirst().getId()+
+						"vd"+vNet.getEndpoints(vl).getSecond().getId()+
+						"ss"+this.sNet.getEndpoints(sl).getFirst().getId()+"sd"+this.sNet.getEndpoints(sl).getSecond().getId();
+				System.out.println(str+" "+tempCost);
+				if(!this.mappingLinks.contains(sl)){
+					this.mappingLinks.add(sl);
 				}
-				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
-					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
-				}
-				//delete resources already distributed !!!
-				for(Map.Entry<BandwidthDemand, BandwidthResource> e : mapping.entrySet()){
-					e.getKey().free(e.getValue());
-				}
-				
-//				System.out.println("link no resource");
-				return false;
-				
-			}else{
-				double tempCost = (double) this.dijkstra.getDistance(snode, dnode);
-				for(SubstrateLink sl : path){
-					String str = "vs"+vNet.getEndpoints(minvl).getFirst().getId()+
-							"vd"+vNet.getEndpoints(minvl).getSecond().getId()+
-							"ss"+this.sNet.getEndpoints(sl).getFirst().getId()+"sd"+this.sNet.getEndpoints(sl).getSecond().getId();
-					System.out.println(str+" "+tempCost);
-					if(!this.initialProbability.containsKey(sl)){
-						this.initialProbability.put(sl, sl.getProbability());
-//						sl.setProbability(0.0);
-						sl.setProbability(1e-10);
-					}
-					
-					BandwidthDemand newBw = new BandwidthDemand(minvl);
-					newBw.setDemandedBandwidth(minvl.getBandwidthDemand().getDemandedBandwidth());
-					this.mapping.put(newBw, sl.getBandwidthResource());
-					//update resource
-					if(!NodeLinkAssignation.vlmSingleLinkSimple(minvl.getBandwidthDemand(), sl)){
-						throw new AssertionError("But we checked before!");
-					}
-					
+				BandwidthDemand newBw = new BandwidthDemand(vl);
+				newBw.setDemandedBandwidth(vl.getBandwidthDemand().getDemandedBandwidth());
+				this.mapping.put(newBw, sl.getBandwidthResource());
+				//update resource
+				if(!NodeLinkAssignation.vlmSingleLinkSimple(vl.getBandwidthDemand(), sl)){
+					throw new AssertionError("But we checked before!");
 				}
 				
 			}
 		}
 		
+		
 		double temproba=1;
-		for(Map.Entry<SubstrateLink, Double> entry : this.initialProbability.entrySet()){
-			temproba = temproba * (1-entry.getValue());
-			entry.getKey().setProbability(entry.getValue());
+		for(SubstrateLink sl:this.mappingLinks){
+			temproba = temproba * (1-sl.getProbability());
 		}
 		this.probability = 1 - temproba;
 		

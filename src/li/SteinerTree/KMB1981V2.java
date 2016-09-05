@@ -3,7 +3,9 @@ package li.SteinerTree;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.collections15.Transformer;
@@ -19,9 +21,11 @@ public class KMB1981V2 {
 	private SubstrateNetwork sNet;
 	private SubstrateNetwork steinerTree;
 	private DijkstraShortestPath<SubstrateNode,SubstrateLink> dijkstra;
+	private Map<SubstrateLink, Double> initialProbability;
 	
 	public SubstrateNetwork getSteinerTree() {
 		return steinerTree;
+		
 	}
 
 	public KMB1981V2(Collection<SubstrateNode> participant,SubstrateNetwork sNet){
@@ -29,6 +33,7 @@ public class KMB1981V2 {
 		this.sNet=sNet;
 		this.steinerTree=new SubstrateNetwork();
 		dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(sNet);
+		this.initialProbability = new HashMap<SubstrateLink, Double>();
 	}
 	
 	public KMB1981V2(Collection<SubstrateNode> participant,SubstrateNetwork sNet,Transformer<SubstrateLink, Double> weightTrans){
@@ -36,6 +41,7 @@ public class KMB1981V2 {
 		this.sNet=sNet;
 		this.steinerTree=new SubstrateNetwork();
 		dijkstra = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(sNet,weightTrans);
+		this.initialProbability = new HashMap<SubstrateLink, Double>();
 	}
 	
 	public void runSteinerTree(){
@@ -70,14 +76,16 @@ public class KMB1981V2 {
 			for(SubstrateLink slink : dijkstra.getPath(steinerLink.getFirst(), steinerLink.getSecond())){
 				if(!this.steinerTree.containsEdge(slink)){
 					this.steinerTree.addEdge(slink,sNet.getEndpoints(slink));
-					slink.setProbability(slink.getProbability()-0.00000001);
+					this.initialProbability.put(slink, slink.getProbability());
+//					slink.setProbability(0.0);
+					slink.setProbability(1e-10);
 				}
 			}
 			
 		}
 		
-		for(SubstrateLink sl : this.steinerTree.getEdges()){
-			sl.setProbability(sl.getProbability()+0.00000001);
+		for(Map.Entry<SubstrateLink, Double> entry : this.initialProbability.entrySet()){
+			entry.getKey().setProbability(entry.getValue());
 		}
 	}
 		
