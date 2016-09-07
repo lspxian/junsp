@@ -63,6 +63,13 @@ public final class Mapping {
 		this.resource = res;
 		resource.register(this);
 	}
+	
+	public Mapping(AbstractDemand dem, AbstractResource res, boolean backup) {
+			this.demand = dem;
+			demand.registerBackup(this);
+			this.resource = res;
+			resource.registerBackup(this);		
+	}
 
 	/**
 	 * Unregister mapping from {@link #demand} and {@link #resource}.
@@ -74,6 +81,13 @@ public final class Mapping {
 			return true;
 		else
 			throw new AssertionError("Could not properly unregister mapping");
+	}
+	
+	public boolean unregisterBackup() {
+		if (resource.unregisterBackup(this) && demand.unregisterBackup(this))
+			return true;
+		else
+			throw new AssertionError("Could not properly unregister backup mapping");
 	}
 
 	public AbstractDemand getDemand() {

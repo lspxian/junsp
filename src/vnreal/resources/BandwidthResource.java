@@ -198,14 +198,19 @@ public final class BandwidthResource extends AbstractResource implements
 		sb.append(" Primary bandwidth="+primaryBw);
 		if (getMappings().size() > 0)
 			sb.append(getMappingsString());
+
 		sb.append("\n Reserved backup bandwidth="+reservedBackupBw+" by : ");
-		for(Map.Entry<Link<? extends AbstractConstraint>, Double> entry: backupBw.entrySet()){
-			sb.append("bw="+entry.getValue()+"@"+entry.getKey().toString()+" ");
+		if(this.getBackupMappings().size()>0){
+			sb.append(getBackupMappingsString());
 		}
+	/*	for(Map.Entry<Link<? extends AbstractConstraint>, Double> entry: backupBw.entrySet()){
+			sb.append("bw="+entry.getValue()+"@"+entry.getKey().toString()+" ");
+		}*/
 		return sb.toString();
 	}
 
 	@Override
+	//not work
 	public AbstractResource getCopy(
 			NetworkEntity<? extends AbstractConstraint> owner) {
 
@@ -223,4 +228,18 @@ public final class BandwidthResource extends AbstractResource implements
 		return true;
 	}
 
+	public boolean backupAssignation(BandwidthDemand bwd, boolean share){
+		if(share){
+			
+		}
+		else{
+			reservedBackupBw += bwd.getDemandedBandwidth();
+			occupiedBandwidth = MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
+			occupiedBandwidth += bwd.getDemandedBandwidth();
+			occupiedBandwidth = MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
+			new Mapping(bwd, getThis(), true); //add backup mapping
+		}
+		return true;
+	}
+	
 }

@@ -47,6 +47,7 @@ import vnreal.network.NetworkEntity;
  */
 public abstract class AbstractConstraint {
 	protected final List<Mapping> mappings = new LinkedList<Mapping>();
+	protected final List<Mapping> backupMappings = new LinkedList<Mapping>(); //mappings for backup
 	private NetworkEntity<? extends AbstractConstraint> owner;
 	private final String name;
 	
@@ -75,6 +76,18 @@ public abstract class AbstractConstraint {
 	public final boolean unregister(Mapping mapping) {
 		return mappings.remove(mapping);
 	}
+	
+	public final List<Mapping> getBackupMappings() {
+		return Collections.unmodifiableList(this.backupMappings);
+	}
+
+	public final boolean registerBackup(Mapping mapping) {
+		return backupMappings.add(mapping);
+	}
+
+	public final boolean unregisterBackup(Mapping mapping) {
+		return backupMappings.remove(mapping);
+	}
 
 	public final boolean unregisterAll() {
 		boolean deletedAll = true;
@@ -83,6 +96,12 @@ public abstract class AbstractConstraint {
 
 		for (Mapping f : delete)
 			deletedAll = deletedAll && f.unregister();
+		
+		if(!backupMappings.isEmpty()){
+			delete.addAll(backupMappings);
+			for (Mapping f : delete)
+				deletedAll = deletedAll && f.unregisterBackup();
+		}
 
 		return deletedAll;
 	}

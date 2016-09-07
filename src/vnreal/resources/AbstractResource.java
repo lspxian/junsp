@@ -137,6 +137,18 @@ public abstract class AbstractResource extends AbstractConstraint {
 		return sb.toString();
 	}
 
+	protected String getBackupMappingsString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" by ");
+		for (Mapping mapping : getBackupMappings()) {
+			sb.append(mapping.getDemand());
+			sb.append("@");
+			sb.append(mapping.getDemand().getOwner());
+			sb.append(", ");
+		}
+		sb.delete(sb.length() - 2, sb.length());
+		return sb.toString();
+	}
 	public abstract AbstractResource getCopy(
 			NetworkEntity<? extends AbstractConstraint> owner);
 
