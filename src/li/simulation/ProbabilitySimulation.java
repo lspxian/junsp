@@ -78,7 +78,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		simulationTime = 100000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-//			Generator.createSubNet();
+			Generator.createSubNet();
 			sn.alt2network("./gt-itm/sub");
 //			sn.alt2network("data/cost239");
 //			sn.alt2network("sndlib/germany50");
@@ -106,17 +106,18 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		this.failures = 0;
 		/*-----------use pre-generated virtual network---------*/
 		/*
+		events = new ArrayList<VnEvent>();
 		vns = new ArrayList<VirtualNetwork>();
-		for(int i=0;i<100;i++){
+		for(int j=0;j<10;j++){
+		for(int i=0;i<1000;i++){
 			VirtualNetwork vn = new VirtualNetwork();
 			vn.alt2network("data/vir"+i);
 //			vn.alt2network("data/vir"+new Random().nextInt(500));
 //			vn.alt2network("data/vhr2");
-			vn.addAllResource(true);
+			vn.addAllResource(false);
 			//System.out.println(vn);		//print vn
 			vns.add(vn);
-		}
-		events = new ArrayList<VnEvent>();
+		}}
 		for(int i=0;(time <=simulationTime)	&& (i <vns.size());i++){
 			events.add(new VnEvent(vns.get(i),time,0)); //arrival event
 			double departure = time+vns.get(i).getLifetime();
@@ -133,7 +134,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 			VirtualNetwork vn = new VirtualNetwork();
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/vir");
-			vn.addAllResource(true);
+			vn.addAllResource(false);
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
@@ -258,8 +259,8 @@ public class ProbabilitySimulation extends AbstractSimulation{
 							method = null;
 						}
 						//TODO
-						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<10000)
-							System.out.println(this.sn.probaToString());
+//						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<10000)
+//							System.out.println(this.sn.probaToString());
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							this.currentVNs.add(cEvent.getConcernedVn());

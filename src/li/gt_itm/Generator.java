@@ -37,7 +37,7 @@ public class Generator {
 		pw.println("geo 1 "+new Random().nextInt(100));
 		//node number, scale, method, proba connect
 		int number = new Random().nextInt(5)+3;
-//		int number = 3;
+//		int number = 5;
 		pw.println(number+" 100 3 0.3");
 		pw.close();
 		runShellCmd("./gt-itm/itm gt-itm/subCmd");

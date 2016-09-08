@@ -29,7 +29,7 @@ public class ProbabilitySimulationMain {
 			writer.close();
 			
 //			int i= Integer.valueOf(args[0]);
-			for(int i=7;i<9;i++){
+			for(int i=1;i<9;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream exact = new PrintStream(new FileOutputStream("res/E xactILP_l"+i+"_c"+c+".txt"));

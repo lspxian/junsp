@@ -213,7 +213,10 @@ public class AvailableResourcesNodeMapping extends AbstractNodeMapping {
 							chosenNode = tmp;
 						}*/
 						
-						if (resCPU >= greatAr) {
+						if (resCPU > greatAr) {
+							greatAr = resCPU;
+							chosenNode = tmp;
+						}else if(resCPU == greatAr&&(tmp.getId()<chosenNode.getId())){
 							greatAr = resCPU;
 							chosenNode = tmp;
 						}
