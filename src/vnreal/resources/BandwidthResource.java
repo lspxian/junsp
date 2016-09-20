@@ -159,9 +159,10 @@ public final class BandwidthResource extends AbstractResource implements
 			@Override
 			public boolean visit(BandwidthDemand dem) {
 				if (fulfills(dem)) {
-					occupiedBandwidth += dem
+					primaryBw += dem
 							.getDemandedBandwidth();
-					occupiedBandwidth = MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
+					primaryBw = MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
+					occupiedBandwidth = primaryBw + reservedBackupBw;
 					new Mapping(dem, getThis());
 					return true;
 				} else
@@ -230,16 +231,30 @@ public final class BandwidthResource extends AbstractResource implements
 
 	public boolean backupAssignation(BandwidthDemand bwd, boolean share){
 		if(share){
-			
+			//TODO
 		}
 		else{
 			reservedBackupBw += bwd.getDemandedBandwidth();
-			occupiedBandwidth = MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
-			occupiedBandwidth += bwd.getDemandedBandwidth();
-			occupiedBandwidth = MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
+			reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
+			occupiedBandwidth = primaryBw + reservedBackupBw;
 			new Mapping(bwd, getThis(), true); //add backup mapping
 		}
 		return true;
+	}
+	
+	public boolean backupFree(BandwidthDemand bwd, boolean share){
+		if(this.getMapping(bwd)!=null){
+			if(share){
+				//TODO
+			}
+			else{
+				reservedBackupBw -= bwd.getDemandedBandwidth();
+				reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
+				occupiedBandwidth = primaryBw + reservedBackupBw;
+				return this.getMapping(bwd).unregisterBackup();
+			}
+		}
+		return false;
 	}
 	
 }

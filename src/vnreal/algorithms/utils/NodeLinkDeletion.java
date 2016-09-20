@@ -100,7 +100,7 @@ public class NodeLinkDeletion {
 	
 	
 	//it seems that it's duplicate
-	public static boolean linkFree(VirtualLink vlink, ArrayList<InterLink> slink){
+	/*public static boolean linkFree(VirtualLink vlink, ArrayList<InterLink> slink){
 		for(AbstractDemand dem : vlink){
 			if(dem instanceof BandwidthDemand){
 				for(InterLink singleslink : slink){
@@ -113,5 +113,11 @@ public class NodeLinkDeletion {
 			}
 		}
 		return true;
+	}*/
+
+	public static void linkFreeBackup(VirtualLink vl, List<SubstrateLink> slist,boolean share) {
+		for(SubstrateLink sl:slist)
+			sl.getBandwidthResource().backupFree(vl.getBandwidthDemand(), share);
+		
 	}
 }

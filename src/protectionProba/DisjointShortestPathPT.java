@@ -1,6 +1,5 @@
-package probabilityBandwidth;
+package protectionProba;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,8 +10,9 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
-import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
+import mulavito.algorithms.shortestpath.disjoint.SuurballeTarjan;
+import probabilityBandwidth.AbstractProbaLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.BandwidthDemand;
@@ -24,39 +24,51 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
 
-public class ShortestPathBW extends AbstractProbaLinkMapping {
-
-	public ShortestPathBW(SubstrateNetwork sNet) {
+public class DisjointShortestPathPT extends AbstractProbaLinkMapping {
+	
+	boolean share;
+	public DisjointShortestPathPT(SubstrateNetwork sNet, boolean share) {
 		super(sNet);
+		this.share=share;
 	}
 
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
+		//TODO calculate proba
+		
 		double temproba=1;
 		Set<SubstrateLink> usedLinksForProba=new HashSet<SubstrateLink>();
-		Map<VirtualLink,List<SubstrateLink>> result = new HashMap<VirtualLink,List<SubstrateLink>>();
+		Map<VirtualLink,List<SubstrateLink>> resultP = new HashMap<VirtualLink,List<SubstrateLink>>();
+		Map<VirtualLink,List<SubstrateLink>> resultB = new HashMap<VirtualLink,List<SubstrateLink>>();
 		for(VirtualLink vl: vNet.getEdges()){
 			SubstrateNode sn1 = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
 			SubstrateNode sn2 = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
-			List<SubstrateLink> shortest = new ArrayList<SubstrateLink>(
-					computeShortestPath(sNet,sn1,sn2,vl));
+			List<List<SubstrateLink>> shortest = computeShortestPath(sNet,sn1,sn2,vl);
 			if(!shortest.isEmpty()){
+				List<SubstrateLink> primary = shortest.get(0);
+				List<SubstrateLink> backup = shortest.get(1);
 //				System.out.println(vl);
 //				System.out.println(shortest);
 				
-				for(SubstrateLink sl : shortest)
+				for(SubstrateLink sl : primary)
 					usedLinksForProba.add(sl);
 				
-				result.put(vl, shortest);
-				if(!NodeLinkAssignation.vlmSimple(vl, shortest))
+				resultP.put(vl, primary);
+				resultB.put(vl, backup);
+				if(!NodeLinkAssignation.vlmSimple(vl, primary))
+					throw new AssertionError("But we checked before!");
+				if(NodeLinkAssignation.backup(vl, backup, share))
 					throw new AssertionError("But we checked before!");
 			}
 			else{
 				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 				}
-				for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: result.entrySet()){
+				for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: resultP.entrySet()){
 					NodeLinkDeletion.linkFree(entry.getKey(), entry.getValue());
+				}
+				for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: resultB.entrySet()){
+					NodeLinkDeletion.linkFreeBackup(entry.getKey(), entry.getValue(),share);
 				}
 				return false;
 			}
@@ -70,7 +82,7 @@ public class ShortestPathBW extends AbstractProbaLinkMapping {
 		return true;
 	}
 	
-	private List<SubstrateLink> computeShortestPath(SubstrateNetwork sn, SubstrateNode substrateNode,
+	private List<List<SubstrateLink>> computeShortestPath(SubstrateNetwork sn, SubstrateNode substrateNode,
 			SubstrateNode substrateNode2, VirtualLink vl) {
 		//block the links without enough available capacities
 		EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(
@@ -86,15 +98,16 @@ public class ShortestPathBW extends AbstractProbaLinkMapping {
 				});
 		Graph<SubstrateNode, SubstrateLink> tmp = filter.transform(sn);
 		
-		Transformer<SubstrateLink, Double> weight = new Transformer<SubstrateLink,Double>(){
+		Transformer<SubstrateLink, Number> weight = new Transformer<SubstrateLink,Number>(){
 			public Double transform(SubstrateLink link){
 				BandwidthResource bdsrc = link.getBandwidthResource();
 				return 1/(bdsrc.getAvailableBandwidth()+0.0001);
 			}
 		};
 		
-		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(tmp,weight);	//dijkstra weight=1
-		return dijkstra.getPath(substrateNode, substrateNode2);
+		SuurballeTarjan<SubstrateNode, SubstrateLink> suur = new SuurballeTarjan<SubstrateNode, SubstrateLink>(tmp, weight);
+		return suur.getDisjointPaths(substrateNode, substrateNode2);
 	}
+
 
 }
