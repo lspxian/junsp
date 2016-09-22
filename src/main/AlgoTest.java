@@ -9,6 +9,7 @@ import li.gt_itm.Generator;
 import probabilityBandwidth.AbstractProbaLinkMapping;
 import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic1;
+import protectionProba.DisjointShortestPathPT;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.linkmapping.SOD_BK;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
@@ -25,23 +26,23 @@ public class AlgoTest {
 	public static void main(String[] args) throws IOException {
 
 		SubstrateNetwork sn=new SubstrateNetwork(); //control the directed or undirected
-		Generator.createSubNet();
-		sn.alt2network("./gt-itm/sub");
-//		sn.alt2network("data/cost239");
+//		Generator.createSubNet();
+//		sn.alt2network("./gt-itm/sub");
+		sn.alt2network("sndlib/germany50");
 		sn.addAllResource(true);
 		
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork();
 			Generator.createVirNet();
-			vn.alt2network("./gt-itm/sub");
+			vn.alt2network("./gt-itm/vir");
 		//	vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 		}
 		
-		for(int i=2;i<8;i++){
+		for(int i=1;i<2;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
@@ -66,8 +67,7 @@ public class AlgoTest {
 //				System.out.println(st.linkMapping(vns.get(i), nodeMapping));
 			
 				AbstractProbaLinkMapping method; 
-				method= new PBBWExactILP(sn);
-//				method = new ProbaHeuristic1(sn);
+				method= new DisjointShortestPathPT(sn,false);
 				System.out.println(method.linkMapping(vns.get(i), nodeMapping));
 				
 				
@@ -78,10 +78,10 @@ public class AlgoTest {
 				continue;
 			}
 		}
-		
+		/*
 		for(int i=0;i<10;i++){
 			NodeLinkDeletion.freeResource(vns.get(i), sn);
-		}
+		}*/
 		
 		System.out.println(sn.probaToString());
 		

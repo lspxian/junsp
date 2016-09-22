@@ -44,7 +44,7 @@ public class DisjointShortestPathPT extends AbstractProbaLinkMapping {
 			SubstrateNode sn1 = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
 			SubstrateNode sn2 = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
 			List<List<SubstrateLink>> shortest = computeShortestPath(sNet,sn1,sn2,vl);
-			if(!shortest.isEmpty()){
+			if(shortest.size()==2){
 				List<SubstrateLink> primary = shortest.get(0);
 				List<SubstrateLink> backup = shortest.get(1);
 //				System.out.println(vl);
@@ -61,6 +61,7 @@ public class DisjointShortestPathPT extends AbstractProbaLinkMapping {
 					throw new AssertionError("But we checked before!");
 			}
 			else{
+				System.out.println("no disjoint link");
 				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 				}
@@ -99,9 +100,13 @@ public class DisjointShortestPathPT extends AbstractProbaLinkMapping {
 		Graph<SubstrateNode, SubstrateLink> tmp = filter.transform(sn);
 		
 		Transformer<SubstrateLink, Number> weight = new Transformer<SubstrateLink,Number>(){
-			public Double transform(SubstrateLink link){
+			public Number transform(SubstrateLink link){
 				BandwidthResource bdsrc = link.getBandwidthResource();
 				return 1/(bdsrc.getAvailableBandwidth()+0.0001);
+			}
+			
+			public String toString(){
+				return "transformer substrate link";
 			}
 		};
 		
