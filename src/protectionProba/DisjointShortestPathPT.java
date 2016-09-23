@@ -1,15 +1,19 @@
 package protectionProba;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections15.Factory;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
+import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
+import edu.uci.ics.jung.algorithms.transformation.DirectionTransformer;
 import edu.uci.ics.jung.graph.Graph;
 import mulavito.algorithms.shortestpath.disjoint.SuurballeTarjan;
 import probabilityBandwidth.AbstractProbaLinkMapping;
@@ -57,7 +61,7 @@ public class DisjointShortestPathPT extends AbstractProbaLinkMapping {
 				resultB.put(vl, backup);
 				if(!NodeLinkAssignation.vlmSimple(vl, primary))
 					throw new AssertionError("But we checked before!");
-				if(NodeLinkAssignation.backup(vl, backup, share))
+				if(!NodeLinkAssignation.backup(vl, backup, share))
 					throw new AssertionError("But we checked before!");
 			}
 			else{
@@ -108,10 +112,19 @@ public class DisjointShortestPathPT extends AbstractProbaLinkMapping {
 			public String toString(){
 				return "transformer substrate link";
 			}
-		};
+		};	
 		
-		SuurballeTarjan<SubstrateNode, SubstrateLink> suur = new SuurballeTarjan<SubstrateNode, SubstrateLink>(tmp, weight);
-		return suur.getDisjointPaths(substrateNode, substrateNode2);
+		List<List<SubstrateLink>> result = new ArrayList<List<SubstrateLink>>();
+		DijkstraShortestPath<SubstrateNode,SubstrateLink> dij = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(tmp, weight);
+		result.add(dij.getPath(substrateNode, substrateNode2));	//first shortest path
+		for(SubstrateLink sl : dij.getPath(substrateNode, substrateNode2)){
+			tmp.removeEdge(sl);
+		}
+		
+		dij = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(tmp, weight);
+		result.add(dij.getPath(substrateNode, substrateNode2)); //second shortest path
+		
+		return result;
 	}
 
 

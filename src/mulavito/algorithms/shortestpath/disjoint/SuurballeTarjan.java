@@ -326,8 +326,8 @@ public class SuurballeTarjan<V, E> extends ShortestPathAlgorithm<V, E> {
 
 		for (E link : graph1.getEdges()) {
 			double newWeight = nev.transform(link).doubleValue()
-					- slTrans.transform(graph1.getEndpoints(link).getFirst()).doubleValue()
-					+ slTrans.transform(graph1.getEndpoints(link).getSecond()).doubleValue();
+					- slTrans.transform(graph1.getDest(link)).doubleValue()
+					+ slTrans.transform(graph1.getSource(link)).doubleValue();
 			newWeight = MiscelFunctions.roundToDecimals(newWeight, 3); //because it exists -1.....E-18
 
 			map.put(link, newWeight);

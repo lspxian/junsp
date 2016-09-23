@@ -1,6 +1,7 @@
 package vnreal.algorithms.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import li.multiDomain.Domain;
@@ -115,9 +116,14 @@ public class NodeLinkDeletion {
 		return true;
 	}*/
 
-	public static void linkFreeBackup(VirtualLink vl, List<SubstrateLink> slist,boolean share) {
+	public static void linkFreeBackup(VirtualLink vl, Collection<SubstrateLink> slist, boolean share) {
 		for(SubstrateLink sl:slist)
 			sl.getBandwidthResource().backupFree(vl.getBandwidthDemand(), share);
-		
+	}
+	
+	public static void FreeResourceBackup(VirtualNetwork vn, SubstrateNetwork sn, boolean share){
+		for(VirtualLink vl : vn.getEdges()){
+			linkFreeBackup(vl,sn.getEdges(),share);
+		}
 	}
 }

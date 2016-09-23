@@ -42,10 +42,10 @@ public class AlgoTest {
 			vns.add(vn);
 		}
 		
-		for(int i=1;i<2;i++){
+		for(int i=1;i<10;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
-			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,50,true,false);
+			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
 			
 			if(arnm.nodeMapping(vns.get(i))){
 				System.out.println("node mapping succes, virtual netwotk "+i);
@@ -70,18 +70,17 @@ public class AlgoTest {
 				method= new DisjointShortestPathPT(sn,false);
 				System.out.println(method.linkMapping(vns.get(i), nodeMapping));
 				
-				
-				
 			
 			}else{
 				System.out.println("node resource error, virtual network "+i);
 				continue;
 			}
 		}
-		/*
-		for(int i=0;i<10;i++){
+		
+		for(int i=1;i<10;i++){
 			NodeLinkDeletion.freeResource(vns.get(i), sn);
-		}*/
+			NodeLinkDeletion.FreeResourceBackup(vns.get(i), sn, false);
+		}
 		
 		System.out.println(sn.probaToString());
 		

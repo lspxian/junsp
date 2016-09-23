@@ -159,10 +159,9 @@ public final class BandwidthResource extends AbstractResource implements
 			@Override
 			public boolean visit(BandwidthDemand dem) {
 				if (fulfills(dem)) {
-					primaryBw += dem
-							.getDemandedBandwidth();
-					primaryBw = MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
-					occupiedBandwidth = primaryBw + reservedBackupBw;
+					primaryBw += dem.getDemandedBandwidth();
+					primaryBw = MiscelFunctions.roundThreeDecimals(primaryBw);
+					occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
 					new Mapping(dem, getThis());
 					return true;
 				} else
@@ -178,10 +177,9 @@ public final class BandwidthResource extends AbstractResource implements
 			public boolean visit(BandwidthDemand dem) {
 				if (getMapping(dem) != null) {
 					//use the bandwidth of the mapping to free ressource, this works for splitting
-					BandwidthDemand bwd = (BandwidthDemand) getMapping(dem).getDemand();	
-					occupiedBandwidth -= MiscelFunctions.roundThreeDecimals(bwd
-							.getDemandedBandwidth());
-					occupiedBandwidth = MiscelFunctions.roundThreeDecimals(occupiedBandwidth);
+					primaryBw -= dem.getDemandedBandwidth();
+					primaryBw = MiscelFunctions.roundThreeDecimals(primaryBw);
+					occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
 					return getMapping(dem).unregister();
 				} else
 					return false;
@@ -200,7 +198,7 @@ public final class BandwidthResource extends AbstractResource implements
 		if (getMappings().size() > 0)
 			sb.append(getMappingsString());
 
-		sb.append("\n Reserved backup bandwidth="+reservedBackupBw+" by : ");
+		sb.append("\n Reserved backup bandwidth="+reservedBackupBw);
 		if(this.getBackupMappings().size()>0){
 			sb.append(getBackupMappingsString());
 		}
@@ -232,26 +230,34 @@ public final class BandwidthResource extends AbstractResource implements
 	public boolean backupAssignation(BandwidthDemand bwd, boolean share){
 		if(share){
 			//TODO
+			double demValue=bwd.getDemandedBandwidth();
+			
+			
+			if(demValue>reservedBackupBw){
+				reservedBackupBw = demValue;
+				reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
+				occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
+			}
 		}
 		else{
 			reservedBackupBw += bwd.getDemandedBandwidth();
 			reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
-			occupiedBandwidth = primaryBw + reservedBackupBw;
-			new Mapping(bwd, getThis(), true); //add backup mapping
+			occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
 		}
+		new Mapping(bwd, getThis(), true); //add backup mapping
 		return true;
 	}
 	
 	public boolean backupFree(BandwidthDemand bwd, boolean share){
-		if(this.getMapping(bwd)!=null){
+		if(this.getMappingBackup(bwd)!=null){
 			if(share){
 				//TODO
 			}
 			else{
 				reservedBackupBw -= bwd.getDemandedBandwidth();
 				reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
-				occupiedBandwidth = primaryBw + reservedBackupBw;
-				return this.getMapping(bwd).unregisterBackup();
+				occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
+				return this.getMappingBackup(bwd).unregisterBackup();
 			}
 		}
 		return false;

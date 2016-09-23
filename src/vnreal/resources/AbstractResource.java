@@ -118,6 +118,13 @@ public abstract class AbstractResource extends AbstractConstraint {
 		}
 		return null;
 	}
+	
+	protected final Mapping getMappingBackup(AbstractDemand dem){
+		for(Mapping f : this.backupMappings)
+			if (f.getDemand().getOwner().equals(dem.getOwner()))
+				return f;
+		return null;
+	}
 
 	// required for visitor pattern
 	protected final AbstractResource getThis() {

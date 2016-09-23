@@ -317,7 +317,6 @@ public class NodeLinkAssignation {
 	}
 	
 	public final static boolean backup(VirtualLink vl, List<SubstrateLink> path, boolean share){
-		//TODO
 		BandwidthDemand bwd = vl.getBandwidthDemand();
 		for(SubstrateLink sl:path){
 			BandwidthResource bwr = sl.getBandwidthResource();
