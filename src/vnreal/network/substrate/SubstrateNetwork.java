@@ -339,52 +339,5 @@ public class SubstrateNetwork extends
 		return null;
 	}
 	
-	/*
-	public List<Domain> divide4Domain(){
-		List<Domain> multiNet = new ArrayList<Domain>();
-		Domain dn1 = new Domain();
-		Domain dn2 = new Domain();
-		Domain dn3 = new Domain();
-		Domain dn4 = new Domain();
-		multiNet.add(dn1);
-		multiNet.add(dn2);
-		multiNet.add(dn3);
-		multiNet.add(dn4);
-		
-		for(SubstrateLink sl : this.getEdges()){
-			SubstrateNode source = this.getEndpoints(sl).getFirst();
-			SubstrateNode dest = this.getEndpoints(sl).getSecond();
-			double sx = source.getCoordinateX();
-			double sy = source.getCoordinateY();
-			double dx = dest.getCoordinateX();
-			double dy = dest.getCoordinateY();
-			if(sx<50&&sy<50){
-				if(dx<50&&dy<50)	dn1.addEdge(sl, source, dest);
-				else if(dx>=50&&dy<50)	dn1.addInterLink(sl, source, dest, dn2);
-				else if(dx>=50&&dy>=50) dn1.addInterLink(sl, source, dest, dn3);
-				else if(dx<50&&dy>=50) dn1.addInterLink(sl, source, dest, dn4);
-			}
-			else if(sx>=50&&sy<50){
-				if(dx<50&&dy<50)	dn2.addInterLink(sl, source, dest, dn1);
-				else if(dx>=50&&dy<50)	dn2.addEdge(sl, source, dest);
-				else if(dx>=50&&dy>=50) dn2.addInterLink(sl, source, dest, dn3);
-				else if(dx<50&&dy>=50) dn2.addInterLink(sl, source, dest, dn4);
-			}
-			else if(sx>=50&&sy>=50){
-				if(dx<50&&dy<50)	dn3.addInterLink(sl, source, dest, dn1);
-				else if(dx>=50&&dy<50)	dn3.addInterLink(sl, source, dest, dn2);
-				else if(dx>=50&&dy>=50) dn3.addEdge(sl, source, dest);
-				else if(dx<50&&dy>=50) dn3.addInterLink(sl, source, dest, dn4);
-			}
-			else{
-				if(dx<50&&dy<50)	dn4.addInterLink(sl, source, dest, dn1);
-				else if(dx>=50&&dy<50)	dn4.addInterLink(sl, source, dest, dn2);
-				else if(dx>=50&&dy>=50) dn4.addInterLink(sl, source, dest, dn3);
-				else if(dx<50&&dy>=50) dn4.addEdge(sl, source, dest);
-			}
-		}
-		
-		return multiNet;
-		
-	}*/
+	
 }

@@ -31,12 +31,15 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.resources;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections15.map.LinkedMap;
 
+import protectionProba.Risk;
 import vnreal.ExchangeParameter;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.constraints.AbstractConstraint;
@@ -47,6 +50,7 @@ import vnreal.demands.DemandVisitorAdapter;
 import vnreal.mapping.Mapping;
 import vnreal.network.Link;
 import vnreal.network.NetworkEntity;
+import vnreal.network.substrate.SubstrateLink;
 
 /**
  * A resource for bandwidth in Mbit/s.
@@ -64,8 +68,8 @@ public final class BandwidthResource extends AbstractResource implements
 	//for backup 
 	private double primaryBw = 0;
 	private double reservedBackupBw = 0; // max of delta, Z
-	private Map<Link<? extends AbstractConstraint>,Double> backupBw; //Yfs of guo, or delta of yazid
-	
+	//private Map<Link<? extends AbstractConstraint>,Double> backupBw; //Yfs of guo, or delta of yazid
+	private List<Risk> risks=new ArrayList<Risk>();
 	
 
 	public double getPrimaryBw() {
@@ -83,7 +87,7 @@ public final class BandwidthResource extends AbstractResource implements
 	public void setReservedBackupBw(double reservedBackupBw) {
 		this.reservedBackupBw = reservedBackupBw;
 	}
-
+/*
 	public void updateReservedBackupBw() {
 		double max = 0 ;
 		for(Map.Entry<Link<? extends AbstractConstraint>, Double> entry: backupBw.entrySet()){
@@ -105,7 +109,7 @@ public final class BandwidthResource extends AbstractResource implements
 
 	public void setBackupBw(Map<Link<? extends AbstractConstraint>, Double> backupBw) {
 		this.backupBw = backupBw;
-	}
+	}*/
 
 	/*
 	 * Method for the distributed algorithm
@@ -120,12 +124,12 @@ public final class BandwidthResource extends AbstractResource implements
 
 	public BandwidthResource(Link<? extends AbstractConstraint> owner) {
 		super(owner);
-		backupBw = new LinkedMap<Link<? extends AbstractConstraint>,Double>();
+		//backupBw = new LinkedMap<Link<? extends AbstractConstraint>,Double>();
 	}
 	
 	public BandwidthResource(Link<? extends AbstractConstraint> owner, String name) {
 		super(owner, name);
-		backupBw = new LinkedMap<Link<? extends AbstractConstraint>,Double>();
+	//	backupBw = new LinkedMap<Link<? extends AbstractConstraint>,Double>();
 	}
 	
 
@@ -227,16 +231,30 @@ public final class BandwidthResource extends AbstractResource implements
 		return true;
 	}
 
-	public boolean backupAssignation(BandwidthDemand bwd, boolean share){
+	public boolean backupAssignation(BandwidthDemand bwd, boolean share, Collection<SubstrateLink> failures){
 		if(share){
 			//TODO
-			double demValue=bwd.getDemandedBandwidth();
+			for(SubstrateLink sl: failures){
+				boolean newRisk=true;
+				for(Risk risk:risks){
+					if(risk.getNe().equals(sl)){
+						newRisk=false;
+						risk.addDemand(bwd);
+						break;
+					}
+				}
+				if(newRisk){
+					risks.add(new Risk(sl,bwd));
+				}
+			}
 			
-			
-			if(demValue>reservedBackupBw){
-				reservedBackupBw = demValue;
-				reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
-				occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
+			for(Risk risk:risks){
+				double riskTotal = risk.getTotal();
+				if(riskTotal>reservedBackupBw){
+					reservedBackupBw = riskTotal;
+					reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
+					occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
+				}
 			}
 		}
 		else{
@@ -252,6 +270,20 @@ public final class BandwidthResource extends AbstractResource implements
 		if(this.getMappingBackup(bwd)!=null){
 			if(share){
 				//TODO
+				for(Risk risk:risks){
+					risk.removeDemand(bwd);
+				}
+				
+				reservedBackupBw=0.0;
+				for(Risk risk:risks){
+					double riskTotal = risk.getTotal();
+					if(riskTotal>=reservedBackupBw){
+						reservedBackupBw = riskTotal;
+						reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
+						occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
+					}
+				}
+				return this.getMappingBackup(bwd).unregisterBackup();
 			}
 			else{
 				reservedBackupBw -= bwd.getDemandedBandwidth();

@@ -316,11 +316,11 @@ public class NodeLinkAssignation {
 		return true;
 	}
 	
-	public final static boolean backup(VirtualLink vl, List<SubstrateLink> path, boolean share){
+	public final static boolean backup(VirtualLink vl, List<SubstrateLink> primary, List<SubstrateLink> backPath, boolean share){
 		BandwidthDemand bwd = vl.getBandwidthDemand();
-		for(SubstrateLink sl:path){
+		for(SubstrateLink sl:backPath){
 			BandwidthResource bwr = sl.getBandwidthResource();
-			bwr.backupAssignation(bwd, share);
+			bwr.backupAssignation(bwd, share, primary);
 		}
 		
 		return true;

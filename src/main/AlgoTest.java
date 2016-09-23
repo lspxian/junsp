@@ -67,7 +67,7 @@ public class AlgoTest {
 //				System.out.println(st.linkMapping(vns.get(i), nodeMapping));
 			
 				AbstractProbaLinkMapping method; 
-				method= new DisjointShortestPathPT(sn,false);
+				method= new DisjointShortestPathPT(sn,true);
 				System.out.println(method.linkMapping(vns.get(i), nodeMapping));
 				
 			
@@ -79,7 +79,7 @@ public class AlgoTest {
 		
 		for(int i=1;i<10;i++){
 			NodeLinkDeletion.freeResource(vns.get(i), sn);
-			NodeLinkDeletion.FreeResourceBackup(vns.get(i), sn, false);
+			NodeLinkDeletion.FreeResourceBackup(vns.get(i), sn, true);
 		}
 		
 		System.out.println(sn.probaToString());
