@@ -10,6 +10,7 @@ import probabilityBandwidth.AbstractProbaLinkMapping;
 import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic1;
 import protectionProba.DisjointShortestPathPT;
+import protectionProba.ShortestPathLocalPT;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.linkmapping.SOD_BK;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
@@ -42,7 +43,7 @@ public class AlgoTest {
 			vns.add(vn);
 		}
 		
-		for(int i=1;i<10;i++){
+		for(int i=1;i<2;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
@@ -67,7 +68,8 @@ public class AlgoTest {
 //				System.out.println(st.linkMapping(vns.get(i), nodeMapping));
 			
 				AbstractProbaLinkMapping method; 
-				method= new DisjointShortestPathPT(sn,true);
+//				method= new DisjointShortestPathPT(sn,true);
+				method = new ShortestPathLocalPT(sn,true);
 				System.out.println(method.linkMapping(vns.get(i), nodeMapping));
 				
 			
@@ -76,11 +78,11 @@ public class AlgoTest {
 				continue;
 			}
 		}
-		
+		/*
 		for(int i=1;i<10;i++){
 			NodeLinkDeletion.freeResource(vns.get(i), sn);
 			NodeLinkDeletion.FreeResourceBackup(vns.get(i), sn, true);
-		}
+		}*/
 		
 		System.out.println(sn.probaToString());
 		

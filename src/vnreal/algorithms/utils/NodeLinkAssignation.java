@@ -315,7 +315,14 @@ public class NodeLinkAssignation {
 		}
 		return true;
 	}
-	
+	/**
+	 * 
+	 * @param vl : 
+	 * @param primary
+	 * @param backPath
+	 * @param share
+	 * @return
+	 */
 	public final static boolean backup(VirtualLink vl, List<SubstrateLink> primary, List<SubstrateLink> backPath, boolean share){
 		BandwidthDemand bwd = vl.getBandwidthDemand();
 		for(SubstrateLink sl:backPath){

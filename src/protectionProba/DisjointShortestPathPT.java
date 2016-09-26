@@ -27,7 +27,11 @@ import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
-
+/*
+ * shared/dedicated global(path) protection
+ * par : share false--dedicated, share true--shared
+ * path computation : not suurballe, but two disjoint dijkstra path
+ */
 public class DisjointShortestPathPT extends AbstractProbaLinkMapping {
 	
 	boolean share;

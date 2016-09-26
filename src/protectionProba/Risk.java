@@ -7,7 +7,12 @@ import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.demands.BandwidthDemand;
 import vnreal.network.NetworkEntity;
 import vnreal.resources.AbstractResource;
-
+/*
+ * This is a substrate network element failure risk class 
+ * It implement the shared protection principle
+ * ne : network element, a node or a link. Don't include SRLG
+ * demands : virtual demands (links) that are supported by the risk element
+ */
 public class Risk {
 	protected NetworkEntity<AbstractResource> ne;
 	protected List<BandwidthDemand> demands;
@@ -38,4 +43,8 @@ public class Risk {
 		return MiscelFunctions.roundThreeDecimals(total);
 	}
 	
+	//TODO
+	public String toString(){
+		return super.toString();
+	}
 }

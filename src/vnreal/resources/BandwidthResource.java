@@ -230,6 +230,10 @@ public final class BandwidthResource extends AbstractResource implements
 		this.unregisterAll();
 		return true;
 	}
+	
+	public List<Risk> getRisks() {
+		return risks;
+	}
 
 	public boolean backupAssignation(BandwidthDemand bwd, boolean share, Collection<SubstrateLink> failures){
 		if(share){
@@ -248,13 +252,11 @@ public final class BandwidthResource extends AbstractResource implements
 				}
 			}
 			
-			for(Risk risk:risks){
-				double riskTotal = risk.getTotal();
-				if(riskTotal>reservedBackupBw){
-					reservedBackupBw = riskTotal;
-					reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
-					occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
-				}
+			double maxTotal =this.maxRiskTotal();
+			if(maxTotal>reservedBackupBw){
+				reservedBackupBw = maxTotal;
+				reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
+				occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
 			}
 		}
 		else{
@@ -293,6 +295,16 @@ public final class BandwidthResource extends AbstractResource implements
 			}
 		}
 		return false;
+	}
+	
+	public double maxRiskTotal(){
+		double max = 0.0;
+		for(Risk r:risks){
+			double tmp = r.getTotal();
+			if(tmp>max)
+				max=tmp;
+		}
+		return max;
 	}
 	
 }
