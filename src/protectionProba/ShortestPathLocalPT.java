@@ -46,22 +46,25 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 			SubstrateNode sn1 = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
 			SubstrateNode sn2 = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
 			List<SubstrateLink> primary = computeShortestPath(sNet,sn1,sn2,vl);
+			
+			System.out.println(vl+" "+primary);
 			if(!primary.isEmpty()){
-				List<SubstrateLink> tmpPrimary = new ArrayList<SubstrateLink>();
+				resultP.put(vl, primary);
+				if(!NodeLinkAssignation.vlmSimple(vl, primary))
+					throw new AssertionError("But we checked before!");
 				for(SubstrateLink sl: primary){
 					List<SubstrateLink> backup = this.ComputeLocalBackupPath(sNet, sl, vl,share);
+					System.out.println(sl+" "+backup);
 					usedLinksForProba.add(sl);
 					if(!backup.isEmpty()){
-						tmpPrimary.add(sl);
 						tmpBackup.addAll(backup);
-						if(!NodeLinkAssignation.occupy(vl.get(), sl))
-							throw new AssertionError("But we checked before!");
-						if(!NodeLinkAssignation.backup(vl,primary, backup, share))
+						List<SubstrateLink> tmpsl = new ArrayList<SubstrateLink>();
+						tmpsl.add(sl);
+						if(!NodeLinkAssignation.backup(vl,tmpsl, backup, share))
 							throw new AssertionError("But we checked before!");
 					}
 					else{
 						System.out.println("no backup link");
-						NodeLinkDeletion.linkFree(vl, tmpPrimary);
 						NodeLinkDeletion.linkFreeBackup(vl, tmpBackup, share);
 						for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 							NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
@@ -89,7 +92,7 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 				}
 				return false;
 			}
-			resultP.put(vl, primary);	
+			
 			resultB.put(vl, tmpBackup);
 		}
 		

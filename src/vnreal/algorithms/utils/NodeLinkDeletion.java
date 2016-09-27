@@ -98,23 +98,6 @@ public class NodeLinkDeletion {
 		
 		return true;
 	}
-	
-	
-	//it seems that it's duplicate
-	/*public static boolean linkFree(VirtualLink vlink, ArrayList<InterLink> slink){
-		for(AbstractDemand dem : vlink){
-			if(dem instanceof BandwidthDemand){
-				for(InterLink singleslink : slink){
-					for(AbstractResource res : singleslink){
-						if(res instanceof BandwidthResource ){
-							dem.free(res);
-						}
-					}
-				}
-			}
-		}
-		return true;
-	}*/
 
 	public static void linkFreeBackup(VirtualLink vl, Collection<SubstrateLink> slist, boolean share) {
 		for(SubstrateLink sl:slist)

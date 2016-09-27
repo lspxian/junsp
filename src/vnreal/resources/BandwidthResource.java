@@ -33,6 +33,7 @@ package vnreal.resources;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -206,6 +207,10 @@ public final class BandwidthResource extends AbstractResource implements
 		if(this.getBackupMappings().size()>0){
 			sb.append(getBackupMappingsString());
 		}
+		sb.append("\n");
+		for(Risk r : risks){
+			sb.append(r);
+		}
 	/*	for(Map.Entry<Link<? extends AbstractConstraint>, Double> entry: backupBw.entrySet()){
 			sb.append("bw="+entry.getValue()+"@"+entry.getKey().toString()+" ");
 		}*/
@@ -227,6 +232,9 @@ public final class BandwidthResource extends AbstractResource implements
 	
 	public boolean reset(){
 		this.setOccupiedBandwidth(0.0);
+		this.primaryBw=0.0;
+		this.reservedBackupBw=0.0;
+		this.risks.clear();
 		this.unregisterAll();
 		return true;
 	}
@@ -271,12 +279,16 @@ public final class BandwidthResource extends AbstractResource implements
 	public boolean backupFree(BandwidthDemand bwd, boolean share){
 		if(this.getMappingBackup(bwd)!=null){
 			if(share){
-				//TODO
-				for(Risk risk:risks){
+				//use iterator to remove an element of the list in a loop
+				for(Iterator<Risk> iterator=risks.iterator();iterator.hasNext();){
+					Risk risk = iterator.next();
 					risk.removeDemand(bwd);
+					if(risk.getDemands().isEmpty())
+						iterator.remove();
 				}
 				
-				reservedBackupBw=0.0;
+				reservedBackupBw = 0.0;
+				occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw);
 				for(Risk risk:risks){
 					double riskTotal = risk.getTotal();
 					if(riskTotal>=reservedBackupBw){
@@ -285,16 +297,18 @@ public final class BandwidthResource extends AbstractResource implements
 						occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
 					}
 				}
-				return this.getMappingBackup(bwd).unregisterBackup();
+				while(this.getMappingBackup(bwd)!=null)
+					this.getMappingBackup(bwd).unregisterBackup();
 			}
 			else{
 				reservedBackupBw -= bwd.getDemandedBandwidth();
 				reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
 				occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
-				return this.getMappingBackup(bwd).unregisterBackup();
+				while(this.getMappingBackup(bwd)!=null)
+					this.getMappingBackup(bwd).unregisterBackup();
 			}
 		}
-		return false;
+		return true;
 	}
 	
 	public double maxRiskTotal(){

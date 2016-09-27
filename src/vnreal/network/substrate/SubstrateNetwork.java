@@ -132,13 +132,15 @@ public class SubstrateNetwork extends
 		}*/
 		result += "\nEDGES:\n";
 		for (SubstrateLink l : getEdges()) {
-			Pair<SubstrateNode> pair = getEndpoints(l);
-			result += l + "  (" + pair.getFirst().getId() + "<->"
-					+ pair.getSecond().getId() + ") \n";
-			result += " failure probability: " + l.getProbability()+"\n";
-			for (AbstractResource r : l.get()) {
-				result += "  " + r.toString() + "\n";
-			}
+//			if(l.getBandwidthResource().getOccupiedBandwidth()!=0.0){
+				Pair<SubstrateNode> pair = getEndpoints(l);
+				result += l + "  (" + pair.getFirst().getId() + "<->"
+						+ pair.getSecond().getId() + ") \n";
+				result += " failure probability: " + l.getProbability()+"\n";
+				for (AbstractResource r : l.get()) {
+					result += "  " + r.toString() + "\n";
+				}
+//			}
 		}
 
 		return result;

@@ -1,6 +1,8 @@
 package main;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,9 @@ import vnreal.network.virtual.VirtualNode;
 public class AlgoTest {
 
 	public static void main(String[] args) throws IOException {
+		
+		PrintStream output = new PrintStream(new FileOutputStream("tmp.txt"));
+		System.setOut(output);
 
 		SubstrateNetwork sn=new SubstrateNetwork(); //control the directed or undirected
 //		Generator.createSubNet();
@@ -37,13 +42,13 @@ public class AlgoTest {
 			VirtualNetwork vn = new VirtualNetwork();
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/vir");
-		//	vn.alt2network("data/vir"+i);
+//			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 		}
 		
-		for(int i=1;i<2;i++){
+		for(int i=0;i<5;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
@@ -71,6 +76,7 @@ public class AlgoTest {
 //				method= new DisjointShortestPathPT(sn,true);
 				method = new ShortestPathLocalPT(sn,true);
 				System.out.println(method.linkMapping(vns.get(i), nodeMapping));
+//				System.out.println(sn.probaToString());
 				
 			
 			}else{
@@ -78,8 +84,10 @@ public class AlgoTest {
 				continue;
 			}
 		}
+		
+		NodeLinkDeletion.resetNet(sn);
 		/*
-		for(int i=1;i<10;i++){
+		for(int i=0;i<1;i++){
 			NodeLinkDeletion.freeResource(vns.get(i), sn);
 			NodeLinkDeletion.FreeResourceBackup(vns.get(i), sn, true);
 		}*/

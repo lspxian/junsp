@@ -27,6 +27,10 @@ public class Risk {
 		return ne;
 	}
 	
+	public List<BandwidthDemand> getDemands() {
+		return demands;
+	}
+
 	public void addDemand(BandwidthDemand bwd){
 		demands.add(bwd);
 	}
@@ -43,8 +47,11 @@ public class Risk {
 		return MiscelFunctions.roundThreeDecimals(total);
 	}
 	
-	//TODO
 	public String toString(){
-		return super.toString();
+		String str = "Risk: "+ne.toString();
+		for(BandwidthDemand de:demands){
+			str+=de.toString();
+		}
+		return str+"\n";
 	}
 }

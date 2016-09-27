@@ -97,6 +97,7 @@ public abstract class AbstractConstraint {
 		for (Mapping f : delete)
 			deletedAll = deletedAll && f.unregister();
 		
+		delete.clear();
 		if(!backupMappings.isEmpty()){
 			delete.addAll(backupMappings);
 			for (Mapping f : delete)
