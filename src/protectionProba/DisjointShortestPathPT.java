@@ -52,11 +52,11 @@ public class DisjointShortestPathPT extends AbstractProbaLinkMapping {
 			SubstrateNode sn1 = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
 			SubstrateNode sn2 = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
 			List<List<SubstrateLink>> shortest = computeShortestPath(sNet,sn1,sn2,vl);
-			if(shortest.size()==2){
+			if(shortest!=null&&shortest.size()==2){
 				List<SubstrateLink> primary = shortest.get(0);
 				List<SubstrateLink> backup = shortest.get(1);
-//				System.out.println(vl);
-//				System.out.println(shortest);
+				System.out.println(vl);
+				System.out.println(primary);
 				
 				for(SubstrateLink sl : primary)
 					usedLinksForProba.add(sl);
@@ -120,13 +120,21 @@ public class DisjointShortestPathPT extends AbstractProbaLinkMapping {
 		
 		List<List<SubstrateLink>> result = new ArrayList<List<SubstrateLink>>();
 		DijkstraShortestPath<SubstrateNode,SubstrateLink> dij = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(tmp, weight);
-		result.add(dij.getPath(substrateNode, substrateNode2));	//first shortest path
+		if(dij.getPath(substrateNode, substrateNode2).isEmpty())
+			return null;
+		else{
+			result.add(dij.getPath(substrateNode, substrateNode2));	//first shortest path
+		}
 		for(SubstrateLink sl : dij.getPath(substrateNode, substrateNode2)){
 			tmp.removeEdge(sl);
 		}
 		
 		dij = new DijkstraShortestPath<SubstrateNode,SubstrateLink>(tmp, weight);
-		result.add(dij.getPath(substrateNode, substrateNode2)); //second shortest path
+		if(dij.getPath(substrateNode, substrateNode2).isEmpty())
+			return null;
+		else{
+			result.add(dij.getPath(substrateNode, substrateNode2)); //second shortest path			
+		}
 		
 		return result;
 	}

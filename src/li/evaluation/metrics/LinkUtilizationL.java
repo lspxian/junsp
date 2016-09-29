@@ -30,6 +30,8 @@ public class LinkUtilizationL extends Metric {
 
 	@Override
 	public double calculate() {
+//		double capacity = 0.0,sum = 0.0;
+		/*
 		for (SubstrateLink sl : this.simulation.getSubstrateNetwork().getEdges()) {
 			for (AbstractResource res : sl.get()) {
 				if(res instanceof BandwidthResource){
@@ -48,7 +50,15 @@ public class LinkUtilizationL extends Metric {
 			
 			}
 		}
+		return sum/capacity;*/
+		
+		for (SubstrateLink sl : this.simulation.getSubstrateNetwork().getEdges()) {
+			capacity+=sl.getBandwidthResource().getBandwidth();
+			sum+=sl.getBandwidthResource().getOccupiedBandwidth();
+//			sum+=sl.getBandwidthResource().getPrimaryBw();
+		}
 		return sum/capacity;
+		
 	}
 		
 

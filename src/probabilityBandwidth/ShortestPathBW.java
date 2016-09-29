@@ -41,8 +41,8 @@ public class ShortestPathBW extends AbstractProbaLinkMapping {
 			List<SubstrateLink> shortest = new ArrayList<SubstrateLink>(
 					computeShortestPath(sNet,sn1,sn2,vl));
 			if(!shortest.isEmpty()){
-//				System.out.println(vl);
-//				System.out.println(shortest);
+				System.out.println(vl);
+				System.out.println(shortest);
 				
 				for(SubstrateLink sl : shortest)
 					usedLinksForProba.add(sl);

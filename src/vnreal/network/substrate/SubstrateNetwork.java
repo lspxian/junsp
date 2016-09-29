@@ -132,7 +132,7 @@ public class SubstrateNetwork extends
 		}*/
 		result += "\nEDGES:\n";
 		for (SubstrateLink l : getEdges()) {
-//			if(l.getBandwidthResource().getOccupiedBandwidth()!=0.0){
+			if(l.getBandwidthResource().getOccupiedBandwidth()!=0.0){
 				Pair<SubstrateNode> pair = getEndpoints(l);
 				result += l + "  (" + pair.getFirst().getId() + "<->"
 						+ pair.getSecond().getId() + ") \n";
@@ -140,7 +140,7 @@ public class SubstrateNetwork extends
 				for (AbstractResource r : l.get()) {
 					result += "  " + r.toString() + "\n";
 				}
-//			}
+			}
 		}
 
 		return result;

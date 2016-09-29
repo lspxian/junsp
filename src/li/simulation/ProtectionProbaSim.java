@@ -15,14 +15,21 @@ import li.evaluation.metrics.AffectedRevenue;
 import li.evaluation.metrics.Affected_VN_Number;
 import li.evaluation.metrics.AverageAffectedVNRatio;
 import li.evaluation.metrics.AverageProbability;
+import li.evaluation.metrics.CurrentLinkUtilisationL;
 import li.evaluation.metrics.LinkUtilizationL;
 import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.Metric;
+import li.evaluation.metrics.PrimaryPercentage;
 import li.event.FailureEvent;
 import li.event.NetEvent;
 import li.event.VnEvent;
+import li.gt_itm.DrawGraph;
 import li.gt_itm.Generator;
 import probabilityBandwidth.AbstractProbaLinkMapping;
+import probabilityBandwidth.PBBWExactILP;
+import probabilityBandwidth.ProbaHeuristic3;
+import probabilityBandwidth.ProbaHeuristic4;
+import probabilityBandwidth.ShortestPathBW;
 import protectionProba.DisjointShortestPathPT;
 import protectionProba.ShortestPathLocalPT;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
@@ -41,7 +48,7 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 	
 	public ProtectionProbaSim(){
 		
-		simulationTime = 100000.0;
+		simulationTime = 50000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			Generator.createSubNet();
@@ -112,11 +119,11 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 		this.netEvents.addAll(events);
 		
 		//deterministic failure event
-		for(int t=200;t<=simulationTime;t=t+200){
+	/*	for(int t=200;t<=simulationTime;t=t+200){
 			SubstrateLink fsl=randomFailure(this.sn);
 			netEvents.add(new FailureEvent(t,fsl));
 		}
-		Collections.sort(this.netEvents);
+		Collections.sort(this.netEvents);*/
 		
 		//add metric
 		metrics = new ArrayList<Metric>();
@@ -130,11 +137,13 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 		//add metrics
 		metrics.add(new AcceptedRatioL(this));
 		metrics.add(new LinkUtilizationL(this));
+//		metrics.add(new CurrentLinkUtilisationL(this));
+		metrics.add(new PrimaryPercentage(this));
 		metrics.add(new MappedRevenueL(this));
 		metrics.add(new AverageProbability(this));
-		metricsProba.add(new AverageAffectedVNRatio(this));
+/*		metricsProba.add(new AverageAffectedVNRatio(this));
 		metricsProba.add(new Affected_VN_Number(this));
-		metricsProba.add(new AffectedRevenue(this));
+		metricsProba.add(new AffectedRevenue(this));*/
 		
 		/*
 		metrics.add(new AcceptedRatioL(this, methodStr,lambda));
@@ -171,20 +180,31 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 						AbstractProbaLinkMapping method;
 						switch (methodStr)
 						{
+						case "PBBWExact" :
+							method = new PBBWExactILP(sn);
+							break;
+						case "ProbaHeuristic3" :
+							method = new ProbaHeuristic3(sn);
+							break;
+						case "ProbaHeuristic4" :
+							method = new ProbaHeuristic4(sn);
+							break;
 						case "DisjointShortestPathPT" : 
 							method = new DisjointShortestPathPT(sn,false);
 							break;
 						case "ShortestPathLocalPT" : 
 							method = new ShortestPathLocalPT(sn,true);
 							break;
-						
+						case "ShortestPathBW" :
+							method = new ShortestPathBW(sn);
+							break;
 						default : 
 							System.out.println("The methode doesn't exist");
 							method = null;
 						}
 						//TODO
-//						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<10000)
-//							System.out.println(this.sn.probaToString());
+						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<1000)
+							System.out.println(this.sn.probaToString());
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							this.currentVNs.add(cEvent.getConcernedVn());
@@ -224,6 +244,18 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 //					System.out.println("Operation : Liberation Ressources");
 					if(this.currentVNs.contains(cEvent.getConcernedVn())){
 						NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);
+						
+						//TODO
+						switch (methodStr){
+						case "DisjointShortestPathPT" : 
+							NodeLinkDeletion.FreeResourceBackup(cEvent.getConcernedVn(), sn, false);
+							break;
+						case "ShortestPathLocalPT" : 
+							NodeLinkDeletion.FreeResourceBackup(cEvent.getConcernedVn(), sn, true);
+							break;
+						default : 
+							System.out.println("The methode doesn't exist");
+						}
 						this.currentVNs.remove(cEvent.getConcernedVn());					
 					}
 				}

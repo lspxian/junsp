@@ -37,8 +37,7 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 	public boolean linkMapping(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
 		//TODO calculate proba
 		
-		double temproba=1;
-		Set<SubstrateLink> usedLinksForProba=new HashSet<SubstrateLink>();
+		Map<SubstrateLink,Set<SubstrateLink>> backupLinks=new HashMap<SubstrateLink,Set<SubstrateLink>>();
 		Map<VirtualLink,List<SubstrateLink>> resultP = new HashMap<VirtualLink,List<SubstrateLink>>();
 		Map<VirtualLink,List<SubstrateLink>> resultB = new HashMap<VirtualLink,List<SubstrateLink>>();
 		for(VirtualLink vl: vNet.getEdges()){
@@ -55,13 +54,14 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 				for(SubstrateLink sl: primary){
 					List<SubstrateLink> backup = this.ComputeLocalBackupPath(sNet, sl, vl,share);
 					System.out.println(sl+" "+backup);
-					usedLinksForProba.add(sl);
+					
 					if(!backup.isEmpty()){
 						tmpBackup.addAll(backup);
 						List<SubstrateLink> tmpsl = new ArrayList<SubstrateLink>();
 						tmpsl.add(sl);
 						if(!NodeLinkAssignation.backup(vl,tmpsl, backup, share))
 							throw new AssertionError("But we checked before!");
+						
 					}
 					else{
 						System.out.println("no backup link");
@@ -77,7 +77,18 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 						}
 						return false;
 					}
+					
+					if(backupLinks.containsKey(sl)){
+						Set<SubstrateLink> tmpSet = backupLinks.get(sl);
+						for(SubstrateLink slink : backup)
+							tmpSet.add(slink);
+					}
+					else{
+						Set<SubstrateLink> tmpSet=new HashSet<SubstrateLink>(backup);
+						backupLinks.put(sl, tmpSet);
+					}
 				}
+					
 			}
 			else{
 				System.out.println("no primary link");
@@ -94,10 +105,17 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 			}
 			
 			resultB.put(vl, tmpBackup);
+			
 		}
 		
-		for(SubstrateLink sl : usedLinksForProba){
-			temproba = temproba * (1-sl.getProbability());			
+		double temproba=1;
+		for(Map.Entry<SubstrateLink, Set<SubstrateLink>> entry : backupLinks.entrySet()){
+			
+			double backupProba=1;
+			for(SubstrateLink slink:entry.getValue()){
+				backupProba=backupProba*(1-slink.getProbability());
+			}
+			temproba = temproba * (1-entry.getKey().getProbability()*(1-backupProba));
 		}
 		this.probability=1-temproba;
 		

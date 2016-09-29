@@ -19,7 +19,7 @@ public static int c;
 		for(c=0;c<1;c++){
 			writer = new FileWriter("result.txt",true);
 			writer.write("Number:"+c+"\n");
-			ProbabilitySimulation simulation = new ProbabilitySimulation();
+			ProtectionProbaSim simulation = new ProtectionProbaSim();
 			System.out.println("Substrate Network : v "+
 							simulation.getSubstrateNetwork().getVertexCount()+" e "+
 							simulation.getSubstrateNetwork().getEdgeCount()+"\n");
@@ -28,8 +28,20 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=5;i<6;i++){
+			for(int i=2;i<4;i++){
 				simulation.initialize(i);
+				
+				PrintStream probaHeuristic4 = new PrintStream(new FileOutputStream("res/probaHeuristic4_l"+i+"_c"+c+".txt"));
+				System.setOut(probaHeuristic4);
+				writeCurrentTime();
+				simulation.runSimulation("ProbaHeuristic4");
+				simulation.reset();
+				
+				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
+				System.setOut(ShortestPathBW);
+				writeCurrentTime();
+				simulation.runSimulation("ShortestPathBW");
+				simulation.reset();
 				
 				PrintStream DisjointShortestPathPT = new PrintStream(new FileOutputStream("res/DisjointShortestPathPT_l"+i+"_c"+c+".txt"));
 				System.setOut(DisjointShortestPathPT);
