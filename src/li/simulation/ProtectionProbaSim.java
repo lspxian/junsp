@@ -56,8 +56,8 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 //			sn.alt2network("data/cost239");
 //			sn.alt2network("sndlib/germany50");
 			
-//			DrawGraph dg = new DrawGraph(sn);
-//			dg.draw();
+			DrawGraph dg = new DrawGraph(sn);
+			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -203,8 +203,8 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 							method = null;
 						}
 						//TODO
-						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<1000)
-							System.out.println(this.sn.probaToString());
+//						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<1000)
+//							System.out.println(this.sn.probaToString());
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							this.currentVNs.add(cEvent.getConcernedVn());
@@ -294,7 +294,7 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 			
 		}
 		//TODO
-//		System.out.println(this.sn.probaToString());
+		System.out.println(this.sn.probaToString());
 		
 		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("*----lambda="+this.lambda+"--"+methodStr+"----*\n");

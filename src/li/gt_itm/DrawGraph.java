@@ -9,14 +9,15 @@ import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
+import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 
 public class DrawGraph {
-	private SubstrateNetwork sn;
-	public DrawGraph(SubstrateNetwork sn){
+	private Graph<SubstrateNode, SubstrateLink> sn;
+	public DrawGraph(Graph<SubstrateNode, SubstrateLink> sn){
 		this.sn=sn;
 	}
 	

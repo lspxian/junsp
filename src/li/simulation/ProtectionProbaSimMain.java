@@ -28,7 +28,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=2;i<4;i++){
+			for(int i=4;i<5;i++){
 				simulation.initialize(i);
 				
 				PrintStream probaHeuristic4 = new PrintStream(new FileOutputStream("res/probaHeuristic4_l"+i+"_c"+c+".txt"));

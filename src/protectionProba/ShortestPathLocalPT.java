@@ -13,6 +13,7 @@ import org.apache.commons.collections15.Transformer;
 import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
+import li.gt_itm.DrawGraph;
 import probabilityBandwidth.AbstractProbaLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
@@ -155,16 +156,43 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 		BandwidthDemand bwd = vl.getBandwidthDemand();
 		
 		//block the links without enough available capacities
-		EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(
-				new Predicate<SubstrateLink>() {
-					@Override
-					public boolean evaluate(SubstrateLink slink) {
-						BandwidthResource bdsrc = slink.getBandwidthResource();
-						if((bdsrc.getAvailableBandwidth()< bwd.getDemandedBandwidth())||slink.equals(sl))
-							return false;
-						return true;
+		Predicate<SubstrateLink> pre=null;
+		if(share){
+			pre=new Predicate<SubstrateLink>(){
+				@Override
+				public boolean evaluate(SubstrateLink link) {
+					if(link.equals(sl)) return false;
+					BandwidthResource bdsrc = link.getBandwidthResource();
+					for(Risk risk:bdsrc.getRisks()){
+						if(risk.getNe().equals(sl)){
+							double origTotal = bdsrc.maxRiskTotal();
+							risk.addDemand(bwd);
+							double newTotal = bdsrc.maxRiskTotal();
+							risk.removeDemand(bwd);
+							if((newTotal-origTotal)>bdsrc.getAvailableBandwidth())
+								return false;
+							else return true;
+						}
 					}
-				});
+					double additional = bdsrc.getAvailableBandwidth()+bdsrc.getReservedBackupBw()-bwd.getDemandedBandwidth();
+					if(additional<0) return false;
+					else return true;
+				}
+			};
+		}
+		else{
+			pre=new Predicate<SubstrateLink>() {
+				@Override
+				public boolean evaluate(SubstrateLink slink) {
+					BandwidthResource bdsrc = slink.getBandwidthResource();
+					if((bdsrc.getAvailableBandwidth()< bwd.getDemandedBandwidth())||slink.equals(sl))
+						return false;
+					return true;
+				}
+			};
+		}
+		
+		EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(pre);
 		Graph<SubstrateNode, SubstrateLink> tmp = filter.transform(sn);
 		
 		Transformer<SubstrateLink, Number> weight=null;;
@@ -198,7 +226,14 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 		}
 		
 		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(tmp,weight);	//dijkstra
-		return dijkstra.getPath(node1, node2);
+		
+		List<SubstrateLink> result = dijkstra.getPath(node1, node2);
+		//TODO
+	/*	if(result.isEmpty()){
+			DrawGraph dg = new DrawGraph(tmp);
+			dg.draw();			
+		}*/
+		return result;
 	}
 	
 }
