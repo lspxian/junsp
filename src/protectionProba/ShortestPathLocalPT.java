@@ -36,55 +36,55 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 	
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
-		//TODO calculate proba
-		
+		//backupLinks are used to calculate the probability , for each substrate link, all of the protection links
+		//(no duplicate) are presented by set. 
 		Map<SubstrateLink,Set<SubstrateLink>> backupLinks=new HashMap<SubstrateLink,Set<SubstrateLink>>();
 		Map<VirtualLink,List<SubstrateLink>> resultP = new HashMap<VirtualLink,List<SubstrateLink>>();
 		Map<VirtualLink,List<SubstrateLink>> resultB = new HashMap<VirtualLink,List<SubstrateLink>>();
 		for(VirtualLink vl: vNet.getEdges()){
+			//save temporary allocated backup path to free in case of no backup
 			List<SubstrateLink> tmpBackup = new ArrayList<SubstrateLink>();
 			SubstrateNode sn1 = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
 			SubstrateNode sn2 = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
 			List<SubstrateLink> primary = computeShortestPath(sNet,sn1,sn2,vl);
 			
 			System.out.println(vl+" "+primary);
-			if(!primary.isEmpty()){
+			if(!primary.isEmpty()){	//primary path
 				resultP.put(vl, primary);
 				if(!NodeLinkAssignation.vlmSimple(vl, primary))
 					throw new AssertionError("But we checked before!");
-				for(SubstrateLink sl: primary){
+				for(SubstrateLink sl: primary){	//calculate local backup path for each link
 					List<SubstrateLink> backup = this.ComputeLocalBackupPath(sNet, sl, vl,share);
 					System.out.println(sl+" "+backup);
-					
-					if(!backup.isEmpty()){
+					if(!backup.isEmpty()){	
 						tmpBackup.addAll(backup);
 						List<SubstrateLink> tmpsl = new ArrayList<SubstrateLink>();
-						tmpsl.add(sl);
+						tmpsl.add(sl);	//bakcup assignation function use a list for primary
 						if(!NodeLinkAssignation.backup(vl,tmpsl, backup, share))
 							throw new AssertionError("But we checked before!");
 						
 					}
 					else{
 						System.out.println("no backup link");
-						NodeLinkDeletion.linkFreeBackup(vl, tmpBackup, share);
-						for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
+						NodeLinkDeletion.linkFreeBackup(vl, tmpBackup, share);	//free temporary backup
+						for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){	//free node mapping
 							NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 						}
-						for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: resultP.entrySet()){
+						for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: resultP.entrySet()){	// free primary path
 							NodeLinkDeletion.linkFree(entry.getKey(), entry.getValue());
 						}
-						for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: resultB.entrySet()){
+						for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: resultB.entrySet()){	//free backup path of other virtual links
 							NodeLinkDeletion.linkFreeBackup(entry.getKey(), entry.getValue(),share);
 						}
 						return false;
 					}
 					
-					if(backupLinks.containsKey(sl)){
+					if(backupLinks.containsKey(sl)){	//if the primary link is in the list, add just the the protection link
 						Set<SubstrateLink> tmpSet = backupLinks.get(sl);
 						for(SubstrateLink slink : backup)
 							tmpSet.add(slink);
 					}
-					else{
+					else{	//if not, add a new map element for the primary link
 						Set<SubstrateLink> tmpSet=new HashSet<SubstrateLink>(backup);
 						backupLinks.put(sl, tmpSet);
 					}
@@ -108,7 +108,7 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 			resultB.put(vl, tmpBackup);
 			
 		}
-		
+		//probability computation
 		double temproba=1;
 		for(Map.Entry<SubstrateLink, Set<SubstrateLink>> entry : backupLinks.entrySet()){
 			
@@ -123,6 +123,7 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 		return true;
 	}
 	
+	//primary path
 	private List<SubstrateLink> computeShortestPath(SubstrateNetwork sn, SubstrateNode substrateNode,
 			SubstrateNode substrateNode2, VirtualLink vl) {
 		//block the links without enough available capacities
@@ -146,7 +147,7 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 			}
 		};
 		
-		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(tmp,weight);	//dijkstra weight=1
+		DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(tmp,weight);
 		return dijkstra.getPath(substrateNode, substrateNode2);
 	}
 	
@@ -156,6 +157,7 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 		BandwidthDemand bwd = vl.getBandwidthDemand();
 		
 		//block the links without enough available capacities
+		//calculate additional bandwidth
 		Predicate<SubstrateLink> pre=null;
 		if(share){
 			pre=new Predicate<SubstrateLink>(){

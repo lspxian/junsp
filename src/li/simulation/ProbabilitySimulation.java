@@ -75,7 +75,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	
 	public ProbabilitySimulation(){
 		
-		simulationTime = 100000.0;
+		simulationTime = 500000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			Generator.createSubNet();
@@ -140,7 +140,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 			events.add(new VnEvent(vn,time,0)); //arrival event
 			if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
-			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
+			time+=MiscelFunctions.negExponential(lambda/1000.0); //generate next vn arrival event
 		}
 		Collections.sort(events);
 		
@@ -148,23 +148,23 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		this.netEvents.addAll(events);
 		
 		//deterministic failure event
-		for(int t=200;t<=simulationTime;t=t+200){
+/*		for(int t=200;t<=simulationTime;t=t+200){
 //			int slindex = new Random().nextInt(this.sn.getEdgeCount());
 //			SubstrateLink fsl= (SubstrateLink)this.sn.getEdges().toArray()[slindex];
 			
 			SubstrateLink fsl=randomFailure(this.sn);
 			netEvents.add(new FailureEvent(t,fsl));
-		}
+		}*/
 				
 		//random failure event
-		/*
+		
 		for(SubstrateLink sl : sn.getEdges()){
 			time=MiscelFunctions.negExponential(sl.getProbability());
 			while(time<simulationTime){
 				netEvents.add(new FailureEvent(time,sl));
 				time+=MiscelFunctions.negExponential(sl.getProbability());
 			}
-		}*/
+		}
 		Collections.sort(this.netEvents);
 		
 		//add metric
