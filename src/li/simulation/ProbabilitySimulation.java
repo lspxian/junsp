@@ -338,7 +338,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 			
 		}
 		//TODO
-//		System.out.println(this.sn.probaToString());
+		System.out.println(this.sn.probaToString());
 		
 //		System.out.println("*-----"+methodStr+" resume------------*");
 //		System.out.println("accepted : "+this.accepted);

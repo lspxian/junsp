@@ -86,9 +86,13 @@ public class PBBWExactILP extends AbstractProbaLinkMapping {
 		
 		for(Map.Entry<String, String> entry : solution.entrySet()){
 			String linklink = entry.getKey();
+			//sometimes flow=e-11 or e-13
+			if(Double.parseDouble(entry.getValue())<0.00001){
+				System.out.println("ILP precision error");
+				continue;
+			}
 			
 			if(linklink.startsWith("X")){
-				
 				srcSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("s")+1, linklink.indexOf("d")));
 				dstSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("d")+1));
 				srcSnode = sNet.getNodeFromID(srcSnodeId);

@@ -67,18 +67,18 @@ public class ProbabilitySimulationMain {
 				simulation.runSimulation("ProbaHeuristic2");
 //				writeCurrentTime();
 				simulation.reset();*/
-				
-				PrintStream probaHeuristic3 = new PrintStream(new FileOutputStream("res/probaHeuristic3_l"+i+"_c"+c+".txt"));
-				System.setOut(probaHeuristic3);
-				writeCurrentTime();
-				simulation.runSimulation("ProbaHeuristic3");
-				simulation.reset();
 /*
 				PrintStream probaHeuristic1 = new PrintStream(new FileOutputStream("res/probaHeuristic1_l"+i+"_c"+c+".txt"));
 				System.setOut(probaHeuristic1);
 				writeCurrentTime();
 				simulation.runSimulation("ProbaHeuristic1");
 				simulation.reset();*/
+				
+				PrintStream probaHeuristic3 = new PrintStream(new FileOutputStream("res/probaHeuristic3_l"+i+"_c"+c+".txt"));
+				System.setOut(probaHeuristic3);
+				writeCurrentTime();
+				simulation.runSimulation("ProbaHeuristic3");
+				simulation.reset();
 				
 				PrintStream probaHeuristic4 = new PrintStream(new FileOutputStream("res/probaHeuristic4_l"+i+"_c"+c+".txt"));
 				System.setOut(probaHeuristic4);
@@ -90,14 +90,12 @@ public class ProbabilitySimulationMain {
 				System.setOut(ShortestPathBW);
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW");
-//				writeCurrentTime();
 				simulation.reset();
-				
+			
 				PrintStream pbbwExact = new PrintStream(new FileOutputStream("res/PBBWExactILP_l"+i+"_c"+c+".txt"));
 				System.setOut(pbbwExact);
 				writeCurrentTime();
 				simulation.runSimulation("PBBWExact");
-//				writeCurrentTime();
 				simulation.reset();
 				
 				writeCurrentTime();
