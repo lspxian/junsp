@@ -21,6 +21,7 @@ import li.evaluation.metrics.CostL;
 import li.evaluation.metrics.CostRevenueL;
 import li.evaluation.metrics.CurrentLinkUtilisationL;
 import li.evaluation.metrics.LinkUtilizationL;
+import li.evaluation.metrics.FailureRate;
 import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.Metric;
 import li.evaluation.metrics.ProbabilityL;
@@ -140,6 +141,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 			events.add(new VnEvent(vn,time,0)); //arrival event
 			if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
+			else	vn.setLifetime(simulationTime-time);	//set lifetime as actual simulation time
 			time+=MiscelFunctions.negExponential(lambda/1000.0); //generate next vn arrival event
 		}
 		Collections.sort(events);
@@ -184,6 +186,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		metricsProba.add(new AverageAffectedVNRatio(this));
 		metricsProba.add(new Affected_VN_Number(this));
 		metricsProba.add(new AffectedRevenue(this));
+		metricsProba.add(new FailureRate(this));
 		
 		/*
 		metrics.add(new AcceptedRatioL(this, methodStr,lambda));
@@ -319,7 +322,8 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				
 				this.affected+=affectedNet.size();
 				for(VirtualNetwork vn : affectedNet){
-					this.affectedRevenue+=vn.calculateRevenue();					
+					this.affectedRevenue+=vn.calculateRevenue();
+					vn.setFailureNumber(vn.getFailureNumber()+1);
 				}
 				double ratio;
 				if(this.currentVNs.isEmpty())
@@ -383,6 +387,9 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		this.failures=0;
 		this.currentVNs = new ArrayList<VirtualNetwork>();
 		this.affectedRatio=new ArrayList<Double>();
+		for(VirtualNetwork vn:mappedVNs){
+			vn.setFailureNumber(0);
+		}
 		mappedVNs = new ArrayList<VirtualNetwork>();
 		metrics = new ArrayList<Metric>();
 		metricsProba = new ArrayList<Metric>();

@@ -71,6 +71,7 @@ public final class VirtualNetwork extends
 	private String name = null;
 	private double lifetime=0.0;	//To know the lifetime of a Vn in the Substrate Network
 	private double mu=10000;			//The mean of the lifetime
+	private int failureNumber = 0;
 	
 	public VirtualNetwork(int layer, boolean autoUnregisterConstraints, boolean directed){
 		super(autoUnregisterConstraints, directed);
@@ -117,6 +118,14 @@ public final class VirtualNetwork extends
 	@Override
 	public int getLayer() {
 		return layer;
+	}
+
+	public int getFailureNumber() {
+		return failureNumber;
+	}
+
+	public void setFailureNumber(int failureNumber) {
+		this.failureNumber = failureNumber;
 	}
 
 	@Override
