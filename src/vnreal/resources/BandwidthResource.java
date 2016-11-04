@@ -243,9 +243,38 @@ public final class BandwidthResource extends AbstractResource implements
 		return risks;
 	}
 
+	public boolean backupAssignation(BandwidthDemand bwd, boolean share, SubstrateLink failure){
+		if(share){
+			boolean newRisk=true;
+			for(Risk risk:risks){
+				if(risk.getNe().equals(failure)){
+					newRisk=false;
+					risk.addDemand(bwd);
+					break;
+				}
+			}
+			if(newRisk){
+				risks.add(new Risk(failure,bwd));
+			}
+			
+			double maxTotal =this.maxRiskTotal();
+			if(maxTotal>reservedBackupBw){
+				reservedBackupBw = maxTotal;
+				reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
+				occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
+			}
+		}
+		else{
+			reservedBackupBw += bwd.getDemandedBandwidth();
+			reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
+			occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
+		}
+		new Mapping(bwd, getThis(), true); //add backup mapping
+		return true;
+	}
+	
 	public boolean backupAssignation(BandwidthDemand bwd, boolean share, Collection<SubstrateLink> failures){
 		if(share){
-			//TODO
 			for(SubstrateLink sl: failures){
 				boolean newRisk=true;
 				for(Risk risk:risks){

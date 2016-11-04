@@ -58,9 +58,7 @@ public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
 					System.out.println(sl+" "+backup);
 					if(!backup.isEmpty()){	
 						tmpBackup.addAll(backup);
-						List<SubstrateLink> tmpsl = new ArrayList<SubstrateLink>();
-						tmpsl.add(sl);	//bakcup assignation function use a list for primary
-						if(!NodeLinkAssignation.backup(vl,tmpsl, backup, share))
+						if(!NodeLinkAssignation.backup(vl,sl, backup, share))
 							throw new AssertionError("But we checked before!");
 						
 					}

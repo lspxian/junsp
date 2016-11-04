@@ -65,7 +65,7 @@ public class DisjointShortestPathPT extends AbstractProbaLinkMapping {
 				resultB.put(vl, backup);
 				if(!NodeLinkAssignation.vlmSimple(vl, primary))
 					throw new AssertionError("But we checked before!");
-				if(!NodeLinkAssignation.backup(vl,primary, backup, share))
+				if(!NodeLinkAssignation.backupPath(vl,primary, backup, share))
 					throw new AssertionError("But we checked before!");
 			}
 			else{
