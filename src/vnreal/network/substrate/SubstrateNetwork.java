@@ -43,13 +43,19 @@ import java.util.List;
 import java.util.Random;
 
 import li.multiDomain.Domain;
+import mulavito.algorithms.shortestpath.ksp.Yen;
+import protectionProba.Risk;
 
 import org.apache.commons.collections15.Factory;
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.Transformer;
 
 import vnreal.network.Network;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 import vnreal.resources.CpuResource;
+import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
+import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.Pair;
 
 /**
@@ -341,5 +347,44 @@ public class SubstrateNetwork extends
 		return null;
 	}
 	
+	public double backupBottleneckCapacity(Collection<SubstrateLink> path,SubstrateLink riskLink){
+		double min=10000;
+		for(SubstrateLink sl:path){
+			BandwidthResource bw=sl.getBandwidthResource();
+			Double backup=0.0;
+			for(Risk r:bw.getRisks()){
+				if(r.getNe().equals(riskLink)){
+					backup=r.getTotal();
+					break;
+				}
+			}
+			double temp=bw.getBandwidth()-bw.getPrimaryBw()-backup;
+			if(temp<min)	min=temp;
+		}
+		return min;
+	}
 	
+	public double backupPotential(SubstrateLink sl){
+		double potential=0.0;
+		Predicate<SubstrateLink> pre=new Predicate<SubstrateLink>(){
+			@Override
+			public boolean evaluate(SubstrateLink arg0) {
+				if(arg0.equals(sl)) return false;
+				return true;
+			}};
+		EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(pre);
+		Graph<SubstrateNode, SubstrateLink> tmp = filter.transform(this);
+		Transformer<SubstrateLink, Number> bbc=new Transformer<SubstrateLink, Number>(){
+			@Override
+			public Number transform(SubstrateLink arg0) {
+				//TODO
+				return 1;
+			}};
+		Yen<SubstrateNode, SubstrateLink> yen=new Yen<SubstrateNode, SubstrateLink>(tmp, bbc);
+		List<List<SubstrateLink>> ksp= yen.getShortestPaths(this.getEndpoints(sl).getFirst(), this.getEndpoints(sl).getSecond(), 5);
+		for(List<SubstrateLink> tempPath:ksp){
+			potential=potential+this.backupBottleneckCapacity(tempPath, sl);
+		}
+		return potential;
+	}
 }
