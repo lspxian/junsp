@@ -6,14 +6,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
-import probabilityBandwidth.AbstractProbaLinkMapping;
-import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.BandwidthDemand;
@@ -22,37 +23,32 @@ import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
-import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
 
-public class BestEffortBackup extends AbstractProbaLinkMapping {
+public class BestEffortBackup extends AbstractBackupMapping {
 	
-	private String localPath;
 	public BestEffortBackup(SubstrateNetwork sNet) {
 		super(sNet);
-		this.localPath = "cplex/vne-mcf.lp";
 	}
 	@Override
-	public boolean linkMapping(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping) {
-		Map<String, String> solution = linkMappingWithoutUpdateLocal(vNet, nodeMapping);		
-		if(solution.size()==0){
-			System.out.println("link no solution");
-			for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
-				NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
-			}
+	public boolean linkMapping(VirtualNetwork vNet, Map<BandwidthDemand, SubstrateLink> primary) {
+		Map<String, String> solutionB = linkMappingWithoutUpdateLocal(vNet, primary);		
+		if(solutionB.size()==0){
+			System.out.println("Backup link no solution");
+			NodeLinkDeletion.freeResource(vNet, sNet);
 			return false;
 		}
 		//update
-		updateResource(vNet, nodeMapping, solution);
+		updateResource(vNet, solutionB);
 		return true;
 	}
 	
-	public Map<String,String> linkMappingWithoutUpdateLocal(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
-		Map<String, String> solution = new HashMap<String, String>();
+	public Map<String,String> linkMappingWithoutUpdateLocal(VirtualNetwork vNet,Map<BandwidthDemand, SubstrateLink> primary) {
+		Map<String, String> solutionB = new HashMap<String, String>();
 		//generate .lp file
 		try {
-			this.generateFile(vNet, nodeMapping);
-			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+localPath+" o");
+			this.generateFile(vNet,primary);
+			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py cplex/vne-mcf.lp o");
 			InputStream in = p.getInputStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String readLine;
@@ -61,7 +57,7 @@ public class BestEffortBackup extends AbstractProbaLinkMapping {
 				if(solBegin==true){
 					System.out.println(readLine);
 					StringTokenizer st = new StringTokenizer(readLine, " ");
-					solution.put(st.nextToken(), st.nextToken());
+					solutionB.put(st.nextToken(), st.nextToken());
 				}
 				if(solBegin==false&&readLine.equals("The solutions begin here : "))
 					solBegin=true;
@@ -70,121 +66,125 @@ public class BestEffortBackup extends AbstractProbaLinkMapping {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return solution;
+		return solutionB;
 	}
 	
-	public void updateResource(VirtualNetwork vNet,  Map<VirtualNode, SubstrateNode> nodeMapping, Map<String,String> solution){
-		BandwidthDemand bwDem = null,newBwDem;
-		VirtualNode srcVnode = null, dstVnode = null;
-		SubstrateNode srcSnode = null, dstSnode = null;
-		int srcVnodeId, dstVnodeId, srcSnodeId, dstSnodeId;
+	public void updateResource(VirtualNetwork vNet, Map<String,String> solutionB){
 		
-		for(Map.Entry<String, String> entry : solution.entrySet()){
+		for(Map.Entry<String, String> entry : solutionB.entrySet()){
 			String linklink = entry.getKey();
-			double flow = Double.parseDouble(entry.getValue());
-			srcVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vs")+2, linklink.indexOf("vd")));
-			dstVnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("vd")+2, linklink.indexOf("ss")));
-			srcSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("ss")+2, linklink.indexOf("sd")));
-			dstSnodeId = Integer.parseInt(linklink.substring(linklink.indexOf("sd")+2));
-			
-			//for undirected network, flow 0->1 and 1->0 are added to 0<->1, so if we have a flow 1->0, 
-			//we have to change the s and d to meet the original link 0->1
-			
-			if(srcSnodeId>dstSnodeId){
-				int tmp = srcSnodeId;
-				srcSnodeId = dstSnodeId;
-				dstSnodeId = tmp;
-			}
-			
-			srcVnode = vNet.getNodeFromID(srcVnodeId);
-			dstVnode = vNet.getNodeFromID(dstVnodeId);
-			VirtualLink tmpvl = vNet.findEdge(srcVnode, dstVnode);
-			bwDem=tmpvl.getBandwidthDemand();
-			
-			srcSnode = sNet.getNodeFromID(srcSnodeId);
-			dstSnode = sNet.getNodeFromID(dstSnodeId);
-			SubstrateLink tmpsl = sNet.findEdge(srcSnode, dstSnode);
-			
-			newBwDem = new BandwidthDemand(tmpvl);
-			newBwDem.setDemandedBandwidth(bwDem.getDemandedBandwidth()*flow);
-			
-			if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
-				throw new AssertionError("But we checked before!");
+			if(linklink.startsWith("B")){
+				linklink = linklink.replaceAll("[^0-9]+", " ");
+				List<String> list=Arrays.asList(linklink.split(" "));
+				VirtualLink tmpvl = vNet.findEdge(
+						vNet.getNodeFromID(Integer.parseInt(list.get(4))), 
+						vNet.getNodeFromID(Integer.parseInt(list.get(5))));				
+				SubstrateLink primaryLink = sNet.findEdge(
+						sNet.getNodeFromID(Integer.parseInt(list.get(2))),
+						sNet.getNodeFromID(Integer.parseInt(list.get(3))));
+				SubstrateLink backupLink = sNet.findEdge(
+						sNet.getNodeFromID(Integer.parseInt(list.get(0))),
+						sNet.getNodeFromID(Integer.parseInt(list.get(1))));
+				if(!NodeLinkAssignation.backup(tmpvl, primaryLink, backupLink, true))
+					throw new AssertionError("But we checked before!");
 			}
 		}
 	}
 	
-	public void generateFile(VirtualNetwork vNet,Map<VirtualNode, SubstrateNode> nodeMapping) throws IOException{
-		SubstrateNode ssnode=null, dsnode=null;
-		VirtualNode srcVnode = null, dstVnode = null;
-
+	public void generateFile(VirtualNetwork vNet, Map<BandwidthDemand, SubstrateLink> solutionP) throws IOException{
 		String preambule = "\\Problem : vne\n";
-		String obj = "Minimize\n"+"obj : ";
-		String constraint = "Subject To\n";
-		String bounds = "Bounds\n";
-		String general = "General\n";
-
-		for (VirtualLink tmpl:vNet.getEdges()) {
-			// Find their mapped SubstrateNodes
-			srcVnode = vNet.getEndpoints(tmpl).getFirst();
-			dstVnode = vNet.getEndpoints(tmpl).getSecond();
+		StringBuilder obj = new StringBuilder("Minimize\n"+"obj : ");
+		StringBuilder constraint = new StringBuilder("Subject To\n");
+		StringBuilder bounds = new StringBuilder("Bounds\n");
+		StringBuilder binary = new StringBuilder("Binary\n");
 		
-			for (SubstrateLink tmpsl:sNet.getEdges()){
-				ssnode = sNet.getEndpoints(tmpsl).getFirst();
-				dsnode = sNet.getEndpoints(tmpsl).getSecond();
-				
-				//objective
-				double pontential = this.sNet.backupPotential(tmpsl);
-				obj = obj + " + "+MiscelFunctions.roundToDecimals(1/(pontential+0.001),3);
-				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-				obj = obj + " + "+MiscelFunctions.roundToDecimals(1/(pontential+0.001),3);
-				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
-				
-				//integer in the <general>
-				//general = general +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
-				
-				//bounds
-				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
-				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
-			}
+		Set<SubstrateLink> riskLinks=new HashSet<SubstrateLink>();
+		for(Map.Entry<BandwidthDemand, SubstrateLink> e:solutionP.entrySet()){
+			riskLinks.add(e.getValue());
+		}
+		
+		//Objective
+		for(SubstrateLink sl:riskLinks){
+			long iid = sNet.getEndpoints(sl).getFirst().getId();
+			long jid = sNet.getEndpoints(sl).getSecond().getId();
+			double logp=-Math.log(1-sl.getProbability())*1000;
+			obj.append(" + "+logp+"-"+logp+" Yn"+iid+"n"+jid);
+			obj.append(" + "+"detn"+iid+"d"+jid);
 			
-			//flow constraints
-			Collection<SubstrateNode> nextHop = new ArrayList<SubstrateNode>();
-			for(SubstrateNode snode:sNet.getVertices()){
-				nextHop = sNet.getNeighbors(snode);
-				for(SubstrateNode tmmpsn:nextHop){
-					constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+snode.getId()+"sd"+tmmpsn.getId();
-					constraint=constraint+" - vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+tmmpsn.getId()+"sd"+snode.getId();
+			binary.append(" Yn"+iid+"n"+jid+"\n");	//Y binary 
+			bounds.append("detn"+iid+"d"+jid+">=0\n");	//delta>=0
+		}
+		
+		for(SubstrateLink sl:sNet.getEdges()){
+			BandwidthResource bwr=sl.getBandwidthResource();
+			long mid = sNet.getEndpoints(sl).getFirst().getId();
+			long nid = sNet.getEndpoints(sl).getSecond().getId();
+			
+			for(SubstrateLink rl:riskLinks){
+				if(!rl.equals(sl)){
+					Risk risk=bwr.findRiskByLink(rl);
+					long iid = sNet.getEndpoints(rl).getFirst().getId();
+					long jid = sNet.getEndpoints(rl).getSecond().getId();
+					//additional bakckup bandwidth constraint
+					for(Map.Entry<BandwidthDemand, SubstrateLink> e:solutionP.entrySet()){
+						if(e.getValue().equals(rl)){
+							double bw=e.getKey().getDemandedBandwidth();
+							VirtualLink vl=(VirtualLink) e.getKey().getOwner();
+							long vaid = vNet.getEndpoints(vl).getFirst().getId();
+							long vbid = vNet.getEndpoints(vl).getSecond().getId();
+							//additional bakckup bandwidth constraint
+							String b1=" Bs"+mid+"d"+nid+"Rn"+iid+"n"+jid+"Vn"+vaid+"n"+vbid;
+							String b2=" Bs"+nid+"d"+mid+"Rn"+iid+"n"+jid+"Vn"+vaid+"n"+vbid;
+							constraint.append("+ "+bw+b1);
+							constraint.append("+ "+bw+b2);
+							
+							//b binary
+							binary.append(b1+"\n");
+							binary.append(b2+"\n");
+						}
+					}
+					//additional backup bandwidth constraint
+					constraint.append(" - detn"+mid+"d"+nid+"+");
+					constraint.append(risk.getTotal()-bwr.getReservedBackupBw());
+					constraint.append("<=0\n");
 				}
-
-				if(snode.equals(nodeMapping.get(srcVnode)))	constraint =constraint+" = 1\n";
-				else if(snode.equals(nodeMapping.get(dstVnode))) constraint =constraint+" = -1\n";
-				else	constraint =constraint+" = 0\n";
 			}
-		}
-
-		//capacity constraint
-		for (SubstrateLink tmpsl:sNet.getEdges()){
-			ssnode = sNet.getEndpoints(tmpsl).getFirst();
-			dsnode = sNet.getEndpoints(tmpsl).getSecond();			
-			BandwidthResource bwResource=tmpsl.getBandwidthResource();
 			
-			for (VirtualLink tmpl:vNet.getEdges()) {
-				srcVnode = vNet.getEndpoints(tmpl).getFirst();
-				dstVnode = vNet.getEndpoints(tmpl).getSecond();
-				BandwidthDemand bwDem=tmpl.getBandwidthDemand();
-				//capacity constraint
-				constraint=constraint+" + "+bwDem.getDemandedBandwidth() +
-						" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+
-						" + "+bwDem.getDemandedBandwidth() +
-						" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 			
+			//bandwidth capacity
+			constraint.append("detn"+mid+"d"+nid+"<="+bwr.getAvailableBandwidth()+"\n");
+		}
+		//backup flow constraint
+		for(Map.Entry<BandwidthDemand, SubstrateLink> e:solutionP.entrySet()){
+			VirtualLink vl=(VirtualLink) e.getKey().getOwner();
+			long vaid = vNet.getEndpoints(vl).getFirst().getId();
+			long vbid = vNet.getEndpoints(vl).getSecond().getId();
+			
+			long iid = sNet.getEndpoints(e.getValue()).getFirst().getId();
+			long jid = sNet.getEndpoints(e.getValue()).getSecond().getId();
+			for(SubstrateNode mnode:sNet.getVertices()){
+				long mid=mnode.getId();
+				Collection<SubstrateNode> nextHop = sNet.getNeighbors(mnode);
+				for(SubstrateNode nnode:nextHop){
+					long nid=nnode.getId();
+					if(!(((mid==iid)&&(nid==jid))||((mid==jid)&&(nid==iid)))){
+						constraint.append("+ "+" Bs"+mid+"d"+nid);
+						constraint.append("Rn"+iid+"n"+jid);
+						constraint.append("Vn"+vaid+"n"+vbid);
+						
+						constraint.append("- "+" Bs"+nid+"d"+mid);
+						constraint.append("Rn"+iid+"n"+jid);
+						constraint.append("Vn"+vaid+"n"+vbid);
+					}
+				}
+				if(mid==iid) constraint.append(" - Yn"+iid+"n"+jid+" =0\n");
+				else if(mid==jid) constraint.append(" + Yn"+iid+"n"+jid+" =0\n");
+				else constraint.append(" =0\n");
 			}
-			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
 		}
 		
-		obj = obj+ "\n";
-		BufferedWriter writer = new BufferedWriter(new FileWriter(localPath));
-		writer.write(preambule+obj+constraint+bounds+general+"END");
+		obj.append("\n");
+		BufferedWriter writer = new BufferedWriter(new FileWriter("cplex/vne-mcf.lp"));
+		writer.write(preambule+obj+constraint+bounds+binary+"END");
 		writer.close();
 	}
 }

@@ -119,6 +119,7 @@ public class ProtectionEnabledPrimaryMapping extends AbstractProbaLinkMapping {
 			if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
 				throw new AssertionError("But we checked before!");
 			}
+			this.mapping.put(newBwDem, tmpsl);
 		}
 	}
 	

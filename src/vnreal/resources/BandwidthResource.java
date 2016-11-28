@@ -350,4 +350,12 @@ public final class BandwidthResource extends AbstractResource implements
 		return max;
 	}
 	
+	public Risk findRiskByLink(SubstrateLink sl){
+		for(Risk r:this.risks){
+			if(r.getNe().equals(sl)){
+				return r;
+			}
+		}
+		return null;
+	}
 }
