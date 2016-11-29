@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import li.gt_itm.DrawGraph;
 import li.gt_itm.Generator;
-import probabilityBandwidth.AbstractProbaLinkMapping;
 import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic1;
 import protectionProba.DisjointShortestPathPT;
+import protectionProba.ProtectionEnabledPrimaryMapping;
 import protectionProba.ShortestPathLocalPT;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.linkmapping.SOD_BK;
@@ -37,18 +38,21 @@ public class AlgoTest {
 		sn.alt2network("sndlib/germany50");
 		sn.addAllResource(true);
 		
+//		DrawGraph dg = new DrawGraph(sn);
+//		dg.draw();	
+		
 		List<VirtualNetwork> vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<15;i++){
 			VirtualNetwork vn = new VirtualNetwork();
-			Generator.createVirNet();
-			vn.alt2network("./gt-itm/vir");
-//			vn.alt2network("data/vir"+i);
+//			Generator.createVirNet();
+//			vn.alt2network("./gt-itm/vir");
+			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
 			//System.out.println("virtual network\n"+vn);
 			vns.add(vn);
 		}
 		
-		for(int i=0;i<5;i++){
+		for(int i=1;i<15;i++){
 			System.out.println("virtual network "+i+": \n"+vns.get(i));
 			//node mapping
 			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
@@ -58,25 +62,24 @@ public class AlgoTest {
 			
 			Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 			System.out.println(nodeMapping);
-			
 				//link mapping
 				
-	//			MultiCommodityFlow mcf = new MultiCommodityFlow(sn);
-	//			mcf.linkMapping(vns.get(i), nodeMapping);
-				
-	//			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
-	//			ulpc.linkMapping(vns.get(i), nodeMapping);
-	//			SOD_BK sod_bk = new SOD_BK(sn);
-	//			sod_bk.linkMapping(vns.get(i), nodeMapping);
-				
-//				SteinerTreeHeuristic st = new SteinerTreeHeuristic(sn,"Takahashi");
-//				System.out.println(st.linkMapping(vns.get(i), nodeMapping));
+//			MultiCommodityFlow mcf = new MultiCommodityFlow(sn);
+//			System.out.println(mcf.linkMappingWithoutUpdateLocal(vns.get(i), nodeMapping));
 			
-				AbstractProbaLinkMapping method; 
-//				method= new DisjointShortestPathPT(sn,true);
-				method = new ShortestPathLocalPT(sn,true);
-				System.out.println(method.linkMapping(vns.get(i), nodeMapping));
-//				System.out.println(sn.probaToString());
+//			UnsplittingLPCplex ulpc = new UnsplittingLPCplex(sn,0.3,0.7);
+//			ulpc.linkMapping(vns.get(i), nodeMapping);
+//			SOD_BK sod_bk = new SOD_BK(sn);
+//			sod_bk.linkMapping(vns.get(i), nodeMapping);
+		
+//			AbstractProbaLinkMapping method; 
+//			method= new DisjointShortestPathPT(sn,true);
+//			method = new ShortestPathLocalPT(sn,true);
+//			System.out.println(method.linkMapping(vns.get(i), nodeMapping));
+//			System.out.println(sn.probaToString());
+			
+			ProtectionEnabledPrimaryMapping pepm=new ProtectionEnabledPrimaryMapping(sn);
+			pepm.linkMapping(vns.get(i), nodeMapping);
 				
 			
 			}else{
@@ -85,7 +88,7 @@ public class AlgoTest {
 			}
 		}
 		
-		NodeLinkDeletion.resetNet(sn);
+		//NodeLinkDeletion.resetNet(sn);
 		/*
 		for(int i=0;i<1;i++){
 			NodeLinkDeletion.freeResource(vns.get(i), sn);

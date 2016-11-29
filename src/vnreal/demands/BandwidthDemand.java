@@ -56,14 +56,10 @@ public final class BandwidthDemand extends AbstractDemand implements
 	public BandwidthDemand(Link<? extends AbstractConstraint> owner) {
 		super(owner);
 	}
-	
-	
 
 	public BandwidthDemand(NetworkEntity<? extends AbstractConstraint> ne, String name) {
 		super(ne, name);
 	}
-
-
 
 	@ExchangeParameter
 	public void setDemandedBandwidth(Double bandwidth) {

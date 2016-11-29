@@ -1,21 +1,19 @@
 package probabilityBandwidth;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections15.Predicate;
-import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
 import li.SteinerTree.ProbaCost;
+import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
-import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -23,10 +21,9 @@ import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
-import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
-public class ProbaHeuristic4 extends AbstractProbaLinkMapping {
+public class ProbaHeuristic4 extends AbstractLinkMapping {
 	private DijkstraShortestPath<SubstrateNode,SubstrateLink> dijkstra;
 	private Map<SubstrateLink, Double> initialProbability;
 	private List<VirtualLink> virtualLinks;

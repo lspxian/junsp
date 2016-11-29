@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Random;
 
 import li.multiDomain.Domain;
+import mulavito.algorithms.shortestpath.ksp.Eppstein;
 import mulavito.algorithms.shortestpath.ksp.Yen;
 import protectionProba.Risk;
 
@@ -66,7 +67,6 @@ import edu.uci.ics.jung.graph.util.Pair;
 @SuppressWarnings("serial")
 public class SubstrateNetwork extends
 		Network<AbstractResource, SubstrateNode, SubstrateLink> {
-	
 	
 	/**
 	 * constructor used by filter.transform(graph)  
@@ -366,25 +366,30 @@ public class SubstrateNetwork extends
 	
 	public double backupPotential(SubstrateLink sl){
 		double potential=0.0;
-		Predicate<SubstrateLink> pre=new Predicate<SubstrateLink>(){
-			@Override
-			public boolean evaluate(SubstrateLink arg0) {
-				if(arg0.equals(sl)) return false;
-				return true;
-			}};
-		EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(pre);
-		Graph<SubstrateNode, SubstrateLink> tmp = filter.transform(this);
-		Transformer<SubstrateLink, Number> bbc=new Transformer<SubstrateLink, Number>(){
-			@Override
-			public Number transform(SubstrateLink arg0) {
-				//TODO
-				return 1;
-			}};
-		Yen<SubstrateNode, SubstrateLink> yen=new Yen<SubstrateNode, SubstrateLink>(tmp, bbc);
-		List<List<SubstrateLink>> ksp= yen.getShortestPaths(this.getEndpoints(sl).getFirst(), this.getEndpoints(sl).getSecond(), 5);
-		for(List<SubstrateLink> tempPath:ksp){
+		for(List<SubstrateLink> tempPath:sl.getKsp()){
 			potential=potential+this.backupBottleneckCapacity(tempPath, sl);
 		}
 		return potential;
 	}
+	
+	public void precalculatedBackupPath(){
+		for(SubstrateLink sl:this.getEdges()){
+			Predicate<SubstrateLink> pre=new Predicate<SubstrateLink>(){
+				@Override
+				public boolean evaluate(SubstrateLink arg0) {
+					if(arg0.equals(sl)) return false;
+					return true;
+				}};
+			EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(pre);
+			Graph<SubstrateNode, SubstrateLink> tmp = filter.transform(this);
+			Transformer<SubstrateLink, Number> bbc=new Transformer<SubstrateLink, Number>(){
+				@Override
+				public Number transform(SubstrateLink arg0) {
+					return 1;
+				}};
+			Yen<SubstrateNode, SubstrateLink> yen=new Yen<SubstrateNode, SubstrateLink>(tmp, bbc);
+			sl.setKsp(yen.getShortestPaths(this.getEndpoints(sl).getFirst(), this.getEndpoints(sl).getSecond(), 5));
+		}
+	}
+	
 }

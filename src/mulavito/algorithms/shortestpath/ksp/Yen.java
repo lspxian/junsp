@@ -157,15 +157,27 @@ public class Yen<V, E> extends KShortestPathAlgorithm<V, E> {
 			List<E> curShortestPath = found_paths.getLast();
 
 			int maxIndex = curShortestPath.size();
+			
+			List<V> curShortestPathNodes = new LinkedList<V>();
+			curShortestPathNodes.add(source);
+			for(E e:found_paths.getLast()){
+				V v=graph.getEndpoints(e).getFirst();
+				if(!curShortestPathNodes.contains(v))
+					curShortestPathNodes.add(v);
+				v=graph.getEndpoints(e).getSecond();
+				if(!curShortestPathNodes.contains(v))
+					curShortestPathNodes.add(v);
+			}
+			curShortestPathNodes.remove(target);
 
 			// Split path into Head and NextEdge
 			for (int i = 0; i < maxIndex; i++) {
-				List<E> head = curShortestPath.subList(0, i /* excluded */);
-				V deviation = head.isEmpty() ? source : graph.getDest(head
-						.get(i - 1));
-
+				List<E> head = curShortestPath.subList(0, i );
+			//	V deviation = head.isEmpty() ? source : graph.getEndpoints(head.get(i - 1)).getSecond();
+				V deviation = curShortestPathNodes.get(i);
+				
 				// 1. Block edges.
-				Graph<V, E> blocked = blockFilter(head, deviation, found_paths);
+				Graph<V, E> blocked = blockFilter(head, deviation,curShortestPathNodes, found_paths);
 
 				// 2. Get shortest path in graph with blocked edges.
 				blockedDijkstra = new DijkstraShortestPath<V, E>(blocked, nev);
@@ -177,7 +189,7 @@ public class Yen<V, E> extends KShortestPathAlgorithm<V, E> {
 				List<E> tail = blockedDijkstra.getPath(deviation, target);
 
 				// 3. Combine head and tail into new path.
-				List<E> candidate = new ArrayList<E>(i + tail.size());
+				List<E> candidate = new ArrayList<E>();
 				candidate.addAll(head);
 				candidate.addAll(tail);
 
@@ -214,14 +226,19 @@ public class Yen<V, E> extends KShortestPathAlgorithm<V, E> {
 	 *            The solutions already found and to check against
 	 * @return The filtered graph without the blocked edges.
 	 */
-	private Graph<V, E> blockFilter(List<E> head, V deviation,
+	private Graph<V, E> blockFilter(List<E> head, V deviation, List<V> curShortestPathNodes,
 			List<List<E>> foundPaths) {
 		final Set<E> blocked = new HashSet<E>();
 
 		// Block incident edges to make all vertices in head unreachable.
-		for (E e : head)
-			for (E e2 : graph.getIncidentEdges(graph.getSource(e)))
+		for(V v:curShortestPathNodes){
+			if(v.equals(deviation))	break;
+			for (E e2 : graph.getIncidentEdges(v))
 				blocked.add(e2);
+		}
+		/*for (E e : head)
+			for (E e2 : graph.getIncidentEdges(graph.getEndpoints(e).getFirst()))
+				blocked.add(e2);*/
 
 		// Block all outgoing edges that have been used at deviation vertex
 		for (List<E> path : foundPaths)
@@ -229,9 +246,10 @@ public class Yen<V, E> extends KShortestPathAlgorithm<V, E> {
 					&& ListUtils
 							.isEqualList(path.subList(0, head.size()), head))
 				for (E e : path)
-					if (graph.isSource(deviation, e)) {
+					
+					if (graph.getEndpoints(e).contains(deviation)) {
 						blocked.add(e);
-						break; // Continue with next path.
+						//break; // Continue with next path.
 					}
 
 		EdgePredicateFilter<V, E> filter = new EdgePredicateFilter<V, E>(

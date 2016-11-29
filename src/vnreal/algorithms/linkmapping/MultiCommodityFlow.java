@@ -255,15 +255,15 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 							break;
 						}
 					}
-					
 					//capacity constraint
 					constraint=constraint+" + "+bwDem.getDemandedBandwidth() +
 							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+
 							" + "+bwDem.getDemandedBandwidth() +
 							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
-				
 			}
-			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
+			double bandwidth=bwResource.getAvailableBandwidth()-0.005;
+			if(bandwidth<0) bandwidth=0;
+			constraint = constraint +" <= " + MiscelFunctions.roundThreeDecimals(bandwidth)+"\n";
 		}
 		
 		obj = obj+ "\n";

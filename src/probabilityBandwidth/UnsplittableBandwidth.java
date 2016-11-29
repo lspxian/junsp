@@ -17,6 +17,7 @@ import java.util.StringTokenizer;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
+import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
@@ -32,7 +33,7 @@ import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
-public class UnsplittableBandwidth extends AbstractProbaLinkMapping {
+public class UnsplittableBandwidth extends AbstractLinkMapping {
 
 	private String localPath ;
 	private String remotePath ;

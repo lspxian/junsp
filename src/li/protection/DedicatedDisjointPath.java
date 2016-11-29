@@ -1,6 +1,5 @@
 package li.protection;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,10 +10,9 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
-import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
 import mulavito.algorithms.shortestpath.disjoint.SuurballeTarjan;
-import probabilityBandwidth.AbstractProbaLinkMapping;
+import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.AbstractDemand;
@@ -28,7 +26,7 @@ import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
-public class DedicatedDisjointPath extends AbstractProbaLinkMapping {
+public class DedicatedDisjointPath extends AbstractLinkMapping {
 
 	protected DedicatedDisjointPath(SubstrateNetwork sNet) {
 		super(sNet);

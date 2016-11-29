@@ -10,9 +10,8 @@ import org.apache.commons.collections15.Predicate;
 import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.util.Pair;
 import li.SteinerTree.ProbaCost;
-import li.gt_itm.DrawGraph;
+import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.BandwidthDemand;
@@ -24,7 +23,7 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
 
-public class ProbaHeuristic2 extends AbstractProbaLinkMapping {
+public class ProbaHeuristic2 extends AbstractLinkMapping {
 	private DijkstraShortestPath<SubstrateNode,SubstrateLink> dijkstra;
 	private Map<SubstrateLink, Double> initialProbability;
 	private List<VirtualLink> virtualLinks;

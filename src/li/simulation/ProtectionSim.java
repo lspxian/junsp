@@ -25,13 +25,15 @@ import li.event.NetEvent;
 import li.event.VnEvent;
 import li.gt_itm.DrawGraph;
 import li.gt_itm.Generator;
-import probabilityBandwidth.AbstractProbaLinkMapping;
 import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic3;
 import probabilityBandwidth.ProbaHeuristic4;
 import probabilityBandwidth.ShortestPathBW;
 import protectionProba.DisjointShortestPathPT;
+import protectionProba.ProtectionEnabledPrimaryMapping;
 import protectionProba.ShortestPathLocalPT;
+import vnreal.algorithms.AbstractLinkMapping;
+import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkDeletion;
@@ -44,20 +46,20 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
 
-public class ProtectionProbaSim extends ProbabilitySimulation {
+public class ProtectionSim extends ProbabilitySimulation {
 	
-	public ProtectionProbaSim(){
+	public ProtectionSim(){
 		
-		simulationTime = 50000.0;
+		simulationTime = 30000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-			Generator.createSubNet();
-			sn.alt2network("./gt-itm/sub");
+//			Generator.createSubNet();
+//			sn.alt2network("./gt-itm/sub");
 //			sn.alt2network("data/cost239");
-//			sn.alt2network("sndlib/germany50");
+			sn.alt2network("sndlib/germany50");
 			
-			DrawGraph dg = new DrawGraph(sn);
-			dg.draw();
+//			DrawGraph dg = new DrawGraph(sn);
+//			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -168,7 +170,7 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 				System.out.print("Current vn : \n"+cEvent.getConcernedVn()+"\n");
 				
 				if(cEvent.getFlag()==0){
-					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,25,true,false);
+					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,35,true,false);
 //					CordinatedNodeLinkMapping arnm = new CordinatedNodeLinkMapping(sn);
 					System.out.println("Operation : Mapping");
 					
@@ -177,26 +179,20 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 						System.out.println("node mapping succes : "+nodeMapping);
 						
 						//link mapping method
-						AbstractProbaLinkMapping method;
+						AbstractLinkMapping method;
 						switch (methodStr)
 						{
-						case "PBBWExact" :
-							method = new PBBWExactILP(sn);
+						case "MCF" :
+							method = new MultiCommodityFlow(sn);
 							break;
-						case "ProbaHeuristic3" :
-							method = new ProbaHeuristic3(sn);
-							break;
-						case "ProbaHeuristic4" :
-							method = new ProbaHeuristic4(sn);
-							break;
-						case "DisjointShortestPathPT" : 
-							method = new DisjointShortestPathPT(sn,false);
-							break;
-						case "ShortestPathLocalPT" : 
-							method = new ShortestPathLocalPT(sn,true);
+						case "ProtectionEnabledMCF" :
+							method = new ProtectionEnabledPrimaryMapping(sn);
 							break;
 						case "ShortestPathBW" :
 							method = new ShortestPathBW(sn);
+							break;
+						case "ShortestPath" :
+							method = null;//TODO
 							break;
 						default : 
 							System.out.println("The methode doesn't exist");
@@ -212,8 +208,8 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 								this.accepted++;
 								mappedVNs.add(cEvent.getConcernedVn());
 								this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
-								System.out.println("current probability : "+method.getProbability());
-								this.probability.put(cEvent.getConcernedVn(), method.getProbability());								
+							//	System.out.println("current probability : "+method.getProbability());
+							//	this.probability.put(cEvent.getConcernedVn(), method.getProbability());								
 							}
 							
 							System.out.println("link mapping done");
@@ -244,7 +240,7 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 //					System.out.println("Operation : Liberation Ressources");
 					if(this.currentVNs.contains(cEvent.getConcernedVn())){
 						NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);
-						
+						/*
 						//TODO
 						switch (methodStr){
 						case "DisjointShortestPathPT" : 
@@ -255,7 +251,7 @@ public class ProtectionProbaSim extends ProbabilitySimulation {
 							break;
 						default : 
 							System.out.println("The methode doesn't exist");
-						}
+						}*/
 						this.currentVNs.remove(cEvent.getConcernedVn());					
 					}
 				}

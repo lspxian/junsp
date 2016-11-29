@@ -8,7 +8,7 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ProtectionProbaSimMain {
+public class ProtectionSimMain {
 
 public static int c;
 	
@@ -19,7 +19,7 @@ public static int c;
 		for(c=0;c<1;c++){
 			writer = new FileWriter("result.txt",true);
 			writer.write("Number:"+c+"\n");
-			ProtectionProbaSim simulation = new ProtectionProbaSim();
+			ProtectionSim simulation = new ProtectionSim();
 			System.out.println("Substrate Network : v "+
 							simulation.getSubstrateNetwork().getVertexCount()+" e "+
 							simulation.getSubstrateNetwork().getEdgeCount()+"\n");
@@ -28,14 +28,8 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=4;i<5;i++){
+			for(int i=2;i<3;i++){
 				simulation.initialize(i);
-				
-				PrintStream probaHeuristic4 = new PrintStream(new FileOutputStream("res/probaHeuristic4_l"+i+"_c"+c+".txt"));
-				System.setOut(probaHeuristic4);
-				writeCurrentTime();
-				simulation.runSimulation("ProbaHeuristic4");
-				simulation.reset();
 				
 				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
 				System.setOut(ShortestPathBW);
@@ -43,17 +37,26 @@ public static int c;
 				simulation.runSimulation("ShortestPathBW");
 				simulation.reset();
 				
-				PrintStream DisjointShortestPathPT = new PrintStream(new FileOutputStream("res/DisjointShortestPathPT_l"+i+"_c"+c+".txt"));
-				System.setOut(DisjointShortestPathPT);
+				PrintStream ProtectionEnabledMCF = new PrintStream(new FileOutputStream("res/ProtectionEnabledMCF_l"+i+"_c"+c+".txt"));
+				System.setOut(ProtectionEnabledMCF);
 				writeCurrentTime();
-				simulation.runSimulation("DisjointShortestPathPT");
+				simulation.runSimulation("ProtectionEnabledMCF");
 				simulation.reset();
 				
+				
+				PrintStream mcf = new PrintStream(new FileOutputStream("res/mcf_l"+i+"_c"+c+".txt"));
+				System.setOut(mcf);
+				writeCurrentTime();
+				simulation.runSimulation("MCF");
+				simulation.reset();
+				
+
+				/*
 				PrintStream ShortestPathLocalPT = new PrintStream(new FileOutputStream("res/ShortestPathLocalPT_l"+i+"_c"+c+".txt"));
 				System.setOut(ShortestPathLocalPT);
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathLocalPT");
-				simulation.reset();
+				simulation.reset();*/
 				
 				writeCurrentTime();
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));

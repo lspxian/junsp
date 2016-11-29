@@ -9,19 +9,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
-
-import probabilityBandwidth.AbstractProbaLinkMapping;
+import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
-import vnreal.algorithms.utils.Remote;
-import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -29,15 +23,15 @@ import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
-import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
-public class ProtectionEnabledPrimaryMapping extends AbstractProbaLinkMapping {
+public class ProtectionEnabledPrimaryMapping extends AbstractLinkMapping {
 
 	private String localPath ;
 	public ProtectionEnabledPrimaryMapping(SubstrateNetwork sNet) {
 		super(sNet);
 		this.localPath = "cplex/vne-mcf.lp";
+		this.sNet.precalculatedBackupPath();
 	}
 
 	@Override
@@ -189,7 +183,9 @@ public class ProtectionEnabledPrimaryMapping extends AbstractProbaLinkMapping {
 						" + "+bwDem.getDemandedBandwidth() +
 						" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 			
 			}
-			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
+			double bandwidth=bwResource.getAvailableBandwidth()-0.005;
+			if(bandwidth<0) bandwidth=0;
+			constraint = constraint +" <= " + MiscelFunctions.roundThreeDecimals(bandwidth)+"\n";
 		}
 		
 		obj = obj+ "\n";

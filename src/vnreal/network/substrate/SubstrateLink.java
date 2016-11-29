@@ -31,6 +31,7 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.network.substrate;
 
+import java.util.List;
 import java.util.Random;
 
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -48,6 +49,7 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 
 	protected double probability;
 	protected boolean used;
+	protected List<List<SubstrateLink>> ksp;
 	
 	public SubstrateLink() {
 		super();
@@ -125,6 +127,14 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 
 	public void setUsed(boolean used) {
 		this.used = used;
+	}
+
+	public List<List<SubstrateLink>> getKsp() {
+		return ksp;
+	}
+
+	public void setKsp(List<List<SubstrateLink>> ksp) {
+		this.ksp = ksp;
 	}
 
 }

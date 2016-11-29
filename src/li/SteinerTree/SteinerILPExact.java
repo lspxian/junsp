@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import probabilityBandwidth.AbstractProbaLinkMapping;
+import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.AbstractDemand;
@@ -24,7 +24,7 @@ import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 
-public class SteinerILPExact extends AbstractProbaLinkMapping {
+public class SteinerILPExact extends AbstractLinkMapping {
 	private String localPath ;
 	private String remotePath ;
 	public SteinerILPExact(SubstrateNetwork sNet) {

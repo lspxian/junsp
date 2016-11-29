@@ -31,7 +31,6 @@ import li.event.NetEvent;
 import li.event.VnEvent;
 import li.gt_itm.DrawGraph;
 import li.gt_itm.Generator;
-import probabilityBandwidth.AbstractProbaLinkMapping;
 import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic1;
 import probabilityBandwidth.ProbaHeuristic2;
@@ -39,6 +38,7 @@ import probabilityBandwidth.ProbaHeuristic3;
 import probabilityBandwidth.ProbaHeuristic4;
 import probabilityBandwidth.ShortestPathBW;
 import probabilityBandwidth.UnsplittableBandwidth;
+import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.algorithms.nodemapping.CordinatedNodeLinkMapping;
@@ -220,7 +220,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 						System.out.println("node mapping succes : "+nodeMapping);
 						
 						//link mapping method
-						AbstractProbaLinkMapping method;
+						AbstractLinkMapping method;
 						switch (methodStr)
 						{
 						case "Takahashi" : 

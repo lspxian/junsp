@@ -14,7 +14,7 @@ import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
 import li.gt_itm.DrawGraph;
-import probabilityBandwidth.AbstractProbaLinkMapping;
+import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.BandwidthDemand;
@@ -26,7 +26,7 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
 
-public class ShortestPathLocalPT extends AbstractProbaLinkMapping {
+public class ShortestPathLocalPT extends AbstractLinkMapping {
 
 	boolean share;
 	public ShortestPathLocalPT(SubstrateNetwork sNet, boolean share) {

@@ -8,7 +8,7 @@ import li.SteinerTree.KMB1981;
 import li.SteinerTree.KMB1981V2;
 import li.SteinerTree.ProbaCost;
 import li.SteinerTree.Takahashi;
-import probabilityBandwidth.AbstractProbaLinkMapping;
+import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
@@ -21,7 +21,7 @@ import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 
-public class SteinerTreeHeuristic extends AbstractProbaLinkMapping {
+public class SteinerTreeHeuristic extends AbstractLinkMapping {
 	
 	String method;
 	SubstrateNetwork steinerTree;

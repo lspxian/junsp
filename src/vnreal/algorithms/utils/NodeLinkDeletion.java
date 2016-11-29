@@ -8,6 +8,7 @@ import li.multiDomain.Domain;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
+import vnreal.mapping.Mapping;
 import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
@@ -34,7 +35,7 @@ public class NodeLinkDeletion {
 		
 		return true;
 	}
-	
+	/*
 	public static boolean linkFree(VirtualLink vlink, List<SubstrateLink> slink){
 		for(AbstractDemand dem : vlink){
 			if(dem instanceof BandwidthDemand){
@@ -47,6 +48,16 @@ public class NodeLinkDeletion {
 				}
 			}
 		}
+		return true;
+	}*/
+	
+	public static boolean linkFree(VirtualLink vlink, List<SubstrateLink> slink){
+		for(SubstrateLink sl : slink)
+			for(Mapping m:sl.getBandwidthResource().getMappings())
+				if(m.getDemand().getOwner().equals(vlink)){
+					m.getDemand().free(sl.getBandwidthResource());
+					break;
+				}
 		return true;
 	}
 	

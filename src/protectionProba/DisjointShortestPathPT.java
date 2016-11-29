@@ -16,7 +16,7 @@ import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.algorithms.transformation.DirectionTransformer;
 import edu.uci.ics.jung.graph.Graph;
 import mulavito.algorithms.shortestpath.disjoint.SuurballeTarjan;
-import probabilityBandwidth.AbstractProbaLinkMapping;
+import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.BandwidthDemand;
@@ -32,7 +32,7 @@ import vnreal.resources.BandwidthResource;
  * par : share false--dedicated, share true--shared
  * path computation : not suurballe, but two disjoint dijkstra path
  */
-public class DisjointShortestPathPT extends AbstractProbaLinkMapping {
+public class DisjointShortestPathPT extends AbstractLinkMapping {
 	
 	boolean share;
 	public DisjointShortestPathPT(SubstrateNetwork sNet, boolean share) {
