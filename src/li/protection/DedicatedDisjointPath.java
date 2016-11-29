@@ -57,7 +57,7 @@ public class DedicatedDisjointPath extends AbstractProbaLinkMapping {
 				result.put(vl, primary);
 				if(!NodeLinkAssignation.vlmSimple(vl, primary))
 					throw new AssertionError("But we checked before!");
-				if(!NodeLinkAssignation.backup(vl, backup, false))
+				if(!NodeLinkAssignation.backup(vl, primary,backup, false))
 					throw new AssertionError("But we checked before!");
 				
 			}

@@ -99,6 +99,10 @@ public class NodeLinkDeletion {
 		return true;
 	}
 
+	public static void linkFreeBackup(BandwidthDemand bwd, Collection<SubstrateLink> slist, boolean share) {
+		for(SubstrateLink sl:slist)
+			sl.getBandwidthResource().backupFree(bwd, share);
+	}
 	public static void linkFreeBackup(VirtualLink vl, Collection<SubstrateLink> slist, boolean share) {
 		for(SubstrateLink sl:slist)
 			sl.getBandwidthResource().backupFree(vl.getBandwidthDemand(), share);
