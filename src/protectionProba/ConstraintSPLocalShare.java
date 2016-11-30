@@ -20,7 +20,7 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.resources.BandwidthResource;
 
 public class ConstraintSPLocalShare extends AbstractBackupMapping {
-	protected ConstraintSPLocalShare(SubstrateNetwork sNet) {
+	public ConstraintSPLocalShare(SubstrateNetwork sNet) {
 		super(sNet);
 	}
 

@@ -52,6 +52,7 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 		Map<String, String> solution = linkMappingWithoutUpdateLocal(vNet, nodeMapping);		
 		if(solution.size()==0){
 			System.out.println("link no solution");
+//			System.out.println(sNet.probaToString());
 			for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 				NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 			}
@@ -153,7 +154,7 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 			if(!NodeLinkAssignation.vlmSingleLinkSimple(newBwDem, tmpsl)){
 				throw new AssertionError("But we checked before!");
 			}
-			
+			this.mapping.put(newBwDem, tmpsl);
 		}
 	}
 	

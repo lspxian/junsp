@@ -35,33 +35,32 @@ public class ShortestPathBW extends AbstractLinkMapping {
 	public boolean linkMapping(VirtualNetwork vNet, Map<VirtualNode, SubstrateNode> nodeMapping) {
 		double temproba=1;
 		Set<SubstrateLink> usedLinksForProba=new HashSet<SubstrateLink>();
-		Map<VirtualLink,List<SubstrateLink>> result = new HashMap<VirtualLink,List<SubstrateLink>>();
 		for(VirtualLink vl: vNet.getEdges()){
 			SubstrateNode sn1 = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
 			SubstrateNode sn2 = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
 			List<SubstrateLink> shortest = new ArrayList<SubstrateLink>(
 					computeShortestPath(sNet,sn1,sn2,vl));
 			if(!shortest.isEmpty()){
-				System.out.println(vl);
-				System.out.println(shortest);
+				System.out.println(vl+" "+shortest);
 				
-				for(SubstrateLink sl : shortest)
+				BandwidthDemand bwd=vl.getBandwidthDemand();
+				for(SubstrateLink sl:shortest){
 					usedLinksForProba.add(sl);
-				
-				result.put(vl, shortest);
-				if(!NodeLinkAssignation.vlmSimple(vl, shortest))
-					throw new AssertionError("But we checked before!");
+					if(!NodeLinkAssignation.vlmSingleLinkSimple(bwd, sl)){
+						throw new AssertionError("But we checked before!");
+					}
+					this.mapping.put(bwd, sl);
+				}
 			}
 			else{
 				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 				}
-				for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: result.entrySet()){
-					NodeLinkDeletion.linkFree(entry.getKey(), entry.getValue());
+				for(Map.Entry<BandwidthDemand, SubstrateLink> entry: this.mapping.entrySet()){
+					entry.getKey().free(entry.getValue().getBandwidthResource());
 				}
 				return false;
 			}
-			
 		}
 		for(SubstrateLink sl : usedLinksForProba){
 			temproba = temproba * (1-sl.getProbability());			

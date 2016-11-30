@@ -29,6 +29,9 @@ import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic3;
 import probabilityBandwidth.ProbaHeuristic4;
 import probabilityBandwidth.ShortestPathBW;
+import protectionProba.AbstractBackupMapping;
+import protectionProba.BestEffortBackup;
+import protectionProba.ConstraintSPLocalShare;
 import protectionProba.DisjointShortestPathPT;
 import protectionProba.ProtectionEnabledPrimaryMapping;
 import protectionProba.ShortestPathLocalPT;
@@ -58,8 +61,8 @@ public class ProtectionSim extends ProbabilitySimulation {
 //			sn.alt2network("data/cost239");
 			sn.alt2network("sndlib/germany50");
 			
-//			DrawGraph dg = new DrawGraph(sn);
-//			dg.draw();
+			DrawGraph dg = new DrawGraph(sn);
+			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -135,11 +138,11 @@ public class ProtectionSim extends ProbabilitySimulation {
 		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
 		this.affectedRatio = new ArrayList<Double>();
 	}
-	public void runSimulation(String methodStr) throws IOException{
+	public void runSimulation(String methodStr,String backupStr) throws IOException{
 		//add metrics
 		metrics.add(new AcceptedRatioL(this));
 		metrics.add(new LinkUtilizationL(this));
-//		metrics.add(new CurrentLinkUtilisationL(this));
+		metrics.add(new CurrentLinkUtilisationL(this));
 		metrics.add(new PrimaryPercentage(this));
 		metrics.add(new MappedRevenueL(this));
 		metrics.add(new AverageProbability(this));
@@ -177,8 +180,11 @@ public class ProtectionSim extends ProbabilitySimulation {
 					if(arnm.nodeMapping(cEvent.getConcernedVn())){
 						Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 						System.out.println("node mapping succes : "+nodeMapping);
+						//TODO
+//						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<1000)
+//							System.out.println(this.sn.probaToString());
 						
-						//link mapping method
+						//Primary link mapping
 						AbstractLinkMapping method;
 						switch (methodStr)
 						{
@@ -198,26 +204,55 @@ public class ProtectionSim extends ProbabilitySimulation {
 							System.out.println("The methode doesn't exist");
 							method = null;
 						}
-						//TODO
-//						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<1000)
-//							System.out.println(this.sn.probaToString());
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
-							this.currentVNs.add(cEvent.getConcernedVn());
-							if(currentEvent.getAoDTime()>=0){
+							System.out.println("Primary link mapping done");
+							
+							//backup here
+							AbstractBackupMapping backupMethod;
+							switch(backupStr)
+							{
+							case "BestEffort":
+								backupMethod=new BestEffortBackup(sn);
+								break;
+							case "ConstraintSP":
+								backupMethod=new ConstraintSPLocalShare(sn);
+								break;
+							case "":
+								backupMethod=null;
+								break;
+							default:
+								System.out.println("The methode doesn't exist");
+								backupMethod = null;
+							}
+							
+							if(backupStr==""){
+								System.out.println("no backup stage, primary only done.");
+								this.currentVNs.add(cEvent.getConcernedVn());
 								this.accepted++;
 								mappedVNs.add(cEvent.getConcernedVn());
 								this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
-							//	System.out.println("current probability : "+method.getProbability());
-							//	this.probability.put(cEvent.getConcernedVn(), method.getProbability());								
+								//	System.out.println("current probability : "+method.getProbability());
+								//	this.probability.put(cEvent.getConcernedVn(), method.getProbability());
 							}
-							
-							System.out.println("link mapping done");
+							else if(backupMethod.linkMapping(cEvent.getConcernedVn(), method.getMapping())){
+								System.out.println("Backup link mapping done");
+								this.currentVNs.add(cEvent.getConcernedVn());
+								this.accepted++;
+								mappedVNs.add(cEvent.getConcernedVn());
+								this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
+								//	System.out.println("current probability : "+method.getProbability());
+								//	this.probability.put(cEvent.getConcernedVn(), method.getProbability());
+								//TODO maybe backup metrics' code
+							}
+							else{
+								this.rejected++;
+								System.out.println("Backup link mapping error");
+							}
 						}
 						else{
-							if(currentEvent.getAoDTime()>=0)
-								this.rejected++;
-							System.out.println("link mapping resource error"); 
+							this.rejected++;
+							System.out.println("Primary link mapping resource error"); 
 						}
 						
 					}
@@ -227,19 +262,19 @@ public class ProtectionSim extends ProbabilitySimulation {
 //						System.out.println("node resource error, virtual network "+j);
 					}
 					
-					if(currentEvent.getAoDTime()>=0){
-						for(Metric metric : metrics){ //write data to file
-							double value = metric.calculate();
-							System.out.println(metric.name()+" "+value);
-							metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
-						}					
-					}
+					for(Metric metric : metrics){ //write data to file
+						double value = metric.calculate();
+						System.out.println(metric.name()+" "+value);
+						metric.getFout().write(currentEvent.getAoDTime()+" " +value+"\n");
+					}			
 					
 				}
 				else{
 //					System.out.println("Operation : Liberation Ressources");
 					if(this.currentVNs.contains(cEvent.getConcernedVn())){
 						NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);
+						if(backupStr!="")
+							NodeLinkDeletion.FreeResourceBackup(cEvent.getConcernedVn(), sn, true);
 						/*
 						//TODO
 						switch (methodStr){
@@ -335,25 +370,6 @@ public class ProtectionSim extends ProbabilitySimulation {
 		metrics = new ArrayList<Metric>();
 		metricsProba = new ArrayList<Metric>();
 		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
-	}
-	
-	private SubstrateLink randomFailure(SubstrateNetwork sn){
-		double max=0.0;
-		SubstrateLink[] edges =  sn.getEdges().toArray(new SubstrateLink[sn.getEdgeCount()]);
-		ArrayList<Double> num = new ArrayList<Double>();
-		for(SubstrateLink sl : sn.getEdges()){
-			max= sl.getProbability()+max;
-			num.add(max);
-		}
-		
-		double f = new Random().nextFloat()*max;
-		for(int i=0;i<num.size();i++){
-			if(f<num.get(i))
-				return edges[i];
-			
-		}
-		
-		return null;
 	}
 
 }
