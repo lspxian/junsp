@@ -9,7 +9,6 @@ import vnreal.demands.AbstractDemand;
 import vnreal.demands.BandwidthDemand;
 import vnreal.demands.CpuDemand;
 import vnreal.mapping.Mapping;
-import vnreal.network.substrate.InterLink;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
@@ -35,21 +34,6 @@ public class NodeLinkDeletion {
 		
 		return true;
 	}
-	/*
-	public static boolean linkFree(VirtualLink vlink, List<SubstrateLink> slink){
-		for(AbstractDemand dem : vlink){
-			if(dem instanceof BandwidthDemand){
-				for(SubstrateLink singleslink : slink){
-					for(AbstractResource res : singleslink){
-						if(res instanceof BandwidthResource ){
-							dem.free(res);
-						}
-					}
-				}
-			}
-		}
-		return true;
-	}*/
 	
 	public static boolean linkFree(VirtualLink vlink, List<SubstrateLink> slink){
 		for(SubstrateLink sl : slink)
@@ -114,14 +98,23 @@ public class NodeLinkDeletion {
 		for(SubstrateLink sl:slist)
 			sl.getBandwidthResource().backupFree(bwd, share);
 	}
-	public static void linkFreeBackup(VirtualLink vl, Collection<SubstrateLink> slist, boolean share) {
-		for(SubstrateLink sl:slist)
-			sl.getBandwidthResource().backupFree(vl.getBandwidthDemand(), share);
-	}
 	
 	public static void FreeResourceBackup(VirtualNetwork vn, SubstrateNetwork sn, boolean share){
-		for(VirtualLink vl : vn.getEdges()){
-			linkFreeBackup(vl,sn.getEdges(),share);
+		/*
+		for(SubstrateLink sl:sn.getEdges()){
+			BandwidthResource bwr = sl.getBandwidthResource();
+			ArrayList<BandwidthDemand> bwdList=new ArrayList<BandwidthDemand>();
+			for(Mapping mapping:bwr.getBackupMappings()){
+				BandwidthDemand tmp= (BandwidthDemand)mapping.getDemand();
+				if(vn.containsEdge((VirtualLink)tmp.getOwner())){
+					bwdList.add(tmp);
+				}
+			}
+			for(BandwidthDemand bwd:bwdList)
+				bwr.backupFree(bwd, true);				
+		}*/
+		for(VirtualLink vl:vn.getEdges()){
+			linkFreeBackup(vl.getBandwidthDemand(),sn.getEdges(),true);
 		}
 	}
 }

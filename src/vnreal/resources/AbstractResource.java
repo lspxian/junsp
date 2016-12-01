@@ -31,6 +31,9 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.resources;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import vnreal.constraints.AbstractConstraint;
 import vnreal.demands.AbstractDemand;
 import vnreal.demands.DemandVisitorAdapter;
@@ -119,11 +122,13 @@ public abstract class AbstractResource extends AbstractConstraint {
 		return null;
 	}
 	
-	protected final Mapping getMappingBackup(AbstractDemand dem){
+	protected final List<Mapping> getMappingBackup(AbstractDemand dem){
+		List<Mapping> list=new ArrayList<Mapping>();
 		for(Mapping f : this.backupMappings)
 			if (f.getDemand().getOwner().equals(dem.getOwner()))
-				return f;
-		return null;
+//			if(f.getDemand().equals(dem))
+				list.add(f);
+		return list;
 	}
 
 	// required for visitor pattern

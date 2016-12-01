@@ -61,8 +61,8 @@ public class ProtectionSim extends ProbabilitySimulation {
 //			sn.alt2network("data/cost239");
 			sn.alt2network("sndlib/germany50");
 			
-			DrawGraph dg = new DrawGraph(sn);
-			dg.draw();
+//			DrawGraph dg = new DrawGraph(sn);
+//			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -81,30 +81,33 @@ public class ProtectionSim extends ProbabilitySimulation {
 		this.affectedRevenue=0.0;
 		this.failures = 0;
 		/*-----------use pre-generated virtual network---------*/
-		/*
+		
 		events = new ArrayList<VnEvent>();
 		vns = new ArrayList<VirtualNetwork>();
-		for(int j=0;j<10;j++){
 		for(int i=0;i<1000;i++){
 			VirtualNetwork vn = new VirtualNetwork();
 			vn.alt2network("data/vir"+i);
-//			vn.alt2network("data/vir"+new Random().nextInt(500));
-//			vn.alt2network("data/vhr2");
-			vn.addAllResource(false);
+			vn.addAllResource(true);
 			//System.out.println(vn);		//print vn
 			vns.add(vn);
-		}}
+		}
+		for(int i=0;i<5;i++){
+			events.add(new VnEvent(vns.get(i),i,0));
+//			events.add(new VnEvent(vns.get(i),100,1));
+		}
+		
+		Collections.sort(events);
+		/*
 		for(int i=0;(time <=simulationTime)	&& (i <vns.size());i++){
 			events.add(new VnEvent(vns.get(i),time,0)); //arrival event
 			double departure = time+vns.get(i).getLifetime();
 			if(departure<=simulationTime)
 				events.add(new VnEvent(vns.get(i),departure,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
-		}
-		Collections.sort(events);*/
+		}*/
 		
 		/*---------random virtual network-----------*/
-		
+		/*
 		events = new ArrayList<VnEvent>();
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
@@ -119,7 +122,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
 		Collections.sort(events);
-		
+		*/
 		this.netEvents = new ArrayList<NetEvent>();
 		this.netEvents.addAll(events);
 		
@@ -139,6 +142,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 		this.affectedRatio = new ArrayList<Double>();
 	}
 	public void runSimulation(String methodStr,String backupStr) throws IOException{
+		System.out.println(this.sn.probaToString());
 		//add metrics
 		metrics.add(new AcceptedRatioL(this));
 		metrics.add(new LinkUtilizationL(this));
@@ -197,9 +201,6 @@ public class ProtectionSim extends ProbabilitySimulation {
 						case "ShortestPathBW" :
 							method = new ShortestPathBW(sn);
 							break;
-						case "ShortestPath" :
-							method = null;//TODO
-							break;
 						default : 
 							System.out.println("The methode doesn't exist");
 							method = null;
@@ -244,6 +245,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 								//	System.out.println("current probability : "+method.getProbability());
 								//	this.probability.put(cEvent.getConcernedVn(), method.getProbability());
 								//TODO maybe backup metrics' code
+//								System.out.println(sn.probaToString());
 							}
 							else{
 								this.rejected++;
@@ -275,18 +277,6 @@ public class ProtectionSim extends ProbabilitySimulation {
 						NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);
 						if(backupStr!="")
 							NodeLinkDeletion.FreeResourceBackup(cEvent.getConcernedVn(), sn, true);
-						/*
-						//TODO
-						switch (methodStr){
-						case "DisjointShortestPathPT" : 
-							NodeLinkDeletion.FreeResourceBackup(cEvent.getConcernedVn(), sn, false);
-							break;
-						case "ShortestPathLocalPT" : 
-							NodeLinkDeletion.FreeResourceBackup(cEvent.getConcernedVn(), sn, true);
-							break;
-						default : 
-							System.out.println("The methode doesn't exist");
-						}*/
 						this.currentVNs.remove(cEvent.getConcernedVn());					
 					}
 				}
@@ -355,9 +345,6 @@ public class ProtectionSim extends ProbabilitySimulation {
 	@Override
 	public void reset() {
 		NodeLinkDeletion.resetNet(this.sn);
-//		for(VirtualNetwork vn : this.currentVNs){
-//			NodeLinkDeletion.freeResource(vn,sn);
-//		}
 		this.accepted = 0;
 		this.rejected = 0;
 		this.totalCost=0.0;

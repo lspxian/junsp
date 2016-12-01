@@ -306,35 +306,32 @@ public final class BandwidthResource extends AbstractResource implements
 	}
 	
 	public boolean backupFree(BandwidthDemand bwd, boolean share){
-		if(this.getMappingBackup(bwd)!=null){
+		List<Mapping> list=getMappingBackup(bwd);
+		if(list!=null){
 			if(share){
 				//use iterator to remove an element of the list in a loop
 				for(Iterator<Risk> iterator=risks.iterator();iterator.hasNext();){
 					Risk risk = iterator.next();
-					risk.removeDemand(bwd);
-					if(risk.getDemands().isEmpty())
+					risk.findAndRemove(bwd);
+					if(risk.getDemands().isEmpty()){
 						iterator.remove();
+					}						
 				}
 				
-				reservedBackupBw = 0.0;
-				occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw);
-				for(Risk risk:risks){
-					double riskTotal = risk.getTotal();
-					if(riskTotal>=reservedBackupBw){
-						reservedBackupBw = riskTotal;
-						reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
-						occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
-					}
+				double maxRiskTotal=maxRiskTotal();
+				if(maxRiskTotal<reservedBackupBw){
+					reservedBackupBw = MiscelFunctions.roundThreeDecimals(maxRiskTotal);
+					occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + maxRiskTotal);
 				}
-				while(this.getMappingBackup(bwd)!=null)
-					this.getMappingBackup(bwd).unregisterBackup();
+				for(Mapping m:list)
+					m.unregisterBackup();
 			}
 			else{
 				reservedBackupBw -= bwd.getDemandedBandwidth();
 				reservedBackupBw = MiscelFunctions.roundThreeDecimals(reservedBackupBw);
 				occupiedBandwidth = MiscelFunctions.roundThreeDecimals(primaryBw + reservedBackupBw);
-				while(this.getMappingBackup(bwd)!=null)
-					this.getMappingBackup(bwd).unregisterBackup();
+				for(Mapping m:list)
+					m.unregisterBackup();
 			}
 		}
 		return true;

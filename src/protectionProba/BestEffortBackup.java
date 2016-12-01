@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -72,10 +73,15 @@ public class BestEffortBackup extends AbstractBackupMapping {
 	public void updateResource(VirtualNetwork vNet, Map<String,String> solutionB){
 		
 		for(Map.Entry<String, String> entry : solutionB.entrySet()){
+			if(Double.parseDouble(entry.getValue())<0.00001){
+				System.out.println("ILP precision error");
+				continue;
+			}
 			String linklink = entry.getKey();
 			if(linklink.startsWith("B")){
 				linklink = linklink.replaceAll("[^0-9]+", " ");
-				List<String> list=Arrays.asList(linklink.split(" "));
+				List<String> list=new ArrayList<String>(Arrays.asList(linklink.split(" ")));
+				list.remove("");
 				VirtualLink tmpvl = vNet.findEdge(
 						vNet.getNodeFromID(Integer.parseInt(list.get(4))), 
 						vNet.getNodeFromID(Integer.parseInt(list.get(5))));				
@@ -107,12 +113,11 @@ public class BestEffortBackup extends AbstractBackupMapping {
 		for(SubstrateLink sl:riskLinks){
 			long iid = sNet.getEndpoints(sl).getFirst().getId();
 			long jid = sNet.getEndpoints(sl).getSecond().getId();
-			double logp=-Math.log(1-sl.getProbability())*1000;
-			obj.append(" + "+logp+"-"+logp+" Yn"+iid+"n"+jid);
-			obj.append(" + "+"detn"+iid+"d"+jid);
+			double logp=Math.log(1-sl.getProbability())*1E8;
+			obj.append("  "+logp+" Yn"+iid+"n"+jid);
 			
 			binary.append(" Yn"+iid+"n"+jid+"\n");	//Y binary 
-			bounds.append("detn"+iid+"d"+jid+">=0\n");	//delta>=0
+		//	bounds.append("detn"+iid+"d"+jid+">=0\n");	//delta>=0
 		}
 		
 		for(SubstrateLink sl:sNet.getEdges()){
@@ -122,7 +127,6 @@ public class BestEffortBackup extends AbstractBackupMapping {
 			
 			for(SubstrateLink rl:riskLinks){
 				if(!rl.equals(sl)){
-					Risk risk=bwr.findRiskByLink(rl);
 					long iid = sNet.getEndpoints(rl).getFirst().getId();
 					long jid = sNet.getEndpoints(rl).getSecond().getId();
 					//additional bakckup bandwidth constraint
@@ -144,14 +148,17 @@ public class BestEffortBackup extends AbstractBackupMapping {
 						}
 					}
 					//additional backup bandwidth constraint
-					constraint.append(" - detn"+mid+"d"+nid+"+");
-					constraint.append(risk.getTotal()-bwr.getReservedBackupBw());
-					constraint.append("<=0\n");
+					constraint.append(" - detn"+mid+"d"+nid);
+					double tmp=bwr.getReservedBackupBw();
+					Risk risk=bwr.findRiskByLink(rl);
+					if(risk!=null)	tmp=tmp-risk.getTotal();
+					else constraint.append("<="+tmp+"\n");
 				}
 			}
 			
-			//bandwidth capacity
-			constraint.append("detn"+mid+"d"+nid+"<="+bwr.getAvailableBandwidth()+"\n");
+			obj.append(" + "+"detn"+mid+"d"+nid);
+			//bandwidth capacity and delta>=0
+			bounds.append("0<=detn"+mid+"d"+nid+"<="+bwr.getAvailableBandwidth()+"\n");
 		}
 		//backup flow constraint
 		for(Map.Entry<BandwidthDemand, SubstrateLink> e:solutionP.entrySet()){

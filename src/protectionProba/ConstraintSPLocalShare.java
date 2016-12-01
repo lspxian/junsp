@@ -29,6 +29,7 @@ public class ConstraintSPLocalShare extends AbstractBackupMapping {
 		Map<BandwidthDemand,List<SubstrateLink>> resultB = new HashMap<BandwidthDemand,List<SubstrateLink>>();
 		for(Map.Entry<BandwidthDemand, SubstrateLink> e:primary.entrySet()){
 			List<SubstrateLink> backup = this.ComputeLocalBackupPath(sNet, e.getValue(), e.getKey(), true);
+			System.out.println(e.getValue()+" "+backup);
 			if(!backup.isEmpty()){
 				resultB.put(e.getKey(), backup);
 				if(!NodeLinkAssignation.backup(e.getKey(),e.getValue(), backup, true))

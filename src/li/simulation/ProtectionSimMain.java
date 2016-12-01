@@ -30,34 +30,31 @@ public static int c;
 			
 			for(int i=2;i<3;i++){
 				simulation.initialize(i);
-				PrintStream mcf = new PrintStream(new FileOutputStream("res/mcf_l"+i+"_c"+c+".txt"));
-				System.setOut(mcf);
+				PrintStream mcf_be = new PrintStream(new FileOutputStream("res/mcf_be_l"+i+"_c"+c+".txt"));
+				System.setOut(mcf_be);
 				writeCurrentTime();
-				simulation.runSimulation("MCF","");
+				simulation.runSimulation("MCF","BestEffort");
+				simulation.reset();
+				
+				PrintStream mcf_csp = new PrintStream(new FileOutputStream("res/mcf_csp_l"+i+"_c"+c+".txt"));
+				System.setOut(mcf_csp);
+				writeCurrentTime();
+				simulation.runSimulation("MCF","ConstraintSP");
 				simulation.reset();
 				/*
+				PrintStream ProtectionEnabledMCF = new PrintStream(new FileOutputStream("res/ProtectionEnabledMCF_l"+i+"_c"+c+".txt"));
+				System.setOut(ProtectionEnabledMCF);
+				writeCurrentTime();
+				simulation.runSimulation("ProtectionEnabledMCF","ConstraintSP");
+				simulation.reset();
+				
 				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
 				System.setOut(ShortestPathBW);
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW","");
 				simulation.reset();
 				
-				PrintStream ProtectionEnabledMCF = new PrintStream(new FileOutputStream("res/ProtectionEnabledMCF_l"+i+"_c"+c+".txt"));
-				System.setOut(ProtectionEnabledMCF);
-				writeCurrentTime();
-				simulation.runSimulation("ProtectionEnabledMCF","");
-				simulation.reset();*/
-				
-				
-
-				
-
-				/*
-				PrintStream ShortestPathLocalPT = new PrintStream(new FileOutputStream("res/ShortestPathLocalPT_l"+i+"_c"+c+".txt"));
-				System.setOut(ShortestPathLocalPT);
-				writeCurrentTime();
-				simulation.runSimulation("ShortestPathLocalPT");
-				simulation.reset();*/
+				*/
 				
 				writeCurrentTime();
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));

@@ -1,6 +1,7 @@
 package protectionProba;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -35,8 +36,15 @@ public class Risk {
 		demands.add(bwd);
 	}
 	
-	public boolean removeDemand(BandwidthDemand bwd){
-		return demands.remove(bwd);
+	public void removeDemand(BandwidthDemand bwd){
+		demands.remove(bwd);
+	}
+	
+	public void findAndRemove(BandwidthDemand bwd){
+		for(Iterator<BandwidthDemand> it=demands.iterator();it.hasNext();){
+			if(it.next().getOwner().equals(bwd.getOwner()))
+				it.remove();
+		}
 	}
 	
 	public double getTotal(){
