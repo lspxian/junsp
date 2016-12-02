@@ -37,6 +37,7 @@ public class ConstraintSPLocalShare extends AbstractBackupMapping {
 			}
 			else{
 				System.out.println("no backup link");
+				System.out.println(e.getValue().getBandwidthResource());
 				NodeLinkDeletion.freeResource(vNet, sNet);	//free primary
 				for(Map.Entry<BandwidthDemand, List<SubstrateLink>> ent: resultB.entrySet()){	//free backup path of other virtual links
 					NodeLinkDeletion.linkFreeBackup(ent.getKey(), ent.getValue(),true);

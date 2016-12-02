@@ -358,7 +358,8 @@ public class SubstrateNetwork extends
 					break;
 				}
 			}
-			double temp=bw.getBandwidth()-bw.getPrimaryBw()-backup;
+//			double temp=bw.getBandwidth()-bw.getPrimaryBw()-backup;
+			double temp=bw.getReservedBackupBw()-backup;
 			if(temp<min)	min=temp;
 		}
 		return min;
@@ -367,7 +368,8 @@ public class SubstrateNetwork extends
 	public double backupPotential(SubstrateLink sl){
 		double potential=0.0;
 		for(List<SubstrateLink> tempPath:sl.getKsp()){
-			potential=potential+this.backupBottleneckCapacity(tempPath, sl);
+			double tmp=this.backupBottleneckCapacity(tempPath, sl);
+			if(tmp>potential)	potential=tmp;
 		}
 		return potential;
 	}

@@ -132,6 +132,7 @@ public class ProtectionEnabledPrimaryMapping extends AbstractLinkMapping {
 			// Find their mapped SubstrateNodes
 			srcVnode = vNet.getEndpoints(tmpl).getFirst();
 			dstVnode = vNet.getEndpoints(tmpl).getSecond();
+			BandwidthDemand bwDem=tmpl.getBandwidthDemand();
 		
 			for (SubstrateLink tmpsl:sNet.getEdges()){
 				ssnode = sNet.getEndpoints(tmpsl).getFirst();
@@ -139,10 +140,13 @@ public class ProtectionEnabledPrimaryMapping extends AbstractLinkMapping {
 				
 				//objective
 				double pontential = this.sNet.backupPotential(tmpsl);
-				obj = obj + " + "+MiscelFunctions.roundToDecimals(1/(pontential+0.001),3);
-				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-				obj = obj + " + "+MiscelFunctions.roundToDecimals(1/(pontential+0.001),3);
-				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+//				double demPon=bwDem.getDemandedBandwidth()/(pontential+0.001);
+				double demPon=pontential-bwDem.getDemandedBandwidth();
+				if(demPon<0)	demPon=0.001;
+				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(100/demPon);
+				obj = obj + "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(100/demPon);
+				obj = obj + "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//integer in the <general>
 				//general = general +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";

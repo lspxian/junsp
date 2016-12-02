@@ -58,7 +58,7 @@ public class Risk {
 	public String toString(){
 		String str = "Risk: "+ne.toString();
 		for(BandwidthDemand de:demands){
-			str+=de.toString();
+			str+=de.toString()+"@"+de.getOwner();
 		}
 		return str+"\n";
 	}

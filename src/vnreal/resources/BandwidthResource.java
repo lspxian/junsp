@@ -204,9 +204,8 @@ public final class BandwidthResource extends AbstractResource implements
 			sb.append(getMappingsString());
 
 		sb.append("\n Reserved backup bandwidth="+reservedBackupBw);
-		if(this.getBackupMappings().size()>0){
-			sb.append(getBackupMappingsString());
-		}
+//		if(this.getBackupMappings().size()>0)
+//			sb.append(getBackupMappingsString());
 		sb.append("\n");
 		for(Risk r : risks){
 			sb.append(r);

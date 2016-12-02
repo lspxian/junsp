@@ -53,16 +53,16 @@ public class ProtectionSim extends ProbabilitySimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 30000.0;
+		simulationTime = 3000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 //			Generator.createSubNet();
 //			sn.alt2network("./gt-itm/sub");
 //			sn.alt2network("data/cost239");
-			sn.alt2network("sndlib/germany50");
+			sn.alt2network("sndlib/ta2");
 			
-//			DrawGraph dg = new DrawGraph(sn);
-//			dg.draw();
+			DrawGraph dg = new DrawGraph(sn);
+			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -81,7 +81,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 		this.affectedRevenue=0.0;
 		this.failures = 0;
 		/*-----------use pre-generated virtual network---------*/
-		
+		/*
 		events = new ArrayList<VnEvent>();
 		vns = new ArrayList<VirtualNetwork>();
 		for(int i=0;i<1000;i++){
@@ -96,7 +96,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 //			events.add(new VnEvent(vns.get(i),100,1));
 		}
 		
-		Collections.sort(events);
+		Collections.sort(events);*/
 		/*
 		for(int i=0;(time <=simulationTime)	&& (i <vns.size());i++){
 			events.add(new VnEvent(vns.get(i),time,0)); //arrival event
@@ -107,7 +107,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 		}*/
 		
 		/*---------random virtual network-----------*/
-		/*
+		
 		events = new ArrayList<VnEvent>();
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
@@ -122,7 +122,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
 		Collections.sort(events);
-		*/
+		
 		this.netEvents = new ArrayList<NetEvent>();
 		this.netEvents.addAll(events);
 		
@@ -177,7 +177,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 				System.out.print("Current vn : \n"+cEvent.getConcernedVn()+"\n");
 				
 				if(cEvent.getFlag()==0){
-					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,35,true,false);
+					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,25,true,false);
 //					CordinatedNodeLinkMapping arnm = new CordinatedNodeLinkMapping(sn);
 					System.out.println("Operation : Mapping");
 					
@@ -208,6 +208,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							System.out.println("Primary link mapping done");
+//							System.out.println(this.sn.probaToString());
 							
 							//backup here
 							AbstractBackupMapping backupMethod;
@@ -318,7 +319,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 		System.out.println(this.sn.probaToString());
 		
 		FileWriter writer = new FileWriter("result.txt",true);
-		writer.write("*----lambda="+this.lambda+"--"+methodStr+"----*\n");
+		writer.write("*----lambda="+this.lambda+"--"+methodStr+"-"+backupStr+"----*\n");
 		writer.write("accepted : "+this.accepted+"\n");
 		writer.write("rejected : "+this.rejected+"\n");
 		for(Metric metric : metrics){ 

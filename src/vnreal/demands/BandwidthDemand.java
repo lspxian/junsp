@@ -119,8 +119,7 @@ public final class BandwidthDemand extends AbstractDemand implements
 
 	@Override
 	public String toString() {
-		return new String("BandwidthDemand: demanded bandwidth="
-				+ getDemandedBandwidth() + " Mbit/s");
+		return new String(getDemandedBandwidth() + " Mbit/s");
 	}
 
 	@Override
