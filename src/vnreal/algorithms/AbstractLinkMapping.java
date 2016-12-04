@@ -31,9 +31,8 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.algorithms;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import vnreal.demands.BandwidthDemand;
 import vnreal.network.substrate.SubstrateLink;
@@ -57,7 +56,7 @@ public abstract class AbstractLinkMapping {
 	protected int processedLinks, mappedLinks;
 	protected double probability;
 	//in primary: mapping is used to store result
-	protected HashMap<BandwidthDemand, SubstrateLink> mapping;
+	protected TreeMap<BandwidthDemand, SubstrateLink> mapping;
 
 	/**
 	 * The constructor of the class initializes its variables
@@ -74,7 +73,7 @@ public abstract class AbstractLinkMapping {
 		this.sNet = sNet;
 		this.processedLinks = 0;
 		this.mappedLinks = 0;
-		this.mapping=new HashMap<BandwidthDemand, SubstrateLink>();
+		this.mapping=new TreeMap<BandwidthDemand, SubstrateLink>();
 	}
 
 	/**
@@ -99,7 +98,7 @@ public abstract class AbstractLinkMapping {
 	public double getProbability() {
 		return probability;
 	}
-	public HashMap<BandwidthDemand, SubstrateLink> getMapping() {
+	public TreeMap<BandwidthDemand, SubstrateLink> getMapping() {
 		return mapping;
 	}
 

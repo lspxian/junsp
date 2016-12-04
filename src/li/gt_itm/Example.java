@@ -29,8 +29,8 @@ public class Example {
 		SubstrateNetwork sn=new SubstrateNetwork();
 		sn.alt2network("./gt-itm/sub");
 		System.out.println("substrate network : v "+sn.getVertexCount()+" e "+sn.getEdgeCount());
-//		DrawGraph dg = new DrawGraph(sn);
-//		dg.draw();
+		DrawGraph dg = new DrawGraph(sn);
+		dg.draw();
 		
 		//virtual networks
 		/*

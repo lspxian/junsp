@@ -50,7 +50,7 @@ import vnreal.resources.ResourceVisitorAdapter;
  * @since 2010-09-10
  */
 public final class BandwidthDemand extends AbstractDemand implements
-		ILinkConstraint {
+		ILinkConstraint,Comparable<BandwidthDemand> {
 	private double demandedBandwidth;
 
 	public BandwidthDemand(Link<? extends AbstractConstraint> owner) {
@@ -130,4 +130,14 @@ public final class BandwidthDemand extends AbstractDemand implements
 
 		return clone;
 	}
+
+	@Override
+	public int compareTo(BandwidthDemand o) {
+		double res=this.getDemandedBandwidth()-o.getDemandedBandwidth();
+		if(res>0)	return 1;
+		else if(res<0) return -1;
+		else	return 0;
+	}
+
+	
 }

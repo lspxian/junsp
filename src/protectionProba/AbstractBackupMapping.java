@@ -11,13 +11,16 @@ public abstract class AbstractBackupMapping {
 	protected SubstrateNetwork sNet;
 	protected double probability;
 	
-	protected AbstractBackupMapping(SubstrateNetwork sNet) {
+	public AbstractBackupMapping(SubstrateNetwork sNet) {
 		this.sNet = sNet;
 	}
 	public double getProbability() {
 		return probability;
 	}
 	
+	public void setProbability(double probability) {
+		this.probability = probability;
+	}
 	public abstract boolean linkMapping(VirtualNetwork vNet,Map<BandwidthDemand, SubstrateLink> primary);
 
 }

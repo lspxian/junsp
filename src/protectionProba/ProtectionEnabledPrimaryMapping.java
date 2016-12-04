@@ -142,10 +142,10 @@ public class ProtectionEnabledPrimaryMapping extends AbstractLinkMapping {
 				double pontential = this.sNet.backupPotential(tmpsl);
 //				double demPon=bwDem.getDemandedBandwidth()/(pontential+0.001);
 				double demPon=pontential-bwDem.getDemandedBandwidth();
-				if(demPon<0)	demPon=0.001;
-				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(100/demPon);
+				if(demPon<=0)	demPon=0.001;
+				obj = obj + " + "+100/demPon;
 				obj = obj + "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(100/demPon);
+				obj = obj + " + "+100/demPon;
 				obj = obj + "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//integer in the <general>

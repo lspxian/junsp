@@ -28,7 +28,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=3;i<4;i++){
+			for(int i=4;i<10;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream mcf_be = new PrintStream(new FileOutputStream("res/mcf_be_l"+i+"_c"+c+".txt"));
@@ -46,7 +46,7 @@ public static int c;
 				PrintStream pe_csp = new PrintStream(new FileOutputStream("res/pe_csp_l"+i+"_c"+c+".txt"));
 				System.setOut(pe_csp);
 				writeCurrentTime();
-				simulation.runSimulation("ProtectionEnabledMCF","ConstraintSP");
+				simulation.runSimulation("MCF","CSP_PE");
 				simulation.reset();
 				/*
 				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));

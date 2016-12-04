@@ -31,6 +31,7 @@ import probabilityBandwidth.ProbaHeuristic4;
 import probabilityBandwidth.ShortestPathBW;
 import protectionProba.AbstractBackupMapping;
 import protectionProba.BestEffortBackup;
+import protectionProba.CSP_PE;
 import protectionProba.ConstraintSPLocalShare;
 import protectionProba.DisjointShortestPathPT;
 import protectionProba.ProtectionEnabledPrimaryMapping;
@@ -53,13 +54,13 @@ public class ProtectionSim extends ProbabilitySimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 3000.0;
+		simulationTime = 30000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-//			Generator.createSubNet();
-//			sn.alt2network("./gt-itm/sub");
+			Generator.createSubNet();
+			sn.alt2network("./gt-itm/sub");
 //			sn.alt2network("data/cost239");
-			sn.alt2network("sndlib/ta2");
+//			sn.alt2network("sndlib/germany50");
 			
 			DrawGraph dg = new DrawGraph(sn);
 			dg.draw();
@@ -114,6 +115,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/vir");
 			vn.addAllResource(true);
+//			vn.reconfigPositon(sn);
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
@@ -177,7 +179,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 				System.out.print("Current vn : \n"+cEvent.getConcernedVn()+"\n");
 				
 				if(cEvent.getFlag()==0){
-					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,25,true,false);
+					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
 //					CordinatedNodeLinkMapping arnm = new CordinatedNodeLinkMapping(sn);
 					System.out.println("Operation : Mapping");
 					
@@ -220,8 +222,8 @@ public class ProtectionSim extends ProbabilitySimulation {
 							case "ConstraintSP":
 								backupMethod=new ConstraintSPLocalShare(sn);
 								break;
-							case "":
-								backupMethod=null;
+							case "CSP_PE":
+								backupMethod=new CSP_PE(sn);
 								break;
 							default:
 								System.out.println("The methode doesn't exist");
@@ -250,12 +252,14 @@ public class ProtectionSim extends ProbabilitySimulation {
 							}
 							else{
 								this.rejected++;
-								System.out.println("Backup link mapping error");
+								System.out.println("Backup link mapping resource error");
+//								System.out.println(sn.probaToString());
 							}
 						}
 						else{
 							this.rejected++;
-							System.out.println("Primary link mapping resource error"); 
+							System.out.println("Primary link mapping resource error");
+//							System.out.println(sn.probaToString());
 						}
 						
 					}

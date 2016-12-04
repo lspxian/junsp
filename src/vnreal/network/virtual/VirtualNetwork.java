@@ -279,6 +279,16 @@ public final class VirtualNetwork extends
 		return true;
 	}
 	
+	public void reconfigPositon(SubstrateNetwork sn){
+		ArrayList<SubstrateNode> tmpList= new ArrayList<SubstrateNode>(sn.getVertices());
+		for(VirtualNode vn:this.getVertices()){
+			int random=new Random().nextInt(tmpList.size());
+			vn.setCoordinateX(tmpList.get(random).getCoordinateX());
+			vn.setCoordinateY(tmpList.get(random).getCoordinateY());
+			tmpList.remove(random);
+		}
+	}
+	
 	public void reconfigResource(List<Domain> multiDomain){
 		for(Domain domain : multiDomain){
 			for(VirtualNode vnode : this.getVertices()){
