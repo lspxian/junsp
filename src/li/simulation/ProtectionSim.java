@@ -62,8 +62,8 @@ public class ProtectionSim extends ProbabilitySimulation {
 //			sn.alt2network("data/cost239");
 //			sn.alt2network("sndlib/germany50");
 			
-			DrawGraph dg = new DrawGraph(sn);
-			dg.draw();
+//			DrawGraph dg = new DrawGraph(sn);
+//			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

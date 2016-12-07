@@ -28,7 +28,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=4;i<10;i++){
+			for(int i=3;i<8;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream mcf_be = new PrintStream(new FileOutputStream("res/mcf_be_l"+i+"_c"+c+".txt"));
