@@ -84,4 +84,12 @@ public class SubstrateNode extends Node<AbstractResource> {
 		}
 		return false;
 	}
+	
+	public CpuResource getCpuResource(){
+		for(AbstractResource abr:this){
+			if(abr instanceof CpuResource)
+				return (CpuResource)abr;
+		}
+		return null;
+	}
 }

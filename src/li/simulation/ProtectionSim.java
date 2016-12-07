@@ -68,7 +68,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 			e.printStackTrace();
 		}
 		sn.addAllResource(true);
-//		sn.addInfiniteResource();
+		sn.addInfiniteResource();
 		
 	}
 	
@@ -115,7 +115,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/vir");
 			vn.addAllResource(true);
-//			vn.reconfigPositon(sn);
+			vn.reconfigPositon(sn);
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
