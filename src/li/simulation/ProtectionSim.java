@@ -56,12 +56,24 @@ public class ProtectionSim extends ProbabilitySimulation {
 	public ProtectionSim(){
 		
 		simulationTime = 30000.0;
-		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-			Generator.createSubNet();
-			sn.alt2network("./gt-itm/sub");
-//			sn.alt2network("data/cost239");
-//			sn.alt2network("sndlib/pioro40");
+			
+			while(true){
+				this.sn=new SubstrateNetwork(); //undirected by default 
+				boolean connect=true;
+				Generator.createSubNet();
+				sn.alt2network("./gt-itm/sub");
+//				sn.alt2network("data/cost239");
+//				sn.alt2network("sndlib/pioro40");
+				for(SubstrateNode snode:sn.getVertices()){
+					if(sn.getNeighborCount(snode)<=2){
+						connect=false;
+						break;
+					}
+				}
+				if(connect==true)	break;
+			}
+			
 			
 			DrawGraph dg = new DrawGraph(sn);
 			dg.draw();
@@ -180,7 +192,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 				System.out.print("Current vn : \n"+cEvent.getConcernedVn()+"\n");
 				
 				if(cEvent.getFlag()==0){
-					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,5,true,false);
+					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,1,true,false);
 //					CordinatedNodeLinkMapping arnm = new CordinatedNodeLinkMapping(sn);
 					System.out.println("Operation : Mapping");
 					

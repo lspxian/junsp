@@ -24,7 +24,7 @@ public class CSP_PE extends AbstractBackupMapping {
 		if(backup.linkMapping(vNet, primary))
 			return true;
 		else{
-			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sNet,5,true,false);
+			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sNet,1,true,false);
 			if(arnm.nodeMapping(vNet)){
 				AbstractLinkMapping primaryMapping= new ProtectionEnabledPrimaryMapping(sNet);
 				if(primaryMapping.linkMapping(vNet, arnm.getNodeMapping())){
