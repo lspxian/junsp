@@ -134,9 +134,9 @@ public final class BandwidthDemand extends AbstractDemand implements
 	@Override
 	public int compareTo(BandwidthDemand o) {
 		double res=this.getDemandedBandwidth()-o.getDemandedBandwidth();
-		if(res>0)	return 1;
-		else if(res<0) return -1;
-		else	return 0;
+		if(res>0)	return 10;
+		else if(res<0) return -10;
+		else	return 1;	// don't allow equal, for treemap
 	}
 
 	

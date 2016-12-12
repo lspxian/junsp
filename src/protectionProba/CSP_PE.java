@@ -8,7 +8,10 @@ import vnreal.demands.BandwidthDemand;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.virtual.VirtualNetwork;
-
+/*
+ * try bakcup with current primary mapping, if no solution,
+ * redo if with protection enabled primary mapping
+ */
 public class CSP_PE extends AbstractBackupMapping {
 
 	public CSP_PE(SubstrateNetwork sNet) {
@@ -21,7 +24,7 @@ public class CSP_PE extends AbstractBackupMapping {
 		if(backup.linkMapping(vNet, primary))
 			return true;
 		else{
-			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sNet,30,true,false);
+			AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sNet,5,true,false);
 			if(arnm.nodeMapping(vNet)){
 				AbstractLinkMapping primaryMapping= new ProtectionEnabledPrimaryMapping(sNet);
 				if(primaryMapping.linkMapping(vNet, arnm.getNodeMapping())){

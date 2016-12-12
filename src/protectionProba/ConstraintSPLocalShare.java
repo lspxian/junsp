@@ -18,7 +18,9 @@ import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.resources.BandwidthResource;
-
+/*
+ * Shortest path local share backup, with admission control(bandwidth), optimize additional bandwidth
+ */
 public class ConstraintSPLocalShare extends AbstractBackupMapping {
 	public ConstraintSPLocalShare(SubstrateNetwork sNet) {
 		super(sNet);

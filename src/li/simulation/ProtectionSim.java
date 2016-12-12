@@ -34,6 +34,7 @@ import protectionProba.BestEffortBackup;
 import protectionProba.CSP_PE;
 import protectionProba.ConstraintSPLocalShare;
 import protectionProba.DisjointShortestPathPT;
+import protectionProba.ProtectionEnabledPrimaryBW;
 import protectionProba.ProtectionEnabledPrimaryMapping;
 import protectionProba.ShortestPathLocalPT;
 import vnreal.algorithms.AbstractLinkMapping;
@@ -60,10 +61,10 @@ public class ProtectionSim extends ProbabilitySimulation {
 			Generator.createSubNet();
 			sn.alt2network("./gt-itm/sub");
 //			sn.alt2network("data/cost239");
-//			sn.alt2network("sndlib/germany50");
+//			sn.alt2network("sndlib/pioro40");
 			
-//			DrawGraph dg = new DrawGraph(sn);
-//			dg.draw();
+			DrawGraph dg = new DrawGraph(sn);
+			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -179,7 +180,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 				System.out.print("Current vn : \n"+cEvent.getConcernedVn()+"\n");
 				
 				if(cEvent.getFlag()==0){
-					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,30,true,false);
+					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,5,true,false);
 //					CordinatedNodeLinkMapping arnm = new CordinatedNodeLinkMapping(sn);
 					System.out.println("Operation : Mapping");
 					
@@ -199,6 +200,9 @@ public class ProtectionSim extends ProbabilitySimulation {
 							break;
 						case "ProtectionEnabledMCF" :
 							method = new ProtectionEnabledPrimaryMapping(sn);
+							break;
+						case "ProtectionEnabledBW" :
+							method = new ProtectionEnabledPrimaryBW(sn);
 							break;
 						case "ShortestPathBW" :
 							method = new ShortestPathBW(sn);
@@ -225,6 +229,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 							case "CSP_PE":
 								backupMethod=new CSP_PE(sn);
 								break;
+								
 							default:
 								System.out.println("The methode doesn't exist");
 								backupMethod = null;
@@ -258,8 +263,8 @@ public class ProtectionSim extends ProbabilitySimulation {
 						}
 						else{
 							this.rejected++;
-							System.out.println("Primary link mapping resource error");
 //							System.out.println(sn.probaToString());
+							System.out.println("Primary link mapping resource error");
 						}
 						
 					}

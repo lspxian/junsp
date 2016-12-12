@@ -15,7 +15,6 @@ import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import vnreal.algorithms.linkmapping.KShortestPath;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.linkmapping.PathSplittingVirtualLinkMapping;
-import vnreal.algorithms.linkmapping.SOD_BK;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.linkmapping.UnsplittingVirtualLinkMapping;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;

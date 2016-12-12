@@ -26,6 +26,9 @@ import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.resources.BandwidthResource;
 
+/*
+ * ILP backup solution,  best effort to protect vulnerable links
+ */
 public class BestEffortBackup extends AbstractBackupMapping {
 	
 	public BestEffortBackup(SubstrateNetwork sNet) {

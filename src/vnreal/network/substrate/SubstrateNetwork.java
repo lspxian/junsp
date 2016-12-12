@@ -356,7 +356,7 @@ public class SubstrateNetwork extends
 				}
 			}
 //			double temp=bw.getBandwidth()-bw.getPrimaryBw()-backup;
-			double temp=bw.getReservedBackupBw()-backup;
+			double temp=bw.getReservedBackupBw()-backup+bw.getAvailableBandwidth();
 			if(temp<min)	min=temp;
 		}
 		return min;
@@ -371,7 +371,7 @@ public class SubstrateNetwork extends
 		return potential;
 	}
 	
-	public void precalculatedBackupPath(){
+	public void precalculatedBackupPath(int k){
 		for(SubstrateLink sl:this.getEdges()){
 			Predicate<SubstrateLink> pre=new Predicate<SubstrateLink>(){
 				@Override
@@ -387,7 +387,7 @@ public class SubstrateNetwork extends
 					return 1;
 				}};
 			Yen<SubstrateNode, SubstrateLink> yen=new Yen<SubstrateNode, SubstrateLink>(tmp, bbc);
-			sl.setKsp(yen.getShortestPaths(this.getEndpoints(sl).getFirst(), this.getEndpoints(sl).getSecond(), 5));
+			sl.setKsp(yen.getShortestPaths(this.getEndpoints(sl).getFirst(), this.getEndpoints(sl).getSecond(), k));
 		}
 	}
 	

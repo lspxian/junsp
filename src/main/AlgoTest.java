@@ -15,7 +15,6 @@ import protectionProba.DisjointShortestPathPT;
 import protectionProba.ProtectionEnabledPrimaryMapping;
 import protectionProba.ShortestPathLocalPT;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
-import vnreal.algorithms.linkmapping.SOD_BK;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;

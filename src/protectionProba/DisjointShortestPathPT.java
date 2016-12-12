@@ -65,7 +65,7 @@ public class DisjointShortestPathPT extends AbstractLinkMapping {
 				resultB.put(vl, backup);
 				if(!NodeLinkAssignation.vlmSimple(vl, primary))
 					throw new AssertionError("But we checked before!");
-				if(!NodeLinkAssignation.backupPath(vl,primary, backup, share))
+				if(!NodeLinkAssignation.backup(vl,primary, backup, share))
 					throw new AssertionError("But we checked before!");
 			}
 			else{
@@ -77,7 +77,7 @@ public class DisjointShortestPathPT extends AbstractLinkMapping {
 					NodeLinkDeletion.linkFree(entry.getKey(), entry.getValue());
 				}
 				for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: resultB.entrySet()){
-					NodeLinkDeletion.linkFreeBackup(entry.getKey(), entry.getValue(),share);
+					NodeLinkDeletion.linkFreeBackup(entry.getKey().getBandwidthDemand(), entry.getValue(),share);
 				}
 				return false;
 			}

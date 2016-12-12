@@ -31,7 +31,7 @@ public class ProtectionEnabledPrimaryMapping extends AbstractLinkMapping {
 	public ProtectionEnabledPrimaryMapping(SubstrateNetwork sNet) {
 		super(sNet);
 		this.localPath = "cplex/vne-mcf.lp";
-		this.sNet.precalculatedBackupPath();
+		this.sNet.precalculatedBackupPath(5);
 	}
 
 	@Override

@@ -64,7 +64,7 @@ public class ShortestPathLocalPT extends AbstractLinkMapping {
 					}
 					else{
 						System.out.println("no backup link");
-						NodeLinkDeletion.linkFreeBackup(vl, tmpBackup, share);	//free temporary backup
+						NodeLinkDeletion.linkFreeBackup(vl.getBandwidthDemand(), tmpBackup, share);	//free temporary backup
 						for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){	//free node mapping
 							NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 						}
@@ -72,7 +72,7 @@ public class ShortestPathLocalPT extends AbstractLinkMapping {
 							NodeLinkDeletion.linkFree(entry.getKey(), entry.getValue());
 						}
 						for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: resultB.entrySet()){	//free backup path of other virtual links
-							NodeLinkDeletion.linkFreeBackup(entry.getKey(), entry.getValue(),share);
+							NodeLinkDeletion.linkFreeBackup(entry.getKey().getBandwidthDemand(), entry.getValue(),share);
 						}
 						return false;
 					}
@@ -98,7 +98,7 @@ public class ShortestPathLocalPT extends AbstractLinkMapping {
 					NodeLinkDeletion.linkFree(entry.getKey(), entry.getValue());
 				}
 				for(Map.Entry<VirtualLink, List<SubstrateLink>> entry: resultB.entrySet()){
-					NodeLinkDeletion.linkFreeBackup(entry.getKey(), entry.getValue(),share);
+					NodeLinkDeletion.linkFreeBackup(entry.getKey().getBandwidthDemand(), entry.getValue(),share);
 				}
 				return false;
 			}
