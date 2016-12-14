@@ -114,7 +114,7 @@ public abstract class AbstractResource extends AbstractConstraint {
 	 This function compares if the link that ask for a demand in the substrate network is the 
 	 same that the virtual link and return the Mapping if true or null if false
 	 */
-	protected final Mapping getMapping(AbstractDemand dem) {
+	public final Mapping getMapping(AbstractDemand dem) {
 		for (Mapping f : mappings){
 			if (f.getDemand().getOwner().equals(dem.getOwner()))
 				return f;

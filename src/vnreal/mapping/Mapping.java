@@ -55,6 +55,7 @@ import vnreal.resources.AbstractResource;
 public final class Mapping {
 	private final AbstractDemand demand;
 	private final AbstractResource resource;
+	private boolean protection=false;
 
 	public Mapping(AbstractDemand dem, AbstractResource res) {
 		this.demand = dem;
@@ -96,5 +97,13 @@ public final class Mapping {
 
 	public AbstractResource getResource() {
 		return resource;
+	}
+
+	public boolean isProtection() {
+		return protection;
+	}
+
+	public void setProtection(boolean protection) {
+		this.protection = protection;
 	}
 }

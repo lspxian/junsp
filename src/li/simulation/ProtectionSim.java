@@ -20,6 +20,7 @@ import li.evaluation.metrics.LinkUtilizationL;
 import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.Metric;
 import li.evaluation.metrics.PrimaryPercentage;
+import li.evaluation.metrics.ProbabilityL;
 import li.event.FailureEvent;
 import li.event.NetEvent;
 import li.event.VnEvent;
@@ -32,6 +33,7 @@ import probabilityBandwidth.ShortestPathBW;
 import protectionProba.AbstractBackupMapping;
 import protectionProba.BestEffortBackup;
 import protectionProba.CSP_PE;
+import protectionProba.CSP_Proba;
 import protectionProba.ConstraintSPLocalShare;
 import protectionProba.DisjointShortestPathPT;
 import protectionProba.ProtectionEnabledPrimaryBW;
@@ -55,7 +57,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 30000.0;
+		simulationTime = 100000.0;
 		try {
 			
 			while(true){
@@ -148,6 +150,16 @@ public class ProtectionSim extends ProbabilitySimulation {
 		}
 		Collections.sort(this.netEvents);*/
 		
+		//random failure event
+		for(SubstrateLink sl : sn.getEdges()){
+			time=MiscelFunctions.negExponential(sl.getProbability());
+			while(time<simulationTime){
+				netEvents.add(new FailureEvent(time,sl));
+				time+=MiscelFunctions.negExponential(sl.getProbability());
+			}
+		}
+		Collections.sort(this.netEvents);
+		
 		//add metric
 		metrics = new ArrayList<Metric>();
 		metricsProba = new ArrayList<Metric>();
@@ -176,11 +188,12 @@ public class ProtectionSim extends ProbabilitySimulation {
 		metrics.add(new MappedRevenueL(this, methodStr,lambda));
 //		metrics.add(new CostL(this, methodStr,lambda));
 //		metrics.add(new CostRevenueL(this,methodStr,lambda));
-		metrics.add(new AverageProbability(this,methodStr,lambda));
+		metrics.add(new AverageProbability(this,methodStr,lambda));*/
+		
 //		metricsProba.add(new ProbabilityL(this,methodStr,lambda));
-		metricsProba.add(new AverageAffectedVNRatio(this,methodStr,lambda));
-		metricsProba.add(new Affected_VN_Number(this,methodStr,lambda));
-		metricsProba.add(new AffectedRevenue(this,methodStr,lambda));*/
+//		metricsProba.add(new AverageAffectedVNRatio(this,methodStr,lambda));
+//		metricsProba.add(new Affected_VN_Number(this,methodStr,lambda));
+//		metricsProba.add(new AffectedRevenue(this,methodStr,lambda));
 		
 		for(NetEvent currentEvent : this.netEvents){
 			
@@ -219,6 +232,9 @@ public class ProtectionSim extends ProbabilitySimulation {
 						case "ShortestPathBW" :
 							method = new ShortestPathBW(sn);
 							break;
+						case "ProbaHeuristic" :
+							method = new ProbaHeuristic4(sn);	//use 4
+							break;
 						default : 
 							System.out.println("The methode doesn't exist");
 							method = null;
@@ -241,6 +257,9 @@ public class ProtectionSim extends ProbabilitySimulation {
 							case "CSP_PE":
 								backupMethod=new CSP_PE(sn);
 								break;
+							case "CSP_Proba":
+								backupMethod=new CSP_Proba(sn);
+								break;
 								
 							default:
 								System.out.println("The methode doesn't exist");
@@ -253,8 +272,8 @@ public class ProtectionSim extends ProbabilitySimulation {
 								this.accepted++;
 								mappedVNs.add(cEvent.getConcernedVn());
 								this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
-								//	System.out.println("current probability : "+method.getProbability());
-								//	this.probability.put(cEvent.getConcernedVn(), method.getProbability());
+								System.out.println("current probability : "+method.getProbability());
+								this.probability.put(cEvent.getConcernedVn(), method.getProbability());
 							}
 							else if(backupMethod.linkMapping(cEvent.getConcernedVn(), method.getMapping())){
 								System.out.println("Backup link mapping done");
@@ -262,8 +281,8 @@ public class ProtectionSim extends ProbabilitySimulation {
 								this.accepted++;
 								mappedVNs.add(cEvent.getConcernedVn());
 								this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
-								//	System.out.println("current probability : "+method.getProbability());
-								//	this.probability.put(cEvent.getConcernedVn(), method.getProbability());
+								System.out.println("current probability : "+backupMethod.getProbability());
+								this.probability.put(cEvent.getConcernedVn(), backupMethod.getProbability());
 								//TODO maybe backup metrics' code
 //								System.out.println(sn.probaToString());
 							}
@@ -309,10 +328,12 @@ public class ProtectionSim extends ProbabilitySimulation {
 				FailureEvent fEvent = (FailureEvent) currentEvent;
 				BandwidthResource bw = (BandwidthResource)fEvent.getFailureLink().get().get(0);
 				for(Mapping m :bw.getMappings()){
-					VirtualLink vl=(VirtualLink)m.getDemand().getOwner();
-					for(VirtualNetwork vn : this.currentVNs){
-						if(vn.containsEdge(vl))
-							affectedNet.add(vn);
+					if(!m.isProtection()){
+						VirtualLink vl=(VirtualLink)m.getDemand().getOwner();
+						for(VirtualNetwork vn : this.currentVNs){
+							if(vn.containsEdge(vl))
+								affectedNet.add(vn);
+						}						
 					}
 				}
 				

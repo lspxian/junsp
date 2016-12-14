@@ -36,6 +36,7 @@ public class ConstraintSPLocalShare extends AbstractBackupMapping {
 				resultB.put(e.getKey(), backup);
 				if(!NodeLinkAssignation.backup(e.getKey(),e.getValue(), backup, true))
 					throw new AssertionError("But we checked before!");
+				e.getValue().getBandwidthResource().getMapping(e.getKey()).setProtection(true);
 			}
 			else{
 				System.out.println("no backup link");

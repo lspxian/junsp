@@ -159,7 +159,6 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		}*/
 				
 		//random failure event
-		
 		for(SubstrateLink sl : sn.getEdges()){
 			time=MiscelFunctions.negExponential(sl.getProbability());
 			while(time<simulationTime){

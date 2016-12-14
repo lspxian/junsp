@@ -1,8 +1,12 @@
 package protectionProba;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
@@ -28,27 +32,52 @@ public class CSP_Proba extends AbstractBackupMapping {
 	@Override
 	public boolean linkMapping(VirtualNetwork vNet, Map<BandwidthDemand, SubstrateLink> primary) {
 		
-		
-		
-		Map<BandwidthDemand,List<SubstrateLink>> resultB = new HashMap<BandwidthDemand,List<SubstrateLink>>();
-		for(Map.Entry<BandwidthDemand, SubstrateLink> e:primary.entrySet()){
-			List<SubstrateLink> backup = this.ComputeLocalBackupPath(sNet, e.getValue(), e.getKey(), true);
-			System.out.println(e.getValue()+" "+backup);
-			if(!backup.isEmpty()){
-				resultB.put(e.getKey(), backup);
-				if(!NodeLinkAssignation.backup(e.getKey(),e.getValue(), backup, true))
-					throw new AssertionError("But we checked before!");
+		Map<SubstrateLink,TreeSet<BandwidthDemand>> priMapping=new TreeMap<SubstrateLink, TreeSet<BandwidthDemand>>(new Comparator<SubstrateLink>(){
+			@Override
+			public int compare(SubstrateLink o1, SubstrateLink o2) {
+				if(o1.getProbability()>o2.getProbability())
+					return -100;
+				else if(o2.getProbability()<o1.getProbability())
+					return 100;
+				else return (int) (o1.getId()-o2.getId());
 			}
-			else{
-				System.out.println("no backup link");
-				System.out.println(e.getValue().getBandwidthResource());
-				NodeLinkDeletion.freeResource(vNet, sNet);	//free primary
-				for(Map.Entry<BandwidthDemand, List<SubstrateLink>> ent: resultB.entrySet()){	//free backup path of other virtual links
-					NodeLinkDeletion.linkFreeBackup(ent.getKey(), ent.getValue(),true);
+		});
+		
+		for(Map.Entry<BandwidthDemand, SubstrateLink> e:primary.entrySet()){
+			SubstrateLink sl=e.getValue();
+			if(!priMapping.containsKey(sl))
+				priMapping.put(sl, new TreeSet<BandwidthDemand>());
+			priMapping.get(sl).add(e.getKey());
+		}
+		
+		Set<SubstrateLink> noProtected=new TreeSet<SubstrateLink>();
+		for(Map.Entry<SubstrateLink,TreeSet<BandwidthDemand>> entry:priMapping.entrySet()){
+			SubstrateLink sl=entry.getKey();
+			for(BandwidthDemand bwd:entry.getValue()){
+				List<SubstrateLink> backup = this.ComputeLocalBackupPath(sNet, sl, bwd, true);
+				System.out.println(sl+"#"+bwd+" "+backup);
+				if(!backup.isEmpty()){
+					if(!NodeLinkAssignation.backup(bwd,sl, backup, true))
+						throw new AssertionError("But we checked before!");
+					sl.getBandwidthResource().getMapping(bwd).setProtection(true);
 				}
-				return false;
+				else{
+					System.out.println("no backup link "+sl);
+					for(BandwidthDemand bwdtmp:entry.getValue()){
+						sl.getBandwidthResource().backupFree(bwdtmp, true);
+					}
+					noProtected.add(sl);
+					sl.getBandwidthResource().getMapping(bwd).setProtection(false);
+					break;
+				}
 			}
 		}
+		double tmpProba=1;
+		for(SubstrateLink sl:noProtected){
+			tmpProba=tmpProba*(1-sl.getProbability());
+		}
+		this.probability=1-tmpProba;
+		
 		return true;
 	}
 	

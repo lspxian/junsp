@@ -16,7 +16,7 @@ public static int c;
 		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.close();
-		for(c=0;c<1;c++){
+		for(c=0;c<2;c++){
 			writer = new FileWriter("result.txt",true);
 			writer.write("Number:"+c+"\n");
 			ProtectionSim simulation = new ProtectionSim();
@@ -31,31 +31,50 @@ public static int c;
 			for(int i=2;i<8;i++){
 				simulation.initialize(i);
 				/*
-				PrintStream mcf_be = new PrintStream(new FileOutputStream("res/mcf_be_l"+i+"_c"+c+".txt"));
-				System.setOut(mcf_be);
+				PrintStream pe_csp = new PrintStream(new FileOutputStream("res/pe_csp_l"+i+"_c"+c+".txt"));
+				System.setOut(pe_csp);
 				writeCurrentTime();
-				simulation.runSimulation("MCF","BestEffort");
+				simulation.runSimulation("MCF","CSP_PE");
 				simulation.reset();*/
+				
+				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
+				System.setOut(ShortestPathBW);
+				writeCurrentTime();
+				simulation.runSimulation("ShortestPathBW","");
+				simulation.reset();
+
+				PrintStream probaHeuristic = new PrintStream(new FileOutputStream("res/probaHeuristic_l"+i+"_c"+c+".txt"));
+				System.setOut(probaHeuristic);
+				writeCurrentTime();
+				simulation.runSimulation("ProbaHeuristic","");
+				simulation.reset();
 				
 				PrintStream mcf_csp = new PrintStream(new FileOutputStream("res/mcf_csp_l"+i+"_c"+c+".txt"));
 				System.setOut(mcf_csp);
 				writeCurrentTime();
 				simulation.runSimulation("MCF","ConstraintSP");
 				simulation.reset();
-				
-				PrintStream pe_csp = new PrintStream(new FileOutputStream("res/pe_csp_l"+i+"_c"+c+".txt"));
-				System.setOut(pe_csp);
+
+				PrintStream mcf_be = new PrintStream(new FileOutputStream("res/mcf_be_l"+i+"_c"+c+".txt"));
+				System.setOut(mcf_be);
 				writeCurrentTime();
-				simulation.runSimulation("MCF","CSP_PE");
+				simulation.runSimulation("MCF","CSP_Proba");
 				simulation.reset();
-				
+				/*
+				PrintStream mcf_be = new PrintStream(new FileOutputStream("res/mcf_be_l"+i+"_c"+c+".txt"));
+				System.setOut(mcf_be);
+				writeCurrentTime();
+				simulation.runSimulation("MCF","BestEffort");
+				simulation.reset();*/
+
+				/*
 				PrintStream pepbw_csp = new PrintStream(new FileOutputStream("res/pepbw_csp_l"+i+"_c"+c+".txt"));
 				System.setOut(pepbw_csp);
 				writeCurrentTime();
 				simulation.runSimulation("ProtectionEnabledBW","ConstraintSP");
-				simulation.reset();
+				simulation.reset();*/
 				
-				
+
 				
 				writeCurrentTime();
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));

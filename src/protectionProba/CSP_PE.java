@@ -3,6 +3,7 @@ package protectionProba;
 import java.util.Map;
 
 import vnreal.algorithms.AbstractLinkMapping;
+import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
 import vnreal.demands.BandwidthDemand;
 import vnreal.network.substrate.SubstrateLink;
@@ -29,8 +30,17 @@ public class CSP_PE extends AbstractBackupMapping {
 				AbstractLinkMapping primaryMapping= new ProtectionEnabledPrimaryMapping(sNet);
 				if(primaryMapping.linkMapping(vNet, arnm.getNodeMapping())){
 					backup=new ConstraintSPLocalShare(sNet);
-					if(backup.linkMapping(vNet, primary))
+					if(backup.linkMapping(vNet, primaryMapping.getMapping()))
 						return true;
+					else{
+					/*	arnm = new AvailableResourcesNodeMapping(sNet,1,true,false);
+						arnm.nodeMapping(vNet);
+						primaryMapping= new MultiCommodityFlow(sNet);
+						primaryMapping.linkMapping(vNet, arnm.getNodeMapping());
+						backup=new CSP_Proba(sNet);
+						return backup.linkMapping(vNet, primaryMapping.getMapping());
+						*/
+					}
 				}
 			}
 		}
