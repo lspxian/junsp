@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Random;
 
-import vnreal.network.substrate.SubstrateNetwork;
-
 public class Generator {
 	
 	//create substrate network
