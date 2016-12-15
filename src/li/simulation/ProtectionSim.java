@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import li.evaluation.metrics.AcceptedRatioL;
@@ -20,14 +19,11 @@ import li.evaluation.metrics.LinkUtilizationL;
 import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.Metric;
 import li.evaluation.metrics.PrimaryPercentage;
-import li.evaluation.metrics.ProbabilityL;
 import li.event.FailureEvent;
 import li.event.NetEvent;
 import li.event.VnEvent;
 import li.gt_itm.DrawGraph;
 import li.gt_itm.Generator;
-import probabilityBandwidth.PBBWExactILP;
-import probabilityBandwidth.ProbaHeuristic3;
 import probabilityBandwidth.ProbaHeuristic4;
 import probabilityBandwidth.ShortestPathBW;
 import protectionProba.AbstractBackupMapping;
@@ -35,10 +31,8 @@ import protectionProba.BestEffortBackup;
 import protectionProba.CSP_PE;
 import protectionProba.CSP_Proba;
 import protectionProba.ConstraintSPLocalShare;
-import protectionProba.DisjointShortestPathPT;
 import protectionProba.ProtectionEnabledPrimaryBW;
 import protectionProba.ProtectionEnabledPrimaryMapping;
-import protectionProba.ShortestPathLocalPT;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
@@ -53,7 +47,7 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
 
-public class ProtectionSim extends ProbabilitySimulation {
+public class ProtectionSim extends AbstractSimulation {
 	
 	public ProtectionSim(){
 		
@@ -177,23 +171,9 @@ public class ProtectionSim extends ProbabilitySimulation {
 		metrics.add(new PrimaryPercentage(this));
 		metrics.add(new MappedRevenueL(this));
 		metrics.add(new AverageProbability(this));
-/*		metricsProba.add(new AverageAffectedVNRatio(this));
+		metricsProba.add(new AverageAffectedVNRatio(this));
 		metricsProba.add(new Affected_VN_Number(this));
-		metricsProba.add(new AffectedRevenue(this));*/
-		
-		/*
-		metrics.add(new AcceptedRatioL(this, methodStr,lambda));
-		metrics.add(new LinkUtilizationL(this, methodStr,lambda));
-//		metrics.add(new CurrentLinkUtilisationL(this, methodStr,lambda));
-		metrics.add(new MappedRevenueL(this, methodStr,lambda));
-//		metrics.add(new CostL(this, methodStr,lambda));
-//		metrics.add(new CostRevenueL(this,methodStr,lambda));
-		metrics.add(new AverageProbability(this,methodStr,lambda));*/
-		
-//		metricsProba.add(new ProbabilityL(this,methodStr,lambda));
-//		metricsProba.add(new AverageAffectedVNRatio(this,methodStr,lambda));
-//		metricsProba.add(new Affected_VN_Number(this,methodStr,lambda));
-//		metricsProba.add(new AffectedRevenue(this,methodStr,lambda));
+		metricsProba.add(new AffectedRevenue(this));
 		
 		for(NetEvent currentEvent : this.netEvents){
 			
@@ -288,8 +268,8 @@ public class ProtectionSim extends ProbabilitySimulation {
 							}
 							else{
 								this.rejected++;
-								System.out.println("Backup link mapping resource error");
 //								System.out.println(sn.probaToString());
+								System.out.println("Backup link mapping resource error");
 							}
 						}
 						else{
@@ -400,6 +380,11 @@ public class ProtectionSim extends ProbabilitySimulation {
 		metrics = new ArrayList<Metric>();
 		metricsProba = new ArrayList<Metric>();
 		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
+	}
+	@Override
+	public void runSimulation(String methodStr) throws IOException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

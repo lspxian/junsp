@@ -31,7 +31,7 @@ public class ConstraintSPLocalShare extends AbstractBackupMapping {
 		Map<BandwidthDemand,List<SubstrateLink>> resultB = new HashMap<BandwidthDemand,List<SubstrateLink>>();
 		for(Map.Entry<BandwidthDemand, SubstrateLink> e:primary.entrySet()){
 			List<SubstrateLink> backup = this.ComputeLocalBackupPath(sNet, e.getValue(), e.getKey(), true);
-			System.out.println(e.getValue()+" "+backup);
+			System.out.println(e.getValue()+"#"+e.getKey()+" "+backup);
 			if(!backup.isEmpty()){
 				resultB.put(e.getKey(), backup);
 				if(!NodeLinkAssignation.backup(e.getKey(),e.getValue(), backup, true))
@@ -41,10 +41,10 @@ public class ConstraintSPLocalShare extends AbstractBackupMapping {
 			else{
 				System.out.println("no backup link");
 				System.out.println(e.getValue().getBandwidthResource());
-				NodeLinkDeletion.freeResource(vNet, sNet);	//free primary
 				for(Map.Entry<BandwidthDemand, List<SubstrateLink>> ent: resultB.entrySet()){	//free backup path of other virtual links
 					NodeLinkDeletion.linkFreeBackup(ent.getKey(), ent.getValue(),true);
 				}
+				NodeLinkDeletion.freeResource(vNet, sNet);	//free primary
 				return false;
 			}
 		}

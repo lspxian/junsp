@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import li.simulation.AbstractSimulation;
-import li.simulation.ProbabilitySimulation;
 
 public class AverageAffectedVNRatio extends Metric {
 
-	public AverageAffectedVNRatio(ProbabilitySimulation simulation)throws IOException{
+	public AverageAffectedVNRatio(AbstractSimulation simulation)throws IOException{
 		super(simulation);
 	}
 	
@@ -23,8 +22,7 @@ public class AverageAffectedVNRatio extends Metric {
 
 	@Override
 	public double calculate() {
-		ProbabilitySimulation tempSim = (ProbabilitySimulation)this.simulation;
-		ArrayList<Double> ratios = tempSim.getAffectedRatio();
+		ArrayList<Double> ratios = this.simulation.getAffectedRatio();
 		double sum = 0.0;
 		for(double ratio : ratios){
 			sum=sum + ratio;

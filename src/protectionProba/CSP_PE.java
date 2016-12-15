@@ -29,6 +29,11 @@ public class CSP_PE extends AbstractBackupMapping {
 			if(arnm.nodeMapping(vNet)){
 				AbstractLinkMapping primaryMapping= new ProtectionEnabledPrimaryMapping(sNet);
 				if(primaryMapping.linkMapping(vNet, arnm.getNodeMapping())){
+					backup = new CSP_Proba(sNet); 
+					backup.linkMapping(vNet, primaryMapping.getMapping());
+					this.probability=backup.getProbability();
+					return true;
+					/*
 					backup=new ConstraintSPLocalShare(sNet);
 					if(backup.linkMapping(vNet, primaryMapping.getMapping()))
 						return true;
@@ -39,8 +44,8 @@ public class CSP_PE extends AbstractBackupMapping {
 						primaryMapping.linkMapping(vNet, arnm.getNodeMapping());
 						backup=new CSP_Proba(sNet);
 						return backup.linkMapping(vNet, primaryMapping.getMapping());
-						*/
-					}
+						
+					}*/
 				}
 			}
 		}

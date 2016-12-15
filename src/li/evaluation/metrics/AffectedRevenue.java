@@ -3,11 +3,10 @@ package li.evaluation.metrics;
 import java.io.IOException;
 
 import li.simulation.AbstractSimulation;
-import li.simulation.ProbabilitySimulation;
 
 public class AffectedRevenue extends Metric{
 
-	public AffectedRevenue(ProbabilitySimulation simulation)throws IOException{
+	public AffectedRevenue(AbstractSimulation simulation)throws IOException{
 		super(simulation);
 	}
 	
@@ -22,8 +21,7 @@ public class AffectedRevenue extends Metric{
 
 	@Override
 	public double calculate() {
-		ProbabilitySimulation tempSim = (ProbabilitySimulation)this.simulation;
-		return tempSim.getAffectedRevenue()/tempSim.getFailures();
+		return this.simulation.getAffectedRevenue()/this.simulation.getFailures();
 	}
 
 }

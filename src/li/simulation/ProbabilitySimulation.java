@@ -55,24 +55,6 @@ import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
 
 public class ProbabilitySimulation extends AbstractSimulation{
-	protected ArrayList<NetEvent> netEvents;
-	protected int affected;
-	protected double affectedRevenue;
-	protected ArrayList<Double> affectedRatio;
-	protected int failures;
-	
-	public ArrayList<Double> getAffectedRatio() {
-		return affectedRatio;
-	}
-	public int getFailures() {
-		return failures;
-	}
-	public int getAffected() {
-		return affected;
-	}
-	public double getAffectedRevenue() {
-		return affectedRevenue;
-	}
 	
 	public ProbabilitySimulation(){
 		

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import li.evaluation.metrics.Metric;
+import li.event.NetEvent;
 import li.event.VnEvent;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.virtual.VirtualNetwork;
@@ -17,13 +18,31 @@ public abstract class AbstractSimulation {
 	protected ArrayList<VnEvent> events;
 	protected ArrayList<Metric> metrics;
 	protected ArrayList<Metric> metricsProba;
-	protected double simulationTime = 30000.0;
+	protected double simulationTime;
 	protected double time = 0.0;
 	protected int accepted = 0;
 	protected int rejected = 0;
-	protected int lambda = 4;
+	protected int lambda;
 	protected ArrayList<VirtualNetwork> currentVNs ;
 	protected Map<VirtualNetwork, Double> probability; 
+	protected ArrayList<NetEvent> netEvents;
+	protected int affected;
+	protected double affectedRevenue;
+	protected ArrayList<Double> affectedRatio;
+	protected int failures;
+	
+	public ArrayList<Double> getAffectedRatio() {
+		return affectedRatio;
+	}
+	public int getFailures() {
+		return failures;
+	}
+	public int getAffected() {
+		return affected;
+	}
+	public double getAffectedRevenue() {
+		return affectedRevenue;
+	}
 	public Map<VirtualNetwork, Double> getProbability() {
 		return probability;
 	}
