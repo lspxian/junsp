@@ -57,7 +57,7 @@ public class ProtectionSim extends ProbabilitySimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 100000.0;
+		simulationTime = 30000.0;
 		try {
 			
 			while(true){
@@ -66,9 +66,9 @@ public class ProtectionSim extends ProbabilitySimulation {
 				Generator.createSubNet();
 				sn.alt2network("./gt-itm/sub");
 //				sn.alt2network("data/cost239");
-//				sn.alt2network("sndlib/pioro40");
+//				sn.alt2network("sndlib/germany50");
 				for(SubstrateNode snode:sn.getVertices()){
-					if(sn.getNeighborCount(snode)<=2){
+					if(sn.getNeighborCount(snode)<=1){
 						connect=false;
 						break;
 					}
