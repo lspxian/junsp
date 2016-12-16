@@ -33,6 +33,7 @@ import protectionProba.CSP_Proba;
 import protectionProba.ConstraintSPLocalShare;
 import protectionProba.ProtectionEnabledPrimaryBW;
 import protectionProba.ProtectionEnabledPrimaryMapping;
+import protectionProba.ProtectionEnabledPrimaryMapping2;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
@@ -51,7 +52,7 @@ public class ProtectionSim extends AbstractSimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 30000.0;
+		simulationTime = 100000.0;
 		try {
 			
 			while(true){
@@ -205,6 +206,9 @@ public class ProtectionSim extends AbstractSimulation {
 							break;
 						case "ProtectionEnabledMCF" :
 							method = new ProtectionEnabledPrimaryMapping(sn);
+							break;
+						case "ProtectionEnabledMCF2" :
+							method = new ProtectionEnabledPrimaryMapping2(sn);
 							break;
 						case "ProtectionEnabledBW" :
 							method = new ProtectionEnabledPrimaryBW(sn);

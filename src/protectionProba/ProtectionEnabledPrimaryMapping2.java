@@ -13,6 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.commons.collections15.Predicate;
+
+import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
+import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
+import edu.uci.ics.jung.graph.Graph;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkAssignation;
@@ -29,10 +34,15 @@ import vnreal.resources.BandwidthResource;
 public class ProtectionEnabledPrimaryMapping2 extends AbstractLinkMapping {
 
 	private String localPath ;
+	private double minProba=1;
 	public ProtectionEnabledPrimaryMapping2(SubstrateNetwork sNet) {
 		super(sNet);
 		this.localPath = "cplex/vne-mcf.lp";
 		this.sNet.precalculatedBackupPath(5);
+		//compute minimum probability
+		for(SubstrateLink sl:sNet.getEdges())
+			if(sl.getProbability()<minProba)
+				minProba=sl.getProbability();
 	}
 
 	@Override
@@ -138,18 +148,42 @@ public class ProtectionEnabledPrimaryMapping2 extends AbstractLinkMapping {
 			for (SubstrateLink tmpsl:sNet.getEdges()){
 				ssnode = sNet.getEndpoints(tmpsl).getFirst();
 				dsnode = sNet.getEndpoints(tmpsl).getSecond();
+				BandwidthResource bwResource= tmpsl.getBandwidthResource();
+				
+				Predicate<SubstrateLink> pre=new Predicate<SubstrateLink>(){
+					@Override
+					public boolean evaluate(SubstrateLink link) {
+						if(link.equals(tmpsl)) return false;
+						BandwidthResource bdsrc = link.getBandwidthResource();
+						for(Risk risk:bdsrc.getRisks()){
+							if(risk.getNe().equals(tmpsl)){
+								double origTotal = bdsrc.maxRiskTotal();
+								risk.addDemand(bwDem);
+								double newTotal = bdsrc.maxRiskTotal();
+								risk.removeDemand(bwDem);
+								if((newTotal-origTotal)>bdsrc.getAvailableBandwidth())
+									return false;
+								else return true;
+							}
+						}
+						double additional = bdsrc.getAvailableBandwidth()+bdsrc.getReservedBackupBw()-bwDem.getDemandedBandwidth();
+						if(additional<0) return false;
+						else return true;
+					}
+				};
+				EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(pre);
+				Graph<SubstrateNode, SubstrateLink> tmp = filter.transform(sNet);
+				DijkstraShortestPath<SubstrateNode, SubstrateLink> dijkstra = new DijkstraShortestPath<SubstrateNode, SubstrateLink>(tmp);	//dijkstra
+				List<SubstrateLink> backupPath = dijkstra.getPath(ssnode, dsnode);
 				
 				//objective
-//				double demPon=bwDem.getDemandedBandwidth()/(pontential+0.001);
-				double potential=0.0;
-				for(List<SubstrateLink> tempPath:tmpsl.getKsp()){
-					double tmp=sNet.backupBottleneckCapacity(tempPath, tmpsl);
-					potential=potential+tmp;
-				}
-				obj = obj + " + "+100/potential;
-				obj = obj + "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-				obj = obj + " + "+100/potential;
-				obj = obj + "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
+				double cost=10*bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+				if(backupPath.isEmpty())	cost=cost+tmpsl.getProbability()/minProba*100000000;
+				
+				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(cost);
+				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
+				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(cost);
+				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//integer in the <general>
 				//general = general +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";

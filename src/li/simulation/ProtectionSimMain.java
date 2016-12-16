@@ -30,7 +30,7 @@ public static int c;
 			
 			for(int i=2;i<8;i++){
 				simulation.initialize(i);
-				
+				/*
 				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
 				System.setOut(ShortestPathBW);
 				writeCurrentTime();
@@ -41,7 +41,7 @@ public static int c;
 				System.setOut(probaHeuristic);
 				writeCurrentTime();
 				simulation.runSimulation("ProbaHeuristic","");
-				simulation.reset();
+				simulation.reset();*/
 				
 				PrintStream mcf_csp = new PrintStream(new FileOutputStream("res/mcf_csp_l"+i+"_c"+c+".txt"));
 				System.setOut(mcf_csp);
@@ -49,6 +49,12 @@ public static int c;
 				simulation.runSimulation("MCF","ConstraintSP");
 				simulation.reset();
 				
+				PrintStream pe2_csp = new PrintStream(new FileOutputStream("res/pe2_csp_l"+i+"_c"+c+".txt"));
+				System.setOut(pe2_csp);
+				writeCurrentTime();
+				simulation.runSimulation("ProtectionEnabledMCF2","ConstraintSP");
+				simulation.reset();
+				/*
 				PrintStream mcf_be = new PrintStream(new FileOutputStream("res/mcf_be_l"+i+"_c"+c+".txt"));
 				System.setOut(mcf_be);
 				writeCurrentTime();
@@ -73,9 +79,7 @@ public static int c;
 				writeCurrentTime();
 				simulation.runSimulation("ProtectionEnabledBW","ConstraintSP");
 				simulation.reset();*/
-				
 
-				
 				writeCurrentTime();
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 				System.out.println("job done");
