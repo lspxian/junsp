@@ -33,11 +33,9 @@ import vnreal.resources.BandwidthResource;
 
 public class ProtectionEnabledPrimaryMapping2 extends AbstractLinkMapping {
 
-	private String localPath ;
 	private double minProba=1;
 	public ProtectionEnabledPrimaryMapping2(SubstrateNetwork sNet) {
 		super(sNet);
-		this.localPath = "cplex/vne-mcf.lp";
 		this.sNet.precalculatedBackupPath(5);
 		//compute minimum probability
 		for(SubstrateLink sl:sNet.getEdges())
@@ -65,7 +63,8 @@ public class ProtectionEnabledPrimaryMapping2 extends AbstractLinkMapping {
 		//generate .lp file
 		try {
 			this.generateFile(vNet, nodeMapping);
-			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+localPath+" o");
+//			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py cplex/vne-mcf.lp o");
+			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+ "cplex/vne-mcf"+this.getClass().getName()+vNet.getId()+".lp"+" o");
 			InputStream in = p.getInputStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String readLine;
@@ -137,7 +136,7 @@ public class ProtectionEnabledPrimaryMapping2 extends AbstractLinkMapping {
 		String obj = "Minimize\n"+"obj : ";
 		String constraint = "Subject To\n";
 		String bounds = "Bounds\n";
-		String general = "General\n";
+		String binary = "Binary\n";
 
 		for (VirtualLink tmpl:vNet.getEdges()) {
 			// Find their mapped SubstrateNodes
@@ -167,7 +166,8 @@ public class ProtectionEnabledPrimaryMapping2 extends AbstractLinkMapping {
 							}
 						}
 						double additional = bdsrc.getAvailableBandwidth()+bdsrc.getReservedBackupBw()-bwDem.getDemandedBandwidth();
-						if(additional<0) return false;
+						if(additional<0) 
+							return false;
 						else return true;
 					}
 				};
@@ -177,8 +177,8 @@ public class ProtectionEnabledPrimaryMapping2 extends AbstractLinkMapping {
 				List<SubstrateLink> backupPath = dijkstra.getPath(ssnode, dsnode);
 				
 				//objective
-				double cost=10*bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
-				if(backupPath.isEmpty())	cost=cost+tmpsl.getProbability()/minProba*100000000;
+				double cost=100*bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001);
+				if(backupPath.isEmpty())	cost=cost+tmpsl.getProbability()/minProba*1000;
 				
 				obj = obj + " + "+MiscelFunctions.roundThreeDecimals(cost);
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
@@ -186,11 +186,11 @@ public class ProtectionEnabledPrimaryMapping2 extends AbstractLinkMapping {
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//integer in the <general>
-				//general = general +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
-				
+				binary = binary +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
+				binary = binary +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+"\n";
 				//bounds
-				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
-				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
+//				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+//				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
 			}
 			
 			//flow constraints
@@ -230,8 +230,9 @@ public class ProtectionEnabledPrimaryMapping2 extends AbstractLinkMapping {
 		}
 		
 		obj = obj+ "\n";
-		BufferedWriter writer = new BufferedWriter(new FileWriter(localPath));
-		writer.write(preambule+obj+constraint+bounds+general+"END");
+//		BufferedWriter writer = new BufferedWriter(new FileWriter("cplex/vne-mcf.lp"));
+		BufferedWriter writer = new BufferedWriter(new FileWriter("cplex/vne-mcf"+this.getClass().getName()+vNet.getId()+".lp"));
+		writer.write(preambule+obj+constraint+bounds+binary+"END");
 		writer.close();
 	}
 

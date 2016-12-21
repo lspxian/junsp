@@ -28,7 +28,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=2;i<8;i++){
+			for(int i=3;i<5;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
@@ -41,31 +41,31 @@ public static int c;
 				System.setOut(probaHeuristic);
 				writeCurrentTime();
 				simulation.runSimulation("ProbaHeuristic","");
-				simulation.reset();*/
-				
+				simulation.reset();
+				*/
 				PrintStream mcf_csp = new PrintStream(new FileOutputStream("res/mcf_csp_l"+i+"_c"+c+".txt"));
 				System.setOut(mcf_csp);
 				writeCurrentTime();
 				simulation.runSimulation("MCF","ConstraintSP");
 				simulation.reset();
-				
+				/*
 				PrintStream pe2_csp = new PrintStream(new FileOutputStream("res/pe2_csp_l"+i+"_c"+c+".txt"));
 				System.setOut(pe2_csp);
 				writeCurrentTime();
 				simulation.runSimulation("ProtectionEnabledMCF2","ConstraintSP");
 				simulation.reset();
-				/*
-				PrintStream mcf_be = new PrintStream(new FileOutputStream("res/mcf_be_l"+i+"_c"+c+".txt"));
-				System.setOut(mcf_be);
+				
+				PrintStream mcf_pb = new PrintStream(new FileOutputStream("res/mcf_pb_l"+i+"_c"+c+".txt"));
+				System.setOut(mcf_pb);
 				writeCurrentTime();
 				simulation.runSimulation("MCF","CSP_Proba");
-				simulation.reset();
-				
-				PrintStream pe_csp = new PrintStream(new FileOutputStream("res/pe_csp_l"+i+"_c"+c+".txt"));
-				System.setOut(pe_csp);
+				simulation.reset();*/
+				/*
+				PrintStream pe_pb = new PrintStream(new FileOutputStream("res/pe_pb_l"+i+"_c"+c+".txt"));
+				System.setOut(pe_pb);
 				writeCurrentTime();
-				simulation.runSimulation("MCF","CSP_PE");
-				simulation.reset();
+				simulation.runSimulation("ProtectionEnabledMCF2","CSP_Proba");
+				simulation.reset();*/
 				/*
 				PrintStream mcf_be = new PrintStream(new FileOutputStream("res/mcf_be_l"+i+"_c"+c+".txt"));
 				System.setOut(mcf_be);

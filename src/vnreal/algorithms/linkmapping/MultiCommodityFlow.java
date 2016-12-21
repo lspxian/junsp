@@ -90,6 +90,7 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 		try {
 			this.generateFile(vNet, nodeMapping);
 			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+localPath+" o");
+//			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+ "cplex/vne-mcf"+this.getClass().getName()+vNet.getId()+".lp"+" o");
 			InputStream in = p.getInputStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String readLine;
@@ -169,7 +170,7 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 		String obj = "Minimize\n"+"obj : ";
 		String constraint = "Subject To\n";
 		String bounds = "Bounds\n";
-		String general = "General\n";
+		String binary = "Binary\n";
 
 		for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links.hasNext();) {
 			VirtualLink tmpl = links.next();
@@ -206,11 +207,12 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//integer in the <general>
-				//general = general +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
+				binary = binary +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
+				binary = binary +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+"\n";
 				
 				//bounds
-				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
-				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
+//				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+//				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
 			}
 			
 			//flow constraints
@@ -269,7 +271,8 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 		
 		obj = obj+ "\n";
 		BufferedWriter writer = new BufferedWriter(new FileWriter(localPath));
-		writer.write(preambule+obj+constraint+bounds+general+"END");
+//		BufferedWriter writer = new BufferedWriter(new FileWriter("cplex/vne-mcf"+this.getClass().getName()+vNet.getId()+".lp"));
+		writer.write(preambule+obj+constraint+bounds+binary+"END");
 		writer.close();
 		
 	}
