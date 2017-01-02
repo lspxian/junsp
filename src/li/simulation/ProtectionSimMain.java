@@ -18,7 +18,7 @@ public static int c;
 		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.close();
-		for(c=0;c<1;c++){
+		for(c=0;c<10;c++){
 			writer = new FileWriter("result.txt",true);
 			writer.write("Number:"+c+"\n");
 			ProtectionSim simulation = new ProtectionSim();
@@ -30,7 +30,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=3;i<6;i++){
+			for(int i=1;i<7;i++){
 				simulation.initialize(i);
 				simulation.getSubstrateNetwork().configPercentage(1);
 				
@@ -57,13 +57,13 @@ public static int c;
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW","CSP_Proba");
 				simulation.reset();
-				
+				/*
 				PrintStream mcf_be = new PrintStream(new FileOutputStream("res/mcf_be_l"+i+"_c"+c+".txt"));
 				System.setOut(mcf_be);
 				writeCurrentTime();
 				simulation.runSimulation("SPBWConfig","CSP_Proba");
 				simulation.reset();
-				/*
+				
 				PrintStream mcf_csp = new PrintStream(new FileOutputStream("res/mcf_csp_l"+i+"_c"+c+".txt"));
 				System.setOut(mcf_csp);
 				writeCurrentTime();
@@ -82,11 +82,11 @@ public static int c;
 				writeCurrentTime();
 				simulation.runSimulation("MCF","");
 				simulation.reset();*/
-				/*
+				
 				List<Double> percentList=new ArrayList<Double>();
 //				percentList.add(0.3);
 //				percentList.add(0.5);
-				percentList.add(0.55);
+//				percentList.add(0.55);
 				percentList.add(0.6);
 //				percentList.add(0.65);
 //				percentList.add(0.72);
@@ -96,7 +96,7 @@ public static int c;
 				for(double percent:percentList){
 					simulation.getSubstrateNetwork().configPercentage(percent);
 					writePercent(percent);
-					
+					/*
 					PrintStream SPWithoutBackupVF = new PrintStream(new FileOutputStream("res/SPWithoutBackupVF_l"+i+"_c"+c+".txt"));
 					System.setOut(SPWithoutBackupVF);
 					writeCurrentTime();
@@ -107,7 +107,7 @@ public static int c;
 					System.setOut(ShortestPathBackupVF);
 					writeCurrentTime();
 					simulation.runSimulation("ShortestPathBackupVF","included");
-					simulation.reset();
+					simulation.reset();*/
 					
 					PrintStream SPWithoutBackupVF2 = new PrintStream(new FileOutputStream("res/SPWithoutBackupVF2_l"+i+"_c"+c+".txt"));
 					System.setOut(SPWithoutBackupVF2);
@@ -127,7 +127,7 @@ public static int c;
 					simulation.runSimulation("MaxFlowBackupVF","included");
 					simulation.reset();
 					
-				}*/
+				}
 				writeCurrentTime();
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 				System.out.println("job done");
