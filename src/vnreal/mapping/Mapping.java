@@ -55,7 +55,7 @@ import vnreal.resources.AbstractResource;
 public final class Mapping {
 	private final AbstractDemand demand;
 	private final AbstractResource resource;
-	private boolean protection=false;
+	private boolean protection=false;	//in simulation class, use isProtection to compute affectedNet
 
 	public Mapping(AbstractDemand dem, AbstractResource res) {
 		this.demand = dem;

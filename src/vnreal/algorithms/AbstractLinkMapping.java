@@ -69,7 +69,7 @@ public abstract class AbstractLinkMapping {
 	 *            updated when a link is processed and when it is mapped in the
 	 *            algorithm.
 	 */
-	protected AbstractLinkMapping(SubstrateNetwork sNet) {
+	public AbstractLinkMapping(SubstrateNetwork sNet) {
 		this.sNet = sNet;
 		this.processedLinks = 0;
 		this.mappedLinks = 0;
@@ -100,6 +100,9 @@ public abstract class AbstractLinkMapping {
 	}
 	public TreeMap<BandwidthDemand, SubstrateLink> getMapping() {
 		return mapping;
+	}
+	public void resetMapping(){
+		mapping.clear();
 	}
 
 }

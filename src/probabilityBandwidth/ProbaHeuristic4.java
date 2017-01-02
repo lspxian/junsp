@@ -130,6 +130,11 @@ public class ProbaHeuristic4 extends AbstractLinkMapping {
 		
 		return true;
 	}
+	
+	public void resetMapping(){
+		mapping.clear();
+		initialProbability.clear();
+	}
 
 }
 

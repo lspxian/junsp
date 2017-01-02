@@ -56,7 +56,7 @@ public class ConstraintSPLocalShare extends AbstractBackupMapping {
 		SubstrateNode node2 = sn.getEndpoints(sl).getSecond();
 		
 		//block the links without enough available capacities
-		//calculate additional bandwidth
+		//pre: optimize additional bandwidth
 		Predicate<SubstrateLink> pre=null;
 		if(share){
 			pre=new Predicate<SubstrateLink>(){
@@ -92,9 +92,8 @@ public class ConstraintSPLocalShare extends AbstractBackupMapping {
 				}
 			};
 		}
-		
 		EdgePredicateFilter<SubstrateNode,SubstrateLink> filter = new EdgePredicateFilter<SubstrateNode,SubstrateLink>(pre);
-		Graph<SubstrateNode, SubstrateLink> tmp = filter.transform(sn);
+		Graph<SubstrateNode, SubstrateLink> tmp = filter.transform(sn);	//no separation
 		
 		Transformer<SubstrateLink, Number> weight=null;;
 		if(share){	//optimize additional bw

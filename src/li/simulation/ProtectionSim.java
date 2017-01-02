@@ -31,9 +31,14 @@ import protectionProba.BestEffortBackup;
 import protectionProba.CSP_PE;
 import protectionProba.CSP_Proba;
 import protectionProba.ConstraintSPLocalShare;
+import protectionProba.MaxFlowBackupVF;
 import protectionProba.ProtectionEnabledPrimaryBW;
 import protectionProba.ProtectionEnabledPrimaryMapping;
 import protectionProba.ProtectionEnabledPrimaryMapping2;
+import protectionProba.SPWithoutBackupVF;
+import protectionProba.SPWithoutBackupVF2;
+import protectionProba.ShortestPathBackupVF;
+import protectionProba.ShortestPathBackupVF2;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.nodemapping.AvailableResourcesNodeMapping;
@@ -52,16 +57,15 @@ public class ProtectionSim extends AbstractSimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 15000.0;
+		simulationTime = 50000.0;
 		try {
-			
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
 				boolean connect=true;
 				Generator.createSubNet();
 				sn.alt2network("./gt-itm/sub");
 //				sn.alt2network("data/cost239");
-//				sn.alt2network("sndlib/polska");
+//				sn.alt2network("sndlib/germany50");
 				for(SubstrateNode snode:sn.getVertices()){
 					if(sn.getNeighborCount(snode)<=1){
 						connect=false;
@@ -71,13 +75,14 @@ public class ProtectionSim extends AbstractSimulation {
 				if(connect==true)	break;
 			}
 			
-			DrawGraph dg = new DrawGraph(sn);
-			dg.draw();
+//			DrawGraph dg = new DrawGraph(sn);
+//			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		sn.addAllResource(true);
 		sn.addInfiniteResource();
+//		sn.configPercentage(0.6);
 		
 	}
 	
@@ -98,12 +103,13 @@ public class ProtectionSim extends AbstractSimulation {
 			VirtualNetwork vn = new VirtualNetwork();
 			vn.alt2network("data/vir"+i);
 			vn.addAllResource(true);
+			vn.reconfigPositon(sn);
 			//System.out.println(vn);		//print vn
 			vns.add(vn);
 		}
-		for(int i=0;i<5;i++){
+		for(int i=0;i<20;i++){
 			events.add(new VnEvent(vns.get(i),i,0));
-//			events.add(new VnEvent(vns.get(i),100,1));
+			events.add(new VnEvent(vns.get(i),100+i,1));
 		}
 		
 		Collections.sort(events);*/
@@ -175,8 +181,77 @@ public class ProtectionSim extends AbstractSimulation {
 		metricsProba.add(new Affected_VN_Number(this));
 		metricsProba.add(new AffectedRevenue(this));
 		
-		for(NetEvent currentEvent : this.netEvents){
+		//Primary link mapping
+		AbstractLinkMapping method;
+		switch (methodStr)
+		{
+		case "MCF" :
+			method = new MultiCommodityFlow(sn);
+			break;
+		case "ProtectionEnabledMCF" :
+			method = new ProtectionEnabledPrimaryMapping(sn);
+			break;
+		case "ProtectionEnabledMCF2" :
+			method = new ProtectionEnabledPrimaryMapping2(sn);
+			break;
+		case "ProtectionEnabledBW" :
+			method = new ProtectionEnabledPrimaryBW(sn);
+			break;
+		case "ShortestPathBW" :
+			method = new ShortestPathBW(sn);
+			break;
+		case "SPBWConfig" :
+			method = new ShortestPathBW(sn);
+			configBW(0.99);
+			break;
+		case "ProbaHeuristic" :
+			method = new ProbaHeuristic4(sn);	//use 4
+			break;
+		case "SPWithoutBackupVF" :
+			method = new SPWithoutBackupVF(sn);
+			break;
+		case "ShortestPathBackupVF" :
+			method = new ShortestPathBackupVF(sn);
+			break;
+		case "SPWithoutBackupVF2" :
+			method = new SPWithoutBackupVF2(sn);
+			break;
+		case "ShortestPathBackupVF2" :
+			method = new ShortestPathBackupVF2(sn);
+			break;
+		case "MaxFlowBackupVF" :
+			method = new MaxFlowBackupVF(sn);
+			break;
+		default : 
+			System.out.println("The methode doesn't exist");
+			method = null;
+		}
 			
+		//backup here
+		AbstractBackupMapping backupMethod;
+		switch(backupStr)
+		{
+		case "BestEffort":
+			backupMethod=new BestEffortBackup(sn);
+			break;
+		case "ConstraintSP":
+			backupMethod=new ConstraintSPLocalShare(sn);
+			break;
+		case "CSP_PE":
+			backupMethod=new CSP_PE(sn);
+			break;
+		case "CSP_Proba":
+			backupMethod=new CSP_Proba(sn);
+			break;
+		case "included":
+			backupMethod = null;
+			break;
+		default:
+			System.out.println("The methode doesn't exist");
+			backupMethod = null;
+		}
+		
+		for(NetEvent currentEvent : this.netEvents){
 			if(currentEvent instanceof VnEvent){
 				VnEvent cEvent = (VnEvent) currentEvent;
 				System.out.println("/------------------------------------/");
@@ -188,69 +263,19 @@ public class ProtectionSim extends AbstractSimulation {
 					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,1,true,false);
 //					CordinatedNodeLinkMapping arnm = new CordinatedNodeLinkMapping(sn);
 					System.out.println("Operation : Mapping");
+					method.resetMapping();
 					
 					if(arnm.nodeMapping(cEvent.getConcernedVn())){
 						Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 						System.out.println("node mapping succes : "+nodeMapping);
-						//TODO
-//						if(cEvent.getAoDTime()>=0&&cEvent.getAoDTime()<1000)
-//							System.out.println(this.sn.probaToString());
-						
-						//Primary link mapping
-						AbstractLinkMapping method;
-						switch (methodStr)
-						{
-						case "MCF" :
-							method = new MultiCommodityFlow(sn);
-							break;
-						case "ProtectionEnabledMCF" :
-							method = new ProtectionEnabledPrimaryMapping(sn);
-							break;
-						case "ProtectionEnabledMCF2" :
-							method = new ProtectionEnabledPrimaryMapping2(sn);
-							break;
-						case "ProtectionEnabledBW" :
-							method = new ProtectionEnabledPrimaryBW(sn);
-							break;
-						case "ShortestPathBW" :
-							method = new ShortestPathBW(sn);
-							break;
-						case "ProbaHeuristic" :
-							method = new ProbaHeuristic4(sn);	//use 4
-							break;
-						default : 
-							System.out.println("The methode doesn't exist");
-							method = null;
-						}
 						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							System.out.println("Primary link mapping done");
 //							System.out.println(this.sn.probaToString());
 							
-							//backup here
-							AbstractBackupMapping backupMethod;
-							switch(backupStr)
-							{
-							case "BestEffort":
-								backupMethod=new BestEffortBackup(sn);
-								break;
-							case "ConstraintSP":
-								backupMethod=new ConstraintSPLocalShare(sn);
-								break;
-							case "CSP_PE":
-								backupMethod=new CSP_PE(sn);
-								break;
-							case "CSP_Proba":
-								backupMethod=new CSP_Proba(sn);
-								break;
-								
-							default:
-								System.out.println("The methode doesn't exist");
-								backupMethod = null;
-							}
-							
-							if(backupStr==""){
-								System.out.println("no backup stage, primary only done.");
+							if((backupStr=="")||(backupStr=="included")){
+								if(backupStr=="")
+									System.out.println("no backup stage, primary only done.");
 								this.currentVNs.add(cEvent.getConcernedVn());
 								this.accepted++;
 								mappedVNs.add(cEvent.getConcernedVn());
@@ -288,6 +313,7 @@ public class ProtectionSim extends AbstractSimulation {
 //						System.out.println("node resource error, virtual network "+j);
 					}
 					
+//					System.out.println(sn.probaToString());
 					for(Metric metric : metrics){ //write data to file
 						double value = metric.calculate();
 						System.out.println(metric.name()+" "+value);
@@ -296,11 +322,13 @@ public class ProtectionSim extends AbstractSimulation {
 					
 				}
 				else{
-//					System.out.println("Operation : Liberation Ressources");
+					System.out.println("Operation : Liberation Ressources");
 					if(this.currentVNs.contains(cEvent.getConcernedVn())){
-						NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);
+						if(methodStr=="MaxFlowBackupVF")
+							((MaxFlowBackupVF) method).freeMaxFlow(cEvent.getConcernedVn(), sn);
 						if(backupStr!="")
 							NodeLinkDeletion.FreeResourceBackup(cEvent.getConcernedVn(), sn, true);
+						NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);
 						this.currentVNs.remove(cEvent.getConcernedVn());					
 					}
 				}
@@ -309,7 +337,7 @@ public class ProtectionSim extends AbstractSimulation {
 				failures++;
 				Set<VirtualNetwork> affectedNet = new HashSet<VirtualNetwork>();
 				FailureEvent fEvent = (FailureEvent) currentEvent;
-				BandwidthResource bw = (BandwidthResource)fEvent.getFailureLink().get().get(0);
+				BandwidthResource bw = (BandwidthResource)fEvent.getFailureLink().getBandwidthResource();
 				for(Mapping m :bw.getMappings()){
 					if(!m.isProtection()){
 						VirtualLink vl=(VirtualLink)m.getDemand().getOwner();
@@ -342,6 +370,8 @@ public class ProtectionSim extends AbstractSimulation {
 		}
 		//TODO
 		System.out.println(this.sn.probaToString());
+		if(methodStr=="MaxFlowBackupVF")
+			System.out.println(((MaxFlowBackupVF) method).getMaxflow());
 		
 		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("*----lambda="+this.lambda+"--"+methodStr+"-"+backupStr+"----*\n");
@@ -387,7 +417,21 @@ public class ProtectionSim extends AbstractSimulation {
 	@Override
 	public void runSimulation(String methodStr) throws IOException {
 		// TODO Auto-generated method stub
-		
 	}
-
+	
+	public void configBW(double percent){
+		for(SubstrateNode snode:sn.getVertices()){
+			if(sn.getNeighborCount(snode)==2){
+				for(SubstrateNode dnode:sn.getNeighbors(snode)){
+					SubstrateLink sl=sn.findEdge(snode, dnode);
+					BandwidthResource bwr=sl.getBandwidthResource();
+					double primaryCap=MiscelFunctions.roundThreeDecimals(bwr.getBandwidth()*percent);
+					bwr.setPrimaryCap(primaryCap);
+//					bwr.setPrimaryCap(1000);
+					double backupCap=MiscelFunctions.roundThreeDecimals(bwr.getBandwidth()*(1-percent));
+					bwr.setBackupCap(backupCap);
+				}
+			}
+		}
+	}
 }

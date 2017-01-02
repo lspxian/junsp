@@ -18,7 +18,7 @@ public class Generator {
 		PrintWriter pw = new PrintWriter("gt-itm/subCmd");
 		pw.println("geo 1 "+new Random().nextInt(100));
 		//node number, scale, method, proba connect
-		pw.println("50 100 3 0.09");
+		pw.println("50 100 3 0.1");
 		//0.1 for multi domain
 //		pw.println("40 100 4 0.25 0.01 1");
 		pw.close();

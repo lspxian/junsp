@@ -22,7 +22,7 @@ public class PrimaryPercentage extends Metric {
 		double sum=0.0, primary=0.0;
 		for (SubstrateLink sl : this.simulation.getSubstrateNetwork().getEdges()) {
 			sum+=sl.getBandwidthResource().getOccupiedBandwidth();
-			primary+=sl.getBandwidthResource().getPrimaryBw();
+			primary+=sl.getBandwidthResource().getOccupiedPrimary();
 		}
 		percentage.add(primary/sum);
 		

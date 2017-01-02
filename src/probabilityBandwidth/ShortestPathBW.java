@@ -43,8 +43,9 @@ public class ShortestPathBW extends AbstractLinkMapping {
 			if(!shortest.isEmpty()){
 				System.out.println(vl+" "+shortest);
 				
-				BandwidthDemand bwd=vl.getBandwidthDemand();
 				for(SubstrateLink sl:shortest){
+					BandwidthDemand bwd=new BandwidthDemand(vl);
+					bwd.setDemandedBandwidth(vl.getBandwidthDemand().getDemandedBandwidth());
 					usedLinksForProba.add(sl);
 					if(!NodeLinkAssignation.vlmSingleLinkSimple(bwd, sl)){
 						throw new AssertionError("But we checked before!");

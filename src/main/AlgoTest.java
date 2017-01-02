@@ -13,7 +13,7 @@ import probabilityBandwidth.PBBWExactILP;
 import probabilityBandwidth.ProbaHeuristic1;
 import protectionProba.DisjointShortestPathPT;
 import protectionProba.ProtectionEnabledPrimaryMapping;
-import protectionProba.ShortestPathLocalPT;
+import protectionProba.SPWithoutBackupVF;
 import vnreal.algorithms.linkmapping.MultiCommodityFlow;
 import vnreal.algorithms.linkmapping.SteinerTreeHeuristic;
 import vnreal.algorithms.linkmapping.UnsplittingLPCplex;

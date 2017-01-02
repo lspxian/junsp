@@ -51,6 +51,7 @@ import org.apache.commons.collections15.Factory;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 
+import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.network.Network;
 import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
@@ -348,15 +349,7 @@ public class SubstrateNetwork extends
 		double min=10000;
 		for(SubstrateLink sl:path){
 			BandwidthResource bw=sl.getBandwidthResource();
-			Double backup=0.0;
-			for(Risk r:bw.getRisks()){
-				if(r.getNe().equals(riskLink)){
-					backup=r.getTotal();
-					break;
-				}
-			}
-//			double temp=bw.getBandwidth()-bw.getPrimaryBw()-backup;
-			double temp=bw.getReservedBackupBw()-backup+bw.getAvailableBandwidth();
+			double temp=bw.getBackupAvailable(riskLink);
 			if(temp<min)	min=temp;
 		}
 		return min;
@@ -388,6 +381,17 @@ public class SubstrateNetwork extends
 				}};
 			Yen<SubstrateNode, SubstrateLink> yen=new Yen<SubstrateNode, SubstrateLink>(tmp, bbc);
 			sl.setKsp(yen.getShortestPaths(this.getEndpoints(sl).getFirst(), this.getEndpoints(sl).getSecond(), k));
+		}
+	}
+	
+	public void configPercentage(double percent){
+		for(SubstrateLink sl:this.getEdges()){
+			BandwidthResource bwr=sl.getBandwidthResource();
+			double primaryCap=MiscelFunctions.roundThreeDecimals(bwr.getBandwidth()*percent);
+			bwr.setPrimaryCap(primaryCap);
+//			bwr.setPrimaryCap(1000);
+			double backupCap=MiscelFunctions.roundThreeDecimals(bwr.getBandwidth()*(1-percent));
+			bwr.setBackupCap(backupCap);
 		}
 	}
 	

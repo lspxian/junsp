@@ -63,12 +63,12 @@ public class CSP_Proba extends AbstractBackupMapping {
 				}
 				else{
 					System.out.println("no backup link "+sl);
-					for(BandwidthDemand bwdtmp:entry.getValue()){
+					/*for(BandwidthDemand bwdtmp:entry.getValue()){
 						sl.getBandwidthResource().backupFree(bwdtmp, true);
-					}
+					}*/
 					noProtected.add(sl);
 					sl.getBandwidthResource().getMapping(bwd).setProtection(false);
-					break;
+//					break;
 				}
 			}
 		}

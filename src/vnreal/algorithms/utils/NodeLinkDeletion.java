@@ -117,4 +117,5 @@ public class NodeLinkDeletion {
 			linkFreeBackup(vl.getBandwidthDemand(),sn.getEdges(),true);
 		}
 	}
+	
 }
