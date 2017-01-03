@@ -33,7 +33,7 @@ public static int c;
 			for(int i=1;i<7;i++){
 				simulation.initialize(i);
 				simulation.getSubstrateNetwork().configPercentage(1);
-				
+				/*
 				PrintStream ShortestPathBW = new PrintStream(new FileOutputStream("res/ShortestPathBW_l"+i+"_c"+c+".txt"));
 				System.setOut(ShortestPathBW);
 				writeCurrentTime();
@@ -50,7 +50,7 @@ public static int c;
 				System.setOut(sp_csp);
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW","ConstraintSP");
-				simulation.reset();
+				simulation.reset();*/
 				
 				PrintStream sp_pb = new PrintStream(new FileOutputStream("res/sp_pb_l"+i+"_c"+c+".txt"));
 				System.setOut(sp_pb);

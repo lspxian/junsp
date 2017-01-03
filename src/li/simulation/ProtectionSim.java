@@ -62,7 +62,7 @@ public class ProtectionSim extends AbstractSimulation {
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
 				boolean connect=true;
-				Generator.createSubNet();
+//				Generator.createSubNet();
 				sn.alt2network("./gt-itm/sub");
 //				sn.alt2network("data/cost239");
 //				sn.alt2network("sndlib/germany50");
