@@ -30,7 +30,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=1;i<7;i++){
+			for(int i=3;i<4;i++){
 				simulation.initialize(i);
 				simulation.getSubstrateNetwork().configPercentage(1);
 				/*
@@ -50,13 +50,13 @@ public static int c;
 				System.setOut(sp_csp);
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW","ConstraintSP");
-				simulation.reset();*/
+				simulation.reset();
 				
 				PrintStream sp_pb = new PrintStream(new FileOutputStream("res/sp_pb_l"+i+"_c"+c+".txt"));
 				System.setOut(sp_pb);
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW","CSP_Proba");
-				simulation.reset();
+				simulation.reset();*/
 				/*
 				PrintStream mcf_be = new PrintStream(new FileOutputStream("res/mcf_be_l"+i+"_c"+c+".txt"));
 				System.setOut(mcf_be);
@@ -85,13 +85,13 @@ public static int c;
 				
 				List<Double> percentList=new ArrayList<Double>();
 //				percentList.add(0.3);
-//				percentList.add(0.5);
-//				percentList.add(0.55);
+				percentList.add(0.5);
+				percentList.add(0.55);
 				percentList.add(0.6);
-//				percentList.add(0.65);
-//				percentList.add(0.72);
-//				percentList.add(0.75);
-//				percentList.add(0.8);
+				percentList.add(0.65);
+				percentList.add(0.7);
+				percentList.add(0.75);
+				percentList.add(0.8);
 //				percentList.add(0.9);
 				for(double percent:percentList){
 					simulation.getSubstrateNetwork().configPercentage(percent);

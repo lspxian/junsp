@@ -75,6 +75,13 @@ public abstract class AbstractSimulation {
 		return totalCost;
 	}
 
+	public double getSimulationTime() {
+		return simulationTime;
+	}
+	
+	public int getLambda() {
+		return lambda;
+	}
 	public abstract void initialize(int lambda) throws IOException;
 	public abstract void runSimulation(String methodStr) throws IOException;
 	public abstract void reset();

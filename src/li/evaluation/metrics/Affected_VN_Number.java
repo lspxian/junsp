@@ -20,7 +20,10 @@ public class Affected_VN_Number extends Metric {
 
 	@Override
 	public double calculate() {
-		return (double)this.simulation.getAffected()/this.simulation.getFailures();
+		double ar = ((double)this.simulation.getAccepted()/(double)(this.simulation.getAccepted() + this.simulation.getRejected()));
+		double result=(double)this.simulation.getAffected()/this.simulation.getSimulationTime();
+		result=result/10/this.simulation.getLambda()/ar;
+		return result;
 	}
 
 }
