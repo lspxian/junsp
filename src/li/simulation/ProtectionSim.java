@@ -62,7 +62,7 @@ public class ProtectionSim extends AbstractSimulation {
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
 				boolean connect=true;
-//				Generator.createSubNet();
+				Generator.createSubNet();
 				sn.alt2network("./gt-itm/sub");
 //				sn.alt2network("data/cost239");
 //				sn.alt2network("sndlib/germany50");
@@ -136,7 +136,7 @@ public class ProtectionSim extends AbstractSimulation {
 			events.add(new VnEvent(vn,time,0)); //arrival event
 			if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
-			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
+			time+=MiscelFunctions.negExponential(lambda/200.0); //generate next vn arrival event
 		}
 		Collections.sort(events);
 		

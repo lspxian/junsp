@@ -30,7 +30,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=3;i<4;i++){
+			for(int i=4;i<5;i++){
 				simulation.initialize(i);
 				simulation.getSubstrateNetwork().configPercentage(1);
 				/*
@@ -90,7 +90,7 @@ public static int c;
 				percentList.add(0.6);
 				percentList.add(0.65);
 				percentList.add(0.7);
-				percentList.add(0.75);
+//				percentList.add(0.75);
 				percentList.add(0.8);
 //				percentList.add(0.9);
 				for(double percent:percentList){
