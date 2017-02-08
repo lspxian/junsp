@@ -22,7 +22,10 @@ import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.resources.BandwidthResource;
-
+/*
+ * Shortest path local share backup, with admission control(bandwidth), optimize additional bandwidth,
+ * if no backup resource, accept the VN and calculate probability
+ */
 public class CSP_Proba extends AbstractBackupMapping {
 
 	public CSP_Proba(SubstrateNetwork sNet) {

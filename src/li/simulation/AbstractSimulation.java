@@ -26,6 +26,7 @@ public abstract class AbstractSimulation {
 	protected ArrayList<VirtualNetwork> currentVNs ;
 	protected Map<VirtualNetwork, Double> probability; 
 	protected ArrayList<NetEvent> netEvents;
+	protected ArrayList<NetEvent> failureEvents;
 	protected int affected;
 	protected double affectedRevenue;
 	protected ArrayList<Double> affectedRatio;

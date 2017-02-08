@@ -62,7 +62,7 @@ public class ProtectionSim extends AbstractSimulation {
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
 				boolean connect=true;
-				Generator.createSubNet();
+//				Generator.createSubNet();
 				sn.alt2network("./gt-itm/sub");
 //				sn.alt2network("data/cost239");
 //				sn.alt2network("sndlib/germany50");
@@ -82,7 +82,16 @@ public class ProtectionSim extends AbstractSimulation {
 		}
 		sn.addAllResource(true);
 		sn.addInfiniteResource();
-//		sn.configPercentage(0.6);
+		
+		//random failure event
+		failureEvents=new ArrayList<NetEvent>();
+		for(SubstrateLink sl : sn.getEdges()){
+			time=MiscelFunctions.negExponential(sl.getProbability());
+			while(time<simulationTime){
+				failureEvents.add(new FailureEvent(time,sl));
+				time+=MiscelFunctions.negExponential(sl.getProbability());
+			}
+		}
 		
 	}
 	
@@ -150,14 +159,7 @@ public class ProtectionSim extends AbstractSimulation {
 		}
 		Collections.sort(this.netEvents);*/
 		
-		//random failure event
-		for(SubstrateLink sl : sn.getEdges()){
-			time=MiscelFunctions.negExponential(sl.getProbability());
-			while(time<simulationTime){
-				netEvents.add(new FailureEvent(time,sl));
-				time+=MiscelFunctions.negExponential(sl.getProbability());
-			}
-		}
+		this.netEvents.addAll(failureEvents);
 		Collections.sort(this.netEvents);
 		
 		//add metric
@@ -167,6 +169,7 @@ public class ProtectionSim extends AbstractSimulation {
 		this.currentVNs = new ArrayList<VirtualNetwork>();
 		this.probability = new LinkedHashMap<VirtualNetwork,Double>();
 		this.affectedRatio = new ArrayList<Double>();
+		
 	}
 	public void runSimulation(String methodStr,String backupStr) throws IOException{
 		System.out.println(this.sn.probaToString());
