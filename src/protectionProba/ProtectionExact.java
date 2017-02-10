@@ -46,7 +46,7 @@ public class ProtectionExact extends AbstractLinkMapping {
 		//generate .lp file
 		try {
 			this.generateFile(vNet, nodeMapping);
-			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py "+localPath+" o");
+			Process p = Runtime.getRuntime().exec("python cplex/mysolver.py cplex/vne-mcf.lp o");
 			InputStream in = p.getInputStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String readLine;
