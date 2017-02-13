@@ -18,7 +18,7 @@ public static int c;
 		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.close();
-		for(c=0;c<20;c++){
+		for(c=0;c<1;c++){
 			writer = new FileWriter("result.txt",true);
 			writer.write("Number:"+c+"\n");
 			ProtectionSim simulation = new ProtectionSim();
@@ -30,7 +30,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=4;i<5;i++){
+			for(int i=6;i<10;i=i+1){
 				simulation.initialize(i);
 				simulation.getSubstrateNetwork().configPercentage(1);
 				/*
@@ -85,13 +85,13 @@ public static int c;
 				
 				List<Double> percentList=new ArrayList<Double>();
 //				percentList.add(0.3);
-				percentList.add(0.5);
-				percentList.add(0.55);
-				percentList.add(0.6);
+//				percentList.add(0.5);
+//				percentList.add(0.55);
+//				percentList.add(0.6);
 				percentList.add(0.65);
-				percentList.add(0.7);
-				percentList.add(0.75);
-				percentList.add(0.8);
+//				percentList.add(0.7);
+//				percentList.add(0.75);
+//				percentList.add(0.8);
 //				percentList.add(0.9);
 				for(double percent:percentList){
 					simulation.getSubstrateNetwork().configPercentage(percent);

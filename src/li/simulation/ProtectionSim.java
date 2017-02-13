@@ -17,6 +17,7 @@ import li.evaluation.metrics.AverageProbability;
 import li.evaluation.metrics.CurrentLinkUtilisationL;
 import li.evaluation.metrics.LinkUtilizationL;
 import li.evaluation.metrics.MappedRevenueL;
+import li.evaluation.metrics.MaxProbability;
 import li.evaluation.metrics.Metric;
 import li.evaluation.metrics.PrimaryPercentage;
 import li.event.FailureEvent;
@@ -62,7 +63,7 @@ public class ProtectionSim extends AbstractSimulation {
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
 				boolean connect=true;
-//				Generator.createSubNet();
+				Generator.createSubNet();
 				sn.alt2network("./gt-itm/sub");
 //				sn.alt2network("data/cost239");
 //				sn.alt2network("sndlib/germany50");
@@ -180,6 +181,7 @@ public class ProtectionSim extends AbstractSimulation {
 		metrics.add(new PrimaryPercentage(this));
 		metrics.add(new MappedRevenueL(this));
 		metrics.add(new AverageProbability(this));
+		metrics.add(new MaxProbability(this));
 		metricsProba.add(new AverageAffectedVNRatio(this));
 		metricsProba.add(new Affected_VN_Number(this));
 		metricsProba.add(new AffectedRevenue(this));

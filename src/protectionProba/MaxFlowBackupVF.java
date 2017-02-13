@@ -64,11 +64,11 @@ public class MaxFlowBackupVF extends AbstractLinkMapping {
 					}
 					this.mapping.put(bwd, sl);
 					int mfValue=maxflow.get(sl).intValue();
-					maxflow.put(sl, mfValue-bwd.getDemandedBandwidth().intValue());	//update maxflow
 					//backup here
 					List<SubstrateLink> backup = this.ComputeLocalBackupPath(sNet, sl, bwd);
 					System.out.println(sl+"#"+bwd+" "+backup);
 					if(!backup.isEmpty()){	
+						maxflow.put(sl, mfValue-bwd.getDemandedBandwidth().intValue());	//update maxflow
 						resultB.put(bwd, backup);
 						if(!NodeLinkAssignation.backup(vl,sl, backup, true))
 							throw new AssertionError("But we checked before!");
@@ -217,7 +217,7 @@ public class MaxFlowBackupVF extends AbstractLinkMapping {
 	public void freeMaxflow(BandwidthDemand bwd, Collection<SubstrateLink> list){
 		for(SubstrateLink sl:list){
 			for(Mapping m:sl.getBandwidthResource().getMappings())
-				if(m.getDemand().getOwner().equals(bwd.getOwner())){
+				if(m.getDemand().getOwner().equals(bwd.getOwner())&&m.isProtection()){
 					int newMaxflow=this.maxflow.get(sl)+bwd.getDemandedBandwidth().intValue();
 					this.maxflow.put(sl, newMaxflow);
 				}
