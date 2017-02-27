@@ -33,7 +33,9 @@ package vnreal.network.substrate;
 
 import java.util.List;
 import java.util.Random;
+import java.util.SortedSet;
 
+import protectionProba.MaxFlowPath;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.network.Link;
 import vnreal.resources.AbstractResource;
@@ -50,6 +52,7 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 	protected double probability;
 	protected boolean used;
 	protected List<List<SubstrateLink>> ksp;
+	protected SortedSet<MaxFlowPath> maxflow;
 	
 	public SubstrateLink() {
 		super();
