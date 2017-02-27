@@ -31,9 +31,9 @@
  * ***** END LICENSE BLOCK ***** */
 package vnreal.network.substrate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.SortedSet;
 
 import protectionProba.MaxFlowPath;
 import vnreal.algorithms.utils.MiscelFunctions;
@@ -52,7 +52,7 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 	protected double probability;
 	protected boolean used;
 	protected List<List<SubstrateLink>> ksp;
-	protected SortedSet<MaxFlowPath> maxflow;
+	protected List<MaxFlowPath> maxflow;
 	
 	public SubstrateLink() {
 		super();
@@ -63,6 +63,7 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 		probability = 0e-6+random*20e-6;
 //		probability = 0.00001;
 		used=false;
+		maxflow=new ArrayList<MaxFlowPath>();
 	}
 	
 	public SubstrateLink(Double failure){
@@ -138,6 +139,10 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 
 	public void setKsp(List<List<SubstrateLink>> ksp) {
 		this.ksp = ksp;
+	}
+
+	public List<MaxFlowPath> getMaxflow() {
+		return maxflow;
 	}
 
 }
