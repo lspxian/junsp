@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections15.Predicate;
-import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.filters.EdgePredicateFilter;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
@@ -36,7 +35,7 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 		return false;
 	}
 	
-	private void calculateMaxflow(SubstrateNetwork sNet) {
+	public void calculateMaxflow(SubstrateNetwork sNet) {
 		// FordFulkerson
 		for(SubstrateLink sl:sNet.getEdges()){
 			SubstrateNode source=sNet.getEndpoints(sl).getFirst();
@@ -89,7 +88,7 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 					CostResource tmpCost=(CostResource)tmpsl.get().get(0);
 					if(tmpCost.getCost()<1000&&tmpCost.getCost()>0)	flow=tmpCost.getCost();
 				}
-				totalFlow=+flow;
+				totalFlow+=flow;
 				for(SubstrateLink tmpsl:paths){
 					CostResource tmpCost=(CostResource)tmpsl.get().get(0);
 					tmpCost.setCost(tmpCost.getCost()-flow);	//forward
@@ -116,15 +115,14 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 				double cost22=backCost.getCost();
 				double flowT=(cost11+cost22)/2-(cost11>cost22?cost22:cost11);
 				//create links on the result graph
-				if(flowT!=0){
+				
+				if((flowT!=0)&&(resultGraph.findEdge(tmpSource, tmpSink)==null)){
 					SubstrateLink link=new SubstrateLink();
 					CostResource cost=new CostResource(link);
+					cost.setCost(flowT);
 					link.add(cost);
 					resultGraph.addEdge(link, tmpSource, tmpSink);
 				}
-				
-				augment.removeEdge(forward);
-				augment.removeEdge(backward);
 			}
 			
 			while(true){
@@ -147,12 +145,15 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 					CostResource tmpCost=(CostResource)tmpsl.get().get(0);
 					if(tmpCost.getCost()<1000&&tmpCost.getCost()>0)	flow=tmpCost.getCost();
 				}
+				for(SubstrateLink tmpsl:paths){
+					CostResource tmpCost=(CostResource)tmpsl.get().get(0);
+					tmpCost.setCost(tmpCost.getCost()-flow);
+				}
 				MaxFlowPath mfp=new MaxFlowPath(sl,paths,flow);
 				sl.getMaxflow().add(mfp);
 				
 			}
 			Collections.sort(sl.getMaxflow());
-			
 			
 		}
 	}
