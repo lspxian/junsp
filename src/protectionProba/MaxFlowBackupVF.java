@@ -2,10 +2,12 @@ package protectionProba;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.commons.collections15.Factory;
@@ -35,7 +37,7 @@ import vnreal.resources.BandwidthResource;
 
 public class MaxFlowBackupVF extends AbstractLinkMapping {
 
-	Map<SubstrateLink,Integer> maxflow=new HashMap<SubstrateLink,Integer>();
+	Map<SubstrateLink,Integer> maxflow=new TreeMap<SubstrateLink,Integer>();
 	public MaxFlowBackupVF(SubstrateNetwork sNet) {
 		super(sNet);
 		calculateMaxflow(sNet);
