@@ -95,7 +95,7 @@ public class MaxFlowBackupVF extends AbstractLinkMapping {
 			}
 			else{
 				for(Map.Entry<BandwidthDemand, List<SubstrateLink>> mf: tmpMaxflow.entrySet()){	
-					freeMaxflow(mf.getKey(), mf.getValue());
+					freeMaxFlow(mf.getKey(), mf.getValue());
 				}
 				for(Map.Entry<BandwidthDemand, List<SubstrateLink>> ent: resultB.entrySet()){	//free backup path of other virtual links
 					NodeLinkDeletion.linkFreeBackup(ent.getKey(), ent.getValue(),true);
@@ -212,11 +212,11 @@ public class MaxFlowBackupVF extends AbstractLinkMapping {
 	
 	public void freeMaxFlow(VirtualNetwork vn, SubstrateNetwork sn){
 		for(VirtualLink vl:vn.getEdges()){
-			freeMaxflow(vl.getBandwidthDemand(),sn.getEdges());
+			freeMaxFlow(vl.getBandwidthDemand(),sn.getEdges());
 		}
 	}
 	
-	public void freeMaxflow(BandwidthDemand bwd, Collection<SubstrateLink> list){
+	public void freeMaxFlow(BandwidthDemand bwd, Collection<SubstrateLink> list){
 		for(SubstrateLink sl:list){
 			for(Mapping m:sl.getBandwidthResource().getMappings())
 				if(m.getDemand().getOwner().equals(bwd.getOwner())&&m.isProtection()){

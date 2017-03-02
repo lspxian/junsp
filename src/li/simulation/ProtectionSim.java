@@ -33,6 +33,7 @@ import protectionProba.CSP_PE;
 import protectionProba.CSP_Proba;
 import protectionProba.ConstraintSPLocalShare;
 import protectionProba.MaxFlowBackupVF;
+import protectionProba.MaxFlowBackupVF2;
 import protectionProba.ProtectionEnabledPrimaryBW;
 import protectionProba.ProtectionEnabledPrimaryMapping;
 import protectionProba.ProtectionEnabledPrimaryMapping2;
@@ -331,6 +332,8 @@ public class ProtectionSim extends AbstractSimulation {
 					if(this.currentVNs.contains(cEvent.getConcernedVn())){
 						if(methodStr=="MaxFlowBackupVF")
 							((MaxFlowBackupVF) method).freeMaxFlow(cEvent.getConcernedVn(), sn);
+						if(methodStr=="MaxFlowBackupVF2")
+							((MaxFlowBackupVF2) method).freeMaxFlow(cEvent.getConcernedVn(), sn);
 						if(backupStr!="")
 							NodeLinkDeletion.FreeResourceBackup(cEvent.getConcernedVn(), sn, true);
 						NodeLinkDeletion.freeResource(cEvent.getConcernedVn(), sn);

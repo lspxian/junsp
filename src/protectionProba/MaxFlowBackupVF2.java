@@ -1,6 +1,7 @@
 package protectionProba;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,21 +63,22 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 						throw new AssertionError("But we checked before!");
 					}
 					this.mapping.put(bwd, sl);
-					int mfValue=maxflow.get(sl).intValue();
 					//backup here
-					
-					
-					
-					List<SubstrateLink> backup = this.ComputeLocalBackupPath(sNet, sl, bwd);
-					System.out.println(sl+"#"+bwd+" "+backup);
-					if(!backup.isEmpty()){	
-						maxflow.put(sl, mfValue-bwd.getDemandedBandwidth().intValue());	//update maxflow
-						resultB.put(bwd, backup);
-						if(!NodeLinkAssignation.backup(vl,sl, backup, true))
-							throw new AssertionError("But we checked before!");
-						sl.getBandwidthResource().getMapping(bwd).setProtection(true);
+					boolean protectionFlag=false;
+					for(MaxFlowPath mfPath:sl.getMaxflow()){
+						if(mfPath.fulfil(bwd)){
+							List<SubstrateLink> backup=mfPath.getPath();
+							System.out.println(sl+"#"+bwd+" "+backup);
+							resultB.put(bwd, backup);
+							if(!NodeLinkAssignation.backup(vl,sl, backup, true))
+								throw new AssertionError("But we checked before!");
+							sl.getBandwidthResource().getMapping(bwd).setProtection(true);
+							protectionFlag=true;
+							break;
+						}
 					}
-					else{
+					
+					if(!protectionFlag){
 						System.out.println("no backup link "+sl);
 						noProtected.add(sl);
 						sl.getBandwidthResource().getMapping(bwd).setProtection(false);
@@ -89,13 +91,15 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 						}
 						NodeLinkDeletion.freeResource(vNet, sNet);	//free primary
 						return false;*/
+						
 					}
+	
 					
 				}
 			}
 			else{
 				for(Map.Entry<BandwidthDemand, List<SubstrateLink>> mf: tmpMaxflow.entrySet()){	
-					freeMaxflow(mf.getKey(), mf.getValue());
+					freeMaxFlow(mf.getKey(), mf.getValue());
 				}
 				for(Map.Entry<BandwidthDemand, List<SubstrateLink>> ent: resultB.entrySet()){	//free backup path of other virtual links
 					NodeLinkDeletion.linkFreeBackup(ent.getKey(), ent.getValue(),true);
@@ -117,6 +121,20 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 		return true;
 	}
 	
+	public void freeMaxFlow(VirtualNetwork vn, SubstrateNetwork sn){
+		for(VirtualLink vl:vn.getEdges()){
+			freeMaxFlow(vl.getBandwidthDemand(),sn.getEdges());
+		}
+	}
+	
+	private void freeMaxFlow(BandwidthDemand bwd, Collection<SubstrateLink> link) {
+		for(SubstrateLink sl:link){
+			for(MaxFlowPath mfPath:sl.getMaxflow()){
+				if(mfPath.free(bwd))	break;
+			}
+		}		
+	}
+
 	private List<SubstrateLink> computeShortestPath(SubstrateNetwork sn, SubstrateNode substrateNode,
 			SubstrateNode substrateNode2, VirtualLink vl) {
 		BandwidthDemand bwd = vl.getBandwidthDemand();		
