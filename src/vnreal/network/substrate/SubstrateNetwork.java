@@ -145,9 +145,12 @@ public class SubstrateNetwork extends
 						+ pair.getSecond().getId() + ") \n";
 				result += " failure probability: " + l.getProbability()+"\n";
 				for (AbstractResource r : l.get()) {
-					result += "  " + r.toString() + "\n";
+					result += "  " + r.toString();
 				}
+				result += "\n";
 			}
+			if(l.backupNB()!=0)
+				result += "Backup number: "+ l.backupNB()+"\n\n";
 		}
 
 		return result;

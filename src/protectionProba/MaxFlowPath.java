@@ -42,11 +42,19 @@ public class MaxFlowPath implements Comparable<MaxFlowPath>{
 	}
 	
 	public boolean free(BandwidthDemand bwd){
-		return mapping.remove(bwd);
+		for(BandwidthDemand bwd2:mapping){
+			if(bwd2.getOwner().equals(bwd.getOwner()))
+				return mapping.remove(bwd2);
+		}
+		return false;
 	}
 	
 	public List<SubstrateLink> getPath() {
 		return path;
+	}
+	
+	public int mappingNB(){
+		return this.mapping.size();
 	}
 
 	@Override

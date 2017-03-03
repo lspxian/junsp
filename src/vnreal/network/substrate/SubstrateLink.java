@@ -144,5 +144,12 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 	public List<MaxFlowPath> getMaxflow() {
 		return maxflow;
 	}
+	
+	public int backupNB(){
+		int re=0;
+		for(MaxFlowPath mfp:this.maxflow)
+			re=re+mfp.mappingNB();
+		return re;
+	}
 
 }

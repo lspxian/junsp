@@ -59,7 +59,7 @@ public class ProtectionSim extends AbstractSimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 200000.0;
+		simulationTime = 50000.0;
 		try {
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
@@ -227,6 +227,9 @@ public class ProtectionSim extends AbstractSimulation {
 			break;
 		case "MaxFlowBackupVF" :
 			method = new MaxFlowBackupVF(sn);
+			break;
+		case "MaxFlowBackupVF2" :
+			method = new MaxFlowBackupVF2(sn);
 			break;
 		default : 
 			System.out.println("The methode doesn't exist");

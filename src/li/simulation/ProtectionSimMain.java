@@ -30,7 +30,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=6;i<10;i=i+1){
+			for(int i=6;i<7;i=i+1){
 				simulation.initialize(i);
 				simulation.getSubstrateNetwork().configPercentage(1);
 				/*
@@ -125,6 +125,12 @@ public static int c;
 					System.setOut(MaxFlowBackupVF);
 					writeCurrentTime();
 					simulation.runSimulation("MaxFlowBackupVF","included");
+					simulation.reset();
+					
+					PrintStream MaxFlowBackupVF2 = new PrintStream(new FileOutputStream("res/MaxFlowBackupVF2_l"+i+".txt"));
+					System.setOut(MaxFlowBackupVF2);
+					writeCurrentTime();
+					simulation.runSimulation("MaxFlowBackupVF2","included");
 					simulation.reset();
 					
 				}

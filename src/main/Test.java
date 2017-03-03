@@ -21,16 +21,17 @@ public class Test {
 
 	public static void main(String[] args) throws IOException{
 		SubstrateNetwork sn=new SubstrateNetwork();
-		sn.alt2network("sndlib/germany50");
-		sn.addAllResource(false);
+//		sn.alt2network("sndlib/germany50");
+		sn.alt2network("data/cost239");
+		sn.addAllResource(true);
 		DrawGraph dg = new DrawGraph(sn);
 		dg.draw();
-		
-		sn.configPercentage(0.6);
+		sn.configPercentage(0.65);
+		System.out.println(sn);
 		MaxFlowBackupVF mfb=new MaxFlowBackupVF(sn);
 		MaxFlowBackupVF2 mfb2=new MaxFlowBackupVF2(sn);
 		
-		System.out.println("finished");
+		System.out.println("");
 		
 	}
 

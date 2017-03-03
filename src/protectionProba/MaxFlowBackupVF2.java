@@ -219,7 +219,7 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 				double flow=1000;
 				for(SubstrateLink tmpsl:paths){
 					CostResource tmpCost=(CostResource)tmpsl.get().get(0);
-					if(tmpCost.getCost()<1000&&tmpCost.getCost()>0)	flow=tmpCost.getCost();
+					if(tmpCost.getCost()<flow&&tmpCost.getCost()>0)	flow=tmpCost.getCost();
 				}
 				totalFlow+=flow;
 				for(SubstrateLink tmpsl:paths){
@@ -276,18 +276,26 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 				double flow=1000;
 				for(SubstrateLink tmpsl:paths){
 					CostResource tmpCost=(CostResource)tmpsl.get().get(0);
-					if(tmpCost.getCost()<1000&&tmpCost.getCost()>0)	flow=tmpCost.getCost();
+					if(tmpCost.getCost()<flow&&tmpCost.getCost()>0)	flow=tmpCost.getCost();
 				}
 				for(SubstrateLink tmpsl:paths){
 					CostResource tmpCost=(CostResource)tmpsl.get().get(0);
 					tmpCost.setCost(tmpCost.getCost()-flow);
 				}
-				MaxFlowPath mfp=new MaxFlowPath(sl,paths,flow);
+				
+				List<SubstrateLink> graphPath=new ArrayList<SubstrateLink>();
+				for(SubstrateLink tmpsl:paths){
+					SubstrateNode n1=resultGraph.getEndpoints(tmpsl).getFirst();
+					SubstrateNode n2=resultGraph.getEndpoints(tmpsl).getSecond();
+					graphPath.add(sNet.findEdge(n1, n2));
+				}
+				
+				MaxFlowPath mfp=new MaxFlowPath(sl,graphPath,flow);
 				sl.getMaxflow().add(mfp);
 				
 			}
 			Collections.sort(sl.getMaxflow());
-			
 		}
+		System.out.println("finished");
 	}
 }
