@@ -10,6 +10,7 @@ import li.gt_itm.Generator;
 import mulavito.algorithms.shortestpath.ksp.Yen;
 import protectionProba.MaxFlowBackupVF;
 import protectionProba.MaxFlowBackupVF2;
+import protectionProba.MaxFlowPath;
 import vnreal.network.substrate.SubstrateLink;
 import vnreal.network.substrate.SubstrateNetwork;
 import vnreal.network.substrate.SubstrateNode;
@@ -28,9 +29,14 @@ public class Test {
 		dg.draw();
 		sn.configPercentage(0.65);
 		System.out.println(sn);
-		MaxFlowBackupVF mfb=new MaxFlowBackupVF(sn);
+//		MaxFlowBackupVF mfb=new MaxFlowBackupVF(sn);
 		MaxFlowBackupVF2 mfb2=new MaxFlowBackupVF2(sn);
-		
+		for(SubstrateLink sl:sn.getEdges()){
+			System.out.println(sl.toString());
+			for(MaxFlowPath mfp:sl.getMaxflow()){
+				System.out.println(mfp);
+			}
+		}
 		System.out.println("");
 		
 	}

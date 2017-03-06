@@ -27,7 +27,7 @@ public class MaxFlowPath implements Comparable<MaxFlowPath>{
 	public double residual(){
 		double residual=capacity;
 		for(BandwidthDemand bwd:mapping){
-			capacity=capacity-bwd.getDemandedBandwidth();
+			residual=residual-bwd.getDemandedBandwidth();
 		}
 		return residual;
 	}
@@ -61,6 +61,14 @@ public class MaxFlowPath implements Comparable<MaxFlowPath>{
 	public int compareTo(MaxFlowPath o) {
 		//short path first
 		return this.length()-o.length();
+	}
+	
+	public String toString(){
+		String res=""+capacity+":";
+		for(SubstrateLink sl:path){
+			res+=sl.getId()+"->";
+		}
+		return res;
 	}
 	
 	

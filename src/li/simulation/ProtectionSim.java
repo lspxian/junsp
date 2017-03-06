@@ -59,7 +59,7 @@ public class ProtectionSim extends AbstractSimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 50000.0;
+		simulationTime = 100000.0;
 		try {
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
@@ -119,8 +119,8 @@ public class ProtectionSim extends AbstractSimulation {
 			vns.add(vn);
 		}
 		for(int i=0;i<20;i++){
-			events.add(new VnEvent(vns.get(i),i,0));
-			events.add(new VnEvent(vns.get(i),100+i,1));
+			events.add(new VnEvent(vns.get(i),3*i,0));
+			events.add(new VnEvent(vns.get(i),3*i+1,1));
 		}
 		
 		Collections.sort(events);*/
