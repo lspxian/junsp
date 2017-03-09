@@ -156,7 +156,14 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 				BandwidthResource bdsrc = link.getBandwidthResource();
 				double cost=100/(bdsrc.getAvailableBandwidth()+0.0001);
 				//maxflow backup verification
-				if(maxflow.get(link)<bwd.getDemandedBandwidth()){
+				boolean verification=false;
+				for(MaxFlowPath mfPath:link.getMaxflow()){
+					if(mfPath.residual()>bwd.getDemandedBandwidth()){
+						verification=true;
+						break;
+					}
+				}
+				if(!verification){
 					double logp=-Math.log(1-link.getProbability())*1000000;
 					cost=cost+logp;
 				}

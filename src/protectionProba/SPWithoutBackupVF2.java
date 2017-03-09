@@ -24,7 +24,12 @@ import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
-
+/**
+ * 
+ * @author li
+ * If a substrate link can not be protected, it is set to unprotected but the VN is accepted 
+ * without backup verification while performing primary mapping, the difference is in the method: computeShortestPath
+ */
 public class SPWithoutBackupVF2 extends AbstractLinkMapping {
 
 	public SPWithoutBackupVF2(SubstrateNetwork sNet) {

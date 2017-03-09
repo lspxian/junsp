@@ -30,7 +30,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=6;i<7;i=i+1){
+			for(int i=3;i<4;i=i+1){
 				simulation.initialize(i);
 				simulation.getSubstrateNetwork().configPercentage(1);
 				/*
@@ -108,24 +108,24 @@ public static int c;
 					writeCurrentTime();
 					simulation.runSimulation("ShortestPathBackupVF","included");
 					simulation.reset();*/
-					
+					/*
 					PrintStream SPWithoutBackupVF2 = new PrintStream(new FileOutputStream("res/SPWithoutBackupVF2_l"+i+".txt"));
 					System.setOut(SPWithoutBackupVF2);
 					writeCurrentTime();
 					simulation.runSimulation("SPWithoutBackupVF2","included");
-					simulation.reset();
+					simulation.reset();*/
 					
 					PrintStream ShortestPathBackupVF2 = new PrintStream(new FileOutputStream("res/ShortestPathBackupVF2_l"+i+".txt"));
 					System.setOut(ShortestPathBackupVF2);
 					writeCurrentTime();
 					simulation.runSimulation("ShortestPathBackupVF2","included");
 					simulation.reset();
-					
+					/*
 					PrintStream MaxFlowBackupVF = new PrintStream(new FileOutputStream("res/MaxFlowBackupVF_l"+i+".txt"));
 					System.setOut(MaxFlowBackupVF);
 					writeCurrentTime();
 					simulation.runSimulation("MaxFlowBackupVF","included");
-					simulation.reset();
+					simulation.reset();*/
 					
 					PrintStream MaxFlowBackupVF2 = new PrintStream(new FileOutputStream("res/MaxFlowBackupVF2_l"+i+".txt"));
 					System.setOut(MaxFlowBackupVF2);

@@ -24,7 +24,11 @@ import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
-
+/**
+ * 
+ * @author li
+ * If a substrate link can not be protected, it is set to unprotected but the VN is accepted 
+ */
 public class ShortestPathBackupVF2 extends AbstractLinkMapping {
 
 	public ShortestPathBackupVF2(SubstrateNetwork sNet) {

@@ -26,6 +26,12 @@ import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
 
+/**
+ * 
+ * @author li
+ * don't allow no backup link
+ * If a substrate link can not be protected, the whole VN is rejected.
+ */
 public class SPWithoutBackupVF extends AbstractLinkMapping {
 
 	public SPWithoutBackupVF(SubstrateNetwork sNet) {
