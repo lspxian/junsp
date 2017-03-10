@@ -149,8 +149,8 @@ public class SubstrateNetwork extends
 				}
 				result += "\n";
 			}
-			if(l.backupNB()!=0)
-				result += "Backup number: "+ l.backupNB()+"\n\n";
+//			if(l.backupNB()!=0)
+//				result += "Backup number: "+ l.backupNB()+"\n\n";
 		}
 
 		return result;

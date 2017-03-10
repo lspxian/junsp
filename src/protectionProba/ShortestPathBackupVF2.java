@@ -40,6 +40,7 @@ public class ShortestPathBackupVF2 extends AbstractLinkMapping {
 		Set<SubstrateLink> noProtected=new TreeSet<SubstrateLink>();
 		Map<BandwidthDemand,List<SubstrateLink>> resultB = new HashMap<BandwidthDemand,List<SubstrateLink>>();
 		for(VirtualLink vl: vNet.getEdges()){
+//			System.out.println(this.sNet.probaToString());
 			SubstrateNode sn1 = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
 			SubstrateNode sn2 = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
 			List<SubstrateLink> primary = new ArrayList<SubstrateLink>(

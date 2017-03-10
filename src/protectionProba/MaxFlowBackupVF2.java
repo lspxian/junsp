@@ -39,7 +39,18 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 	public MaxFlowBackupVF2(SubstrateNetwork sNet) {
 		super(sNet);
 		calculateMaxflow(sNet);
-		System.out.println(maxflow);
+		//System.out.println(maxflow);
+		String result="";
+		for(SubstrateLink l:sNet.getEdges()){
+			Pair<SubstrateNode> pair = sNet.getEndpoints(l);
+			result += l + "  (" + pair.getFirst().getId() + "<->"
+					+ pair.getSecond().getId() + ") \n";
+			for(MaxFlowPath mfp:l.getMaxflow()){
+				result+= mfp+"  ";
+			}
+			result+="\n";
+		}
+		System.out.println(result);
 	}
 
 	@Override
@@ -48,6 +59,7 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 		Map<BandwidthDemand,List<SubstrateLink>> resultB = new HashMap<BandwidthDemand,List<SubstrateLink>>();
 		Map<BandwidthDemand,List<SubstrateLink>> tmpMaxflow = new HashMap<BandwidthDemand,List<SubstrateLink>>();
 		for(VirtualLink vl: vNet.getEdges()){
+//			System.out.println(this.sNet.probaToString());
 			BandwidthDemand bwdem=vl.getBandwidthDemand();
 			SubstrateNode sn1 = nodeMapping.get(vNet.getEndpoints(vl).getFirst());
 			SubstrateNode sn2 = nodeMapping.get(vNet.getEndpoints(vl).getSecond());
