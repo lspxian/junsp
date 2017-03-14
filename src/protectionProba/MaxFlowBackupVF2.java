@@ -252,6 +252,7 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 					backCost.setCost(backCost.getCost()+flow);
 				}
 			}
+			output(augment);
 			this.maxflow.put(sl, totalFlow);
 			//result graph
 			SubstrateNetwork resultGraph=new SubstrateNetwork();			
@@ -316,5 +317,17 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 			Collections.sort(sl.getMaxflow());
 		}
 		System.out.println("finished");
+	}
+	
+	public void output(DirectedSparseGraph<SubstrateNode,SubstrateLink> graph){
+		List<SubstrateLink> links=new ArrayList<SubstrateLink>(graph.getEdges());
+		Collections.sort(links);
+		for(SubstrateLink sl:links){
+			System.out.print(sl);
+			System.out.print("(" + graph.getSource(sl).getId() + "<->"
+					+ graph.getDest(sl).getId() + ")");
+			double cost=((CostResource)sl.get().get(0)).getCost();
+			System.out.println("(cost->"+cost+")");
+		}
 	}
 }
