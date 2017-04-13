@@ -42,13 +42,15 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 		//System.out.println(maxflow);
 		String result="";
 		for(SubstrateLink l:sNet.getEdges()){
+			double total=0.0;
 			Pair<SubstrateNode> pair = sNet.getEndpoints(l);
 			result += l + "  (" + pair.getFirst().getId() + "<->"
-					+ pair.getSecond().getId() + ") \n";
+					+ pair.getSecond().getId() + ") "+maxflow.get(l)+"\n";
 			for(MaxFlowPath mfp:l.getMaxflow()){
 				result+= mfp+"  ";
+				total+=mfp.getCapacity();
 			}
-			result+="\n";
+			result+="\ntotal:"+total+"\n";
 		}
 		System.out.println(result);
 	}

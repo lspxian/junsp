@@ -34,7 +34,9 @@ import vnreal.network.virtual.VirtualLink;
 import vnreal.network.virtual.VirtualNetwork;
 import vnreal.network.virtual.VirtualNode;
 import vnreal.resources.BandwidthResource;
-
+/*
+ * use jung maxlow api
+ */
 public class MaxFlowBackupVF extends AbstractLinkMapping {
 
 	Map<SubstrateLink,Integer> maxflow=new TreeMap<SubstrateLink,Integer>();

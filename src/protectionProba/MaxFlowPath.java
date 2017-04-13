@@ -70,6 +70,10 @@ public class MaxFlowPath implements Comparable<MaxFlowPath>{
 		}
 		return res;
 	}
+
+	public double getCapacity() {
+		return capacity;
+	}
 	
 	
 }
