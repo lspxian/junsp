@@ -28,11 +28,11 @@ public class Test {
 		DrawGraph dg = new DrawGraph(sn);
 		dg.draw();
 		sn.configPercentage(0.7);
-//		System.out.println(sn);
+		System.out.println(sn);
 //		MaxFlowBackupVF mfb=new MaxFlowBackupVF(sn);
 		MaxFlowBackupVF2 mfb2=new MaxFlowBackupVF2(sn);
 	/*	for(SubstrateLink sl:sn.getEdges()){
-			System.out.println(sl.toString()+mfb2.getMaxflow().get(sl));
+			System.out.println(sl.toString());
 			for(MaxFlowPath mfp:sl.getMaxflow()){
 				System.out.println(mfp);
 			}
