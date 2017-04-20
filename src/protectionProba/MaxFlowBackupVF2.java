@@ -3,6 +3,7 @@ package protectionProba;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -254,7 +255,7 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 					backCost.setCost(backCost.getCost()+flow);
 				}
 			}
-			output(augment);
+	//		output(augment);
 			this.maxflow.put(sl, totalFlow);
 			//result graph
 			SubstrateNetwork resultGraph=new SubstrateNetwork();			
@@ -316,7 +317,15 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 				sl.getMaxflow().add(mfp);
 				
 			}
-			Collections.sort(sl.getMaxflow());
+			Collections.sort(sl.getMaxflow(), new Comparator<MaxFlowPath>(){
+
+				@Override
+				public int compare(MaxFlowPath o1, MaxFlowPath o2) {
+					if(o1.getCapacity()>o2.getCapacity()) return 1;
+					else if(o1.getCapacity()<o2.getCapacity()) return -1;
+					else return 0;
+				}});
+			
 		}
 		System.out.println("finished");
 	}

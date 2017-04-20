@@ -89,8 +89,8 @@ public static int c;
 //				percentList.add(0.55);
 //				percentList.add(0.6);
 //				percentList.add(0.65);
-				percentList.add(0.7);
-//				percentList.add(0.75);
+//				percentList.add(0.7);
+				percentList.add(0.75);
 //				percentList.add(0.8);
 //				percentList.add(0.9);
 				for(double percent:percentList){
@@ -108,12 +108,12 @@ public static int c;
 					writeCurrentTime();
 					simulation.runSimulation("ShortestPathBackupVF","included");
 					simulation.reset();*/
-					/*
+					
 					PrintStream SPWithoutBackupVF2 = new PrintStream(new FileOutputStream("res/SPWithoutBackupVF2_l"+i+".txt"));
 					System.setOut(SPWithoutBackupVF2);
 					writeCurrentTime();
 					simulation.runSimulation("SPWithoutBackupVF2","included");
-					simulation.reset();*/
+					simulation.reset();
 					
 					PrintStream ShortestPathBackupVF2 = new PrintStream(new FileOutputStream("res/ShortestPathBackupVF2_l"+i+".txt"));
 					System.setOut(ShortestPathBackupVF2);

@@ -20,6 +20,7 @@ import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.MaxProbability;
 import li.evaluation.metrics.Metric;
 import li.evaluation.metrics.PrimaryPercentage;
+import li.evaluation.metrics.PrimaryUtilisation;
 import li.event.FailureEvent;
 import li.event.NetEvent;
 import li.event.VnEvent;
@@ -59,12 +60,12 @@ public class ProtectionSim extends AbstractSimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 5000.0;
+		simulationTime = 10000.0;
 		try {
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
 				boolean connect=true;
-				Generator.createSubNet();
+//				Generator.createSubNet();
 //				sn.alt2network("./gt-itm/sub");
 				sn.alt2network("data/cost239");
 //				sn.alt2network("sndlib/germany50");
@@ -77,8 +78,8 @@ public class ProtectionSim extends AbstractSimulation {
 				if(connect==true)	break;
 			}
 			
-			DrawGraph dg = new DrawGraph(sn);
-			dg.draw();
+//			DrawGraph dg = new DrawGraph(sn);
+//			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -145,7 +146,7 @@ public class ProtectionSim extends AbstractSimulation {
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
-			if(departureTime<=simulationTime)
+//			if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			time+=MiscelFunctions.negExponential(lambda/200.0); //generate next vn arrival event
 		}
@@ -179,7 +180,7 @@ public class ProtectionSim extends AbstractSimulation {
 		metrics.add(new AcceptedRatioL(this));
 		metrics.add(new LinkUtilizationL(this));
 		metrics.add(new CurrentLinkUtilisationL(this));
-		metrics.add(new PrimaryPercentage(this));
+		metrics.add(new PrimaryUtilisation(this));
 		metrics.add(new MappedRevenueL(this));
 		metrics.add(new AverageProbability(this));
 		metrics.add(new MaxProbability(this));
