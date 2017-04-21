@@ -3,6 +3,7 @@ package protectionProba;
 import java.util.ArrayList;
 import java.util.List;
 
+import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.demands.BandwidthDemand;
 import vnreal.network.substrate.SubstrateLink;
 
@@ -64,11 +65,15 @@ public class MaxFlowPath implements Comparable<MaxFlowPath>{
 	}
 	
 	public String toString(){
-		String res=""+capacity+":";
+		String res="cap:"+MiscelFunctions.roundThreeDecimals(capacity)+":";
 		for(SubstrateLink sl:path){
 			res+=sl.getId()+"->";
 		}
-		return res;
+		res+="#";
+		for(BandwidthDemand bd:mapping){
+			res+=bd.getDemandedBandwidth()+"@vl"+bd.getOwner().getId()+",";
+		}
+		return res+"\n";
 	}
 
 	public double getCapacity() {

@@ -45,6 +45,7 @@ import java.util.Random;
 import li.multiDomain.Domain;
 import mulavito.algorithms.shortestpath.ksp.Eppstein;
 import mulavito.algorithms.shortestpath.ksp.Yen;
+import protectionProba.MaxFlowPath;
 import protectionProba.Risk;
 
 import org.apache.commons.collections15.Factory;
@@ -149,10 +150,27 @@ public class SubstrateNetwork extends
 				}
 				result += "\n";
 			}
-//			if(l.backupNB()!=0)
-//				result += "Backup number: "+ l.backupNB()+"\n\n";
+			if(l.backupNB()!=0)
+				result += "Backup number: "+ l.backupNB()+"\n\n";
 		}
 
+		return result;
+	}
+	
+	public String mfToString(){
+		String result="";
+		result += "\nEDGES:\n";
+		for (SubstrateLink l : getEdges()) {
+			if(l.backupNB()!=0){
+				Pair<SubstrateNode> pair = getEndpoints(l);
+				result += l + "  (" + pair.getFirst().getId() + "<->"
+						+ pair.getSecond().getId() + ") \n";
+				for(MaxFlowPath mfp:l.getMaxflow()){
+					result+=mfp.toString();
+				}
+			}
+		
+		}
 		return result;
 	}
 
