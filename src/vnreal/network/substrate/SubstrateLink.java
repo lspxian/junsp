@@ -60,8 +60,8 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 //		double random = new Random().nextGaussian();
 //		probability = random*0.25e-5+1e-5;
 		double random = new Random().nextDouble();
-		probability = 0e-6+random*20e-6;
-//		probability = 0.00001;
+//		probability = 0e-6+random*20e-6;
+		probability = 0.00001;
 		used=false;
 		maxflow=new ArrayList<MaxFlowPath>();
 	}
@@ -94,7 +94,7 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 	
 	public boolean addResource(double random){
 		BandwidthResource bw=new BandwidthResource(this);
-		bw.setBandwidth(MiscelFunctions.roundThreeDecimals(100+random*50));
+		bw.setBandwidth(MiscelFunctions.roundThreeDecimals(1000+random*500));
 		this.add(bw);
 		return true;
 	}
@@ -150,6 +150,10 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 		for(MaxFlowPath mfp:this.maxflow)
 			re=re+mfp.mappingNB();
 		return re;
+	}
+	
+	public void resetMaxflow(){
+		maxflow.clear();
 	}
 
 }

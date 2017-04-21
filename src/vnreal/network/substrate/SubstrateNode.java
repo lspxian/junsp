@@ -77,7 +77,7 @@ public class SubstrateNode extends Node<AbstractResource> {
  */
 	public boolean addResource(double random){
 		CpuResource cpu = new CpuResource(this);
-		cpu.setCycles(100+ random*50);
+		cpu.setCycles(1000+ random*500);
 		if(this.preAddCheck(cpu)){
 			this.add(cpu);
 			return true;

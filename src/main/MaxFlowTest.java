@@ -26,7 +26,7 @@ public class MaxFlowTest {
 		sNet.addAllResource(true);
 		DrawGraph dg = new DrawGraph(sNet);
 		dg.draw();
-		sNet.configPercentage(0.65);
+		sNet.configPercentage(0.7);
 		
 		SubstrateLink sl=sNet.findEdge(sNet.getNodeFromID(0), sNet.getNodeFromID(1));
 		System.out.println(sNet);

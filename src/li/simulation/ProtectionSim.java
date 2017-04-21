@@ -60,7 +60,7 @@ public class ProtectionSim extends AbstractSimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 3000.0;
+		simulationTime = 50000.0;
 		try {
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
@@ -78,8 +78,8 @@ public class ProtectionSim extends AbstractSimulation {
 				if(connect==true)	break;
 			}
 			
-			DrawGraph dg = new DrawGraph(sn);
-			dg.draw();
+//			DrawGraph dg = new DrawGraph(sn);
+//			dg.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -148,7 +148,7 @@ public class ProtectionSim extends AbstractSimulation {
 			events.add(new VnEvent(vn,time,0)); //arrival event
 			if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
-			time+=MiscelFunctions.negExponential(lambda/200.0); //generate next vn arrival event
+			time+=MiscelFunctions.negExponential(lambda/20.0); //generate next vn arrival event
 		}
 		Collections.sort(events);
 		
@@ -279,9 +279,12 @@ public class ProtectionSim extends AbstractSimulation {
 						Map<VirtualNode, SubstrateNode> nodeMapping = arnm.getNodeMapping();
 						System.out.println("node mapping succes : "+nodeMapping);
 						
+//						System.out.println(this.sn.mfToString());
+//						if(methodStr!="MaxFlowBackupVF2")	
+//							System.out.println(this.sn.probaToString());
+						
 						if(method.linkMapping(cEvent.getConcernedVn(), nodeMapping)){
 							System.out.println("Primary link mapping done");
-							System.out.println(this.sn.mfToString());
 							
 							if((backupStr=="")||(backupStr=="included")){
 								if(backupStr=="")

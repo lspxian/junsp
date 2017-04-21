@@ -89,6 +89,7 @@ public class NodeLinkDeletion {
 					((BandwidthResource) res).reset();
 				}
 			}
+			slink.resetMaxflow();
 		}
 		
 		return true;

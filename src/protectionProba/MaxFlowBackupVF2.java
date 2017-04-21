@@ -89,6 +89,14 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 								throw new AssertionError("But we checked before!");
 							sl.getBandwidthResource().getMapping(bwd).setProtection(true);
 							protectionFlag=true;
+							//order the maxflow path by residual bandwidth
+							Collections.sort(sl.getMaxflow(), new Comparator<MaxFlowPath>(){
+								@Override
+								public int compare(MaxFlowPath o1, MaxFlowPath o2) {
+									if(o1.residual()>o2.residual()) return 1;
+									else if(o1.residual()<o2.residual()) return -1;
+									else return 0;
+								}});
 							break;
 						}
 					}
@@ -105,11 +113,8 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 							NodeLinkDeletion.linkFreeBackup(ent.getKey(), ent.getValue(),true);
 						}
 						NodeLinkDeletion.freeResource(vNet, sNet);	//free primary
-						return false;*/
-						
+						return false;*/		
 					}
-	
-					
 				}
 			}
 			else{
@@ -321,13 +326,13 @@ public class MaxFlowBackupVF2 extends AbstractLinkMapping {
 
 				@Override
 				public int compare(MaxFlowPath o1, MaxFlowPath o2) {
-					if(o1.getCapacity()>o2.getCapacity()) return 1;
-					else if(o1.getCapacity()<o2.getCapacity()) return -1;
+					if(o1.residual()>o2.residual()) return 1;
+					else if(o1.residual()<o2.residual()) return -1;
 					else return 0;
 				}});
 			
 		}
-		System.out.println("finished");
+//		System.out.println("finished");
 	}
 	
 	public void output(DirectedSparseGraph<SubstrateNode,SubstrateLink> graph){
