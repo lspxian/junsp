@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ import li.evaluation.metrics.Affected_VN_Number;
 import li.evaluation.metrics.AverageAffectedVNRatio;
 import li.evaluation.metrics.AverageProbability;
 import li.evaluation.metrics.CurrentLinkUtilisationL;
+import li.evaluation.metrics.ExecutionTime;
 import li.evaluation.metrics.LinkUtilizationL;
 import li.evaluation.metrics.MappedRevenueL;
 import li.evaluation.metrics.MaxProbability;
@@ -60,15 +62,15 @@ public class ProtectionSim extends AbstractSimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 50000.0;
+		simulationTime = 100000.0;
 		try {
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
 				boolean connect=true;
 //				Generator.createSubNet();
 //				sn.alt2network("./gt-itm/sub");
-				sn.alt2network("data/cost239");
-//				sn.alt2network("sndlib/germany50");
+//				sn.alt2network("data/cost239");
+				sn.alt2network("sndlib/germany50");
 				for(SubstrateNode snode:sn.getVertices()){
 					if(sn.getNeighborCount(snode)<=1){
 						connect=false;
@@ -148,7 +150,7 @@ public class ProtectionSim extends AbstractSimulation {
 			events.add(new VnEvent(vn,time,0)); //arrival event
 			if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
-			time+=MiscelFunctions.negExponential(lambda/20.0); //generate next vn arrival event
+			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
 		Collections.sort(events);
 		
@@ -175,6 +177,7 @@ public class ProtectionSim extends AbstractSimulation {
 		
 	}
 	public void runSimulation(String methodStr,String backupStr) throws IOException{
+		
 		System.out.println(this.sn.probaToString());
 		//add metrics
 		metrics.add(new AcceptedRatioL(this));
@@ -184,6 +187,7 @@ public class ProtectionSim extends AbstractSimulation {
 		metrics.add(new MappedRevenueL(this));
 		metrics.add(new AverageProbability(this));
 		metrics.add(new MaxProbability(this));
+		metrics.add(new ExecutionTime(this));
 		metricsProba.add(new AverageAffectedVNRatio(this));
 		metricsProba.add(new Affected_VN_Number(this));
 		metricsProba.add(new AffectedRevenue(this));
@@ -260,7 +264,7 @@ public class ProtectionSim extends AbstractSimulation {
 			System.out.println("The methode doesn't exist");
 			backupMethod = null;
 		}
-		
+		Date timeA=new Date();
 		for(NetEvent currentEvent : this.netEvents){
 			if(currentEvent instanceof VnEvent){
 				VnEvent cEvent = (VnEvent) currentEvent;
@@ -386,8 +390,12 @@ public class ProtectionSim extends AbstractSimulation {
 		//TODO
 //		System.out.println(this.sn.probaToString());
 //		System.out.println(this.sn.mfToString());
-		if(methodStr=="MaxFlowBackupVF")
-			System.out.println(((MaxFlowBackupVF) method).getMaxflow());
+//		if(methodStr=="MaxFlowBackupVF")
+//			System.out.println(((MaxFlowBackupVF) method).getMaxflow());
+		
+		// Compute execution time
+		Date timeB=new Date();
+		this.timeDifference=(timeB.getTime()-timeA.getTime())/1000;
 		
 		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("*----lambda="+this.lambda+"--"+methodStr+"-"+backupStr+"----*\n");

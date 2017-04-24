@@ -60,8 +60,8 @@ public class SubstrateLink extends Link<AbstractResource> implements Comparable<
 //		double random = new Random().nextGaussian();
 //		probability = random*0.25e-5+1e-5;
 		double random = new Random().nextDouble();
-//		probability = 0e-6+random*20e-6;
-		probability = 0.00001;
+		probability = 0+random*1e-4;
+//		probability = 0.0001;
 		used=false;
 		maxflow=new ArrayList<MaxFlowPath>();
 	}

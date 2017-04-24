@@ -22,8 +22,9 @@ public class Test {
 
 	public static void main(String[] args) throws IOException{
 		SubstrateNetwork sn=new SubstrateNetwork();
-//		sn.alt2network("sndlib/germany50");
-		sn.alt2network("data/cost239");
+		sn.alt2network("sndlib/germany50");
+//		sn.alt2network("data/cost239");
+//		sn.alt2network("data/longHaul");
 		sn.addAllResource(true);
 		DrawGraph dg = new DrawGraph(sn);
 		dg.draw();

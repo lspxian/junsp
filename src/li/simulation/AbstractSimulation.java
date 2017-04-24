@@ -31,6 +31,7 @@ public abstract class AbstractSimulation {
 	protected double affectedRevenue;
 	protected ArrayList<Double> affectedRatio;
 	protected int failures;
+	protected long timeDifference;
 	
 	public ArrayList<Double> getAffectedRatio() {
 		return affectedRatio;
@@ -82,6 +83,10 @@ public abstract class AbstractSimulation {
 	
 	public int getLambda() {
 		return lambda;
+	}
+	
+	public long getTimeDifference() {
+		return timeDifference;
 	}
 	public abstract void initialize(int lambda) throws IOException;
 	public abstract void runSimulation(String methodStr) throws IOException;
