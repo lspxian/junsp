@@ -20,7 +20,7 @@ public class Centralized_MD_VNE_SimulationMain {
 		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
 		writer.close();
 		
-		for(c=0;c<10;c++){
+		for(c=0;c<1;c++){
 			
 		Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation();
 		
@@ -57,13 +57,13 @@ public class Centralized_MD_VNE_SimulationMain {
 		
 			for(int i=2;i<7;i++){
 				simulation.initialize(i);
-				
+				/*
 				PrintStream md = new PrintStream(new FileOutputStream("res/MultiDomainAsOneDomain_l"+i+"_c"+c+".txt"));
 				System.setOut(md);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("MultiDomainAsOneDomain");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();
+				simulation.reset();*/
 				
 				PrintStream shen = new PrintStream(new FileOutputStream("res/Shen_l"+i+"_c"+c+".txt"));
 				System.setOut(shen);

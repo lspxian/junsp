@@ -435,7 +435,9 @@ public class MultiDomainRanking3 extends AbstractMultiDomainLinkMapping {
 							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
 				
 			}
-			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
+			double bdValue=bwResource.getAvailableBandwidth()-0.001;
+			if(bdValue<=0) bdValue=0;
+			constraint = constraint +" <= " + bdValue+"\n";
 		}
 		//inter link
 		for (Iterator<InterLink> slink = tmpDomain.getInterLink().iterator();slink.hasNext();){
@@ -471,7 +473,11 @@ public class MultiDomainRanking3 extends AbstractMultiDomainLinkMapping {
 							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
 				}
 			}
-			if(flag) constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
+			if(flag){
+				double bdValue=bwResource.getAvailableBandwidth()-0.001;
+				if(bdValue<=0) bdValue=0;
+				constraint = constraint +" <= " + bdValue+"\n";
+			}
 		}
 		
 		obj = obj+ "\n";

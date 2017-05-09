@@ -108,7 +108,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
 			Generator.createVirNet();
-			vn.alt2network("./gt-itm/sub");
+			vn.alt2network("./gt-itm/vir");
 			vn.addAllResource(true);
 			vn.scale(2, 2);		//scale a [100,100] vn to [200,200]
 			vn.reconfigResource(multiDomain);
