@@ -45,14 +45,14 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 
 
 	public Centralized_MD_VNE_Simulation() throws IOException{
-		this.simulationTime = 30000.0;
+		this.simulationTime = 10000.0;
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
 		/*-------4 domains example--------*/
-//		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
-//		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
-//		multiDomain.add(new Domain(0,0,"sndlib/germany50", true));
-//		multiDomain.add(new Domain(1,0,"sndlib/ta2", true));
+		multiDomain.add(new Domain(0,0,"data/cost239", true));
+		multiDomain.add(new Domain(1,0,"data/cost239", true));
+		multiDomain.add(new Domain(1,1,"data/cost239", true));
+		multiDomain.add(new Domain(0,1,"data/cost239", true));
 		
 //		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
 //		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
@@ -64,10 +64,10 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 //		multiDomain.add(new Domain(0,1,"sndlib/norway", true));
 		
 		/*------use gt-itm to create random substrate network-----*/
-		multiDomain.add(new Domain(0,0, true));
-		multiDomain.add(new Domain(1,0, true));
-		multiDomain.add(new Domain(1,1, true));
-		multiDomain.add(new Domain(0,1, true));
+//		multiDomain.add(new Domain(0,0, true));
+//		multiDomain.add(new Domain(1,0, true));
+//		multiDomain.add(new Domain(1,1, true));
+//		multiDomain.add(new Domain(0,1, true));
 
 		/*--------static or random peering links--------*/
 //		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
@@ -110,8 +110,9 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/vir");
 			vn.addAllResource(true);
-			vn.scale(2, 2);		//scale a [100,100] vn to [200,200]
-			vn.reconfigResource(multiDomain);
+			vn.reconfigPositionMD(multiDomain);
+//			vn.scale(2, 2);		//scale a [100,100] vn to [200,200]
+//			vn.reconfigResource(multiDomain);
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
@@ -142,7 +143,8 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 			System.out.println("At this moment, accepted:"+this.accepted+" rejected:"+this.rejected);
 
 			if(currentEvent.getFlag()==0){
-				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,35);
+//				System.out.println(currentEvent.getConcernedVn());
+				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,1);
 				
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
 					System.out.println(currentEvent.getConcernedVn());
@@ -189,7 +191,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 					}
 					else{
 						this.rejected++;
-						System.out.println("link resource error, virtual network"); 
+						System.out.println("link resource error"); 
 					}
 					
 					//reset virtual node domain value

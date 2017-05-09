@@ -96,7 +96,7 @@ public class MultiDomainUtil {
 		//generate inter links
 		//0.9 0.08 for random sub
 		double alpha = 0.9;	//alpha increases the probability of edges between any nodes in the graph
-		double beta = 0.07;	//beta yields a larger ratio of long edges to short edges.
+		double beta = 0.25;	//beta yields a larger ratio of long edges to short edges.
 		
 //		double alpha = 0.8;
 //		double beta = 0.07;		

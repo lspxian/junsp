@@ -315,8 +315,8 @@ public class SubstrateNetwork extends
 				line = line.substring(line.indexOf(" ")+1);
 				line = line.substring(line.indexOf(" ")+1);
 
-				nd.setCoordinateX(Double.parseDouble(line.substring(0, line.indexOf(" "))));
-				nd.setCoordinateY(Double.parseDouble(line.substring(line.indexOf(" ")+1)));
+				nd.setCoordinateX(Double.parseDouble(line.substring(0, line.indexOf(" ")))*0.9);
+				nd.setCoordinateY(Double.parseDouble(line.substring(line.indexOf(" ")+1))*0.9);
 				this.addVertex(nd);
 				
 			}

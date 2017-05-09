@@ -62,7 +62,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 			MultiCommodityFlow mcf = new MultiCommodityFlow(domain,this.localPath,this.remotePath);
 			Map<String, String> solution = mcf.linkMappingWithoutUpdateLocal(tmpvn, nodeMapping);
 			if(solution.size()==0){
-				System.out.println("link no solution");
+				System.out.println("link no solution, domain ("+domain.getCoordinateX()+","+domain.getCoordinateY()+")");
 				for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 					NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 				}

@@ -14,7 +14,6 @@ public class Centralized_MD_VNE_SimulationMain {
 	
 	public static void main(String[] args) throws IOException {
 		
-		
 		FileWriter writer = new FileWriter("cenResult.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
@@ -55,7 +54,7 @@ public class Centralized_MD_VNE_SimulationMain {
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=2;i<7;i++){
+			for(int i=5;i<8;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream md = new PrintStream(new FileOutputStream("res/MultiDomainAsOneDomain_l"+i+"_c"+c+".txt"));
@@ -85,13 +84,13 @@ public class Centralized_MD_VNE_SimulationMain {
 				simulation.runSimulation("MultiDomainRanking2");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();
-				
+				/*
 				PrintStream mdrk3 = new PrintStream(new FileOutputStream("res/MultiDomainRanking3_l"+i+"_c"+c+".txt"));
 				System.setOut(mdrk3);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("MultiDomainRanking3");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();
+				simulation.reset();*/
 				
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 				System.out.println("job done");

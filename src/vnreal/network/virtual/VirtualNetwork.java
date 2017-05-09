@@ -36,6 +36,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -70,7 +71,7 @@ public final class VirtualNetwork extends
 	private final int layer;
 	private String name = null;
 	private double lifetime=0.0;	//To know the lifetime of a Vn in the Substrate Network
-	private double mu=2000;			//The mean of the lifetime
+	private double mu=1000;			//The mean of the lifetime
 	private int failureNumber = 0;
 	
 	public VirtualNetwork(int layer, boolean autoUnregisterConstraints, boolean directed){
@@ -287,6 +288,24 @@ public final class VirtualNetwork extends
 			vn.setCoordinateY(tmpList.get(random).getCoordinateY());
 			tmpList.remove(random);
 		}
+	}
+	
+	public void reconfigPositionMD(List<Domain> multiDomain){
+		for(VirtualNode vn:this.getVertices()){
+			int random1=new Random().nextInt(multiDomain.size());
+			vn.setDomain(multiDomain.get(random1));
+		}
+		HashSet<SubstrateNode> tmp= new HashSet<SubstrateNode>();
+		for(VirtualNode vn:this.getVertices()){
+			ArrayList<SubstrateNode> tmpList= new ArrayList<SubstrateNode>(vn.getDomain().getVertices());
+			SubstrateNode snode=tmpList.get(new Random().nextInt(tmpList.size()));
+			while(tmp.contains(snode))
+				snode=tmpList.get(new Random().nextInt(tmpList.size()));
+			vn.setCoordinateX(snode.getCoordinateX()+vn.getDomain().getCoordinateX()*100);
+			vn.setCoordinateY(snode.getCoordinateY()+vn.getDomain().getCoordinateY()*100);
+			tmp.add(snode);
+		}
+		
 	}
 	
 	public void reconfigResource(List<Domain> multiDomain){
