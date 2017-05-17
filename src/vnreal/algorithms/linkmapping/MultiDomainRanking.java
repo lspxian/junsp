@@ -46,6 +46,11 @@ import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 import vnreal.resources.CostResource;
 
+/**
+ * compare
+ * @author shuopeng
+ *
+ */
 public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 	
 	Map<Domain, VirtualNetwork> localVNets;
@@ -65,6 +70,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 	public Map<BandwidthDemand, BandwidthResource> getMapping() {
 		return mapping;
 	}
+	
 	private void initialize(){
 		this.localVNets =  new LinkedHashMap<Domain, VirtualNetwork>();
 		this.augmentedNets = new LinkedHashMap<Domain, AugmentedNetwork>();
@@ -84,7 +90,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		
 		//initialize the links to map, delete the link once it's mapped
 		this.linkToMap.addAll(vNet.getEdges());
-//		Collections.sort(this.domains,new LinkStressComparator());
+		Collections.sort(this.domains,new LinkStressComparator());
 //		sortDomain();
 		
 		for(Domain domain : this.domains){
@@ -106,6 +112,8 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					for(Map.Entry<BandwidthDemand, BandwidthResource>e : mapping.entrySet()){
 						e.getKey().free(e.getValue());
 					}
+					System.out.println(domain);
+					
 					return false;
 				}
 				this.updateResource(solution, domain, nodeMapping);
@@ -268,12 +276,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 			dstVnode = vNet.getEndpoints(tmpl).getSecond();
 			
 			// Get current VirtualLink demand
-			for (AbstractDemand dem : tmpl) {
-				if (dem instanceof BandwidthDemand) {
-					bwDem = (BandwidthDemand) dem;
-					break;
-				}
-			}
+			bwDem=tmpl.getBandwidthDemand();
 			
 			//virtual intra link and augmented virtual link
 			if(!(tmpl instanceof VirtualInterLink)){
@@ -282,12 +285,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					SubstrateLink tmpsl = slink.next();
 					ssnode = an.getEndpoints(tmpsl).getFirst();
 					dsnode = an.getEndpoints(tmpsl).getSecond();
-					for(AbstractResource asrc : tmpsl){
-						if(asrc instanceof BandwidthResource){
-							bwResource = (BandwidthResource) asrc;
-							break;
-						}
-					}
+					bwResource=tmpsl.getBandwidthResource();
 					
 					//objective
 					if(tmpsl instanceof InterLink)	k=10;
@@ -332,14 +330,9 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					dsnode = an.getEndpoints(tmpsl).getSecond();
 					//intra substrate links and inter substrate links
 					if(!(tmpsl instanceof AugmentedLink)){
-						for(AbstractResource asrc : tmpsl){
-							if(asrc instanceof BandwidthResource){
-								bwResource = (BandwidthResource) asrc;
-								break;
-							}
-						}
+						bwResource = tmpsl.getBandwidthResource();
 						//objective
-						if(tmpsl instanceof InterLink)	k=10;
+						if(tmpsl instanceof InterLink)	k=1;
 						else k=1;
 						obj = obj + " + "+MiscelFunctions.roundToDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k,4);
 //						obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
@@ -435,7 +428,9 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
 				
 			}
-			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
+			double bdValue=MiscelFunctions.roundThreeDecimals(bwResource.getAvailableBandwidth()-0.001);
+			if(bdValue<=0.001) bdValue=0;
+			constraint = constraint +" <= " + bdValue+"\n";
 		}
 		//inter link
 		for (Iterator<InterLink> slink = tmpDomain.getInterLink().iterator();slink.hasNext();){
@@ -471,7 +466,11 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
 				}
 			}
-			if(flag) constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
+			if(flag){
+				double bdValue=MiscelFunctions.roundThreeDecimals(bwResource.getAvailableBandwidth()-0.001);
+				if(bdValue<=0.001) bdValue=0;
+				constraint = constraint +" <= " + bdValue+"\n";
+			}
 		}
 		
 		obj = obj+ "\n";

@@ -46,6 +46,11 @@ import vnreal.resources.AbstractResource;
 import vnreal.resources.BandwidthResource;
 import vnreal.resources.CostResource;
 
+/**
+ * use cost2, proposed method, no update resources in other domains
+ * @author shuopeng
+ *
+ */
 public class MultiDomainRanking2 extends AbstractMultiDomainLinkMapping {
 	
 	Map<Domain, VirtualNetwork> localVNets;
@@ -107,6 +112,8 @@ public class MultiDomainRanking2 extends AbstractMultiDomainLinkMapping {
 					for(Map.Entry<BandwidthDemand, BandwidthResource>e : mapping.entrySet()){
 						e.getKey().free(e.getValue());
 					}
+//					System.out.println(domain);
+					
 					return false;
 				}
 				this.updateResource(solution, domain, nodeMapping);
@@ -340,7 +347,7 @@ public class MultiDomainRanking2 extends AbstractMultiDomainLinkMapping {
 							}
 						}
 						//objective
-						if(tmpsl instanceof InterLink)	k=10;
+						if(tmpsl instanceof InterLink)	k=1;
 						else k=1;
 						obj = obj + " + "+MiscelFunctions.roundToDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k,4);
 //						obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
@@ -436,8 +443,8 @@ public class MultiDomainRanking2 extends AbstractMultiDomainLinkMapping {
 							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
 				
 			}
-			double bdValue=bwResource.getAvailableBandwidth()-0.001;
-			if(bdValue<=0) bdValue=0;
+			double bdValue=MiscelFunctions.roundThreeDecimals(bwResource.getAvailableBandwidth()-0.001);
+			if(bdValue<=0.001) bdValue=0;
 			constraint = constraint +" <= " + bdValue+"\n";
 		}
 		//inter link
@@ -475,8 +482,8 @@ public class MultiDomainRanking2 extends AbstractMultiDomainLinkMapping {
 				}
 			}
 			if(flag){
-				double bdValue=bwResource.getAvailableBandwidth()-0.001;
-				if(bdValue<=0) bdValue=0;
+				double bdValue=MiscelFunctions.roundThreeDecimals(bwResource.getAvailableBandwidth()-0.001);
+				if(bdValue<=0.001) bdValue=0;
 				constraint = constraint +" <= " + bdValue+"\n";
 			}
 		}

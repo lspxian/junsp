@@ -82,7 +82,7 @@ public class InterLink extends SubstrateLink{
 	@Override
 	public boolean addResource(double random){
 		BandwidthResource bw=new BandwidthResource(this);
-		bw.setBandwidth(MiscelFunctions.roundThreeDecimals(300+random*100));
+		bw.setBandwidth(MiscelFunctions.roundThreeDecimals(200+random*100));
 		this.add(bw);
 		return true;
 	}

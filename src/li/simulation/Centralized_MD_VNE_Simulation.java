@@ -10,6 +10,7 @@ import java.util.Random;
 
 import li.evaluation.metrics.Metric;
 import li.event.VnEvent;
+import li.gt_itm.DrawGraphMD;
 import li.gt_itm.Generator;
 import li.multiDomain.Domain;
 import li.multiDomain.AbstractMultiDomain;
@@ -45,14 +46,14 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 
 
 	public Centralized_MD_VNE_Simulation() throws IOException{
-		this.simulationTime = 10000.0;
+		this.simulationTime = 30000.0;
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
 		/*-------4 domains example--------*/
-		multiDomain.add(new Domain(0,0,"data/cost239", true));
-		multiDomain.add(new Domain(1,0,"data/cost239", true));
-		multiDomain.add(new Domain(1,1,"data/cost239", true));
-		multiDomain.add(new Domain(0,1,"data/cost239", true));
+//		multiDomain.add(new Domain(0,0,"data/cost239", true));
+//		multiDomain.add(new Domain(1,0,"data/cost239", true));
+//		multiDomain.add(new Domain(1,1,"data/cost239", true));
+//		multiDomain.add(new Domain(0,1,"data/cost239", true));
 		
 //		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
 //		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
@@ -64,14 +65,15 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 //		multiDomain.add(new Domain(0,1,"sndlib/norway", true));
 		
 		/*------use gt-itm to create random substrate network-----*/
-//		multiDomain.add(new Domain(0,0, true));
-//		multiDomain.add(new Domain(1,0, true));
-//		multiDomain.add(new Domain(1,1, true));
-//		multiDomain.add(new Domain(0,1, true));
+		multiDomain.add(new Domain(0,0, true));
+		multiDomain.add(new Domain(1,0, true));
+		multiDomain.add(new Domain(1,1, true));
+		multiDomain.add(new Domain(0,1, true));
 
 		/*--------static or random peering links--------*/
 //		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
 		MultiDomainUtil.randomInterLinks(multiDomain);
+		
 	}
 	
 	public void initialize(int lambda) throws IOException{

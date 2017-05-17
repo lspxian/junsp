@@ -207,12 +207,12 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 				obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
 				//integer in the <general>
-				binary = binary +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
-				binary = binary +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+"\n";
+//				binary = binary +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
+//				binary = binary +  " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+"\n";
 				
 				//bounds
-//				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
-//				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
+				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+" <= 1\n";
+				bounds = bounds + "0 <= vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+" <= 1\n";
 			}
 			
 			//flow constraints
@@ -264,9 +264,9 @@ public class MultiCommodityFlow extends AbstractLinkMapping {
 							" + "+bwDem.getDemandedBandwidth() +
 							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
 			}
-			double bandwidth=bwResource.getAvailableBandwidth()-0.005;
-			if(bandwidth<0) bandwidth=0;
-			constraint = constraint +" <= " + MiscelFunctions.roundThreeDecimals(bandwidth)+"\n";
+			double bdValue=MiscelFunctions.roundThreeDecimals(bwResource.getAvailableBandwidth()-0.001);
+			if(bdValue<=0.001) bdValue=0;
+			constraint = constraint +" <= " + bdValue+"\n";
 		}
 		
 		obj = obj+ "\n";

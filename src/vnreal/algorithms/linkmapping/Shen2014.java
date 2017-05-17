@@ -82,6 +82,7 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 						snode.setCoordinateY(y);
 					}
 				}
+//				System.out.println(domain);
 				return false;
 			}
 			
@@ -237,14 +238,10 @@ public class Shen2014 extends AbstractMultiDomainLinkMapping {
 							throw new AssertionError("But we checked before!");
 						}
 						else{
-							BandwidthResource tmpbd=null;
-							for(AbstractResource absRes : sl){
-								if(absRes instanceof BandwidthResource){
-									tmpbd = (BandwidthResource) absRes;
-									break;
-								}
-							}
-							mapping.put(bwd, tmpbd);
+							BandwidthResource tmpbd=sl.getBandwidthResource();
+							BandwidthDemand newDem = new BandwidthDemand(vl);
+							newDem.setDemandedBandwidth(bwd.getDemandedBandwidth());
+							mapping.put(newDem, tmpbd);
 						}
 					}
 				}

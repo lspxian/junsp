@@ -18,8 +18,10 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
 import edu.uci.ics.jung.graph.util.EdgeType;
+import li.gt_itm.DrawGraph;
 import li.multiDomain.Domain;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
+import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.algorithms.utils.Remote;
@@ -46,6 +48,8 @@ public class MultiDomainAsOneDomain extends AbstractMultiDomainLinkMapping {
 		
 //		this.localPath="tmp/MultiDomainAsOneDomain-"+vNet.getId()+".lp";	// print mcf to file TODO
 		Domain newDomain = merge(domains);
+//		DrawGraph dg=new DrawGraph(newDomain);
+//		dg.draw();
 		
 		Map<String, String> solution = this.linkMappingWithoutUpdateLocal(vNet, nodeMapping, newDomain);
 		
@@ -183,7 +187,6 @@ public class MultiDomainAsOneDomain extends AbstractMultiDomainLinkMapping {
 			String constraint = "Subject To\n";
 			String bounds = "Bounds\n";
 			String general = "General\n";
-			int k=1;
 
 			for (Iterator<VirtualLink> links = vNet.getEdges().iterator(); links.hasNext();) {
 				VirtualLink tmpl = links.next();
@@ -211,14 +214,10 @@ public class MultiDomainAsOneDomain extends AbstractMultiDomainLinkMapping {
 						}
 					}
 					
-					if(tmpsl instanceof InterLink)	k=10;
-					else k=1;
 					//objective
-					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k;
-//					obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
+					obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001));
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-					obj = obj + " + "+bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k;
-//					obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
+					obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001));
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 					
 					//integer in the <general>
@@ -280,7 +279,9 @@ public class MultiDomainAsOneDomain extends AbstractMultiDomainLinkMapping {
 								" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
 					
 				}
-				constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
+				double bdValue=MiscelFunctions.roundThreeDecimals(bwResource.getAvailableBandwidth()-0.001);
+				if(bdValue<=0.001) bdValue=0;
+				constraint = constraint +" <= " + bdValue+"\n";
 			}
 			
 			obj = obj+ "\n";

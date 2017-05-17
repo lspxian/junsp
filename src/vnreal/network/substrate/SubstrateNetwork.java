@@ -110,12 +110,12 @@ public class SubstrateNetwork extends
 	@Override
 	public String toString() {
 		String result = "NODES:\n";
-		for (SubstrateNode n : getVertices()) {
+	/*	for (SubstrateNode n : getVertices()) {
 			result += n + "("+n.getCoordinateX()+","+n.getCoordinateY()+")"+"\n";
 			for (AbstractResource r : n.get()) {
 				result += "  " + r.toString() + "\n";
 			}
-		}
+		}*/
 
 		result += "\nEDGES:\n";
 		for (SubstrateLink l : getEdges()) {

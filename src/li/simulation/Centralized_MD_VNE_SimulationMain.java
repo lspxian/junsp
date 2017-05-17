@@ -8,6 +8,10 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import li.gt_itm.DrawGraphMD;
+import li.multiDomain.Domain;
+import vnreal.network.substrate.SubstrateNode;
+
 public class Centralized_MD_VNE_SimulationMain {
 	
 	public static int c;
@@ -19,7 +23,7 @@ public class Centralized_MD_VNE_SimulationMain {
 		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
 		writer.close();
 		
-		for(c=0;c<1;c++){
+		for(c=0;c<10;c++){
 			
 		Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation();
 		
@@ -54,15 +58,15 @@ public class Centralized_MD_VNE_SimulationMain {
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=5;i<8;i++){
+			for(int i=2;i<8;i++){
 				simulation.initialize(i);
-				/*
+				
 				PrintStream md = new PrintStream(new FileOutputStream("res/MultiDomainAsOneDomain_l"+i+"_c"+c+".txt"));
 				System.setOut(md);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("MultiDomainAsOneDomain");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();*/
+				simulation.reset();
 				
 				PrintStream shen = new PrintStream(new FileOutputStream("res/Shen_l"+i+"_c"+c+".txt"));
 				System.setOut(shen);
@@ -84,23 +88,29 @@ public class Centralized_MD_VNE_SimulationMain {
 				simulation.runSimulation("MultiDomainRanking2");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();
-				/*
+				
 				PrintStream mdrk3 = new PrintStream(new FileOutputStream("res/MultiDomainRanking3_l"+i+"_c"+c+".txt"));
 				System.setOut(mdrk3);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("MultiDomainRanking3");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();*/
+				simulation.reset();
 				
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 				System.out.println("job done");
 			}
+			
+//			DrawGraphMD graph=new DrawGraphMD(simulation.getMultiDomain());
+//			graph.draw();
+			
+
 		}
 		writer = new FileWriter("cenResult.txt",true);
 		writer.write("/---------------Simulation finished!---------------/\n");
 		writer.write("Time : "+new SimpleDateFormat().format(new Date())+"\n\n");
 		writer.close();
-
+		
+		
 	}
 
 }
