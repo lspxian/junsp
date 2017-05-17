@@ -264,18 +264,19 @@ public final class VirtualNetwork extends
 	}
 	
 	public boolean addAllResource(boolean random){
-		for(VirtualNode sbnd : this.getVertices()){
+		for(VirtualNode sbnd : this.getVertices())
 			sbnd.addResource(random);
-		}
-		Iterator<VirtualLink> it=this.getEdges().iterator();
-		while(it.hasNext()){
-			double value = 1;
-			if(random)	value = new Random().nextDouble();
-			VirtualLink sblk1 = (VirtualLink)it.next();
-			//VirtualLink sblk2 = (VirtualLink)it.next();
-			sblk1.addResource(value);
-			//sblk2.addResource(value);
-		}
+		for(VirtualLink vl:this.getEdges())
+			vl.addResource(random);
+		lifetime = MiscelFunctions.negExponential(1.0/mu);
+		return true;
+	}
+	
+	public boolean addAllResource(boolean random,int linkMin, int linkMax){
+		for(VirtualNode sbnd : this.getVertices())
+			sbnd.addResource(random);
+		for(VirtualLink vl:this.getEdges())
+			vl.addResource(random,linkMin, linkMax);
 		lifetime = MiscelFunctions.negExponential(1.0/mu);
 		return true;
 	}

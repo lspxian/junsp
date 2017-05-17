@@ -45,7 +45,7 @@ public class PseudoDistributeMDVNE extends AbstractMultiDomain{
 		
 		
 		
-		MultiDomainUtil.randomInterLinks(multiDomain);	//TODO
+		MultiDomainUtil.randomInterLinks(multiDomain,0.8,0.15);	//TODO
 	}
 	
 	public void initialize(int lambda) throws IOException{

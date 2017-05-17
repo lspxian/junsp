@@ -45,7 +45,7 @@ import vnreal.network.virtual.VirtualNode;
 public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 
 
-	public Centralized_MD_VNE_Simulation() throws IOException{
+	public Centralized_MD_VNE_Simulation(double alpha, double beta) throws IOException{
 		this.simulationTime = 30000.0;
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
@@ -72,7 +72,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 
 		/*--------static or random peering links--------*/
 //		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
-		MultiDomainUtil.randomInterLinks(multiDomain);
+		MultiDomainUtil.randomInterLinks(multiDomain,alpha,beta);
 		
 	}
 	
@@ -115,6 +115,35 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 			vn.reconfigPositionMD(multiDomain);
 //			vn.scale(2, 2);		//scale a [100,100] vn to [200,200]
 //			vn.reconfigResource(multiDomain);
+			
+			double departureTime = time+vn.getLifetime();
+			events.add(new VnEvent(vn,time,0)); //arrival event
+			if(departureTime<=simulationTime)
+				events.add(new VnEvent(vn,departureTime,1)); // departure event
+			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
+		}
+		Collections.sort(events);	
+		
+		//add metric
+		metrics = new ArrayList<MetricMD>();
+		mappedVNs = new ArrayList<VirtualNetwork>();
+	}
+	
+	//for link demand simulation
+	public void initialize(int lambda,int linkMin, int linkMax) throws IOException{
+		this.time=0.0;
+		this.accepted=0;
+		this.rejected=0;
+		this.lambda=lambda;
+		this.totalCost=0.0;		
+		/*---------random virtual network-----------*/
+		events = new ArrayList<VnEvent>();
+		while(time<simulationTime){
+			VirtualNetwork vn = new VirtualNetwork();
+			Generator.createVirNet();
+			vn.alt2network("./gt-itm/vir");
+			vn.addAllResource(true,linkMin, linkMax);
+			vn.reconfigPositionMD(multiDomain);
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event

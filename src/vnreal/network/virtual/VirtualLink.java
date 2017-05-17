@@ -33,6 +33,8 @@ package vnreal.network.virtual;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+
 import li.multiDomain.Domain;
 import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.constraints.ILinkConstraint;
@@ -113,11 +115,22 @@ public class VirtualLink extends Link<AbstractDemand> {
 		 return clone;
 	}
 	
-	public boolean addResource(double random){
+	public boolean addResource(boolean random){
 		BandwidthDemand bw=new BandwidthDemand(this);
 		double quantity = 10;
-		if(random!=1.0)	
-			quantity = 0+MiscelFunctions.roundThreeDecimals(random*20);
+		if(random)	quantity = MiscelFunctions.roundThreeDecimals(new Random().nextDouble()*20);
+		bw.setDemandedBandwidth(quantity);
+		this.add(bw);
+		return true;
+	}
+	
+	public boolean addResource(boolean random, int min, int max){
+		BandwidthDemand bw=new BandwidthDemand(this);
+		double quantity = min+(max-min)/2;
+		if(random){
+			double randomValue=new Random().nextDouble();
+			quantity = MiscelFunctions.roundThreeDecimals(min+randomValue*(max-min));
+		}
 		bw.setDemandedBandwidth(quantity);
 		this.add(bw);
 		return true;

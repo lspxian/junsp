@@ -91,12 +91,12 @@ public class MultiDomainUtil {
 	}
 	
 	//TODO we can take 7 min distance as inter links instead of random
-	public static void randomInterLinks(List<Domain> multiDomain){
+	public static void randomInterLinks(List<Domain> multiDomain, double alpha, double beta){
 		
 		//generate inter links
 		//0.9 0.08 for random sub
-		double alpha = 0.8;	//alpha increases the probability of edges between any nodes in the graph
-		double beta = 0.15;	//beta yields a larger ratio of long edges to short edges.
+		//double alpha = 0.8;	//alpha increases the probability of edges between any nodes in the graph
+		//double beta = 0.15;	//beta yields a larger ratio of long edges to short edges.
 		
 //		double alpha = 0.8;
 //		double beta = 0.07;		

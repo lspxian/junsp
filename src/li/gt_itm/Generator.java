@@ -44,6 +44,19 @@ public class Generator {
 		runShellCmd("./gt-itm/sgb2alt gt-itm/subCmd-0.gb gt-itm/vir");
 	}
 	
+	public static void createVirNet(int nodesNum, double connect) throws IOException{
+		File dir = new File("gt-itm");
+		if(!dir.exists())
+			dir.mkdir();
+		PrintWriter pw = new PrintWriter("gt-itm/subCmd");
+		pw.println("geo 1 "+new Random().nextInt(100));
+		//node number, scale, method, proba connect
+		pw.println(nodesNum+" 100 3 "+connect);
+		pw.close();
+		runShellCmd("./gt-itm/itm gt-itm/subCmd");
+		runShellCmd("./gt-itm/sgb2alt gt-itm/subCmd-0.gb gt-itm/vir");
+	}
+	
 	//
 	public static void createVgb() throws IOException{
 		File dir = new File("data200");
