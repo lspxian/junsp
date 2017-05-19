@@ -46,7 +46,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 
 
 	public Centralized_MD_VNE_Simulation(double alpha, double beta) throws IOException{
-		this.simulationTime = 30000.0;
+		this.simulationTime = 50000.0;
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
 		/*-------4 domains example--------*/
@@ -112,6 +112,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/vir");
 			vn.addAllResource(true);
+//			vn.addAllResource(true, 30,50);
 			vn.reconfigPositionMD(multiDomain);
 //			vn.scale(2, 2);		//scale a [100,100] vn to [200,200]
 //			vn.reconfigResource(multiDomain);
@@ -166,6 +167,11 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 		metrics.add(new MappedRevenueMD(this, methodStr,lambda));
 		metrics.add(new CostMD(this, methodStr,lambda));
 		metrics.add(new CostRevenueMD(this,methodStr,lambda));
+		
+		
+		for(int i=0;i<multiDomain.size();i++){
+			System.out.println(multiDomain.get(i));
+		}
 		
 		for(VnEvent currentEvent : events){
 			
