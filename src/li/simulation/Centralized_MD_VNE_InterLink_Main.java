@@ -20,15 +20,21 @@ public class Centralized_MD_VNE_InterLink_Main {
 		writer.close();
 		
 		List<Double> betas=new ArrayList<Double>();
-		betas.add(0.01);
-		betas.add(0.05);
-		betas.add(0.09);
-		betas.add(0.14);
-		betas.add(0.17);
-		betas.add(0.21);
+		betas.add(0.04);
+		betas.add(0.06);
+		betas.add(0.08);
+		betas.add(0.1);
+		betas.add(0.12);
+//		betas.add(0.14);
 		
 		for(c=0;c<10;c++){
 			for(double beta:betas){
+				
+				writer = new FileWriter("cenResult.txt",true);
+				writer.write("Number:"+c+"\n");
+				writer.write("*----beta="+beta+"------*\n");
+				writer.close();
+				
 				Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation(0.8,beta);
 				
 				for(int i=0;i<simulation.getMultiDomain().size();i++){
@@ -51,12 +57,7 @@ public class Centralized_MD_VNE_InterLink_Main {
 				writer.write("\n");
 				writer.close();
 				
-				writer = new FileWriter("cenResult.txt",true);
-				writer.write("Number:"+c+"\n");
-				writer.write("*----beta="+beta+"------*\n");
-				writer.close();
-				
-				int i=4;
+				int i=3;
 				simulation.initialize(i);
 				
 				PrintStream md = new PrintStream(new FileOutputStream("res/MultiDomainAsOneDomain_l"+i+"_c"+c+".txt"));

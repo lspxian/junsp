@@ -55,20 +55,20 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 //		multiDomain.add(new Domain(1,1,"data/cost239", true));
 //		multiDomain.add(new Domain(0,1,"data/cost239", true));
 		
-		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
-		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
-		multiDomain.add(new Domain(1,1,"sndlib/germany50", true));
-		multiDomain.add(new Domain(0,1,"sndlib/zib54", true));
+//		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
+//		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
+//		multiDomain.add(new Domain(1,1,"sndlib/germany50", true));
+//		multiDomain.add(new Domain(0,1,"sndlib/zib54", true));
 		
 		/*-------2 domains example------*/
 //		multiDomain.add(new Domain(1,1,"sndlib/cost266", true));
 //		multiDomain.add(new Domain(0,1,"sndlib/norway", true));
 		
 		/*------use gt-itm to create random substrate network-----*/
-//		multiDomain.add(new Domain(0,0, true));
-//		multiDomain.add(new Domain(1,0, true));
-//		multiDomain.add(new Domain(1,1, true));
-//		multiDomain.add(new Domain(0,1, true));
+		multiDomain.add(new Domain(0,0, true));
+		multiDomain.add(new Domain(1,0, true));
+		multiDomain.add(new Domain(1,1, true));
+		multiDomain.add(new Domain(0,1, true));
 
 		/*--------static or random peering links--------*/
 //		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);

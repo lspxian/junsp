@@ -20,16 +20,16 @@ public class Centralized_MD_VNE_Demand_Main {
 		
 		List<Integer> demandMin=new ArrayList<Integer>();
 		List<Integer> demandMax=new ArrayList<Integer>();
-//		demandMin.add(0);
+		demandMin.add(0);
+		demandMin.add(10);
 		demandMin.add(20);
-//		demandMin.add(40);
-//		demandMin.add(60);
-//		demandMin.add(80);
-//		demandMax.add(20);
+		demandMin.add(30);
+		demandMin.add(40);
+		demandMax.add(20);
+		demandMax.add(30);
 		demandMax.add(40);
-//		demandMax.add(60);
-//		demandMax.add(80);
-//		demandMax.add(100);
+		demandMax.add(50);
+		demandMax.add(60);
 		
 		for(c=0;c<10;c++){
 			
@@ -70,13 +70,13 @@ public class Centralized_MD_VNE_Demand_Main {
 				simulation.runSimulation("MultiDomainAsOneDomain");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();
-				/*
+				
 				PrintStream shen = new PrintStream(new FileOutputStream("res/Shen_r"+j+"_c"+c+".txt"));
 				System.setOut(shen);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("Shen2014");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();*/
+				simulation.reset();
 				/*
 				PrintStream mdrk = new PrintStream(new FileOutputStream("res/MultiDomainRanking_r"+j+"_c"+c+".txt"));
 				System.setOut(mdrk);
@@ -84,13 +84,13 @@ public class Centralized_MD_VNE_Demand_Main {
 				simulation.runSimulation("MultiDomainRanking");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();*/
-				/*
+				
 				PrintStream mdrk2 = new PrintStream(new FileOutputStream("res/MultiDomainRanking2_r"+j+"_c"+c+".txt"));
 				System.setOut(mdrk2);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("MultiDomainRanking2");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();*/
+				simulation.reset();
 				
 				PrintStream mdrk3 = new PrintStream(new FileOutputStream("res/MultiDomainRanking3_r"+j+"_c"+c+".txt"));
 				System.setOut(mdrk3);
