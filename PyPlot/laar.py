@@ -1,5 +1,5 @@
 """
-Parameters : 
+Parameters :
 1 f - file name
 """
 import sys
@@ -31,7 +31,7 @@ while temp.find('Number:')!=-1:
         sim = temp
 
     for i in range(start,myLambda):
-	'''        
+	'''
 	index  = sim.find(metric)
 	sim = sim[index+len(metric):]
 	m = re.search('[0-9]*\.[0-9]*',sim)
@@ -39,25 +39,25 @@ while temp.find('Number:')!=-1:
 	'''
 
         index  = sim.find(metric)
-	sim = sim[index+len(metric):]
-	m = re.search('[0-9]*\.[0-9]*',sim)
+        sim = sim[index+len(metric):]
+        m = re.search('[0-9]*\.[0-9]*',sim)
       	baseline[i] = baseline[i]+float(m.group(0))
 
         index  = sim.find(metric)
-	sim = sim[index+len(metric):]
-	m = re.search('[0-9]*\.[0-9]*',sim)
+        sim = sim[index+len(metric):]
+        m = re.search('[0-9]*\.[0-9]*',sim)
       	reinforced[i] = reinforced[i]+float(m.group(0))
 
-	index  = sim.find(metric)
-	sim = sim[index+len(metric):]
-	m = re.search('[0-9]*\.[0-9]*',sim)
-      	bw[i] = bw[i]+float(m.group(0))
-	
         index  = sim.find(metric)
-	sim = sim[index+len(metric):]
-	m = re.search('[0-9]*\.[0-9]*',sim)
+        sim = sim[index+len(metric):]
+        m = re.search('[0-9]*\.[0-9]*',sim)
+      	bw[i] = bw[i]+float(m.group(0))
+
+        index  = sim.find(metric)
+        sim = sim[index+len(metric):]
+        m = re.search('[0-9]*\.[0-9]*',sim)
       	exact[i] = exact[i]+float(m.group(0))
-	
+
 #calculate average
 for i in range(0,myLambda):
     heu1[i] = heu1[i]/number
@@ -116,4 +116,3 @@ plt.ylabel('Accepted Ratio')
 plt.xlabel('lambda')
 plt.show()
 '''
-

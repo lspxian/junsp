@@ -279,8 +279,8 @@ public class MultiDomainAsOneDomain extends AbstractMultiDomainLinkMapping {
 								" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
 					
 				}
-				double bdValue=MiscelFunctions.roundThreeDecimals(bwResource.getAvailableBandwidth()-0.001);
-				if(bdValue<=0.001) bdValue=0;
+				double bdValue=MiscelFunctions.roundThreeDecimals(bwResource.getAvailableBandwidth()-0.1);
+				if(bdValue<=0.1) bdValue=0;
 				constraint = constraint +" <= " + bdValue+"\n";
 			}
 			
