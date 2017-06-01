@@ -7,8 +7,8 @@ import re
 
 f = open(sys.argv[1],'r')
 #metric = sys.argv[2]
-metric  = 'AcceptedRatio'
-metric2 = 'Accepted ratio'
+metric  = 'linkUtilization'
+metric2 = 'Link utilization'
 start=2
 myLambda=8	#in vne lambda+1
 number=0
@@ -64,7 +64,7 @@ print ciplm_up
 
 #write to a file in latex format
 fwriter = open(metric+'1.tex','w')
-latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={arrival rate $\lambda$},\nylabel={'+metric2+' \%},\nxmin=2, xmax=8,\nymin=60, ymax=100,\nxtick={2,3,4,5,6,7,8},\nytick={65,70,75,80,85,90,95,100},\nlegend pos=south west,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
+latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={arrival rate $\lambda$},\nylabel={'+metric2+'},\nxmin=2, xmax=8,\nymin=0, ymax=0.5,\nxtick={2,3,4,5,6,7,8},\nytick={0.1,0.2,0.3,0.4,0.5},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
 
 latex = latex + '\\addplot[\n	color=violet,\n	mark=square,\n]\ncoordinates{\n'
 for i in range(start, myLambda):
