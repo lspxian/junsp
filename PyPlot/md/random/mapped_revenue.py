@@ -7,16 +7,17 @@ import re
 
 f = open(sys.argv[1],'r')
 #metric = sys.argv[2]
-metric  = 'linkUtilization'
-metric2 = 'Link utilization'
-beta=[0.04,0.06,0.08,0.1,0.12]	#in vne lambda+1
+metric  = 'MappedRevenue'
+metric2 = 'Mapped revenue'
+start=2
+myLambda=8	#in vne lambda+1
 number=0
 orig = f.read()
 temp = orig
-ideal=[0.0]*len(beta)
-shen=[0.0]*len(beta)
-ciplm=[0.0]*len(beta)
-ciplm_up=[0.0]*len(beta)
+ideal=[0.0]*myLambda
+shen=[0.0]*myLambda
+ciplm=[0.0]*myLambda
+ciplm_up=[0.0]*myLambda
 
 while temp.find('Number:')!=-1:
     number=number+1
@@ -27,7 +28,7 @@ while temp.find('Number:')!=-1:
     else:
         sim = temp
 
-    for i in range(0,len(beta)):
+    for i in range(start,myLambda):
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
@@ -50,7 +51,7 @@ while temp.find('Number:')!=-1:
       	ciplm_up[i] = ciplm_up[i]+float(m.group(0))
 
 #calculate average
-for i in range(0,len(beta)):
+for i in range(0,myLambda):
     ideal[i] = ideal[i]/number
     shen[i] = shen[i]/number
     ciplm[i] = ciplm[i]/number
@@ -62,27 +63,27 @@ print ciplm
 print ciplm_up
 
 #write to a file in latex format
-fwriter = open(metric+'2.tex','w')
-latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={peering links $\\beta$},\nylabel={'+metric2+'},\nxmin=0.04, xmax=0.12,\nymin=0, ymax=0.3,\nxtick={0.04,0.06,0.08,0.1,0.12},\nytick={0.1,0.15,0.2,0.25,0.3},\nlegend pos=south west,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
+fwriter = open(metric+'.tex','w')
+latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={arrival rate $\lambda$},\nylabel={'+metric2+'},\nxmin=2, xmax=8,\nymin=60000, ymax=200000,\nxtick={2,3,4,5,6,7,8},\nytick={60000,90000,120000,150000,180000,200000},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
 
 latex = latex + '\\addplot[\n	color=violet,\n	mark=square,\n]\ncoordinates{\n'
-for i in range(0, len(beta)):
-	latex = latex+'('+str(beta[i])+','+str(ideal[i])+')'
+for i in range(start, myLambda):
+	latex = latex+'('+str(i)+','+str(ideal[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\addplot[\n	color=blue,\n	mark=x,\n]\ncoordinates{\n'
-for i in range(0, len(beta)):
-	latex = latex+'('+str(beta[i])+','+str(shen[i])+')'
+for i in range(start, myLambda):
+	latex = latex+'('+str(i)+','+str(shen[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\addplot[\n	color=green,\n	mark=o,\n]\ncoordinates{\n'
-for i in range(0, len(beta)):
-	latex = latex+'('+str(beta[i])+','+str(ciplm[i])+')'
+for i in range(start, myLambda):
+	latex = latex+'('+str(i)+','+str(ciplm[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\addplot[\n	color=red,\n	mark=triangle,\n]\ncoordinates{\n'
-for i in range(0, len(beta)):
-	latex = latex+'('+str(beta[i])+','+str(ciplm_up[i])+')'
+for i in range(start, myLambda):
+	latex = latex+'('+str(i)+','+str(ciplm_up[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\legend{$ideal$,$shen$,$ciplm$,$ciplm\_up$}\n\\end{axis}\n\\end{tikzpicture}'
