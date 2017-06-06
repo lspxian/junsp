@@ -35,7 +35,7 @@ public class MultiDomainAlgoTest {
 		multiDomain.add(new Domain(2,0,"sndlib/germany50", true));
 		
 		//MultiDomainUtil.staticInterLinks(multiDomain.get(0),multiDomain.get(1));
-		MultiDomainUtil.random3DInterLinks(multiDomain);
+		MultiDomainUtil.random3DInterLinks(multiDomain,0.8,0.15);
 		
 		for(int i=0;i<multiDomain.size();i++){
 			System.out.println("inter:"+multiDomain.get(i).getInterLinkCount());				

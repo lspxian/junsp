@@ -54,7 +54,7 @@ public Distribute3DVNE() throws IOException{
 
 		/*--------static or random peering links--------*/
 //		MultiDomainUtil.random2DInterLinks(multiDomain.get(0),multiDomain.get(1),0.9,0.07);
-		MultiDomainUtil.random3DInterLinks(multiDomain);
+		MultiDomainUtil.random3DInterLinks(multiDomain,0.9,0.09);
 	}
 	
 	public void initialize(int lambda) throws IOException{
@@ -91,9 +91,10 @@ public Distribute3DVNE() throws IOException{
 		while(time<simulationTime){
 			VirtualNetwork vn = new VirtualNetwork();
 			Generator.createVirNet();
-			vn.alt2network("./gt-itm/sub");
+			vn.alt2network("./gt-itm/vir");
 			vn.addAllResource(true);
-			vn.scale(3, 1);		//scale a [100,100] vn to [300,100]
+			vn.reconfigPositionMD(multiDomain);
+//			vn.scale(3, 1);		//scale a [100,100] vn to [300,100]
 //			vn.reconfigResource(multiDomain);
 			
 			double departureTime = time+vn.getLifetime();
@@ -118,6 +119,10 @@ public Distribute3DVNE() throws IOException{
 		metrics.add(new CostMD(this, methodStr,lambda));
 		metrics.add(new CostRevenueMD(this,methodStr,lambda));
 		
+		for(int i=0;i<multiDomain.size();i++){
+			System.out.println(multiDomain.get(i));
+		}
+		
 		for(VnEvent currentEvent : events){
 			
 			System.out.println("/------------------------------------/");
@@ -125,7 +130,7 @@ public Distribute3DVNE() throws IOException{
 			System.out.println("At this moment, accepted:"+this.accepted+" rejected:"+this.rejected);
 
 			if(currentEvent.getFlag()==0){
-				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,35);
+				MultiDomainAvailableResources arnm = new MultiDomainAvailableResources(multiDomain,1);
 				
 				if(arnm.nodeMapping(currentEvent.getConcernedVn())){
 					System.out.println(currentEvent.getConcernedVn());
@@ -205,7 +210,7 @@ public Distribute3DVNE() throws IOException{
 		System.out.println("accepted : "+this.accepted);
 		System.out.println("rejected : "+this.rejected);
 		
-		FileWriter writer = new FileWriter("resultat.txt",true);
+		FileWriter writer = new FileWriter("disResult.txt",true);
 		writer.write("*----lambda="+this.lambda+"--"+methodStr+"----*\n");
 		writer.write("accepted : "+this.accepted+"\n");
 		writer.write("rejected : "+this.rejected+"\n");

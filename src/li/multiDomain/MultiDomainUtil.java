@@ -148,10 +148,10 @@ public class MultiDomainUtil {
 		
 	}
 	
-	public static void random3DInterLinks(List<Domain> domains){
-		random2DInterLinks(domains.get(0),domains.get(1),0.7,0.07);
-		random2DInterLinks(domains.get(1),domains.get(2),0.7,0.07);
-		random2DInterLinks(domains.get(0),domains.get(2),0.7,0.17);
+	public static void random3DInterLinks(List<Domain> domains, double alpha, double beta){
+		random2DInterLinks(domains.get(0),domains.get(1),alpha,beta);
+		random2DInterLinks(domains.get(1),domains.get(2),alpha,beta);
+		random2DInterLinks(domains.get(0),domains.get(2),alpha,beta+0.1);
 	}
 	
 	public static void random2DInterLinks(Domain startDomain,Domain endDomain, double alpha, double beta){

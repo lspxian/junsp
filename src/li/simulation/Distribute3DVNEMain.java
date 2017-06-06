@@ -14,12 +14,12 @@ public class Distribute3DVNEMain {
 	public static void main(String[] args) throws IOException {
 		
 		
-		FileWriter writer = new FileWriter("resultat.txt",true);
+		FileWriter writer = new FileWriter("disResult.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
 		writer.close();
 		
-		for(c=0;c<1;c++){
+		for(c=0;c<10;c++){
 			
 			Distribute3DVNE simulation = new Distribute3DVNE();
 			/*
@@ -35,7 +35,7 @@ public class Distribute3DVNEMain {
 				System.out.println("inter:"+simulation.getMultiDomain().get(i).getInterLinkCount());				
 			}
 			
-			writer = new FileWriter("resultat.txt",true);
+			writer = new FileWriter("disResult.txt",true);
 			for(int i=0;i<simulation.getMultiDomain().size();i++){
 				writer.write(" v:"+simulation.getMultiDomain().get(i).getVertexCount());
 				writer.write(" e:"+simulation.getMultiDomain().get(i).getEdgeCount());
@@ -50,11 +50,11 @@ public class Distribute3DVNEMain {
 			
 	//		PrintStream tmp = new PrintStream(new FileOutputStream("tmp.txt"));
 	//		System.setOut(tmp);
-			writer = new FileWriter("resultat.txt",true);
+			writer = new FileWriter("disResult.txt",true);
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=3;i<8;i++){
+			for(int i=4;i<9;i++){
 				simulation.initialize(i);
 				
 				/*
@@ -78,20 +78,20 @@ public class Distribute3DVNEMain {
 				simulation.runSimulation("MultiDomainRanking2");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();
-/*
+
 				PrintStream mdrk3 = new PrintStream(new FileOutputStream("res/AllPossibleMDRanking_l"+i+"_c"+c+".txt"));
 				System.setOut(mdrk3);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("AllPossible");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();*/
+				simulation.reset();
 				
 				
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 				System.out.println("job done");
 			}
 		}
-		writer = new FileWriter("resultat.txt",true);
+		writer = new FileWriter("disResult.txt",true);
 		writer.write("/---------------Simulation finished!---------------/\n");
 		writer.write("Time : "+new SimpleDateFormat().format(new Date())+"\n\n");
 		writer.close();
