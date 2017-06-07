@@ -54,7 +54,7 @@ public class Distribute3DVNEMain {
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=4;i<9;i++){
+			for(int i=5;i<10;i++){
 				simulation.initialize(i);
 				
 				/*
