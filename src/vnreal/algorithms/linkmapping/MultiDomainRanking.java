@@ -90,7 +90,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 		
 		//initialize the links to map, delete the link once it's mapped
 		this.linkToMap.addAll(vNet.getEdges());
-		Collections.sort(this.domains,new LinkStressComparator());
+//		Collections.sort(this.domains,new LinkStressComparator());
 //		sortDomain();
 		
 		for(Domain domain : this.domains){
