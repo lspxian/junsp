@@ -19,7 +19,7 @@ public class Distribute3DVNEMain {
 		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
 		writer.close();
 		
-		for(c=0;c<10;c++){
+		for(c=0;c<1;c++){
 			
 			Distribute3DVNE simulation = new Distribute3DVNE();
 			/*
@@ -54,9 +54,15 @@ public class Distribute3DVNEMain {
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=5;i<10;i++){
+			for(int i=6;i<7;i++){
 				simulation.initialize(i);
 				
+				PrintStream mdrk3 = new PrintStream(new FileOutputStream("res/AllPossibleMDRanking_l"+i+"_c"+c+".txt"));
+				System.setOut(mdrk3);
+				System.out.println(new SimpleDateFormat().format(new Date()));
+				simulation.runSimulation("AllPossible");
+				System.out.println(new SimpleDateFormat().format(new Date()));
+				simulation.reset();
 				/*
 				PrintStream mdrk = new PrintStream(new FileOutputStream("res/MultiDomainRanking_l"+i+"_c"+c+".txt"));
 				System.setOut(mdrk);
@@ -64,13 +70,13 @@ public class Distribute3DVNEMain {
 				simulation.runSimulation("MultiDomainRanking");
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();*/
-				
+				/*
 				PrintStream shen = new PrintStream(new FileOutputStream("res/Shen_l"+i+"_c"+c+".txt"));
 				System.setOut(shen);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("Shen2014");
 				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();
+				simulation.reset();*/
 				
 				PrintStream mdrk2 = new PrintStream(new FileOutputStream("res/MultiDomainRanking2_l"+i+"_c"+c+".txt"));
 				System.setOut(mdrk2);
@@ -79,12 +85,7 @@ public class Distribute3DVNEMain {
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.reset();
 
-				PrintStream mdrk3 = new PrintStream(new FileOutputStream("res/AllPossibleMDRanking_l"+i+"_c"+c+".txt"));
-				System.setOut(mdrk3);
-				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.runSimulation("AllPossible");
-				System.out.println(new SimpleDateFormat().format(new Date()));
-				simulation.reset();
+
 				
 				
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));

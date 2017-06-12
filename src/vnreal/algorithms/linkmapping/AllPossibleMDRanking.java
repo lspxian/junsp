@@ -43,6 +43,7 @@ public class AllPossibleMDRanking extends AbstractMultiDomainLinkMapping{
 				Solution solution = new Solution(combination,mdr.getMapping());
 				this.solutions.add(solution);
 			}
+			System.out.println("");
 				
 		}
 		

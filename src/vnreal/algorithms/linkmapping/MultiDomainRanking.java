@@ -94,6 +94,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 //		sortDomain();
 		
 		for(Domain domain : this.domains){
+			System.out.println("link mapping on domain("+domain.getCoordinateX()+","+domain.getCoordinateY()+")");
 			this.createLocalVNet(domain, vNet, nodeMapping);
 
 			//if there is no virtual links in this domain
@@ -104,7 +105,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 				Map<String, String> solution = this.linkMappingWithoutUpdateLocal(this.localVNets.get(domain), nodeMapping, this.augmentedNets.get(domain));
 				
 				if(solution.size()==0){
-					System.out.println("link no solution");
+					System.out.println("link no solution, domain("+domain.getCoordinateX()+","+domain.getCoordinateY()+")");
 					for(Map.Entry<VirtualNode, SubstrateNode> entry : nodeMapping.entrySet()){
 						NodeLinkDeletion.nodeFree(entry.getKey(), entry.getValue());
 					}
@@ -112,7 +113,7 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					for(Map.Entry<BandwidthDemand, BandwidthResource>e : mapping.entrySet()){
 						e.getKey().free(e.getValue());
 					}
-					System.out.println(domain);
+//					System.out.println(domain);
 					
 					return false;
 				}
@@ -290,10 +291,10 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 					//objective
 					if(tmpsl instanceof InterLink)	k=10;
 					else k=1;
-					obj = obj + " + "+MiscelFunctions.roundToDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k,4);
+					obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k);
 //					obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-					obj = obj + " + "+MiscelFunctions.roundToDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k,4);
+					obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k);
 //					obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
 					obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 					//bounds
@@ -334,10 +335,10 @@ public class MultiDomainRanking extends AbstractMultiDomainLinkMapping {
 						//objective
 						if(tmpsl instanceof InterLink)	k=1;
 						else k=1;
-						obj = obj + " + "+MiscelFunctions.roundToDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k,4);
+						obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k);
 //						obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
 						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
-						obj = obj + " + "+MiscelFunctions.roundToDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k,4);
+						obj = obj + " + "+MiscelFunctions.roundThreeDecimals(bwDem.getDemandedBandwidth()/(bwResource.getAvailableBandwidth()+0.001)*k);
 //						obj = obj + " + "+bwDem.getDemandedBandwidth()*k;
 						obj = obj + " vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 						//bounds
