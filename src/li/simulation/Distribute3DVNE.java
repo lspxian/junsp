@@ -18,6 +18,7 @@ import li.multiDomain.metrics.CurrentLinkUtilisationMD;
 import li.multiDomain.metrics.LinkUtilizationMD;
 import li.multiDomain.metrics.MappedRevenueMD;
 import li.multiDomain.metrics.MetricMD;
+import li.multiDomain.metrics.LinkCostRevenueMD;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
 import vnreal.algorithms.linkmapping.AS_MCF;
 import vnreal.algorithms.linkmapping.AllPossibleMDRanking;
@@ -37,7 +38,7 @@ import vnreal.network.virtual.VirtualNode;
 public class Distribute3DVNE extends AbstractMultiDomain {
 
 public Distribute3DVNE() throws IOException{
-		this.simulationTime = 5000.0;
+		this.simulationTime = 10000.0;
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
 		/*-------3 domains example--------*/
@@ -47,9 +48,9 @@ public Distribute3DVNE() throws IOException{
 		multiDomain.add(new Domain(2,0,"sndlib/germany50", true));*/
 		
 		/*------use gt-itm to create random substrate network-----*/
-		multiDomain.add(new Domain(0,0, true));
-		multiDomain.add(new Domain(1,0, true));
-		multiDomain.add(new Domain(2,0, true));
+		multiDomain.add(new Domain(0,0, true, 50, 0.1));
+		multiDomain.add(new Domain(1,0, true, 50, 0.1));
+		multiDomain.add(new Domain(2,0, true, 50, 0.1));
 
 
 		/*--------static or random peering links--------*/
@@ -118,6 +119,7 @@ public Distribute3DVNE() throws IOException{
 		metrics.add(new MappedRevenueMD(this, methodStr,lambda));
 		metrics.add(new CostMD(this, methodStr,lambda));
 		metrics.add(new CostRevenueMD(this,methodStr,lambda));
+		metrics.add(new LinkCostRevenueMD(this,methodStr,lambda));
 		
 		for(int i=0;i<multiDomain.size();i++){
 			System.out.println(multiDomain.get(i));
@@ -169,6 +171,7 @@ public Distribute3DVNE() throws IOException{
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
 						this.totalCost=this.totalCost+currentEvent.getConcernedVn().getTotalCost(multiDomain);
+						this.linkCost=this.linkCost+currentEvent.getConcernedVn().getLinkCost(multiDomain);
 //						System.out.println(multiDomain.get(0));
 //						System.out.println(multiDomain.get(1));
 					}

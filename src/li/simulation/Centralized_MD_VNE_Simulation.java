@@ -22,6 +22,7 @@ import li.multiDomain.metrics.CurrentLinkUtilisationMD;
 import li.multiDomain.metrics.LinkUtilizationMD;
 import li.multiDomain.metrics.MappedRevenueMD;
 import li.multiDomain.metrics.MetricMD;
+import li.multiDomain.metrics.LinkCostRevenueMD;
 import main.MultiDomainAlgoTest;
 import vnreal.algorithms.AbstractLinkMapping;
 import vnreal.algorithms.AbstractMultiDomainLinkMapping;
@@ -45,30 +46,35 @@ import vnreal.network.virtual.VirtualNode;
 public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 
 
-	public Centralized_MD_VNE_Simulation(double alpha, double beta) throws IOException{
+	public Centralized_MD_VNE_Simulation(boolean randomNet, double alpha, double beta) throws IOException{
 		this.simulationTime = 30000.0;
 		multiDomain = new ArrayList<Domain>();
 		//int x,int y, file path, resource
 		/*-------4 domains example--------*/
-//		multiDomain.add(new Domain(0,0,"data/cost239", true));
-//		multiDomain.add(new Domain(1,0,"data/cost239", true));
-//		multiDomain.add(new Domain(1,1,"data/cost239", true));
-//		multiDomain.add(new Domain(0,1,"data/cost239", true));
+		if(!randomNet){
+//			multiDomain.add(new Domain(0,0,"data/cost239", true));
+//			multiDomain.add(new Domain(1,0,"data/cost239", true));
+//			multiDomain.add(new Domain(1,1,"data/cost239", true));
+//			multiDomain.add(new Domain(0,1,"data/cost239", true));
+
+			multiDomain.add(new Domain(0,0,"sndlib/india35", true));
+			multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
+			multiDomain.add(new Domain(1,1,"sndlib/germany50", true));
+			multiDomain.add(new Domain(0,1,"sndlib/zib54", true));
+		}
 		
-//		multiDomain.add(new Domain(0,0,"sndlib/india35", true));
-//		multiDomain.add(new Domain(1,0,"sndlib/pioro40", true));
-//		multiDomain.add(new Domain(1,1,"sndlib/germany50", true));
-//		multiDomain.add(new Domain(0,1,"sndlib/zib54", true));
 		
 		/*-------2 domains example------*/
 //		multiDomain.add(new Domain(1,1,"sndlib/cost266", true));
 //		multiDomain.add(new Domain(0,1,"sndlib/norway", true));
 		
 		/*------use gt-itm to create random substrate network-----*/
-		multiDomain.add(new Domain(0,0, true));
-		multiDomain.add(new Domain(1,0, true));
-		multiDomain.add(new Domain(1,1, true));
-		multiDomain.add(new Domain(0,1, true));
+		else{
+			multiDomain.add(new Domain(0,0, true, 30, 0.12));
+			multiDomain.add(new Domain(1,0, true, 30, 0.12));
+			multiDomain.add(new Domain(1,1, true, 30, 0.12));
+			multiDomain.add(new Domain(0,1, true, 30, 0.12));
+		}
 
 		/*--------static or random peering links--------*/
 //		MultiDomainUtil.staticInterLinksMinN(multiDomain,5);
@@ -167,6 +173,8 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 		metrics.add(new MappedRevenueMD(this, methodStr,lambda));
 		metrics.add(new CostMD(this, methodStr,lambda));
 		metrics.add(new CostRevenueMD(this,methodStr,lambda));
+		metrics.add(new LinkCostRevenueMD(this,methodStr,lambda));
+
 		
 		for(int i=0;i<multiDomain.size();i++){
 			System.out.println(multiDomain.get(i));
@@ -222,6 +230,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 						this.accepted++;
 						mappedVNs.add(currentEvent.getConcernedVn());
 						this.totalCost=this.totalCost+currentEvent.getConcernedVn().getTotalCost(multiDomain);
+						this.linkCost=this.linkCost+currentEvent.getConcernedVn().getLinkCost(multiDomain);
 //						System.out.println(multiDomain.get(0));
 //						System.out.println(multiDomain.get(1));
 					}
@@ -287,6 +296,7 @@ public class Centralized_MD_VNE_Simulation extends AbstractMultiDomain{
 		this.accepted = 0;
 		this.rejected = 0;
 		this.totalCost=0.0;
+		this.linkCost=0.0;
 		mappedVNs = new ArrayList<VirtualNetwork>();
 		metrics = new ArrayList<MetricMD>();
 	}

@@ -24,9 +24,10 @@ public class Centralized_MD_VNE_SimulationMain {
 		writer.close();
 		
 		for(c=0;c<10;c++){
-			
-			Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation(0.8,0.1);
-			
+			//real nets
+//			Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation(false,0.8,0.1);
+			//random nets
+			Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation(true,0.8,0.12);
 		/*	for(int i=0;i<simulation.getMultiDomain().size();i++){
 				System.out.println(simulation.getMultiDomain().get(i));
 			}	*/

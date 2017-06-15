@@ -33,7 +33,7 @@ public class Centralized_MD_VNE_Demand_Main {
 		
 		for(c=0;c<10;c++){
 			
-			Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation(0.8,0.12);
+			Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation(true, 0.8,0.12);
 			
 			for(int i=0;i<simulation.getMultiDomain().size();i++){
 				System.out.println("v:"+simulation.getMultiDomain().get(i).getVertexCount());

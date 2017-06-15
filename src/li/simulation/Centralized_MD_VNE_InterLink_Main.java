@@ -23,6 +23,7 @@ public class Centralized_MD_VNE_InterLink_Main {
 		betas.add(0.04);
 		betas.add(0.06);
 		betas.add(0.08);
+		betas.add(0.09);
 		betas.add(0.1);
 		betas.add(0.12);
 //		betas.add(0.14);
@@ -35,7 +36,7 @@ public class Centralized_MD_VNE_InterLink_Main {
 				writer.write("*----beta="+beta+"------*\n");
 				writer.close();
 				
-				Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation(0.8,beta);
+				Centralized_MD_VNE_Simulation simulation = new Centralized_MD_VNE_Simulation(false, 0.8,beta);
 				
 				for(int i=0;i<simulation.getMultiDomain().size();i++){
 					System.out.println("v:"+simulation.getMultiDomain().get(i).getVertexCount());

@@ -13,6 +13,7 @@ public abstract class AbstractMultiDomain {
 	protected ArrayList<VirtualNetwork> vns;
 	protected ArrayList<VirtualNetwork> mappedVNs;
 	protected double totalCost;
+	protected double linkCost=0;
 	protected ArrayList<VnEvent> events;
 	protected ArrayList<MetricMD> metrics;
 	protected double simulationTime;
@@ -44,6 +45,9 @@ public abstract class AbstractMultiDomain {
 	}
 	public double getTotalCost() {
 		return totalCost;
+	}
+	public double getLinkCost() {
+		return linkCost;
 	}
 	public abstract void initialize(int lambda) throws IOException;
 	public abstract void runSimulation(String methodStr) throws IOException;

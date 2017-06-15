@@ -472,5 +472,30 @@ public final class VirtualNetwork extends
 		return (nodeCost + linkCost);
 	}
 	
-	
+	public double getLinkCost(List<Domain> domains){
+		double linkCost=0.0;
+		ArrayList<SubstrateLink> allLinks = new ArrayList<SubstrateLink>();
+		for(Domain d : domains){
+			for(SubstrateLink link: d.getAllLinks()){
+				if(!allLinks.contains(link))
+					allLinks.add(link);
+			}
+		}
+		
+		for(VirtualLink vl : this.getEdges()){
+			BandwidthDemand bwd=vl.getBandwidthDemand();
+			for(SubstrateLink sl:allLinks){
+				BandwidthResource bwr=sl.getBandwidthResource();
+				for(Mapping f:bwr.getMappings()){
+					BandwidthDemand curBw=(BandwidthDemand) f.getDemand();
+					if(bwd.getOwner().equals(curBw.getOwner())){
+						linkCost += curBw.getDemandedBandwidth();
+						break;
+					}
+				}
+			}
+		}
+		
+		return linkCost;
+	}
 }

@@ -43,11 +43,11 @@ public class Domain extends SubstrateNetwork{
 		this.addAllResource(randomResource);
 	}
 	
-	public Domain(int x, int y, boolean randomResource) throws IOException{
+	public Domain(int x, int y, boolean randomResource, int nodeNum, double connect) throws IOException{
 		this();
 		this.coordinateX = x;
 		this.coordinateY = y;
-		Generator.createSubNet();
+		Generator.createSubNet(nodeNum,connect);
 		this.alt2network("./gt-itm/sub");
 		this.addAllResource(randomResource);
 	}
