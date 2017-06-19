@@ -74,7 +74,7 @@ public class AllPossibleMDRanking extends AbstractMultiDomainLinkMapping{
 	
 	private void generate3D(){
 
-		this.combinations.add(this.domains);
+		this.combinations.add(new ArrayList<Domain>(domains));
 		
 		Collections.swap(domains, 1, 2);
 		this.combinations.add(new ArrayList<Domain>(domains));

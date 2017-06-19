@@ -32,7 +32,8 @@ public class Solution {
 	}
 	public void computeCost(){
 		for(Map.Entry<BandwidthDemand, BandwidthResource> en : mapping.entrySet()){
-			this.cost = this.cost + en.getKey().getDemandedBandwidth()/(en.getValue().getAvailableBandwidth()+0.001);
+//			this.cost = this.cost + en.getKey().getDemandedBandwidth()/(en.getValue().getAvailableBandwidth()+0.001);
+			this.cost = this.cost + en.getKey().getDemandedBandwidth();
 		}
 	}
 	
