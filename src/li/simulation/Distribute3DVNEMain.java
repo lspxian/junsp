@@ -54,7 +54,7 @@ public class Distribute3DVNEMain {
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=6;i<9;i++){
+			for(int i=5;i<9;i++){
 				simulation.initialize(i);
 				
 				PrintStream mdrk3 = new PrintStream(new FileOutputStream("res/AllPossibleMDRanking_l"+i+"_c"+c+".txt"));

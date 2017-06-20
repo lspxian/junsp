@@ -48,9 +48,9 @@ public Distribute3DVNE() throws IOException{
 		multiDomain.add(new Domain(2,0,"sndlib/germany50", true));*/
 		
 		/*------use gt-itm to create random substrate network-----*/
-		multiDomain.add(new Domain(0,0, true, 50, 0.1));
-		multiDomain.add(new Domain(1,0, true, 50, 0.1));
-		multiDomain.add(new Domain(2,0, true, 50, 0.1));
+		multiDomain.add(new Domain(0,0, true, 40, 0.11));
+		multiDomain.add(new Domain(1,0, true, 40, 0.11));
+		multiDomain.add(new Domain(2,0, true, 40, 0.11));
 
 
 		/*--------static or random peering links--------*/
