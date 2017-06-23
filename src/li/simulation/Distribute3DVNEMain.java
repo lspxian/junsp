@@ -19,7 +19,7 @@ public class Distribute3DVNEMain {
 		writer.write("Simulation time : "+new SimpleDateFormat().format(new Date())+"\n");
 		writer.close();
 		
-		for(c=0;c<1;c++){
+		for(c=0;c<10;c++){
 			
 			Distribute3DVNE simulation = new Distribute3DVNE();
 			/*
@@ -54,7 +54,7 @@ public class Distribute3DVNEMain {
 			writer.write("Number:"+c+"\n");
 			writer.close();
 		
-			for(int i=5;i<9;i++){
+			for(int i=5;i<10;i++){
 				simulation.initialize(i);
 				
 				PrintStream mdrk3 = new PrintStream(new FileOutputStream("res/AllPossibleMDRanking_l"+i+"_c"+c+".txt"));
