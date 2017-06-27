@@ -203,50 +203,35 @@ public class PBBWExactILP extends AbstractLinkMapping {
 				constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId();
 				constraint=constraint+" + vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId();
 				
-				
 			}
 				constraint = constraint + " - 30 Xs"+ssnode.getId()+"d"+dsnode.getId()+"<=0\n";
 		}
 		
 		//bandwidth capacity constraint
-		BandwidthResource bwResource=null;
-		BandwidthDemand bwDem=null;
+		
 		for (SubstrateLink tmpsl : sNet.getEdges()){
 			ssnode = sNet.getEndpoints(tmpsl).getFirst();
 			dsnode = sNet.getEndpoints(tmpsl).getSecond();
 			
-			for(AbstractResource asrc : tmpsl){
-				if(asrc instanceof BandwidthResource){
-					bwResource = (BandwidthResource) asrc;
-					break;
-				}
-			}
-			
+			BandwidthResource bwResource=tmpsl.getBandwidthResource();
 			for(VirtualLink tmpl : vNet.getEdges()){
 				srcVnode = vNet.getEndpoints(tmpl).getFirst();
 				dstVnode = vNet.getEndpoints(tmpl).getSecond();
+					
+				BandwidthDemand bwDem=tmpl.getBandwidthDemand();
+				//capacity constraint
+				constraint=constraint+" + "+bwDem.getDemandedBandwidth() +
+						" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+
+						" + "+bwDem.getDemandedBandwidth() +
+						" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
 				
-					for (AbstractDemand dem : tmpl) {
-						if (dem instanceof BandwidthDemand) {
-							bwDem = (BandwidthDemand) dem;
-							break;
-						}
-					}
-					
-					//capacity constraint
-					constraint=constraint+" + "+bwDem.getDemandedBandwidth() +
-							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+
-							" + "+bwDem.getDemandedBandwidth() +
-							" vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId(); 
-					
-					//
-					binary = binary +  "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
-					binary = binary +  "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+"\n";
+				//
+				binary = binary +  "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+ssnode.getId()+"sd"+dsnode.getId()+"\n";
+				binary = binary +  "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+"\n";
 				
 			}
 			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
 		}
-		
 		
 		obj = obj+ "\n";
 		BufferedWriter writer = new BufferedWriter(new FileWriter(localPath));

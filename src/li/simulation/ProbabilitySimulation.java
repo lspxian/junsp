@@ -23,6 +23,7 @@ import li.evaluation.metrics.CurrentLinkUtilisationL;
 import li.evaluation.metrics.LinkUtilizationL;
 import li.evaluation.metrics.FailureRate;
 import li.evaluation.metrics.MappedRevenueL;
+import li.evaluation.metrics.MaxProbability;
 import li.evaluation.metrics.Metric;
 import li.evaluation.metrics.ProbabilityL;
 import li.evaluation.metrics.RevenueProba;
@@ -58,10 +59,10 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	
 	public ProbabilitySimulation(){
 		
-		simulationTime = 500000.0;
+		simulationTime = 100000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
-			Generator.createSubNet();
+			Generator.createSubNet(50,0.1);
 			sn.alt2network("./gt-itm/sub");
 //			sn.alt2network("data/cost239");
 //			sn.alt2network("sndlib/germany50");
@@ -72,10 +73,26 @@ public class ProbabilitySimulation extends AbstractSimulation{
 			e.printStackTrace();
 		}
 		sn.addAllResource(true);
-//		sn.addInfiniteResource();
+		sn.addInfiniteResource(); //node infinite
+	}
+	
+	public ProbabilitySimulation(int nodeNumber){
 		
-		
-		
+		simulationTime = 100000.0;
+		this.sn=new SubstrateNetwork(); //undirected by default 
+		try {
+			Generator.createSubNet(nodeNumber,0.1);
+			sn.alt2network("./gt-itm/sub");
+//			sn.alt2network("data/cost239");
+//			sn.alt2network("sndlib/germany50");
+			
+//			DrawGraph dg = new DrawGraph(sn);
+//			dg.draw();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		sn.addAllResource(true);
+		sn.addInfiniteResource(); //node infinite
 	}
 	
 	public void initialize(int lambda) throws IOException{
@@ -118,6 +135,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 			Generator.createVirNet();
 			vn.alt2network("./gt-itm/vir");
 			vn.addAllResource(true);
+			vn.reconfigPositon(sn);
 			
 			double departureTime = time+vn.getLifetime();
 			events.add(new VnEvent(vn,time,0)); //arrival event
@@ -164,6 +182,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 		metrics.add(new LinkUtilizationL(this));
 		metrics.add(new MappedRevenueL(this));
 		metrics.add(new AverageProbability(this));
+		metrics.add(new MaxProbability(this));
 		metricsProba.add(new AverageAffectedVNRatio(this));
 		metricsProba.add(new Affected_VN_Number(this));
 		metricsProba.add(new AffectedRevenue(this));
@@ -192,7 +211,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 				System.out.print("Current vn : \n"+cEvent.getConcernedVn()+"\n");
 				
 				if(cEvent.getFlag()==0){
-					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,25,true,false);
+					AvailableResourcesNodeMapping arnm = new AvailableResourcesNodeMapping(sn,1,true,false);
 //					CordinatedNodeLinkMapping arnm = new CordinatedNodeLinkMapping(sn);
 					System.out.println("Operation : Mapping");
 					
