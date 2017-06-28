@@ -29,7 +29,7 @@ public class ProbabilitySimulationMain {
 			writer.close();
 			
 //			int i= Integer.valueOf(args[0]);
-			for(int i=2;i<7;i++){
+			for(int i=2;i<8;i++){
 				simulation.initialize(i);
 				/*
 				PrintStream exact = new PrintStream(new FileOutputStream("res/E xactILP_l"+i+"_c"+c+".txt"));
@@ -91,12 +91,12 @@ public class ProbabilitySimulationMain {
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW");
 				simulation.reset();
-			/*
+			
 				PrintStream pbbwExact = new PrintStream(new FileOutputStream("res/PBBWExactILP_l"+i+"_c"+c+".txt"));
 				System.setOut(pbbwExact);
 				writeCurrentTime();
 				simulation.runSimulation("PBBWExact");
-				simulation.reset();*/
+				simulation.reset();
 				
 				writeCurrentTime();
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));

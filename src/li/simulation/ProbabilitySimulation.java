@@ -59,7 +59,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	
 	public ProbabilitySimulation(){
 		
-		simulationTime = 100000.0;
+		simulationTime = 50000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			Generator.createSubNet(50,0.1);
@@ -78,7 +78,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 	
 	public ProbabilitySimulation(int nodeNumber){
 		
-		simulationTime = 100000.0;
+		simulationTime = 50000.0;
 		this.sn=new SubstrateNetwork(); //undirected by default 
 		try {
 			Generator.createSubNet(nodeNumber,0.1);
@@ -142,7 +142,7 @@ public class ProbabilitySimulation extends AbstractSimulation{
 			if(departureTime<=simulationTime)
 				events.add(new VnEvent(vn,departureTime,1)); // departure event
 			else	vn.setLifetime(simulationTime-time);	//set lifetime as actual simulation time
-			time+=MiscelFunctions.negExponential(lambda/1000.0); //generate next vn arrival event
+			time+=MiscelFunctions.negExponential(lambda/100.0); //generate next vn arrival event
 		}
 		Collections.sort(events);
 		

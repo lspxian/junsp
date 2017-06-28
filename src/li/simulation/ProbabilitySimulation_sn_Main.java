@@ -15,12 +15,12 @@ public static int c;
 	
 	public static void main(String[] args) throws IOException {
 		List<Integer> nodesNums=new ArrayList<Integer>();
-		nodesNums.add(30);
+//		nodesNums.add(30);
 //		nodesNums.add(35);
 		nodesNums.add(40);
-//		nodesNums.add(45);
+		nodesNums.add(45);
 		nodesNums.add(50);
-//		nodesNums.add(55);
+		nodesNums.add(55);
 		nodesNums.add(60);		
 		
 		FileWriter writer = new FileWriter("result.txt",true);
@@ -40,11 +40,11 @@ public static int c;
 						simulation.getSubstrateNetwork().getVertexCount()+" e "+
 						simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 				writer.close();
-			/*
+			
 //				int i= Integer.valueOf(args[0]);
-				simulation.initialize(3);
-				
-				PrintStream exact = new PrintStream(new FileOutputStream("res/E xactILP_l"+i+"_c"+c+".txt"));
+				simulation.initialize(4);
+				/*
+				PrintStream exact = new PrintStream(new FileOutputStream("res/ExactILP_l"+i+"_c"+c+".txt"));
 				System.setOut(exact);
 				System.out.println(new SimpleDateFormat().format(new Date()));
 				simulation.runSimulation("Exact");
@@ -84,7 +84,7 @@ public static int c;
 				System.setOut(probaHeuristic1);
 				writeCurrentTime();
 				simulation.runSimulation("ProbaHeuristic1");
-				simulation.reset();
+				simulation.reset();*/
 				
 				PrintStream probaHeuristic3 = new PrintStream(new FileOutputStream("res/probaHeuristic3_n"+nodesNum+"_c"+c+".txt"));
 				System.setOut(probaHeuristic3);
@@ -103,12 +103,12 @@ public static int c;
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBW");
 				simulation.reset();
-			/*
+			
 				PrintStream pbbwExact = new PrintStream(new FileOutputStream("res/PBBWExactILP_n"+nodesNum+"_c"+c+".txt"));
 				System.setOut(pbbwExact);
 				writeCurrentTime();
 				simulation.runSimulation("PBBWExact");
-				simulation.reset();*/
+				simulation.reset();
 				
 				writeCurrentTime();
 				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
