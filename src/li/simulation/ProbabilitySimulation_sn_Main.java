@@ -26,7 +26,7 @@ public static int c;
 		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.close();
-		for(c=0;c<1;c++){
+		for(c=0;c<10;c++){
 			writer = new FileWriter("result.txt",true);
 			writer.write("Number:"+c+"\n");
 			writer.close();

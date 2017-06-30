@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import vnreal.algorithms.AbstractLinkMapping;
+import vnreal.algorithms.utils.MiscelFunctions;
 import vnreal.algorithms.utils.NodeLinkAssignation;
 import vnreal.algorithms.utils.NodeLinkDeletion;
 import vnreal.demands.AbstractDemand;
@@ -230,7 +231,9 @@ public class PBBWExactILP extends AbstractLinkMapping {
 				binary = binary +  "vs"+srcVnode.getId()+"vd"+dstVnode.getId()+"ss"+dsnode.getId()+"sd"+ssnode.getId()+"\n";
 				
 			}
-			constraint = constraint +" <= " + bwResource.getAvailableBandwidth()+"\n";
+			double bdValue=MiscelFunctions.roundThreeDecimals(bwResource.getAvailableBandwidth()-0.1);
+			if(bdValue<=0.1) bdValue=0;
+			constraint = constraint +" <= " + bdValue+"\n";
 		}
 		
 		obj = obj+ "\n";
