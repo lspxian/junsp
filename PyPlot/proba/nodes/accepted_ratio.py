@@ -7,16 +7,16 @@ import re
 
 f = open(sys.argv[1],'r')
 #metric = sys.argv[2]
-metric = 'Link_Utilization'
-metric2 = 'Average link utilization'
+metric  = 'Accepted_Ratio'
+metric2 = 'Accepted ratio'
 nodes=[40,45,50,55,60]
 number=0
 orig = f.read()
 temp = orig
-reinforced=[0.0]*len(nodes)
 baseline=[0.0]*len(nodes)
-exact=[0.0]*len(nodes)
+reinforced=[0.0]*len(nodes)
 bw=[0.0]*len(nodes)
+exact=[0.0]*len(nodes)
 
 while temp.find('Number:')!=-1:
     number=number+1
@@ -31,7 +31,7 @@ while temp.find('Number:')!=-1:
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
         m = re.search('[0-9]*\.[0-9]*',sim)
-      	heu1[i] = heu1[i]+float(m.group(0))
+      	baseline[i] = baseline[i]+float(m.group(0))
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
@@ -39,11 +39,6 @@ while temp.find('Number:')!=-1:
       	reinforced[i] = reinforced[i]+float(m.group(0))
 
         index  = sim.find(metric)
-        sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
-      	baseline[i] = baseline[i]+float(m.group(0))
-
-	    index  = sim.find(metric)
         sim = sim[index+len(metric):]
         m = re.search('[0-9]*\.[0-9]*',sim)
       	bw[i] = bw[i]+float(m.group(0))
@@ -60,14 +55,14 @@ for i in range(0,len(nodes)):
     exact[i] = exact[i]/number
     bw[i] = bw[i]/number
 
-print reinforced
 print baseline
+print reinforced
 print exact
 print bw
 
 #write to a file in latex format
 fwriter = open(metric+'.tex','w')
-latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={node number},\nylabel={'+metric2+'},\nxmin=40, xmax=65,\nymin=0.1, ymax=0.85,\nxtick={40,45,50,55,60,65},\nytick={0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
+latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={node number},\nylabel={'+metric2+' \%},\nxmin=40, xmax=65,\nymin=65, ymax=100,\nxtick={40,45,50,55,60,65},\nytick={65,70,75,80,85,90,95,100},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
 
 latex = latex + '\\addplot[\n	color=violet,\n	mark=square,\n]\ncoordinates{\n'
 for i in range(0, len(nodes)):

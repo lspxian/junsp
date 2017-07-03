@@ -7,17 +7,16 @@ import re
 
 f = open(sys.argv[1],'r')
 #metric = sys.argv[2]
-metric  = 'MappedRevenue'
-metric2 = 'Mapped revenue'
-start=2
-myLambda=8	#in vne lambda+1
+metric = 'Mapped_Revenue'
+metric2 = 'Mapped Revenue'
+nodes=[40,45,50,55,60]
 number=0
 orig = f.read()
 temp = orig
-ideal=[0.0]*myLambda
-shen=[0.0]*myLambda
-ciplm=[0.0]*myLambda
-ciplm_up=[0.0]*myLambda
+reinforced=[0.0]*len(nodes)
+baseline=[0.0]*len(nodes)
+exact=[0.0]*len(nodes)
+bw=[0.0]*len(nodes)
 
 while temp.find('Number:')!=-1:
     number=number+1
@@ -28,65 +27,81 @@ while temp.find('Number:')!=-1:
     else:
         sim = temp
 
-    for i in range(start,myLambda):
+    for i in range(0,len(nodes)):
+
+        index  = sim.find(metric)
+	    sim = sim[index+len(metric):]
+        m = re.search('[0-9]*\.[0-9]*',sim)
+      	baseline[i] = baseline[i]+float(m.group(0))
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
         m = re.search('[0-9]*\.[0-9]*',sim)
-      	ideal[i] = ideal[i]+float(m.group(0))
+      	reinforced[i] = reinforced[i]+float(m.group(0))
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
         m = re.search('[0-9]*\.[0-9]*',sim)
-      	shen[i] = shen[i]+float(m.group(0))
+      	bw[i] = bw[i]+float(m.group(0))
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
         m = re.search('[0-9]*\.[0-9]*',sim)
-      	ciplm[i] = ciplm[i]+float(m.group(0))
-
-        index  = sim.find(metric)
-        sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
-      	ciplm_up[i] = ciplm_up[i]+float(m.group(0))
+      	exact[i] = exact[i]+float(m.group(0))
 
 #calculate average
-for i in range(0,myLambda):
-    ideal[i] = ideal[i]/number
-    shen[i] = shen[i]/number
-    ciplm[i] = ciplm[i]/number
-    ciplm_up[i] = ciplm_up[i]/number
+for i in range(0,len(nodes)):
+    reinforced[i] = reinforced[i]/number
+    baseline[i] = baseline[i]/number
+    exact[i] = exact[i]/number
+    bw[i] = bw[i]/number
 
-print ideal
-print shen
-print ciplm
-print ciplm_up
+print baseline
+print reinforced
+print exact
+print bw
 
 #write to a file in latex format
-fwriter = open(metric+'1.tex','w')
-latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={arrival rate $\lambda$},\nylabel={'+metric2+'},\nxmin=2, xmax=8,\nymin=60000, ymax=200000,\nxtick={2,3,4,5,6,7,8},\nytick={60000,90000,120000,150000,180000,200000},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
+fwriter = open(metric+'.tex','w')
+latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={node number},\nylabel={'+metric2+'},\nxmin=40, xmax=65,\nymin=100000, ymax=800000,\nxtick={40,45,50,55,60,65},\nytick={100000,200000,300000,400000,500000,600000,700000,800000},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
 
 latex = latex + '\\addplot[\n	color=violet,\n	mark=square,\n]\ncoordinates{\n'
-for i in range(start, myLambda):
-	latex = latex+'('+str(i)+','+str(ideal[i])+')'
+for i in range(0, len(nodes)):
+	latex = latex+'('+str(i)+','+str(reinforced[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\addplot[\n	color=blue,\n	mark=x,\n]\ncoordinates{\n'
-for i in range(start, myLambda):
-	latex = latex+'('+str(i)+','+str(shen[i])+')'
+for i in range(0, len(nodes)):
+	latex = latex+'('+str(i)+','+str(baseline[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\addplot[\n	color=green,\n	mark=o,\n]\ncoordinates{\n'
-for i in range(start, myLambda):
-	latex = latex+'('+str(i)+','+str(ciplm[i])+')'
+for i in range(0, len(nodes)):
+	latex = latex+'('+str(i)+','+str(exact[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\addplot[\n	color=red,\n	mark=triangle,\n]\ncoordinates{\n'
-for i in range(start, myLambda):
-	latex = latex+'('+str(i)+','+str(ciplm_up[i])+')'
+for i in range(0, len(nodes)):
+	latex = latex+'('+str(i)+','+str(bw[i])+')'
 latex = latex + '\n};\n'
 
-latex = latex + '\\legend{$ideal$,$shen$,$ciplm$,$ciplm\_up$}\n\\end{axis}\n\\end{tikzpicture}'
+latex = latex + '\\legend{$reinforced$,$baseline$,$exact$,$bw$}\n\\end{axis}\n\\end{tikzpicture}'
 
 fwriter.write(latex)
 f.closed
+
+'''
+#plot figure in python
+import matplotlib.pyplot as plt
+import numpy as np
+x=list(range(start,myLambda))
+plt.plot(x,heu1[start:],'y-')
+plt.plot(x,reinforced[start:],'g-')
+plt.plot(x,baseline[start:],'m-')
+plt.plot(x,exact[start:],'b-')
+plt.plot(x,bw[start:],'r-')
+
+plt.ylabel('Accepted Ratio')
+plt.xlabel('lambda')
+plt.show()
+'''

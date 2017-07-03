@@ -1,5 +1,5 @@
 """
-Parameters :
+Parameters : 
 1 f - file name
 """
 import sys
@@ -7,16 +7,19 @@ import re
 
 f = open(sys.argv[1],'r')
 #metric = sys.argv[2]
-metric = 'Link_Utilization'
-metric2 = 'Average link utilization'
-nodes=[40,45,50,55,60]
+metric = 'Affected_Revenue'
+metric2 = 'Average affected revenue'
+start=1
+myLambda=1+8	#in vne lambda+1
 number=0
 orig = f.read()
 temp = orig
-reinforced=[0.0]*len(nodes)
-baseline=[0.0]*len(nodes)
-exact=[0.0]*len(nodes)
-bw=[0.0]*len(nodes)
+heu1=[0.0]*myLambda
+reinforced=[0.0]*myLambda
+baseline=[0.0]*myLambda
+exact=[0.0]*myLambda
+bw=[0.0]*myLambda
+acceptedRatio = [heu1,reinforced,baseline,exact,bw]
 
 while temp.find('Number:')!=-1:
     number=number+1
@@ -27,69 +30,72 @@ while temp.find('Number:')!=-1:
     else:
         sim = temp
 
-    for i in range(0,len(nodes)):
+    for i in range(start,myLambda):
+	'''
         index  = sim.find(metric)
-        sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
+	sim = sim[index+len(metric):]
+	m = re.search('[0-9]*\.[0-9]*',sim)
       	heu1[i] = heu1[i]+float(m.group(0))
-
+	'''
         index  = sim.find(metric)
-        sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
-      	reinforced[i] = reinforced[i]+float(m.group(0))
-
-        index  = sim.find(metric)
-        sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
+	sim = sim[index+len(metric):]
+	m = re.search('[0-9]*\.[0-9]*',sim)
       	baseline[i] = baseline[i]+float(m.group(0))
 
-	    index  = sim.find(metric)
-        sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
-      	bw[i] = bw[i]+float(m.group(0))
-
         index  = sim.find(metric)
-        sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
-      	exact[i] = exact[i]+float(m.group(0))
+	sim = sim[index+len(metric):]
+	m = re.search('[0-9]*\.[0-9]*',sim)
+      	reinforced[i] = reinforced[i]+float(m.group(0))
 
+	index  = sim.find(metric)
+	sim = sim[index+len(metric):]
+	m = re.search('[0-9]*\.[0-9]*',sim)
+      	bw[i] = bw[i]+float(m.group(0))
+	
+        index  = sim.find(metric)
+	sim = sim[index+len(metric):]
+	m = re.search('[0-9]*\.[0-9]*',sim)
+      	exact[i] = exact[i]+float(m.group(0))
+	
 #calculate average
-for i in range(0,len(nodes)):
+for i in range(0,myLambda):
+    heu1[i] = heu1[i]/number
     reinforced[i] = reinforced[i]/number
     baseline[i] = baseline[i]/number
     exact[i] = exact[i]/number
     bw[i] = bw[i]/number
 
-print reinforced
+print heu1
 print baseline
+print reinforced
 print exact
 print bw
 
 #write to a file in latex format
 fwriter = open(metric+'.tex','w')
-latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={node number},\nylabel={'+metric2+'},\nxmin=40, xmax=65,\nymin=0.1, ymax=0.85,\nxtick={40,45,50,55,60,65},\nytick={0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
+latex = '\\begin{figure}\n\\begin{tikzpicture}[scale=1.0]\n\\begin{axis}[\nxlabel={arrival rate $\lambda$},\nylabel={'+metric2+'},\nxmin=1, xmax=9,\nymin=0, ymax=1200,\nxtick={1,2,3,4,5,6,7,8},\nytick={0,200,400,600,800,1000,1200},\nlegend pos=south east,\nlegend style={font=\\tiny},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
 
 latex = latex + '\\addplot[\n	color=violet,\n	mark=square,\n]\ncoordinates{\n'
-for i in range(0, len(nodes)):
+for i in range(start, myLambda):
 	latex = latex+'('+str(i)+','+str(reinforced[i])+')'
 latex = latex + '\n};\n'
 
-latex = latex + '\\addplot[\n	color=blue,\n	mark=x,\n]\ncoordinates{\n'
-for i in range(0, len(nodes)):
+latex = latex + '\\addplot[\n	color=blue,\n	mark=square,\n]\ncoordinates{\n'
+for i in range(start, myLambda):
 	latex = latex+'('+str(i)+','+str(baseline[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\addplot[\n	color=green,\n	mark=o,\n]\ncoordinates{\n'
-for i in range(0, len(nodes)):
+for i in range(start, myLambda):
 	latex = latex+'('+str(i)+','+str(exact[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\addplot[\n	color=red,\n	mark=triangle,\n]\ncoordinates{\n'
-for i in range(0, len(nodes)):
+for i in range(start, myLambda):
 	latex = latex+'('+str(i)+','+str(bw[i])+')'
 latex = latex + '\n};\n'
 
-latex = latex + '\\legend{$reinforced$,$baseline$,$exact$,$bw$}\n\\end{axis}\n\\end{tikzpicture}'
+latex = latex + '\\legend{$reinforced$,$baseline$,$exact$,$bw$}\n\\end{axis}\n\\end{tikzpicture}\n\\caption{'+metric2+'}\n\\label{l-aarev}\n\\end{figure}'
 
 fwriter.write(latex)
 f.closed
@@ -109,3 +115,4 @@ plt.ylabel('Accepted Ratio')
 plt.xlabel('lambda')
 plt.show()
 '''
+
