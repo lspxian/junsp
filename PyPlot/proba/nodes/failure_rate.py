@@ -7,8 +7,8 @@ import re
 
 f = open(sys.argv[1],'r')
 #metric = sys.argv[2]
-metric = 'Affected_Revenue'
-metric2 = 'Average affected revenue'
+metric = 'Failure rate'
+metric2 = 'Failure rate'
 nodes=[40,45,50,55,60]
 number=0
 orig = f.read()
@@ -29,29 +29,29 @@ while temp.find('Number:')!=-1:
         sim = temp
 
     for i in range(0,len(nodes)):
+
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
+        m = re.search('[0-9]*\.[0-9]*E-[0-9]*',sim)
       	baseline[i] = baseline[i]+float(m.group(0))
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
+        m = re.search('[0-9]*\.[0-9]*E-[0-9]*',sim)
       	reinforced[i] = reinforced[i]+float(m.group(0))
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
+        m = re.search('[0-9]*\.[0-9]*E-[0-9]*',sim)
       	bw[i] = bw[i]+float(m.group(0))
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
+        m = re.search('[0-9]*\.[0-9]*E-[0-9]*',sim)
       	exact[i] = exact[i]+float(m.group(0))
 
 #calculate average
 for i in range(0,len(nodes)):
-    heu1[i] = heu1[i]/number
     reinforced[i] = reinforced[i]/number
     baseline[i] = baseline[i]/number
     exact[i] = exact[i]/number
@@ -64,7 +64,7 @@ print bw
 
 #write to a file in latex format
 fwriter = open(metric+'.tex','w')
-latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={node number },\nylabel={'+metric2+'},\nxmin=40, xmax=60,\nymin=100, ymax=800,\nxtick={40,45,50,55,60},\nytick={100,200,300,400,500,600,700,800},\nlegend pos=north east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
+latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={node number},\nylabel={'+metric2+'},\nxmin=40, xmax=60,\nymin=2E-4, ymax=7E-4,\nxtick={40,45,50,55,60},\nytick={2E-4,3E-4,4E-4,5E-4,6E-4,7E-4},\nlegend pos=south west,\nlegend style={font=\\tiny},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
 
 latex = latex + '\\addplot[\n	color=violet,\n	mark=square,\n]\ncoordinates{\n'
 for i in range(0, len(nodes)):

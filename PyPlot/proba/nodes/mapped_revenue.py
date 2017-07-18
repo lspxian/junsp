@@ -28,9 +28,8 @@ while temp.find('Number:')!=-1:
         sim = temp
 
     for i in range(0,len(nodes)):
-
         index  = sim.find(metric)
-	    sim = sim[index+len(metric):]
+        sim = sim[index+len(metric):]
         m = re.search('[0-9]*\.[0-9]*',sim)
       	baseline[i] = baseline[i]+float(m.group(0))
 
@@ -63,26 +62,26 @@ print bw
 
 #write to a file in latex format
 fwriter = open(metric+'.tex','w')
-latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={node number},\nylabel={'+metric2+'},\nxmin=40, xmax=65,\nymin=100000, ymax=800000,\nxtick={40,45,50,55,60,65},\nytick={100000,200000,300000,400000,500000,600000,700000,800000},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
+latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={node number},\nylabel={'+metric2+'},\nxmin=40, xmax=60,\nymin=130000, ymax=220000,\nxtick={40,45,50,55,60},\nytick={130000,150000,170000,190000,210000,220000},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
 
 latex = latex + '\\addplot[\n	color=violet,\n	mark=square,\n]\ncoordinates{\n'
 for i in range(0, len(nodes)):
-	latex = latex+'('+str(i)+','+str(reinforced[i])+')'
+	latex = latex+'('+str(nodes[i])+','+str(reinforced[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\addplot[\n	color=blue,\n	mark=x,\n]\ncoordinates{\n'
 for i in range(0, len(nodes)):
-	latex = latex+'('+str(i)+','+str(baseline[i])+')'
+	latex = latex+'('+str(nodes[i])+','+str(baseline[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\addplot[\n	color=green,\n	mark=o,\n]\ncoordinates{\n'
 for i in range(0, len(nodes)):
-	latex = latex+'('+str(i)+','+str(exact[i])+')'
+	latex = latex+'('+str(nodes[i])+','+str(exact[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\addplot[\n	color=red,\n	mark=triangle,\n]\ncoordinates{\n'
 for i in range(0, len(nodes)):
-	latex = latex+'('+str(i)+','+str(bw[i])+')'
+	latex = latex+'('+str(nodes[i])+','+str(bw[i])+')'
 latex = latex + '\n};\n'
 
 latex = latex + '\\legend{$reinforced$,$baseline$,$exact$,$bw$}\n\\end{axis}\n\\end{tikzpicture}'

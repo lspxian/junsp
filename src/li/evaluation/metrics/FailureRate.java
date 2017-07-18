@@ -28,6 +28,7 @@ public class FailureRate extends Metric {
 			//mtbf of each vn
 			sum += vn.getFailureNumber()/vn.getLifetime();
 //			sum += vn.getLifetime()/(vn.getFailureNumber()+1);
+//			System.out.println(vn.getId( )+" "+vn.getFailureNumber()+" "+vn.getLifetime());
 		}
 		return sum/this.simulation.getMappedVNs().size();
 	}

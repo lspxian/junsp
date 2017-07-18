@@ -10,7 +10,7 @@ f = open(sys.argv[1],'r')
 metric  = 'MappedRevenue'
 metric2 = 'Mapped revenue'
 start=5
-myLambda=10	#in vne lambda+1
+myLambda=11	#in vne lambda+1
 number=0
 orig = f.read()
 temp = orig
@@ -28,6 +28,10 @@ while temp.find('Number:')!=-1:
         sim = temp
 
     for i in range(start,myLambda):
+        index  = sim.find(metric)
+        sim = sim[index+len(metric):]
+        m = re.search('[0-9]*\.[0-9]*',sim)
+      	ciplm_r[i] = ciplm_r[i]+float(m.group(0))
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
@@ -39,10 +43,7 @@ while temp.find('Number:')!=-1:
         m = re.search('[0-9]*\.[0-9]*',sim)
       	ciplm[i] = ciplm[i]+float(m.group(0))
 
-        index  = sim.find(metric)
-        sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
-      	ciplm_r[i] = ciplm_r[i]+float(m.group(0))
+
 
 #calculate average
 for i in range(0,myLambda):
@@ -56,7 +57,7 @@ print ciplm_r
 
 #write to a file in latex format
 fwriter = open(metric+'.tex','w')
-latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={arrival rate $\lambda$},\nylabel={'+metric2+'},\nxmin=5, xmax=10,\nymin=190000, ymax=300000,\nxtick={5,6,7,8,9,10},\nytick={190000,210000,230000,250000,270000,3000000},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
+latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={arrival rate $\lambda$},\nylabel={'+metric2+'},\nxmin=5, xmax=10,\nymin=100000, ymax=220000,\nxtick={5,6,7,8,9,10},\nytick={100000,130000,160000,190000,220000},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
 
 latex = latex + '\\addplot[\n	color=blue,\n	mark=x,\n]\ncoordinates{\n'
 for i in range(start, myLambda):
