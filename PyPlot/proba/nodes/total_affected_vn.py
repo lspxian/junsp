@@ -7,8 +7,8 @@ import re
 
 f = open(sys.argv[1],'r')
 #metric = sys.argv[2]
-metric = 'affected vn'
-metric2 = 'total affected VN number'
+metric = 'affected vn :'
+metric2 = 'Total affected VN number'
 nodes=[40,45,50,55,60]
 number=0
 orig = f.read()
@@ -30,22 +30,22 @@ while temp.find('Number:')!=-1:
     for i in range(0,len(nodes)):
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
+        m = re.search('[0-9][0-9]*',sim)
       	baseline[i] = baseline[i]+float(m.group(0))
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
+        m = re.search('[0-9][0-9]*',sim)
       	reinforced[i] = reinforced[i]+float(m.group(0))
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
+        m = re.search('[0-9][0-9]*',sim)
       	bw[i] = bw[i]+float(m.group(0))
 
         index  = sim.find(metric)
         sim = sim[index+len(metric):]
-        m = re.search('[0-9]*\.[0-9]*',sim)
+        m = re.search('[0-9][0-9]*',sim)
       	exact[i] = exact[i]+float(m.group(0))
 
 for i in range(0,len(nodes)):
@@ -60,8 +60,8 @@ print exact
 print bw
 
 #write to a file in latex format
-fwriter = open('affected_vn.tex','w')
-latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={node number},\nylabel={'+metric2+'},\nxmin=40, xmax=60,\nymin=0, ymax=8,\nxtick={40,45,50,55,60},\nytick={0,1,2,3,4,5,6,7,8},\nlegend pos=south east,\nlegend style={font=\\small},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
+fwriter = open('Affected_vn.tex','w')
+latex = '\\begin{tikzpicture}[scale=0.85]\n\\begin{axis}[\nxlabel={node number},\nylabel={'+metric2+'},\nxmin=40, xmax=60,\nymin=300, ymax=1300,\nxtick={40,45,50,55,60},\nytick={300,500,700,900,1100,1300},\nlegend pos=south east,\nlegend style={font=\\tiny},\nymajorgrids=true,\ngrid style=dashed,\n]\n'
 
 latex = latex + '\\addplot[\n	color=violet,\n	mark=square,\n]\ncoordinates{\n'
 for i in range(0, len(nodes)):
