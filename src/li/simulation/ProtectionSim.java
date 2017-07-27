@@ -23,6 +23,8 @@ import li.evaluation.metrics.MaxProbability;
 import li.evaluation.metrics.Metric;
 import li.evaluation.metrics.PrimaryPercentage;
 import li.evaluation.metrics.PrimaryUtilisation;
+import li.evaluation.metrics.ProtectedAcceptedRatio;
+import li.evaluation.metrics.ProtectedAllRatio;
 import li.event.FailureEvent;
 import li.event.NetEvent;
 import li.event.VnEvent;
@@ -188,6 +190,8 @@ public class ProtectionSim extends AbstractSimulation {
 		metrics.add(new AverageProbability(this));
 		metrics.add(new MaxProbability(this));
 		metrics.add(new ExecutionTime(this));
+		metrics.add(new ProtectedAcceptedRatio(this));
+		metrics.add(new ProtectedAllRatio(this));
 		metricsProba.add(new AverageAffectedVNRatio(this));
 		metricsProba.add(new Affected_VN_Number(this));
 		metricsProba.add(new AffectedRevenue(this));
@@ -299,6 +303,7 @@ public class ProtectionSim extends AbstractSimulation {
 								this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
 								System.out.println("current probability : "+method.getProbability());
 								this.probability.put(cEvent.getConcernedVn(), method.getProbability());
+								if(method.getProbability()==0)	this.protectedVNs++;
 							}
 							else if(backupMethod.linkMapping(cEvent.getConcernedVn(), method.getMapping())){
 								System.out.println("Backup link mapping done");
@@ -308,6 +313,7 @@ public class ProtectionSim extends AbstractSimulation {
 								this.totalCost=this.totalCost+cEvent.getConcernedVn().getTotalCost(sn);
 								System.out.println("current probability : "+backupMethod.getProbability());
 								this.probability.put(cEvent.getConcernedVn(), backupMethod.getProbability());
+								if(backupMethod.getProbability()==0)	this.protectedVNs++;
 								//TODO maybe backup metrics' code
 //								System.out.println(sn.probaToString());
 							}

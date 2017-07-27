@@ -22,6 +22,7 @@ public abstract class AbstractSimulation {
 	protected double time = 0.0;
 	protected int accepted = 0;
 	protected int rejected = 0;
+	protected int protectedVNs=0;
 	protected int lambda;
 	protected ArrayList<VirtualNetwork> currentVNs ;
 	protected Map<VirtualNetwork, Double> probability; 
@@ -52,6 +53,9 @@ public abstract class AbstractSimulation {
 		return accepted;
 	}
 
+	public int getProtectedVNs() {
+		return protectedVNs;
+	}
 	public int getRejected() {
 		return rejected;
 	}
