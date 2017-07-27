@@ -64,15 +64,15 @@ public class ProtectionSim extends AbstractSimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 100000.0;
+		simulationTime = 10000.0;
 		try {
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
 				boolean connect=true;
-//				Generator.createSubNet();
-//				sn.alt2network("./gt-itm/sub");
+				Generator.createSubNet();
+				sn.alt2network("./gt-itm/sub");
 //				sn.alt2network("data/cost239");
-				sn.alt2network("sndlib/germany50");
+//				sn.alt2network("sndlib/germany50");
 				for(SubstrateNode snode:sn.getVertices()){
 					if(sn.getNeighborCount(snode)<=1){
 						connect=false;
@@ -433,6 +433,7 @@ public class ProtectionSim extends AbstractSimulation {
 		NodeLinkDeletion.resetNet(this.sn);
 		this.accepted = 0;
 		this.rejected = 0;
+		this.protectedVNs=0;
 		this.totalCost=0.0;
 		this.affected=0;
 		this.affectedRevenue=0.0;

@@ -16,7 +16,10 @@ public class ProtectedAcceptedRatio extends Metric {
 
 	@Override
 	public double calculate() {
-		return (double)this.simulation.getProtectedVNs()/(double)this.simulation.getAccepted()*100;
+		double res=(double)this.simulation.getProtectedVNs()/(double)this.simulation.getAccepted()*100;
+		if(res>100)
+			System.out.println(" ");
+		return res;
 	}
 
 }

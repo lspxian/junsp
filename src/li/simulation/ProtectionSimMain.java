@@ -30,7 +30,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=7;i<12;i=i+1){
+			for(int i=2;i<8;i=i+1){
 				simulation.initialize(i);
 				simulation.getSubstrateNetwork().configPercentage(1);
 				/*
@@ -97,7 +97,7 @@ public static int c;
 				for(double percent:percentList){
 					simulation.getSubstrateNetwork().configPercentage(percent);
 					writePercent(percent);
-					/*
+					
 					PrintStream SPWithoutBackupVF = new PrintStream(new FileOutputStream("res/SPWithoutBackupVF_l"+i+"_c"+c+".txt"));
 					System.setOut(SPWithoutBackupVF);
 					writeCurrentTime();
@@ -108,7 +108,7 @@ public static int c;
 					System.setOut(ShortestPathBackupVF);
 					writeCurrentTime();
 					simulation.runSimulation("ShortestPathBackupVF","included");
-					simulation.reset();*/
+					simulation.reset();
 					
 					PrintStream SPWithoutBackupVF2 = new PrintStream(new FileOutputStream("res/SPWithoutBackupVF2_l"+i+".txt"));
 					System.setOut(SPWithoutBackupVF2);
