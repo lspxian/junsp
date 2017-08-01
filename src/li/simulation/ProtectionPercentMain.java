@@ -13,7 +13,7 @@ import java.util.List;
 public class ProtectionPercentMain {
 	public static int c;
 	public static void main(String[] args) throws IOException {
-		int i=3;
+		int i=10;
 		FileWriter writer = new FileWriter("result.txt",true);
 		writer.write("/----------------New Simulation--------------/\n");
 		writer.close();
@@ -34,20 +34,20 @@ public class ProtectionPercentMain {
 			
 			List<Double> percentList=new ArrayList<Double>();
 //			percentList.add(0.3);
-//			percentList.add(0.5);
+			percentList.add(0.5);
 			percentList.add(0.55);
 			percentList.add(0.6);
 			percentList.add(0.65);
 			percentList.add(0.7);
-			percentList.add(0.75);
-			percentList.add(0.8);
+//			percentList.add(0.75);
+//			percentList.add(0.8);
 //			percentList.add(0.85);
 //			percentList.add(0.9);
 			
 			for(double percent:percentList){
 				simulation.getSubstrateNetwork().configPercentage(percent);
 				writePercent(percent);
-				/*
+				
 				PrintStream SPWithoutBackupVF = new PrintStream(new FileOutputStream("res/SPWithoutBackupVF_l"+i+"_c"+c+".txt"));
 				System.setOut(SPWithoutBackupVF);
 				writeCurrentTime();
@@ -58,7 +58,7 @@ public class ProtectionPercentMain {
 				System.setOut(ShortestPathBackupVF);
 				writeCurrentTime();
 				simulation.runSimulation("ShortestPathBackupVF","included");
-				simulation.reset();*/
+				simulation.reset();
 				
 				PrintStream SPWithoutBackupVF2 = new PrintStream(new FileOutputStream("res/SPWithoutBackupVF2_l"+i+".txt"));
 				System.setOut(SPWithoutBackupVF2);

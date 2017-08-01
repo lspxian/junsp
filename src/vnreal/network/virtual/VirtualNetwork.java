@@ -71,7 +71,7 @@ public final class VirtualNetwork extends
 	private final int layer;
 	private String name = null;
 	private double lifetime=0.0;	//To know the lifetime of a Vn in the Substrate Network
-	private double mu=1000;			//The mean of the lifetime
+	private double mu=2000;			//The mean of the lifetime
 	private int failureNumber = 0;
 	
 	public VirtualNetwork(int layer, boolean autoUnregisterConstraints, boolean directed){

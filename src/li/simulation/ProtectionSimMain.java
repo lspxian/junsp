@@ -30,7 +30,7 @@ public static int c;
 					simulation.getSubstrateNetwork().getEdgeCount()+"\n");
 			writer.close();
 			
-			for(int i=2;i<8;i=i+1){
+			for(int i=8;i<13;i=i+1){
 				simulation.initialize(i);
 				simulation.getSubstrateNetwork().configPercentage(1);
 				/*
@@ -135,10 +135,11 @@ public static int c;
 					simulation.reset();
 					
 				}
-				writeCurrentTime();
-				System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-				System.out.println("job done");
+				
 			}
+			writeCurrentTime();
+			System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+			System.out.println("job done");
 		}
 		writer = new FileWriter("result.txt",true);
 		writer.write("/---------------Simulation finished!---------------/\n");

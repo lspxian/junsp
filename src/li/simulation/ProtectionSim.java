@@ -64,7 +64,7 @@ public class ProtectionSim extends AbstractSimulation {
 	
 	public ProtectionSim(){
 		
-		simulationTime = 10000.0;
+		simulationTime = 100000.0;
 		try {
 			while(true){
 				this.sn=new SubstrateNetwork(); //undirected by default 
