@@ -1,3 +1,15 @@
+/*---------Pre-installation-------------*/
+Cplex for linux
+
+/*-------------------files---------------------*/
+/cplex/mysolver.py	--cplex solver.
+/data	 --pre-defined networks data
+/evaluationData	--data for each metric
+/gt-itm	--gt itm version linux to generate random networks
+/lib	--library
+/sndlib	--sndlib network topologies
+
+/*-----------------class------------------*/
 li.gt_itm.Generator generate substrate and virtual networks.
 More details of gt-itm can be found in  gt-itm documents.
 The number of substrate and virtual nodes can be configured by input parameters.
@@ -5,7 +17,6 @@ The number of substrate and virtual nodes can be configured by input parameters.
 vnreal.network.substrate.SubstrateLink are resources related to substrate link.
 probability can be constant or random.
 bw.setBandwidth configures the range of bandwidth.
-
 
 
 multi domain simulation:
@@ -35,7 +46,7 @@ The class "MultiDomainRanking2" is "ciplm".
 The class "MultiDomainRanking3" is "ciplm_up".
 
 To show the performance of reinforced method, use li.simulation.Distribute3DVNEMain
-------------------------------------------------
+---------------------------
 
 The simulations for failure avoidance are li.simulation.ProbabilitySimulationMain and ProbabilitySimulation_sn_Main
 li.simulation.ProbabilitySimulationMain simulates lambda.
@@ -48,7 +59,7 @@ The class "ProbaHeuristic3" is "Basic".
 The class "ProbaHeuristic4" is "reinforced".
 
 
-------------------------------------------------
+---------------------------------
 failure protection:
 li.simulation.ProtectionSimMain for lambda
 li.simulation.ProtectionPercentMain for primary percent.
@@ -60,3 +71,10 @@ simulation.runSimulation() indicates the primary and backup method.
 ("SPWithoutBackupVF2", "included") is Basic_BEP
 ("ShortestPathBackupVF2","included") is SOL_BEP
 ("MaxFlowBackupVF2", "included") is MFP_BEP
+
+
+/*------------result--------------*/
+The simulation will produce files named "result.txt", "cenResult.txt", "disResult.txt".
+Use the plot files in the thesis directory to draw the figures of the article/thesis.
+
+
