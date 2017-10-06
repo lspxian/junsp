@@ -7,6 +7,6 @@ bin/*
 /graphTMP/
 /evaluationData
 /gt-itm
-/cplex
-output.txt
+/cplex/vne-mcf.lp
 ILP-LP-Models/vne-mcf.lp
+*~
